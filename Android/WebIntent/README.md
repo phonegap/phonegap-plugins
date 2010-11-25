@@ -42,10 +42,6 @@ Gets the extra that this app was invoked with. For example:
         }
     );
 	
-## BUGS AND CONTRIBUTIONS ##
-The latest bleeding-edge version is available [on GitHub](https://github.com/borismus/phonegap-plugins/tree/master/Android/)
-If you have a patch, fork my repo baby and send me a pull request. Submit bug reports on GitHub, please.
-	
 ## Licence ##
 
 The MIT License

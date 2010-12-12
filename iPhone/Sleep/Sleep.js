@@ -23,5 +23,5 @@ PhoneGap.addConstructor(function() {
 	if(!window.plugins) 
 		window.plugins = {};
 
-    window.plugins.Sleep = new Sleep();
+    window.plugins.sleep = new Sleep();
 });

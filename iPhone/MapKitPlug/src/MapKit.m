@@ -37,6 +37,8 @@
     mapView.autoresizesSubviews    = YES;
     mapView.userInteractionEnabled = YES;
 	mapView.showsUserLocation = YES;
+	mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	childView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	
 	imageButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	
@@ -88,9 +90,7 @@
     CGFloat height = 480.0f;
 	// default at bottom
     BOOL atBottom = YES;
-	
-    NSArray *pins = [[NSArray alloc] init];
-	
+		
 	if ([options objectForKey:@"height"]) 
 	{
 		height=[[options objectForKey:@"height"] floatValue];
@@ -109,8 +109,8 @@
 	
 	
 	SBJSON *parser=[[SBJSON alloc] init];
-	pins = [parser objectWithString:[arguments objectAtIndex:0]];
-	
+	NSArray *pins = [parser objectWithString:[arguments objectAtIndex:0]];
+	[parser autorelease];
 	CGRect webViewBounds = webView.bounds;
 	
 	CGRect mapBounds;

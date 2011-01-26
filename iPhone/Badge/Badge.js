@@ -29,7 +29,7 @@ Badge.prototype.clear = function() {
 
 PhoneGap.addConstructor(function() 
 {
-	if(window.plugins)
+	if(!window.plugins)
 	{
 		window.plugins = {};
 	}

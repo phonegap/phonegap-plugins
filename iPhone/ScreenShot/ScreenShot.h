@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <QuartzCore/QuartzCore.h>
 #import "PhoneGapCommand.h"
 @interface Screenshot : PhoneGapCommand {
 }

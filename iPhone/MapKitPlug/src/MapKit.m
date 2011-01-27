@@ -107,7 +107,6 @@
 	CLLocationCoordinate2D centerCoord = { [[options objectForKey:@"lat"] floatValue] , [[options objectForKey:@"lon"] floatValue] };
 	CLLocationDistance diameter = [[options objectForKey:@"diameter"] floatValue];
 	
-	
 	SBJSON *parser=[[SBJSON alloc] init];
 	NSArray *pins = [parser objectWithString:[arguments objectAtIndex:0]];
 	[parser autorelease];
@@ -170,6 +169,26 @@
 
 }
 
+/**
+ * Set annotations and mapview settings
+ */
+- (void)setRoutes:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{	
+	[self setMapData:arguments options];
+
+	SBJSON *parser=[[SBJSON alloc] init];
+	NSArray *pins = [parser objectWithString:[arguments objectAtIndex:0]];
+	[parser autorelease];
+
+	CLLocationCoordinate2D* pointArr = malloc(sizeof(CLLocationCoordinate2D) * pins.count);
+	
+	MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:pointArr count:pins.count];	
+	[mapView addOverlay:polyLine];
+	
+	[polyLine release];
+	//[pointArr release];
+}
+
 - (void) closeButton:(id)button
 {
 	[ self hideMap:NULL withDict:NULL];
@@ -197,6 +216,17 @@
 	// disable location services, if we no longer need it.
 	mapView.showsUserLocation = NO;
 	childView.hidden = YES;
+}
+
+- (MKOverlayView *) mapView:(MKMapView *)theMapView viewForOverlay:(id <MKOverlay>)overlay {
+	
+	 MKPolylineView *polyLineView = [[[MKPolylineView alloc] initWithOverlay:overlay] autorelease];
+	 
+	 polyLineView.strokeColor = [UIColor redColor];
+	 
+	 polyLineView.lineWidth = 5.0;
+	 
+	 return polyLineView;
 }
 
 - (MKAnnotationView *) mapView:(MKMapView *)theMapView viewForAnnotation:(id <MKAnnotation>) annotation{

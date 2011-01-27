@@ -87,16 +87,22 @@ MapKitPlug.prototype.setMapData = function(pins,options)
 			this.options[v] = options[v];
 		}
 	}
-	
+
 	var pinStr = "[]";
 	
-	if(pins)
-	{
+	if(pins) {
 		pinStr = JSON.stringify(pins);
 	}
 	
-	PhoneGap.exec("MapKitView.setMapData",pinStr , this.options);
+	PhoneGap.exec("MapKitView.setMapData", pinStr , this.options);
 };
+
+MapKitPlug.prototype.setRoutes = function(pins, options) {
+	var pinStr = "[]";
+	if(pins) 
+		pinStr = JSON.stringify(pins);
+	PhoneGap.exec("MapKitView.setRoutes", pinStr , this.options);
+}
 
 MapKitPlug.prototype.hideMap = function() 
 {

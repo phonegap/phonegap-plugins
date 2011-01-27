@@ -101,6 +101,7 @@ MapKitPlug.prototype.setRoutes = function(pins, options) {
 	var pinStr = "[]";
 	if(pins) 
 		pinStr = JSON.stringify(pins);
+	//alert(pinStr);
 	PhoneGap.exec("MapKitView.setRoutes", pinStr , this.options);
 }
 

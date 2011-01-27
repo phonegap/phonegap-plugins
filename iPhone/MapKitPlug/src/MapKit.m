@@ -174,19 +174,28 @@
  */
 - (void)setRoutes:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {	
-	[self setMapData:arguments options];
-
 	SBJSON *parser=[[SBJSON alloc] init];
 	NSArray *pins = [parser objectWithString:[arguments objectAtIndex:0]];
 	[parser autorelease];
 
+	
 	CLLocationCoordinate2D* pointArr = malloc(sizeof(CLLocationCoordinate2D) * pins.count);
 	
+	for (int y = 0; y < pins.count; y++)
+    {
+        NSDictionary *pinData = [pins objectAtIndex:y];
+        CLLocationCoordinate2D pinCoord = { [[pinData objectForKey:@"lat"] floatValue] , [[pinData objectForKey:@"lon"] floatValue] };
+        pointArr[y] = pinCoord;
+	}
+	
 	MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:pointArr count:pins.count];	
+	
 	[mapView addOverlay:polyLine];
 	
+
 	[polyLine release];
 	//[pointArr release];
+	 
 }
 
 - (void) closeButton:(id)button
@@ -218,7 +227,8 @@
 	childView.hidden = YES;
 }
 
-- (MKOverlayView *) mapView:(MKMapView *)theMapView viewForOverlay:(id <MKOverlay>)overlay {
+- (MKOverlayView *) mapView:(MKMapView *)theMapView viewForOverlay:(id <MKOverlay>)overlay 
+{
 	
 	 MKPolylineView *polyLineView = [[[MKPolylineView alloc] initWithOverlay:overlay] autorelease];
 	 

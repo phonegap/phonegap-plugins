@@ -14,6 +14,7 @@
 	-->
 	<script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
 	<script type="text/javascript" charset="utf-8" src="MapKitPlug.js"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> 
     <script type="text/javascript" charset="utf-8">
 
 
@@ -45,15 +46,15 @@
 	
 	function showMap()
 	{
-		var pin = { lat:49.281468,
-					lon:-123.104446,
+		var pin = { lat:39.894211,
+					lon:116.407413,
 					title:"Nitobi HQ",
 					pinColor:"purple", 
 					index:0,
 					selected:true};
 					
-		var pin2 = { lat:49.281468,
-					lon:-123.104446,
+		var pin2 = { lat:39.281468,
+					lon:116.104446,
 					title:"Nitobi HQ",
 					pinColor:"purple", 
 					index:0,
@@ -73,6 +74,24 @@
 	
 		window.plugins.mapKit.showMap();
 		window.plugins.mapKit.setMapData([pin],_options);
+		
+		var request = {
+			origin:new google.maps.LatLng(pin.lat, pin.lon), 
+			destination:new google.maps.LatLng(pin2.lat, pin2.lon),
+			travelMode: google.maps.DirectionsTravelMode.DRIVING
+		};
+
+		var directionsService = new google.maps.DirectionsService();
+
+		directionsService.route(request, function(response, status) {
+		  if (status == google.maps.DirectionsStatus.OK) {
+			var routes = [], tmp = response.routes[0].overview_path;
+
+			for(var i = 0, cnt = tmp.length; i < cnt; i++) 
+				routes.push({lat: tmp[i].lat(), lon: tmp[i].lng()});
+			window.plugins.mapKit.setRoutes(routes,_options);
+		  }
+		});
 		
 	}
 	

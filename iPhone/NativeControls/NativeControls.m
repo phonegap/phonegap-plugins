@@ -106,7 +106,7 @@
 	 {
          tabBarBounds = CGRectMake(
              webViewBounds.origin.x,
-             webViewBounds.origin.y + webViewBounds.size.height - height - offsetRect.size.height,
+             webViewBounds.origin.y + webViewBounds.size.height - height, // - offsetRect.size.height,
              webViewBounds.size.width,
              height
          );
@@ -114,7 +114,7 @@
             webViewBounds.origin.x,
             webViewBounds.origin.y,
             webViewBounds.size.width,
-            webViewBounds.size.height - height - offsetRect.size.height
+            webViewBounds.size.height - height // - offsetRect.size.height
          );
      } 
 	 else 

@@ -88,12 +88,23 @@
 	
 	// default height
     CGFloat height = 480.0f;
+	CGFloat top = 0.0f;
+	CGFloat left = 0.0f;
+
 	// default at bottom
     BOOL atBottom = YES;
 		
 	if ([options objectForKey:@"height"]) 
 	{
 		height=[[options objectForKey:@"height"] floatValue];
+	}
+	if ([options objectForKey:@"top"]) 
+	{
+		top=[[options objectForKey:@"top"] floatValue];
+	}
+	if ([options objectForKey:@"left"]) 
+	{
+		left=[[options objectForKey:@"left"] floatValue];
 	}
     if ([options objectForKey:@"atBottom"]) 
 	{
@@ -116,8 +127,8 @@
 	if (atBottom) 
 	{
          mapBounds = CGRectMake(
-             webViewBounds.origin.x,
-             webViewBounds.origin.y + webViewBounds.size.height - height,
+             webViewBounds.origin.x + left,
+             webViewBounds.origin.y + top + webViewBounds.size.height - height,
              webViewBounds.size.width,
              height
          );
@@ -125,8 +136,8 @@
 	else 
 	{
          mapBounds = CGRectMake(
-             webViewBounds.origin.x,
-             webViewBounds.origin.y,
+             webViewBounds.origin.x + left,
+             webViewBounds.origin.y + top,
              webViewBounds.size.width,
              webViewBounds.origin.y + height
          );

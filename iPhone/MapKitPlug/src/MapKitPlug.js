@@ -11,6 +11,8 @@ function MapKitPlug()
 	{
 		// Default options 
 		"buttonCallback": "window.plugins.mapKit.onMapCallback",
+		"top":0,
+		"left":0,
 		"height":460,
 		"diameter":1000,
 		"atBottom":true,

@@ -17,13 +17,33 @@ The full params are as follows:
 
 * server URL of the server that will receive the file
 * file Absolute path or uri of the file to upload
-* fileKey Parameter name of the file
 * params Object with key: value params to send to the server
+* fileKey Parameter name of the file
 * fileName Filename to send to the server. Defaults to image.jpg
 * mimeType Mimetype of the uploaded file. Defaults to image/jpeg
 * success Success callback. Passed the response data from the server as a string.
 * fail Error callback. Passed the error message.
 * progress Called on upload progress. Signature should be function(bytesUploaded, totalBytes)
+
+Here is a simple example usage.
+
+    window.plugins.fileUploader.uploadByUri('http://example.com/upload', 'file://path/to/file.jpg', {foo: 'bar'}, 'myPhoto', 'anImage.jpg', 'image/jpeg', 
+    			function(result) {
+    				console.log('Done: ' + result);
+    			}, 
+    			function(result) {
+    			    console.log("Error: " + result);
+    			}, 
+    			function(loaded, total) {
+    				var percent = 100 / total * loaded;
+    				console.log('Uploaded  ' + percent);
+
+    			}
+    		);
+
+
+    
+
 
 This is under development, and the API is likely to change.
 

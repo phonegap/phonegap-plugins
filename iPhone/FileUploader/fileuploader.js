@@ -14,8 +14,8 @@ var FileUploader = function() {
  *
  * @param server URL of the server that will receive the file
  * @param file file:// uri of the file to upload
- * @param fileKey Parameter name of the file
  * @param params Object with key: value params to send to the server
+ * @param fileKey Parameter name of the file
  * @param fileName Filename to send to the server. Defaults to image.jpg
  * @param mimeType Mimetype of the uploaded file. Defaults to image/jpeg
  * @param success Success callback. Passed the response data from the server as a string.
@@ -31,8 +31,8 @@ FileUploader.prototype.uploadByUri = function(server, file, params, fileKey, fil
  *
  * @param server URL of the server that will receive the file
  * @param file Absolute path of the file to upload
- * @param fileKey Parameter name of the file
  * @param params Object with key: value params to send to the server
+ * @param fileKey Parameter name of the file
  * @param fileName Filename to send to the server. Defaults to image.jpg
  * @param mimeType Mimetype of the uploaded file. Defaults to image/jpeg
  * @param success Success callback. Passed the response data from the server as a string.

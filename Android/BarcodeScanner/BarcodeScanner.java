@@ -11,19 +11,16 @@ package com.beetight.barcodescanner;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.phonegap.DroidGap;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+
 import com.phonegap.api.PhonegapActivity;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
-
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-
-import android.content.ActivityNotFoundException;
-
-import android.net.Uri;
 
 /**
  * This calls out to the ZXing barcode reader and returns the result.
@@ -31,14 +28,14 @@ import android.net.Uri;
 public class BarcodeScanner extends Plugin {
 	public static final int REQUEST_CODE = 0x0ba7c0de;
 
-	
+
 	public static final String defaultInstallTitle = "Install Barcode Scanner?";
 	public static final String defaultInstallMessage = "This requires the free Barcode Scanner app. Would you like to install it now?";
 	public static final String defaultYesString = "Yes";
 	public static final String defaultNoString = "No";
-  
+
 	public String callback;
-	
+
     /**
      * Constructor.
      */
@@ -47,7 +44,7 @@ public class BarcodeScanner extends Plugin {
 
 	/**
 	 * Executes the request and returns PluginResult.
-	 * 
+	 *
 	 * @param action 		The action to execute.
 	 * @param args 			JSONArray of arguments for the plugin.
 	 * @param callbackId	The callback id used when calling back into JavaScript.
@@ -55,7 +52,7 @@ public class BarcodeScanner extends Plugin {
 	 */
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		this.callback = callbackId;
-		
+
 		try {
 			if (action.equals("encode")) {
 				String type = null;
@@ -88,9 +85,9 @@ public class BarcodeScanner extends Plugin {
 					noString = args.getString(5);
 				}
 
-				// if data.TypeOf() == Bundle, then call 
+				// if data.TypeOf() == Bundle, then call
 				// encode(type, Bundle)
-				// else 
+				// else
 				// encode(type, String)
 				this.encode(type, data, installTitle, installMessage, yesString, noString);
 			}
@@ -99,7 +96,7 @@ public class BarcodeScanner extends Plugin {
 				if(args.length() > 0) {
 					barcodeTypes = args.getString(0);
 				}
-				
+
 				String installTitle = defaultInstallTitle;
 				if(args.length() > 1) {
 					installTitle = args.getString(1);
@@ -131,11 +128,11 @@ public class BarcodeScanner extends Plugin {
 			e.printStackTrace();
 			return new PluginResult(PluginResult.Status.JSON_EXCEPTION);
 		}
-	} 
-	
-    
+	}
+
+
 	/**
-	 * Initiates a barcode scan. If the ZXing scanner isn't installed, the user 
+	 * Initiates a barcode scan. If the ZXing scanner isn't installed, the user
 	 * will be prompted to install it.
 	 * @param types	The barcode types to accept
 	 * @param installTitle The title for the dialog box that prompts the user to install the scanner
@@ -149,21 +146,21 @@ public class BarcodeScanner extends Plugin {
 
 	    // A null format means we scan for any type
 	    if (barcodeFormats != null) {
-	      // Tell the scanner what types we're after
-	      intentScan.putExtra("SCAN_FORMATS", barcodeFormats);
+			// Tell the scanner what types we're after
+			intentScan.putExtra("SCAN_FORMATS", barcodeFormats);
 	    }
 
-	    try {  
-	      this.ctx.startActivityForResult((Plugin) this, intentScan, REQUEST_CODE);
-	    } catch (ActivityNotFoundException e) { 
+	    try {
+			this.ctx.startActivityForResult((Plugin) this, intentScan, REQUEST_CODE);
+	    } catch (ActivityNotFoundException e) {
 	    	showDownloadDialog(installTitle, installMessage, yesString, noString);
 	    }
 	}
 
     /**
-     * Called when the barcode scanner exits 
-     * 
-     * @param requestCode		The request code originally supplied to startActivityForResult(), 
+     * Called when the barcode scanner exits
+     *
+     * @param requestCode		The request code originally supplied to startActivityForResult(),
      * 							allowing you to identify who this result came from.
      * @param resultCode		The integer result code returned by the child activity through its setResult().
      * @param intent			An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
@@ -176,66 +173,66 @@ public class BarcodeScanner extends Plugin {
 			} else {
 				this.error(new PluginResult(PluginResult.Status.ERROR), this.callback);
 			}
-		}	
+		}
 	}
-	
-	 private void showDownloadDialog(final String title, final String message, final String yesString, final String noString) {
+
+	private void showDownloadDialog(final String title, final String message, final String yesString, final String noString) {
 		final PhonegapActivity context = this.ctx;
 		Runnable runnable = new Runnable() {
-				public void run() {
+			public void run() {
 
-					AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-					dialog.setTitle(title);
-					dialog.setMessage(message);
-					dialog.setPositiveButton(yesString, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dlg, int i) {
-							dlg.dismiss();
-							Intent intent = new Intent(Intent.ACTION_VIEW, 
-								Uri.parse("market://search?q=pname:com.google.zxing.client.android")
-							);
-							try {
-								context.startActivity(intent);
-							} catch (ActivityNotFoundException e) { 
-//							We don't have the market app installed, so download it directly.
-				       			Intent in = new Intent(Intent.ACTION_VIEW);
-			        			in.setData(Uri.parse("http://zxing.googlecode.com/files/BarcodeScanner3.5.apk"));
-			        			context.startActivity(in);
-
-							}
+				AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+				dialog.setTitle(title);
+				dialog.setMessage(message);
+				dialog.setPositiveButton(yesString, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dlg, int i) {
+						dlg.dismiss();
+						Intent intent = new Intent(Intent.ACTION_VIEW,
+												   Uri.parse("market://search?q=pname:com.google.zxing.client.android")
+												   );
+						try {
+							context.startActivity(intent);
+						} catch (ActivityNotFoundException e) {
+							//							We don't have the market app installed, so download it directly.
+							Intent in = new Intent(Intent.ACTION_VIEW);
+							in.setData(Uri.parse("http://zxing.googlecode.com/files/BarcodeScanner3.53.apk"));
+							context.startActivity(in);
 
 						}
-					});
-					dialog.setNegativeButton(noString, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dlg, int i) {
-							dlg.dismiss();
-						}
-					});
-					dialog.create();
-					dialog.show();
-				}
-			};
-			context.runOnUiThread(runnable);
-		}
 
-		/**
-		 * Initiates a barcode encode. If the ZXing scanner isn't installed, the user
-		 * will be prompted to install it.
-		 * @param type  The barcode type to encode
-		 * @param data  The data to encode in the bar code
-		 * @param installTitle The title for the dialog box that prompts the user to install the scanner
-		 * @param installMessage The message prompting the user to install the barcode scanner
-		 * @param yesString The string "Yes" or localised equivalent
-		 * @param noString The string "No" or localised version
-		 */
-		public void encode(String type, String data, String installTitle, String installMessage, String yesString, String noString) {
-			Intent intentEncode = new Intent("com.google.zxing.client.android.ENCODE");
-		    intentEncode.putExtra("ENCODE_TYPE", type);
-		    intentEncode.putExtra("ENCODE_DATA", data);
+					}
+				});
+				dialog.setNegativeButton(noString, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dlg, int i) {
+						dlg.dismiss();
+					}
+				});
+				dialog.create();
+				dialog.show();
+			}
+		};
+		context.runOnUiThread(runnable);
+	}
 
-		    try {
-		      this.ctx.startActivity(intentEncode);
-		    } catch (ActivityNotFoundException e) {
-		    	showDownloadDialog(installTitle, installMessage, yesString, noString);
-		    }
+	/**
+	 * Initiates a barcode encode. If the ZXing scanner isn't installed, the user
+	 * will be prompted to install it.
+	 * @param type  The barcode type to encode
+	 * @param data  The data to encode in the bar code
+	 * @param installTitle The title for the dialog box that prompts the user to install the scanner
+	 * @param installMessage The message prompting the user to install the barcode scanner
+	 * @param yesString The string "Yes" or localised equivalent
+	 * @param noString The string "No" or localised version
+	 */
+	public void encode(String type, String data, String installTitle, String installMessage, String yesString, String noString) {
+		Intent intentEncode = new Intent("com.google.zxing.client.android.ENCODE");
+		intentEncode.putExtra("ENCODE_TYPE", type);
+		intentEncode.putExtra("ENCODE_DATA", data);
+
+		try {
+			this.ctx.startActivity(intentEncode);
+		} catch (ActivityNotFoundException e) {
+			showDownloadDialog(installTitle, installMessage, yesString, noString);
 		}
+	}
 }

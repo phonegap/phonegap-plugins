@@ -377,8 +377,7 @@
     } else {
         //toolBarTitle.title = title;
     }
-	
-	
+		
 	//UINavigationBar
 	
 	//initWithImage
@@ -420,7 +419,7 @@
 	//refresh.customView = backImage;
 	
 
-    NSArray *items = [[NSArray alloc] initWithObjects:backButtonItem,space1,modalBarButtonItem,space2, refresh, nil];
+    NSArray *items = [[NSArray alloc] initWithObjects:backButtonItem,space1,toolBarTitle,modalBarButtonItem,space2, refresh, nil];
 
 	
 	//UINavigationItem* navItem = [[UINavigationItem alloc] init];
@@ -436,7 +435,7 @@
 	
 	
 
-	 [backButtonItem release];
+	[backButtonItem release];
 	[space1 release];
 	[space2 release];
 	[ refresh release ];

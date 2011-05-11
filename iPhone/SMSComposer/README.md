@@ -7,6 +7,7 @@ Using this plugin requires [PhoneGap for iPhone](http://github.com/phonegap/phon
 
 1. Add the SMSComposer.h and SMSComposer.m files to your "Plugins" folder in your PhoneGap project
 2. Add the SMSComposer.js files to your "www" folder on disk, and add a reference to the .js file after phonegap.js.
+3. Add the MessageUI framework to your Xcode project. In Xcode 4, double-click on the target, select "Build Phases" -> "Link Binary with Libraries" -> "+" and select "MessageUI.framework".
 
 ## RELEASE NOTES ##
 

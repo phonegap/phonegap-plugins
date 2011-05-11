@@ -1,6 +1,6 @@
 //
-//  ClipboardPlugin.m
-//  Clipboard plugin for PhoneGap
+//  SMSComposer.m
+//  SMS Composer plugin for PhoneGap
 //
 //  Created by Grant Sanders on 12/25/2010.
 //

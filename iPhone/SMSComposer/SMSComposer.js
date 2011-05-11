@@ -1,5 +1,5 @@
 /**
- * Clipboard plugin for PhoneGap
+ * SMS Composer plugin for PhoneGap
  * window.plugins.SMSComposer
  * 
  * @constructor

@@ -13,6 +13,7 @@
 function NativeControls() {
     this.tabBarTag = 0;
     this.tabBarCallbacks = {};
+    this.selectedTabBarItem = null;
 }
 
 /**
@@ -29,7 +30,7 @@ NativeControls.prototype.createTabBar = function() {
  * - \c position specifies whether the tab bar will be placed at the \c top or \c bottom of the screen (default: \c bottom)
  */
 NativeControls.prototype.showTabBar = function(options) {
-    if (!options) options = {};
+    if (!options) options = {'position' : 'bottom'};
     PhoneGap.exec("NativeControls.showTabBar", options);
 };
 
@@ -105,6 +106,17 @@ NativeControls.prototype.showTabBarItems = function() {
     PhoneGap.exec.apply(this, parameters);
 };
 
+
+/**
+ * Function to detect currently selected tab bar item
+ * @see createTabBarItem
+ * @see showTabBarItems
+ */
+NativeControls.prototype.getSelectedTabBarItem = function() {
+    return this.selectedTabBarItem;
+};
+
+
 /**
  * Manually select an individual tab bar item, or nil for deselecting a currently selected tab bar item.
  * @param {String} tabName the name of the tab to select, or null if all tabs should be deselected
@@ -121,6 +133,7 @@ NativeControls.prototype.selectTabBarItem = function(tab) {
  */
 NativeControls.prototype.tabBarItemSelected = function(tag) 
 {
+	this.selectedTabBarItem = tag;
     if (typeof(this.tabBarCallbacks[tag].onSelect) == 'function')
         this.tabBarCallbacks[tag].onSelect(this.tabBarCallbacks[tag].name);
 };

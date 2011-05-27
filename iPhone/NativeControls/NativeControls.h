@@ -22,9 +22,9 @@
 
 	UIToolbar* toolBar;
 	UIBarButtonItem* toolBarTitle;
-	NSMutableDictionary* toolBarItems;
-	CGRect	originalWebViewBounds;
+	NSMutableArray* toolBarItems;
 	
+	CGRect	originalWebViewBounds;
 }
 
 /* Tab Bar methods 
@@ -40,9 +40,11 @@
 /* Tool Bar methods
  */
 - (void)createToolBar:(NSArray*)arguments withDict:(NSDictionary*)options;
+- (void)resetToolBar:(NSArray*)arguments withDict:(NSDictionary*)options;
 - (void)setToolBarTitle:(NSArray*)arguments withDict:(NSDictionary*)options;
-- (void)toolBarTitleClicked;
-
+- (void)createToolBarItem:(NSArray*)arguments withDict:(NSDictionary*)options;
+- (void)showToolBar:(NSArray*)arguments withDict:(NSDictionary*)options;
+- (void)hideToolBar:(NSArray*)arguments withDict:(NSDictionary*)options;
 /* ActionSheet 
  */
 - (void)createActionSheet:(NSArray*)arguments withDict:(NSDictionary*)options;

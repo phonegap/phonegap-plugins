@@ -5,7 +5,7 @@ Allows In-App Purchases to be made from Phonegap. Wraps StoreKit.
 
 ## Adding the Plugin to your project ##
 
-Copy the .h and .m file to the Plugins directory in your project. Copy the .js file to your www directory and reference it from your html file(s).
+Copy the .h and .m file to the Plugins directory in your project. Copy the .js file to your www directory and reference it from your html file(s). Finally, add StoreKit.framework to your Xcode project if you haven't already.
 
 
 ## Using the plugin ##

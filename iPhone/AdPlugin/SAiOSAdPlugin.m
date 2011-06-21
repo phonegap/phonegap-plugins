@@ -56,19 +56,11 @@
 	Class adBannerViewClass = NSClassFromString(@"ADBannerView");
 	if (adBannerViewClass && !self.adView)
 	{
-		self.adView = [[ADBannerView alloc] initWithFrame:CGRectZero];
-		self.adView.requiredContentSizeIdentifiers = [NSSet setWithObjects: ADBannerContentSizeIdentifier320x50, ADBannerContentSizeIdentifier480x32, nil];		
-		self.adView.delegate = self;
-		
-		CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
-		if (atBottom) {
-			CGRect adViewFrame = self.adView.frame;
-			adViewFrame.origin.y = [UIScreen mainScreen].bounds.size.height - statusBarHeight - adViewFrame.size.height;
-			self.adView.frame = adViewFrame;
-			
-			self.bannerIsAtBottom = YES;
-		}
-		
+		adView = [[ADBannerView alloc] initWithFrame:CGRectZero];
+		adView.requiredContentSizeIdentifiers = [NSSet setWithObjects: ADBannerContentSizeIdentifierPortrait, ADBannerContentSizeIdentifierLandscape, nil];		
+		adView.delegate = self;
+
+		self.bannerIsAtBottom = atBottom;
 		self.bannerIsVisible = NO;
 		self.bannerIsInitialized = YES;
 	}
@@ -90,54 +82,75 @@
 		return;
 	}
 	
-	CGRect adViewFrame = self.adView.frame;
-	CGRect webViewFrame = [super webView].frame;
-	CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+	CGRect adViewFrame = adView.frame;
+	CGRect webViewFrame = webView.frame;
+	CGRect screenFrame = [ [ UIScreen mainScreen ] applicationFrame ];
+	
+	//CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+	
+	[UIView beginAnimations:@"blah" context:NULL];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
 	
 	if (show)
 	{
-		if (self.bannerIsAtBottom)
+//		CGFloat bannerHeight = 0.0;
+//		
+//		// First, setup the banner's content size and adjustment based on the current orientation
+//		if(UIInterfaceOrientationIsLandscape(self.appViewController.interfaceOrientation))
+//		{
+//			adView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierLandscape;
+//			bannerHeight = 32.0;
+//		}
+//		else
+//		{
+//			adView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierPortrait;
+//			bannerHeight = 50.0;
+//		}
+		
+		adViewFrame.size.width = screenFrame.size.width;
+		
+		if (self.bannerIsAtBottom) 
 		{
-			webViewFrame.size.height -= (adViewFrame.size.height + statusBarHeight);
+			adViewFrame.origin.y = screenFrame.size.height - adViewFrame.size.height;
+			
+			self.adView.frame = adViewFrame;
+
 		}
-		else
+		else // aka: at the top
 		{
 			webViewFrame.origin.y += adViewFrame.size.height;
-			webViewFrame.size.height -= (adViewFrame.size.height + statusBarHeight);
 		}
 
-		[UIView beginAnimations:@"blah" context:NULL];
-		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-
-		[super webView].frame = webViewFrame;
-		[[[super webView] superview] addSubview:self.adView];
 		
-		[UIView commitAnimations];
+		webViewFrame.size.height -= adViewFrame.size.height;
 
+		webView.frame = webViewFrame;
+		[ webView.superview addSubview:self.adView];
+		
 		self.bannerIsVisible = YES;
 	}
 	else 
 	{
-		if (self.bannerIsAtBottom)
+		if (self.bannerIsAtBottom) 
 		{
-			webViewFrame.size.height += (adViewFrame.size.height + statusBarHeight);
+
 		}
-		else
+		else // aka: at the top
 		{
-			webViewFrame.origin.y -= adViewFrame.size.height;
-			webViewFrame.size.height += (adViewFrame.size.height + statusBarHeight);
+			webViewFrame.origin.y = screenFrame.origin.y;
 		}
+
 		
-		[UIView beginAnimations:@"blah" context:NULL];
-		[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+		webViewFrame.size.height += adViewFrame.size.height;
 		
-		[super webView].frame = webViewFrame;
-		[self.adView removeFromSuperview];
+		webView.frame = webViewFrame;
+		[ adView removeFromSuperview];
 		
-		[UIView commitAnimations];
 		
 		self.bannerIsVisible = NO;
 	}
+	
+	[UIView commitAnimations];
 	
 }
 

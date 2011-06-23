@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+    id = "http://phonegap.com/plugins/FtpClient"
+    version = "1.0"
+    platform = "Android"
+    min = "1.6"
+    max = "">
+
+  <name short="FtpClient 1.0">
+    The ftp client allows you to upload and download files from a FTP server.
+  </name>
+ 
+  <description>
+The ftp client allows you to upload and download files from a FTP server.
+
+A simple use case would be:
+
+- Downloading a text file from a FTP server in order to be displayed in your application.
+- Uploading a text file to a FTP server.
+  </description>
+
+  <author href="http://www.ibm.com/" email="simon.macdonald@gmail.com">Simon MacDonald</author>
+
+  <permission name="android.permission.INTERNET" />
+  <permission name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+  <license>
+PhoneGap is available under *either* the terms of the modified BSD license *or* the
+MIT License (2008). As a recipient of PhonegGap, you may choose which
+license to receive this code under (except as noted in per-module LICENSE
+files). Some modules may not be the copyright of Nitobi.   These
+modules contain explicit declarations of copyright in both the LICENSE files in
+the directories in which they reside and in the code itself. No external
+contributions are allowed under licenses which are fundamentally incompatible
+with the MIT or BSD licenses that PhoneGap is distributed under.
+  </license>
+</plugin>

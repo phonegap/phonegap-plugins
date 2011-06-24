@@ -8,8 +8,18 @@
 
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
+
+#ifdef PHONEGAP_FRAMEWORK
+#import <PhoneGap/PhoneGapCommand.h>
+#else
 #import "PhoneGapCommand.h"
+#endif
+
+#ifdef PHONEGAP_FRAMEWORK
+#import <PhoneGap/NSData+Base64.h>
+#else
 #import "NSData+Base64.h"
+#endif
 
 #import "SKProduct+LocalizedPrice.h"
 

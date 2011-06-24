@@ -46,8 +46,8 @@ A basic usage example is below:
     		/* See the developer guide for details of what to do with this */
     	}
 
-    	window.plugins.inAppPurchaseManager.onError = function(errno, errtext) {
-    		console.log('error: ' + errtext);
+    	window.plugins.inAppPurchaseManager.onFailed = function(errno, errtext) {
+    		console.log('failed: ' + errtext);
     	}
 
     	window.plugins.inAppPurchaseManager.requestProductData("com.example.test", function(productId, title, description, price) {

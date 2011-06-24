@@ -48,7 +48,7 @@ InAppPurchaseManager.prototype.requestProductData = function(productId, successC
 	window.plugins.inAppPurchaseManager.callbackMap[key] = {
 		success: function(productId, title, description, price ) {
 			if (productId == '__DONE') {
-				delete window.plugins.fileUploader.callbackMap[key]
+				delete window.plugins.inAppPurchaseManager.callbackMap[key]
 				return;
 			}
 			successCallback(productId, title, description, price);

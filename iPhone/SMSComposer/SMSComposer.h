@@ -5,7 +5,11 @@
 
 
 #import <Foundation/Foundation.h>
+#ifdef PHONEGAP_FRAMEWORK
+#import <PhoneGap/PhoneGapCommand.h>
+#else
 #import "PhoneGapCommand.h"
+#endif
 @interface SMSComposer : PhoneGapCommand {
 }
 

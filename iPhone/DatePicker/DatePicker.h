@@ -3,14 +3,18 @@
 //	MIT Licensed
 
 #import <Foundation/Foundation.h>
+#ifdef PHONEGAP_FRAMEWORK
+#import <PhoneGap/PhoneGapCommand.h>
+#else
 #import "PhoneGapCommand.h"
+#endif
 
 
 @interface DatePicker : PhoneGapCommand {
 	UIActionSheet *datePickerSheet;
 	UIDatePicker *datePicker;
 	BOOL isVisible;
-	
+
 }
 
 @property (nonatomic, retain) UIActionSheet* datePickerSheet;

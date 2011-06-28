@@ -9,7 +9,11 @@
 #import <Foundation/Foundation.h>
 
 
-#import "PhoneGapCommand.h"
+#ifdef PHONEGAP_FRAMEWORK
+    #import <PhoneGap/PhoneGapCommand.h>
+#else
+    #import "PhoneGapCommand.h"
+#endif
 @interface Badge : PhoneGapCommand {
 }
 - (void)setBadge:(NSMutableArray*)badgeNumber withDict:(NSMutableDictionary*)options;

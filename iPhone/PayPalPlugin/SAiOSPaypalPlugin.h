@@ -6,7 +6,11 @@
 //  Copyright 2010 Shazron Abdullah. All rights reserved.
 
 #import <Foundation/Foundation.h>
+#ifdef PHONEGAP_FRAMEWORK
+#import <PhoneGap/PhoneGapCommand.h>
+#else
 #import "PhoneGapCommand.h"
+#endif
 #import "PayPal.h"
 
 @interface PaypalPaymentInfo : NSObject

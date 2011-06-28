@@ -7,7 +7,11 @@
 #import <Foundation/Foundation.h>
 
 
+#ifdef PHONEGAP_FRAMEWORK
+#import <PhoneGap/PhoneGapCommand.h>
+#else
 #import "PhoneGapCommand.h"
+#endif
 @interface LocalNotification : PhoneGapCommand {
 }
 - (void)addNotification:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;

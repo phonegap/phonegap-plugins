@@ -41,7 +41,7 @@
 #define PAYPAL_APP_ENV	ENV_NONE
 
 
--(PhoneGapCommand*) initWithWebView:(UIWebView*)theWebView
+-(PGPlugin*) initWithWebView:(UIWebView*)theWebView
 {
     self = (SAiOSPaypalPlugin*)[super initWithWebView:(UIWebView*)theWebView];
     if (self) {

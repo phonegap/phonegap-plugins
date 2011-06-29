@@ -19,7 +19,7 @@
 @synthesize session;
 
 
-- (PhoneGapCommand*) initWithWebView:(UIWebView*)theWebView
+- (PGPlugin*) initWithWebView:(UIWebView*)theWebView
 {
     self = (Torch*)[super initWithWebView:theWebView];
     if (self) {

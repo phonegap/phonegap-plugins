@@ -13,7 +13,7 @@
 #import "PhoneGapCommand.h"
 #endif
 
-@interface Torch : PhoneGapCommand {
+@interface Torch : PGPlugin {
 
 	 AVCaptureSession* session;
 }

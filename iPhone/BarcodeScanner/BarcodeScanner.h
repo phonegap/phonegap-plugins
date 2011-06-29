@@ -7,15 +7,15 @@
 
 #import <Foundation/Foundation.h>
 #ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PhoneGapCommand.h>
+#import <PhoneGap/PGPlugin.h>
 #else
-#import "PhoneGapCommand.h"
+#import "PGPlugin.h"
 #endif
 #import "ZXingWidgetController.h"
 #import "QRCodeReader.h"
 
 
-@interface BarcodeScanner : PhoneGapCommand <ZXingDelegate> {
+@interface BarcodeScanner : PGPlugin <ZXingDelegate> {
 	NSString* successCallback;
 	NSString* failCallback;
 }

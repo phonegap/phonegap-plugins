@@ -19,7 +19,7 @@
 @synthesize webView;
 #endif
 
--(PhoneGapCommand*) initWithWebView:(UIWebView*)theWebView
+-(PGPlugin*) initWithWebView:(UIWebView*)theWebView
 {
     self = (NativeControls*)[super initWithWebView:theWebView];
     if (self) 

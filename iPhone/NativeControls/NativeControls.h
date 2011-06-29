@@ -15,12 +15,12 @@
 #import <UIKit/UITabBar.h>
 #import <UIKit/UIToolbar.h>
 #ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PhoneGapCommand.h>
+#import <PhoneGap/PGPlugin.h>
 #else
-#import "PhoneGapCommand.h"
+#import "PGPlugin.h"
 #endif
 
-@interface NativeControls : PhoneGapCommand <UITabBarDelegate, UIActionSheetDelegate> {
+@interface NativeControls : PGPlugin <UITabBarDelegate, UIActionSheetDelegate> {
 	UITabBar* tabBar;
 	NSMutableDictionary* tabBarItems;
 

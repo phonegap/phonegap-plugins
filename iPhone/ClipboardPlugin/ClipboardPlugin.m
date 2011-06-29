@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "PhoneGapCommand.h"
+#import "PGPlugin.h"
 #import "ClipboardPlugin.h"
 
 @implementation ClipboardPlugin

@@ -8,11 +8,11 @@
 
 
 #ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PhoneGapCommand.h>
+#import <PhoneGap/PGPlugin.h>
 #else
-#import "PhoneGapCommand.h"
+#import "PGPlugin.h"
 #endif
-@interface LocalNotification : PhoneGapCommand {
+@interface LocalNotification : PGPlugin {
 }
 - (void)addNotification:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void)cancelNotification:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;

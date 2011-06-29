@@ -8,12 +8,12 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PhoneGapCommand.h>
+#import <PhoneGap/PGPlugin.h>
 #else
-#import "PhoneGapCommand.h"
+#import "PGPlugin.h"
 #endif
 
-@interface SAiOSKeychainPlugin : PhoneGapCommand {
+@interface SAiOSKeychainPlugin : PGPlugin {
 }
 
 - (void) getForKey:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;

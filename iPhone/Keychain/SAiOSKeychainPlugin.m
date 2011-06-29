@@ -9,7 +9,7 @@
 
 @implementation SAiOSKeychainPlugin
 
--(PhoneGapCommand*) initWithWebView:(UIWebView*)theWebView
+-(PGPlugin*) initWithWebView:(UIWebView*)theWebView
 {
     self = (SAiOSKeychainPlugin*)[super initWithWebView:(UIWebView*)theWebView];
     if (self) {

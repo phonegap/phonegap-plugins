@@ -10,11 +10,11 @@
 
 
 #ifdef PHONEGAP_FRAMEWORK
-    #import <PhoneGap/PhoneGapCommand.h>
+    #import <PhoneGap/PGPlugin.h>
 #else
-    #import "PhoneGapCommand.h"
+    #import "PGPlugin.h"
 #endif
-@interface Badge : PhoneGapCommand {
+@interface Badge : PGPlugin {
 }
 - (void)setBadge:(NSMutableArray*)badgeNumber withDict:(NSMutableDictionary*)options;
 @end

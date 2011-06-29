@@ -121,19 +121,19 @@ public class PowerManagementPlugin extends Plugin {
 	 * Make sure any wakelock is released if the app goes into pause
 	 */
 	@Override
-	public void onPause() {
+	public void onPause(boolean multitasking) {
 		if( this.wakeLock != null ) this.wakeLock.release();
-		
-		super.onPause();
+
+		super.onPause(multitasking);
 	}
 	
 	/**
 	 * Make sure any wakelock is acquired again once we resume
 	 */
 	@Override
-	public void onResume() {
+	public void onResume(boolean multitasking) {
 		if( this.wakeLock != null ) this.wakeLock.acquire();
-		
-		super.onResume();
+
+		super.onResume(multitasking);
 	}
 }

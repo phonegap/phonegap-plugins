@@ -113,6 +113,9 @@
 -(IBAction) onDoneButtonPress:(id)sender
 {
 	[ self closeBrowser];
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"about:blank"]];
+    [webView loadRequest:request];
 }
 
 

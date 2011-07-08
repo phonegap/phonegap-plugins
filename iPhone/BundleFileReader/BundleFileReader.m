@@ -1,5 +1,7 @@
 /**
- * @author Tim Fischbach <tfischbach@codevise.de>
+ * Bundle File Reader Plugin
+ * Copyright (c) 2011 Tim Fischbach (github.com/tf)
+ * MIT licensed
  */
 
 #import "BundleFileReader.h"

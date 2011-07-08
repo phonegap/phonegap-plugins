@@ -34,6 +34,29 @@
     
 }
 
+/**
+ * Request product data for the productIds given in the option with
+ * key "productIds". See js for further documentation.
+ */
+- (void) requestProductsData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+	if([arguments count] < 1) {
+		return;
+	}
+
+	NSSet *productIdentifiers = [NSSet setWithArray:[options objectForKey:@"productIds"]];
+
+	NSLog(@"Getting products data");
+	SKProductsRequest *productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
+
+	BatchProductsRequestDelegate* delegate = [[[BatchProductsRequestDelegate alloc] init] retain];
+	delegate.command = self;
+	delegate.callback = [arguments objectAtIndex:0];
+
+	productsRequest.delegate = delegate;
+	[productsRequest start];
+}
+
 - (void) makePurchase:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
 {
 	NSLog(@"About to do IAP");
@@ -72,6 +95,9 @@
 		
         switch (transaction.transactionState)
         {
+			case SKPaymentTransactionStatePurchasing:
+				continue;
+
             case SKPaymentTransactionStatePurchased:
 				state = @"PaymentTransactionStatePurchased";
 				transactionIdentifier = transaction.transactionIdentifier;
@@ -99,7 +125,7 @@
                 continue;
         }
 		NSLog(@"state: %@", state);
-		NSString *js = [NSString stringWithFormat:@"InAppPurchaseManager.manager.updatedTransactionCallback('%@',%d, '%@','%@','%@','%@')", state, errorCode, error, transactionIdentifier, productId, transactionReceipt ];
+		NSString *js = [NSString stringWithFormat:@"plugins.inAppPurchaseManager.updatedTransactionCallback('%@',%d, '%@','%@','%@','%@')", state, errorCode, error, transactionIdentifier, productId, transactionReceipt ];
 		NSLog(@"js: %@", js);
 		[self writeJavascript: js];
 		[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
@@ -146,5 +172,46 @@
     [super dealloc];
 }
 
+
+@end
+
+/**
+ * Receives product data for multiple productIds and passes arrays of
+ * js objects containing these data to a single callback method.
+ */
+@implementation BatchProductsRequestDelegate
+
+@synthesize callback, command;
+
+- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
+	NSString *validProductsJS = @"";
+	NSString *invalidProductsJS = @"";
+	NSString *js = @"";
+
+	for (SKProduct *product in response.products) {
+		validProductsJS = [NSString
+							  stringWithFormat:
+								@"%@{id: '%@', title: '%@', description: '%@', price: '%@'}, ",
+							  validProductsJS,
+							  product.productIdentifier,
+							  product.localizedTitle,
+							  product.localizedDescription,
+							  product.localizedPrice];
+    }
+
+	invalidProductsJS = [response.invalidProductIdentifiers componentsJoinedByString:@", "];
+
+	js = [NSString stringWithFormat:@"%@([%@], [%@]);", callback, validProductsJS, invalidProductsJS];
+	[command writeJavascript: js];
+
+	[request release];
+	[self release];
+}
+
+- (void) dealloc {
+	[callback release];
+	[command release];
+	[super dealloc];
+}
 
 @end

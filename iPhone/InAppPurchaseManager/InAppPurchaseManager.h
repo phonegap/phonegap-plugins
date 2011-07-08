@@ -29,6 +29,7 @@
 - (void) setup:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) makePurchase:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) requestProductData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) requestProductsData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions;
 
 @end
@@ -46,3 +47,12 @@
 
 @end;
 
+@interface BatchProductsRequestDelegate : NSObject <SKProductsRequestDelegate> {
+	NSString* callback;
+	InAppPurchaseManager* command;
+}
+
+@property (nonatomic, copy) NSString* callback;
+@property (nonatomic, retain) InAppPurchaseManager* command;
+
+@end;

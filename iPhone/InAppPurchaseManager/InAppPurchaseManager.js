@@ -59,6 +59,40 @@ InAppPurchaseManager.prototype.requestProductData = function(productId, successC
     PhoneGap.exec('InAppPurchaseManager.requestProductData', productId, callback + '.success', callback + '.fail');	
 }
 
+/**
+ * Retrieves localised product data, including price (as localised
+ * string), name, description of multiple products.
+ *
+ * @param {Array} productIds
+ *   An array of product identifier strings.
+ *
+ * @param {Function} callback
+ *   Called once with the result of the products request. Signature:
+ *
+ *     function(validProducts, invalidProductIds)
+ *
+ *   where validProducts receives an array of objects of the form
+ *
+ *     {
+ *      id: "<productId>",
+ *      title: "<localised title>",
+ *      description: "<localised escription>",
+ *      price: "<localised price>"
+ *     }
+ *
+ *  and invalidProductIds receives an array of product identifier
+ *  strings which were rejected by the app store.
+ */
+InAppPurchaseManager.prototype.requestProductsData = function(productIds, callback) {
+	var key = 'b' + this.callbackIdx++;
+	window.plugins.inAppPurchaseManager.callbackMap[key] = function(validProducts, invalidProductIds) {
+		delete window.plugins.inAppPurchaseManager.callbackMap[key];
+		callback(validProducts, invalidProductIds);
+	};
+	var callbackName = 'window.plugins.inAppPurchaseManager.callbackMap.' + key;
+	PhoneGap.exec('InAppPurchaseManager.requestProductsData', callbackName, {productIds: productIds});
+};
+
 /* function(transactionIdentifier, productId, transactionReceipt) */
 InAppPurchaseManager.prototype.onPurchased = null;
 

@@ -6,16 +6,9 @@
 
 #import "MapKit.h"
 #import "PGAnnotation.h"
+#import <PhoneGap/SBJsonParser.h>
+#import <PhoneGap/SBJSON.h>
 #import "AsyncImageView.h"
-
-#ifdef PHONEGAP_FRAMEWORK
-	#import <PhoneGap/SBJsonParser.h>
-	#import <PhoneGap/SBJSON.h>
-#else
-	#import "SBJsonParser.h"
-	#import "SBJSON.h"
-#endif
-
 
 @implementation MapKitView
 
@@ -25,7 +18,7 @@
 @synthesize imageButton;
 
 
--(PGPlugin*) initWithWebView:(UIWebView*)theWebView
+-(PhoneGapCommand*) initWithWebView:(UIWebView*)theWebView
 {
     self = (MapKitView*)[super initWithWebView:theWebView];
     return self;
@@ -93,18 +86,17 @@
 		[mapView removeAnnotations:mapView.annotations];
 	}
 	
-	// default height
+	// defaults
     CGFloat height = 480.0f;
-	// default at bottom
-    BOOL atBottom = YES;
+    CGFloat offsetTop = 0.0f;
 		
 	if ([options objectForKey:@"height"]) 
 	{
 		height=[[options objectForKey:@"height"] floatValue];
 	}
-    if ([options objectForKey:@"atBottom"]) 
+    if ([options objectForKey:@"offsetTop"]) 
 	{
-		atBottom=[[options objectForKey:@"position"] isEqualToString:@"bottom"];
+		offsetTop=[[options objectForKey:@"offsetTop"] floatValue];
 	}
 	if ([options objectForKey:@"buttonCallback"]) 
 	{
@@ -121,25 +113,13 @@
 	CGRect webViewBounds = webView.bounds;
 	
 	CGRect mapBounds;
-	if (atBottom) 
-	{
-         mapBounds = CGRectMake(
-             webViewBounds.origin.x,
-             webViewBounds.origin.y + webViewBounds.size.height - height,
-             webViewBounds.size.width,
-             height
-         );
-	}
-	else 
-	{
-         mapBounds = CGRectMake(
-             webViewBounds.origin.x,
-             webViewBounds.origin.y,
-             webViewBounds.size.width,
-             webViewBounds.origin.y + height
-         );
-	}
-	
+  mapBounds = CGRectMake(
+    webViewBounds.origin.x,
+    webViewBounds.origin.y + (offsetTop / 2),
+    webViewBounds.size.width,
+    webViewBounds.origin.y + height
+  );
+		
 	[childView setFrame:mapBounds];
 	[mapView setFrame:mapBounds];
 	

@@ -13,7 +13,7 @@ function MapKitPlug()
 		"buttonCallback": "window.plugins.mapKit.onMapCallback",
 		"height":460,
 		"diameter":1000,
-		"atBottom":true,
+		"offsetTop":0,
 		// ( nitobi HQ, if you have issues, send missles here )
 		"lat":49.281468,
 		"lon":-123.104446
@@ -72,7 +72,7 @@ MapKitPlug.prototype.showMap = function()
  buttonCallback:String, string callback function
  height:Number, - pixels
  diameter:Number, - meters
- atBottom:Bool,
+ offsetTop:Number, - pixels
  lat:Number,
  lon:Number
  }; 

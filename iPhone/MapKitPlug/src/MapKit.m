@@ -148,8 +148,7 @@ NSString* jsString = nil;
 	SBJSON *parser=[[SBJSON alloc] init];
 	NSArray *pins = [parser objectWithString:[arguments objectAtIndex:0]];
 	[parser autorelease];
-	CGRect webViewBounds = self.webView.bounds;
-	
+	CGRect webViewBounds = self.webView.bounds;	
 	CGRect mapBounds;
   mapBounds = CGRectMake(
     webViewBounds.origin.x,

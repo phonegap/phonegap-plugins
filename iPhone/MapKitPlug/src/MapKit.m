@@ -55,6 +55,7 @@ float currentLon=mapView.region.center.longitude;
 NSString* jsString = nil;
 	jsString = [[NSString alloc] initWithFormat:@"geo.onMapMove(\'%f','%f\');", currentLat,currentLon];
 	[webView stringByEvaluatingJavaScriptFromString:jsString];
+	[jsString autorelease];
 }
 
 - (void)destroyMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
@@ -136,7 +137,6 @@ NSString* jsString = nil;
 																						   diameter*(height / webViewBounds.size.width), 
 																						   diameter*(height / webViewBounds.size.width))];
 	[mapView setRegion:region animated:YES];
-	
 	for (int y = 0; y < pins.count; y++) 
 	{
 		NSDictionary *pinData = [pins objectAtIndex:y];

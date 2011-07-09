@@ -48,6 +48,15 @@
 	[ [ [ super appViewController ] view ] addSubview:childView];  
 }
 
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated: 
+(BOOL)animated { 
+float currentLat=mapView.region.center.latitude; 
+float currentLon=mapView.region.center.longitude; 
+NSString* jsString = nil;
+	jsString = [[NSString alloc] initWithFormat:@"geo.onMapMove(\'%f','%f\');", currentLat,currentLon];
+	[webView stringByEvaluatingJavaScriptFromString:jsString];
+}
+
 - (void)destroyMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
 	if (mapView)

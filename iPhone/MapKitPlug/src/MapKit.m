@@ -52,8 +52,10 @@
 (BOOL)animated { 
 float currentLat=mapView.region.center.latitude; 
 float currentLon=mapView.region.center.longitude; 
+float latitudeDelta=mapView.region.span.latitudeDelta; 
+float longitudeDelta=mapView.region.span.longitudeDelta; 
 NSString* jsString = nil;
-	jsString = [[NSString alloc] initWithFormat:@"geo.onMapMove(\'%f','%f\');", currentLat,currentLon];
+	jsString = [[NSString alloc] initWithFormat:@"geo.onMapMove(\'%f','%f','%f','%f\');", currentLat,currentLon,latitudeDelta,longitudeDelta];
 	[webView stringByEvaluatingJavaScriptFromString:jsString];
 	[jsString autorelease];
 }
@@ -82,18 +84,45 @@ NSString* jsString = nil;
 	[ buttonCallback release ];
 }
 
+- (void)clearMapPins:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+{
+  [mapView removeAnnotations:mapView.annotations];
+}
+
+- (void)addMapPins:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+{
+  SBJSON *parser=[[SBJSON alloc] init];
+	NSArray *pins = [parser objectWithString:[arguments objectAtIndex:0]];
+	[parser autorelease];
+	
+  for (int y = 0; y < pins.count; y++) 
+	{
+		NSDictionary *pinData = [pins objectAtIndex:y];
+		CLLocationCoordinate2D pinCoord = { [[pinData objectForKey:@"lat"] floatValue] , [[pinData objectForKey:@"lon"] floatValue] };
+		NSString *title=[[pinData valueForKey:@"title"] description];
+		NSString *subTitle=[[pinData valueForKey:@"subTitle"] description];
+		NSString *imageURL=[[pinData valueForKey:@"imageURL"] description];
+		NSString *pinColor=[[pinData valueForKey:@"pinColor"] description];
+		NSInteger index=[[pinData valueForKey:@"index"] integerValue];
+		BOOL selected = [[pinData valueForKey:@"selected"] boolValue];
+
+		PGAnnotation *annotation = [[PGAnnotation alloc] initWithCoordinate:pinCoord index:index title:title subTitle:subTitle imageURL:imageURL];
+		annotation.pinColor=pinColor;
+		annotation.selected = selected;
+
+		[mapView addAnnotation:annotation];
+		[annotation release];
+	}
+}
+
 /**
  * Set annotations and mapview settings
  */
-- (void)setMapData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+- (void)setMapData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 {	
     if (!mapView) 
 	{
 		[self createView];
-	}
-	else 
-	{
-		[mapView removeAnnotations:mapView.annotations];
 	}
 	
 	// defaults
@@ -116,10 +145,6 @@ NSString* jsString = nil;
 	CLLocationCoordinate2D centerCoord = { [[options objectForKey:@"lat"] floatValue] , [[options objectForKey:@"lon"] floatValue] };
 	CLLocationDistance diameter = [[options objectForKey:@"diameter"] floatValue];
 	
-	
-	SBJSON *parser=[[SBJSON alloc] init];
-	NSArray *pins = [parser objectWithString:[arguments objectAtIndex:0]];
-	[parser autorelease];
 	CGRect webViewBounds = webView.bounds;
 	
 	CGRect mapBounds;
@@ -137,33 +162,12 @@ NSString* jsString = nil;
 																						   diameter*(height / webViewBounds.size.width), 
 																						   diameter*(height / webViewBounds.size.width))];
 	[mapView setRegion:region animated:YES];
-	for (int y = 0; y < pins.count; y++) 
-	{
-		NSDictionary *pinData = [pins objectAtIndex:y];
-		CLLocationCoordinate2D pinCoord = { [[pinData objectForKey:@"lat"] floatValue] , [[pinData objectForKey:@"lon"] floatValue] };
-		NSString *title=[[pinData valueForKey:@"title"] description];
-		NSString *subTitle=[[pinData valueForKey:@"subTitle"] description];
-		NSString *imageURL=[[pinData valueForKey:@"imageURL"] description];
-		NSString *pinColor=[[pinData valueForKey:@"pinColor"] description];
-		NSInteger index=[[pinData valueForKey:@"index"] integerValue];
-		BOOL selected = [[pinData valueForKey:@"selected"] boolValue];
-
-		PGAnnotation *annotation = [[PGAnnotation alloc] initWithCoordinate:pinCoord index:index title:title subTitle:subTitle imageURL:imageURL];
-		annotation.pinColor=pinColor;
-		annotation.selected = selected;
-
-		[mapView addAnnotation:annotation];
-		[annotation release];
-	}
 	
 	CGRect frame = CGRectMake(285.0,12.0,  29.0, 29.0);
-
 	
 	[ imageButton setImage:[UIImage imageNamed:@"www/map-close-button.png"] forState:UIControlStateNormal];
 	[ imageButton setFrame:frame];
 	[ imageButton addTarget:self action:@selector(closeButton:) forControlEvents:UIControlEventTouchUpInside];
-
-
 }
 
 - (void) closeButton:(id)button
@@ -195,21 +199,21 @@ NSString* jsString = nil;
 	childView.hidden = YES;
 }
 
-- (MKAnnotationView *) mapView:(MKMapView *)theMapView viewForAnnotation:(id <MKAnnotation>) annotation{
-	
-	if ([annotation class] != PGAnnotation.class) {
-        return nil;
-    }
-	
+- (MKAnnotationView *) mapView:(MKMapView *)theMapView viewForAnnotation:(id <MKAnnotation>) annotation {
+  
+  if ([annotation class] != PGAnnotation.class) {
+    return nil;
+  }
+
 	PGAnnotation *phAnnotation=(PGAnnotation *) annotation;
 	NSString *identifier=[NSString stringWithFormat:@"INDEX[%i]", phAnnotation.index];
 
 	MKPinAnnotationView *annView = (MKPinAnnotationView *)[theMapView dequeueReusableAnnotationViewWithIdentifier:identifier];
-	
+
 	if (annView!=nil) return annView;
 
 	annView=[[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
-	
+
 	annView.animatesDrop=YES;
 	annView.canShowCallout = YES;
 	if ([phAnnotation.pinColor isEqualToString:@"green"])
@@ -231,13 +235,13 @@ NSString* jsString = nil;
 	{
 		[asyncImage loadDefaultImage];
 	}
-	
+
 	annView.leftCalloutAccessoryView = asyncImage;
 
-	
+
 	if (self.buttonCallback && phAnnotation.index!=-1)
 	{
-		
+
 		UIButton *myDetailButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
 		myDetailButton.frame = CGRectMake(0, 0, 23, 23);
 		myDetailButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
@@ -245,9 +249,9 @@ NSString* jsString = nil;
 		myDetailButton.tag=phAnnotation.index;
 		annView.rightCalloutAccessoryView = myDetailButton;
 		[ myDetailButton addTarget:self action:@selector(checkButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-		
+
 	}
-	
+
 	if(phAnnotation.selected)
 	{
 		[self performSelector:@selector(openAnnotation:) withObject:phAnnotation afterDelay:1.0];

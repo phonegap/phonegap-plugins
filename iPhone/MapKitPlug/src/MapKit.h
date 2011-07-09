@@ -8,12 +8,13 @@
 #import <MapKit/MapKit.h>
 
 #ifdef PHONEGAP_FRAMEWORK
-    #import <PhoneGap/PGPlugin.h>
+    #import <PhoneGap/PhoneGapCommand.h>
 #else
-    #import "PGPlugin.h"
+    #import "PhoneGapCommand.h"
 #endif
 
-@interface MapKitView : PGPlugin <MKMapViewDelegate> 
+
+@interface MapKitView : PhoneGapCommand <MKMapViewDelegate> 
 {
 	UIView* childView;
     MKMapView* mapView;
@@ -34,7 +35,11 @@
 
 - (void)destroyMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
-- (void)setMapData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)clearMapPins:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+- (void)addMapPins:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+- (void)setMapData:withDict:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 - (void) closeButton:(id)button;
 

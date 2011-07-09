@@ -110,4 +110,19 @@
 	}
 }
 
+- (void)activityStart:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+    NSLog(@"Activity starting");
+    UIApplication* app = [UIApplication sharedApplication];
+    app.networkActivityIndicatorVisible = YES;
+}
+
+- (void)activityStop:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+    NSLog(@"Activitiy stopping ");
+    UIApplication* app = [UIApplication sharedApplication];
+    app.networkActivityIndicatorVisible = NO;
+}
+
+
 @end

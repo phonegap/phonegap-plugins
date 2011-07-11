@@ -65,9 +65,9 @@
     tabBar.userInteractionEnabled = YES;
 	tabBar.opaque = YES;
 	
-	webView.superview.autoresizesSubviews = YES;
+	self.webView.superview.autoresizesSubviews = YES;
 	
-	[ webView.superview addSubview:tabBar];    
+	[ self.webView.superview addSubview:tabBar];    
 }
 
 /**
@@ -145,7 +145,7 @@
     [tabBar setFrame:tabBarBounds];
 	
 	
-    [webView setFrame:webViewBounds];
+    [self.webView setFrame:webViewBounds];
 }
 
 /**
@@ -164,7 +164,7 @@
 	[[NSNotificationQueue defaultQueue] enqueueNotification:notif postingStyle: NSPostASAP];
 	
 	
-	[webView setFrame:originalWebViewBounds];
+	[self.webView setFrame:originalWebViewBounds];
 }
 
 /**
@@ -309,7 +309,7 @@
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
     NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.nativeControls.tabBarItemSelected(%d);", item.tag];    
-    [webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+    [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
 }
 
 #pragma mark -
@@ -343,7 +343,7 @@
             style = UIBarStyleBlackTranslucent;
     }
 
-    CGRect webViewBounds = webView.bounds;
+    CGRect webViewBounds = self.webView.bounds;
     CGRect toolBarBounds = CGRectMake(
                               webViewBounds.origin.x,
                               webViewBounds.origin.y - 1.0f,
@@ -366,7 +366,7 @@
 	
 
     [toolBar setFrame:toolBarBounds];
-    [webView setFrame:webViewBounds];
+    [self.webView setFrame:webViewBounds];
 
     [self.webView.superview addSubview:toolBar];
 }
@@ -399,7 +399,7 @@
 	[[NSNotificationQueue defaultQueue] enqueueNotification:notif postingStyle: NSPostASAP];
 	
 	
-	[webView setFrame:originalWebViewBounds];
+	[self.webView setFrame:originalWebViewBounds];
 }
 
 
@@ -642,7 +642,7 @@
 	{
 		if (currentButton == button) {
 			NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.nativeControls.toolBarButtonTapped(%d);", count];    
-			[webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+			[self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
 			return;
 		}
 		
@@ -683,7 +683,7 @@
 	}
 	
 	actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;//UIActionSheetStyleBlackOpaque;
-    [actionSheet showInView:webView.superview];
+    [actionSheet showInView:self.webView.superview];
     [actionSheet release];
 	
 }
@@ -693,7 +693,7 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
 	NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.nativeControls._onActionSheetDismissed(%d);", buttonIndex];    
-    [webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+    [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
 }
 
 

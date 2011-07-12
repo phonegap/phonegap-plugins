@@ -19,17 +19,17 @@
 	NSInteger _index;
 	MKPlacemark *_placemark;
 	NSString *pinColor;
-	bool selected;
+	BOOL selected;
 }
 
-@property (nonatomic, retain) NSString *title;
-@property (nonatomic, retain) NSString *subTitle;
-@property (nonatomic, retain) NSString *imageURL;
-@property (nonatomic) NSInteger index;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *subTitle;
+@property (nonatomic, copy) NSString *imageURL;
+@property (nonatomic, assign) NSInteger index;
 @property (nonatomic, retain) MKPlacemark *placemark;
-@property (nonatomic) CLLocationCoordinate2D coordinate;
-@property (nonatomic, retain) NSString *pinColor;
-@property (nonatomic, assign) bool selected;
+@property (nonatomic, assign) CLLocationCoordinate2D coordinate;
+@property (nonatomic, copy) NSString *pinColor;
+@property (nonatomic, assign) BOOL selected;
 
 - (void)notifyCalloutInfo:(MKPlacemark *)placemark;
 - (id)initWithCoordinate:(CLLocationCoordinate2D)coordinate index:(NSInteger)index title:(NSString*)title subTitle:(NSString*)subTitle imageURL:(NSString*)imageURL;

@@ -78,7 +78,7 @@ MapKitPlug.prototype.showMap = function()
  }; 
 */
 
-MapKitPlug.prototype.setMapData = function(pins,options)
+MapKitPlug.prototype.setMapData = function(options)
 {
 	for(var v in options)
 	{
@@ -88,15 +88,24 @@ MapKitPlug.prototype.setMapData = function(pins,options)
 		}
 	}
 	
-	var pinStr = "[]";
-	
-	if(pins)
-	{
-		pinStr = JSON.stringify(pins);
-	}
-	
-	PhoneGap.exec("MapKitView.setMapData",pinStr , this.options);
+	PhoneGap.exec("MapKitView.setMapData",this.options);
 };
+
+MapKitPlug.prototype.addMapPins = function(pins) {
+
+  var pinStr = "[]";
+
+  if(pins) pinStr = JSON.stringify(pins);
+
+  PhoneGap.exec("MapKitView.addMapPins", pinStr);
+
+}
+
+MapKitPlug.prototype.clearMapPins = function() {
+
+  PhoneGap.exec("MapKitView.clearMapPins");
+
+}
 
 MapKitPlug.prototype.hideMap = function() 
 {

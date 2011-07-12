@@ -49,10 +49,10 @@
 	imageView.tag = 1;
     imageView.hidden = YES;
 	
-	webView.superview.autoresizesSubviews = YES;
+	self.webView.superview.autoresizesSubviews = YES;
 	
-	[webView.superview addSubview:imageView];
-	[webView.superview bringSubviewToFront:imageView];
+	[self.webView.superview addSubview:imageView];
+	[self.webView.superview bringSubviewToFront:imageView];
 }
 
 

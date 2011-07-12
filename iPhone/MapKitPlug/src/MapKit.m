@@ -144,8 +144,11 @@ NSString* jsString = nil;
 	
 	CLLocationCoordinate2D centerCoord = { [[options objectForKey:@"lat"] floatValue] , [[options objectForKey:@"lon"] floatValue] };
 	CLLocationDistance diameter = [[options objectForKey:@"diameter"] floatValue];
-	
-	CGRect webViewBounds = webView.bounds;
+
+	SBJSON *parser=[[SBJSON alloc] init];
+	NSArray *pins = [parser objectWithString:[arguments objectAtIndex:0]];
+	[parser autorelease];
+	CGRect webViewBounds = self.webView.bounds;
 	
 	CGRect mapBounds;
   mapBounds = CGRectMake(
@@ -174,7 +177,7 @@ NSString* jsString = nil;
 {
 	[ self hideMap:NULL withDict:NULL];
 	NSString* jsString = [NSString stringWithFormat:@"%@(\"%i\");", self.buttonCallback,-1];
-	[webView stringByEvaluatingJavaScriptFromString:jsString];
+	[self.webView stringByEvaluatingJavaScriptFromString:jsString];
 }
 
 - (void)showMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
@@ -270,7 +273,7 @@ NSString* jsString = nil;
 {
 	UIButton *tmpButton = button;
 	NSString* jsString = [NSString stringWithFormat:@"%@(\"%i\");", self.buttonCallback, tmpButton.tag];
-	[webView stringByEvaluatingJavaScriptFromString:jsString];
+	[self.webView stringByEvaluatingJavaScriptFromString:jsString];
 }
 
 - (void)dealloc

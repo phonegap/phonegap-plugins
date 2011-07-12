@@ -6,8 +6,6 @@
 //
 
 #import "SMSComposer.h"
-#import <MessageUI/MessageUI.h>
-#import <MessageUI/MFMessageComposeViewController.h>
 
 @implementation SMSComposer
 

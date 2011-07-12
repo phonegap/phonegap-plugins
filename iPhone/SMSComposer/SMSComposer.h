@@ -10,7 +10,11 @@
 #else
 #import "PGPlugin.h"
 #endif
-@interface SMSComposer : PGPlugin {
+
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMessageComposeViewController.h>
+
+@interface SMSComposer : PGPlugin <MFMessageComposeViewControllerDelegate> {
 }
 
 - (void)showSMSComposer:(NSArray*)arguments withDict:(NSDictionary*)options;

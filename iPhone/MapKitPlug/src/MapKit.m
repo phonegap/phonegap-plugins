@@ -102,7 +102,7 @@
 	{
 		height=[[options objectForKey:@"height"] floatValue];
 	}
-    if ([options objectForKey:@"atBottom"]) 
+    if ([options objectForKey:@"position"]) 
 	{
 		atBottom=[[options objectForKey:@"position"] isEqualToString:@"bottom"];
 	}
@@ -118,7 +118,7 @@
 	SBJSON *parser=[[SBJSON alloc] init];
 	NSArray *pins = [parser objectWithString:[arguments objectAtIndex:0]];
 	[parser autorelease];
-	CGRect webViewBounds = self.webView.bounds;
+	CGRect webViewBounds = webView.bounds;
 	
 	CGRect mapBounds;
 	if (atBottom) 
@@ -181,7 +181,7 @@
 {
 	[ self hideMap:NULL withDict:NULL];
 	NSString* jsString = [NSString stringWithFormat:@"%@(\"%i\");", self.buttonCallback,-1];
-	[self.webView stringByEvaluatingJavaScriptFromString:jsString];
+	[webView stringByEvaluatingJavaScriptFromString:jsString];
 }
 
 - (void)showMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
@@ -277,7 +277,7 @@
 {
 	UIButton *tmpButton = button;
 	NSString* jsString = [NSString stringWithFormat:@"%@(\"%i\");", self.buttonCallback, tmpButton.tag];
-	[self.webView stringByEvaluatingJavaScriptFromString:jsString];
+	[webView stringByEvaluatingJavaScriptFromString:jsString];
 }
 
 - (void)dealloc

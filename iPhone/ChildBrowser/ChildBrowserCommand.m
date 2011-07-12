@@ -53,13 +53,13 @@
 -(void) onClose
 {
 	NSString* jsCallback = [NSString stringWithFormat:@"ChildBrowser._onClose();",@""];
-	[ webView stringByEvaluatingJavaScriptFromString:jsCallback];
+	[self.webView stringByEvaluatingJavaScriptFromString:jsCallback];
 }
 
 -(void) onOpenInSafari
 {
 	NSString* jsCallback = [NSString stringWithFormat:@"ChildBrowser._onOpenExternal();",@""];
-	[ webView stringByEvaluatingJavaScriptFromString:jsCallback];
+	[self.webView stringByEvaluatingJavaScriptFromString:jsCallback];
 }
 
 
@@ -70,7 +70,7 @@
 	NSString* encUrl = [tempLoc stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 	 
 	NSString* jsCallback = [NSString stringWithFormat:@"ChildBrowser._onLocationChange('%@');",encUrl];
-	[ webView stringByEvaluatingJavaScriptFromString:jsCallback];
+	[self.webView stringByEvaluatingJavaScriptFromString:jsCallback];
 
 }
 

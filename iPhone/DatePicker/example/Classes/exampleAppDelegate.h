@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#ifdef PHONEGAP_FRAMEWORK
+#import <PhoneGap/PhoneGapDelegate.h>
+#else
 #import "PhoneGapDelegate.h"
+#endif
+
 
 @interface exampleAppDelegate : PhoneGapDelegate {
 }

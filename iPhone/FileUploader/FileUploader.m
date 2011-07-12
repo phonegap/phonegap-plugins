@@ -118,7 +118,7 @@
 	NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
 	[req setValue:contentType forHTTPHeaderField:@"Content-type"];
 	[req setValue:@"XMLHttpRequest" forHTTPHeaderField:@"X-Requested-With"];
-	NSString* userAgent = [[webView request] valueForHTTPHeaderField:@"User-agent"];
+	NSString* userAgent = [[self.webView request] valueForHTTPHeaderField:@"User-agent"];
 	if(userAgent) {
 		[req setValue: userAgent forHTTPHeaderField:@"User-agent"];
 	}

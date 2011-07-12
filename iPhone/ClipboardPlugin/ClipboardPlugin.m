@@ -6,7 +6,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#ifdef PHONEGAP_FRAMEWORK
+#import <PhoneGap/PGPlugin.h>
+#else
 #import "PGPlugin.h"
+#endif
 #import "ClipboardPlugin.h"
 
 @implementation ClipboardPlugin

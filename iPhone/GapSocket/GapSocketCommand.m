@@ -43,7 +43,7 @@
 		{
 			
 			NSString* jsString = [[NSString alloc] initWithFormat:@"GapSocket.__onError(\"%@\");",[err localizedDescription] ];
-			[webView stringByEvaluatingJavaScriptFromString:jsString];
+			[self.webView stringByEvaluatingJavaScriptFromString:jsString];
 			[jsString release];
 		}
 		
@@ -111,7 +111,7 @@
 			NSString* err = [NSString stringWithFormat:@"Error: Call to GapSocketCommand::send with missing message"];
 			NSLog(@"%@",err);
 			NSString* jsString = [[NSString alloc] initWithFormat:@"GapSocket.__onError(\"%d\",\"%@\");",userData,err ];
-			[webView stringByEvaluatingJavaScriptFromString:jsString];
+			[self.webView stringByEvaluatingJavaScriptFromString:jsString];
 			[jsString release];
 			[ err release ];
 		}
@@ -136,7 +136,7 @@
 	NSString* jsString = [[NSString alloc] initWithFormat:@"GapSocket.__onError(\"%d\",\"%@\");"
 						  ,[sock userData]
 						  ,[err localizedDescription] ];
-	[webView stringByEvaluatingJavaScriptFromString:jsString];
+	[self.webView stringByEvaluatingJavaScriptFromString:jsString];
 	[jsString release];
 }
 
@@ -151,7 +151,7 @@
 {
 	[connectedSockets removeObject:sock];
 	NSString* jsString = [[NSString alloc] initWithFormat:@"GapSocket.__onClosed(\"%d\");",[sock userData] ];
-	[webView stringByEvaluatingJavaScriptFromString:jsString];
+	[self.webView stringByEvaluatingJavaScriptFromString:jsString];
 	[jsString release];
 }
 
@@ -188,7 +188,7 @@
 {
 	// TODO: pass host and port back to js
 	NSString* jsString = [[NSString alloc] initWithFormat:@"GapSocket.__onOpen(\"%d\");",[sock userData] ];
-	[webView stringByEvaluatingJavaScriptFromString:jsString];
+	[self.webView stringByEvaluatingJavaScriptFromString:jsString];
 	[jsString release];
 	
 	[connectedSockets addObject:sock];
@@ -206,14 +206,14 @@
 	if(msg)
 	{
 		NSString* jsString = [[NSString alloc] initWithFormat:@"GapSocket.__onMessage(\"%d\",\"%@\");",[sock userData] , msg ];
-		[webView stringByEvaluatingJavaScriptFromString:jsString];
+		[self.webView stringByEvaluatingJavaScriptFromString:jsString];
 		[jsString release];
 	}
 	else
 	{
 		NSLog(@"Error converting received data into UTF-8 String");
 		NSString* jsString = [[NSString alloc] initWithFormat:@"GapSocket.__onError(\"%d\",\"%@\");",[sock userData] , @"Error converting received data into UTF-8 String" ];
-		[webView stringByEvaluatingJavaScriptFromString:jsString];
+		[self.webView stringByEvaluatingJavaScriptFromString:jsString];
 		[jsString release];
 	}
 }

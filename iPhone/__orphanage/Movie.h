@@ -5,7 +5,12 @@
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  */
 
+#ifdef PHONEGAP_FRAMEWORK
+#import <PhoneGap/PGPlugin.h>
+#else
 #import "PGPlugin.h"
+#endif
+
 #import <AudioToolbox/AudioServices.h>
 #import <MediaPlayer/MediaPlayer.h>
 

@@ -107,15 +107,16 @@
 		[delegate onClose];		
 	}
 	
-    //Reference UIViewController.h Line:179 for update to iOS 5 difference 
-#ifdef PHONEGAP_FRAMEWORK
-    [[super presentingViewController] dismissViewControllerAnimated:YES completion:nil];
-#else
-    [[super parentViewController] dismissModalViewControllerAnimated:YES];
-#endif   
-    
-    
+    if ([self respondsToSelector:@selector(presentingViewController)]) { //Reference UIViewController.h Line:179 for update to iOS 5 difference - @RandyMcMillan
+        
+        [[super presentingViewController] dismissViewControllerAnimated:YES completion:nil];
+        
+        } else {
+            
+        [[super parentViewController] dismissModalViewControllerAnimated:YES];
+    }
 
+    
 }
 
 -(IBAction) onDoneButtonPress:(id)sender

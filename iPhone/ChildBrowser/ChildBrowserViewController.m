@@ -106,10 +106,15 @@
 	{
 		[delegate onClose];		
 	}
-	// Use with iOS 4 - @RandyMcMillan
-	//[ [super parentViewController] dismissModalViewControllerAnimated:YES];
-    // Use with iOS 5 - @RandyMcMillan
+	
+    //Reference UIViewController.h Line:179 for update to iOS 5 difference 
+#ifdef PHONEGAP_FRAMEWORK
     [[super presentingViewController] dismissViewControllerAnimated:YES completion:nil];
+#else
+    [[super parentViewController] dismissModalViewControllerAnimated:YES];
+#endif   
+    
+    
 
 }
 

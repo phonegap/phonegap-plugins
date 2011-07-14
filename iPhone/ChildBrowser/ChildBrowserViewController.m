@@ -106,8 +106,11 @@
 	{
 		[delegate onClose];		
 	}
-	
-	[ [super parentViewController] dismissModalViewControllerAnimated:YES];
+	// Use with iOS 4 - @RandyMcMillan
+	//[ [super parentViewController] dismissModalViewControllerAnimated:YES];
+    // Use with iOS 5 - @RandyMcMillan
+    [[super presentingViewController] dismissViewControllerAnimated:YES completion:nil];
+
 }
 
 -(IBAction) onDoneButtonPress:(id)sender

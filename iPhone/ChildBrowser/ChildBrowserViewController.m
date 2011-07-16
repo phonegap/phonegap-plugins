@@ -62,15 +62,15 @@
 	webView.delegate = self;
 	webView.scalesPageToFit = TRUE;
     /* Alternate colors - @RandyMcMillan
-     webView.backgroundColor = [UIColor colorWithRed:1.000 green:1.000 blue:1.000 alpha:1.000]; //white
-     webView.backgroundColor = [UIColor colorWithRed:0.494 green:0.494 blue:0.494 alpha:1.000]; //gray
-     webView.backgroundColor = [UIColor colorWithRed:0.184 green:0.184 blue:0.184 alpha:1.000]; /darkGray
-     webView.backgroundColor = [UIColor colorWithRed:1.000 green:0.000 blue:0.000 alpha:1.000]; //red
-     webView.backgroundColor = [UIColor colorWithRed:0.000 green:0.047 blue:1.000 alpha:1.000]; //blue
-     webView.backgroundColor = [UIColor colorWithRed:0.000 green:0.745 blue:0.106 alpha:1.000]; //green
-     webView.backgroundColor = [UIColor colorWithRed:1.000 green:0.984 blue:0.000 alpha:1.000]; //yellow
-     */
-    webView.backgroundColor = [UIColor underPageBackgroundColor];
+    webView.backgroundColor = [UIColor colorWithRed:1.000 green:1.000 blue:1.000 alpha:1.000]; //white
+    webView.backgroundColor = [UIColor colorWithRed:0.494 green:0.494 blue:0.494 alpha:1.000]; //gray
+    webView.backgroundColor = [UIColor colorWithRed:0.184 green:0.184 blue:0.184 alpha:1.000]; /darkGray
+    webView.backgroundColor = [UIColor colorWithRed:1.000 green:0.000 blue:0.000 alpha:1.000]; //red
+    webView.backgroundColor = [UIColor colorWithRed:0.000 green:0.047 blue:1.000 alpha:1.000]; //blue
+    webView.backgroundColor = [UIColor colorWithRed:0.000 green:0.745 blue:0.106 alpha:1.000]; //green
+    webView.backgroundColor = [UIColor colorWithRed:1.000 green:0.984 blue:0.000 alpha:1.000]; //yellow
+    */
+	webView.backgroundColor = [UIColor underPageBackgroundColor];
 	NSLog(@"View did load");
 }
 
@@ -92,21 +92,21 @@
 }
 
 
-- (void)dealloc {
+//- (void)dealloc {
 
-	webView.delegate = nil;
+//	webView.delegate = nil;
 	
-	[webView release];
-	[closeBtn release];
-	[refreshBtn release];
-	[addressLabel release];
-	[backBtn release];
-	[fwdBtn release];
-	[safariBtn release];
-	[spinner release];
-	[ supportedOrientations release];
-	[super dealloc];
-}
+	//[webView release];
+	//[closeBtn release];
+	//[refreshBtn release];
+	//[addressLabel release];
+	//[backBtn release];
+	//[fwdBtn release];
+	//[safariBtn release];
+	//[spinner release];
+	//[ supportedOrientations release];
+	//[super dealloc];
+//}
 
 -(void)closeBrowser
 {
@@ -132,8 +132,8 @@
 {
 	[ self closeBrowser];
 
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"about:blank"]];
-    [webView loadRequest:request];
+    //NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"about:blank"]];
+    //[webView loadRequest:request];
 }
 
 
@@ -186,7 +186,7 @@
 		[url hasSuffix:@".bmp" ]  || 
 		[url hasSuffix:@".gif" ]  )
 	{
-		[ imageURL release ];
+		//[ imageURL release ];
 		imageURL = [url copy];
 		isImage = YES;
 		NSString* htmlText = @"<html><body style='background-color:#333;margin:0px;padding:0px;'><img style='min-height:200px;margin:0px;padding:0px;width:100%;height:auto;' alt='' src='IMGSRC'/></body></html>";
@@ -208,6 +208,7 @@
 
 - (void)webViewDidStartLoad:(UIWebView *)sender {
 	addressLabel.text = @"Loading...";
+    addressLabel.textColor = [UIColor colorWithRed:0.004 green:0.000 blue:0.506 alpha:1.000];
 	backBtn.enabled = webView.canGoBack;
 	fwdBtn.enabled = webView.canGoForward;
 	
@@ -223,6 +224,7 @@
 	backBtn.enabled = webView.canGoBack;
 	fwdBtn.enabled = webView.canGoForward;
 	[ spinner stopAnimating ];
+    addressLabel.alpha = 0.0;
 	
 	if(delegate != NULL)
 	{

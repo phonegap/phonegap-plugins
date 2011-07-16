@@ -61,7 +61,16 @@
 
 	webView.delegate = self;
 	webView.scalesPageToFit = TRUE;
-	webView.backgroundColor = [UIColor whiteColor];
+    /* Alternate colors - @RandyMcMillan
+     webView.backgroundColor = [UIColor colorWithRed:1.000 green:1.000 blue:1.000 alpha:1.000]; //white
+     webView.backgroundColor = [UIColor colorWithRed:0.494 green:0.494 blue:0.494 alpha:1.000]; //gray
+     webView.backgroundColor = [UIColor colorWithRed:0.184 green:0.184 blue:0.184 alpha:1.000]; /darkGray
+     webView.backgroundColor = [UIColor colorWithRed:1.000 green:0.000 blue:0.000 alpha:1.000]; //red
+     webView.backgroundColor = [UIColor colorWithRed:0.000 green:0.047 blue:1.000 alpha:1.000]; //blue
+     webView.backgroundColor = [UIColor colorWithRed:0.000 green:0.745 blue:0.106 alpha:1.000]; //green
+     webView.backgroundColor = [UIColor colorWithRed:1.000 green:0.984 blue:0.000 alpha:1.000]; //yellow
+     */
+    webView.backgroundColor = [UIColor underPageBackgroundColor];
 	NSLog(@"View did load");
 }
 

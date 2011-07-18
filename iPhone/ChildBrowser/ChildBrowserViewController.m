@@ -17,13 +17,13 @@
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        // Custom initialization
-    }
-    return self;
-}
-*/
+ - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+ if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
+ // Custom initialization
+ }
+ return self;
+ }
+ */
 
 + (NSString*) resolveImageResource:(NSString*)resource
 {
@@ -58,18 +58,8 @@
 	backBtn.image = [UIImage imageNamed:[[self class] resolveImageResource:@"ChildBrowser.bundle/arrow_left"]];
 	fwdBtn.image = [UIImage imageNamed:[[self class] resolveImageResource:@"ChildBrowser.bundle/arrow_right"]];
 	safariBtn.image = [UIImage imageNamed:[[self class] resolveImageResource:@"ChildBrowser.bundle/compass"]];
-
 	webView.delegate = self;
 	webView.scalesPageToFit = TRUE;
-    /* Alternate colors - @RandyMcMillan
-    webView.backgroundColor = [UIColor colorWithRed:1.000 green:1.000 blue:1.000 alpha:1.000]; //white
-    webView.backgroundColor = [UIColor colorWithRed:0.494 green:0.494 blue:0.494 alpha:1.000]; //gray
-    webView.backgroundColor = [UIColor colorWithRed:0.184 green:0.184 blue:0.184 alpha:1.000]; /darkGray
-    webView.backgroundColor = [UIColor colorWithRed:1.000 green:0.000 blue:0.000 alpha:1.000]; //red
-    webView.backgroundColor = [UIColor colorWithRed:0.000 green:0.047 blue:1.000 alpha:1.000]; //blue
-    webView.backgroundColor = [UIColor colorWithRed:0.000 green:0.745 blue:0.106 alpha:1.000]; //green
-    webView.backgroundColor = [UIColor colorWithRed:1.000 green:0.984 blue:0.000 alpha:1.000]; //yellow
-    */
 	webView.backgroundColor = [UIColor underPageBackgroundColor];
 	NSLog(@"View did load");
 }
@@ -77,11 +67,17 @@
 
 
 
-
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-	
+    
+    if ([self respondsToSelector:@selector(presentingViewController)]) { //Reference UIViewController.h Line:179 for update to iOS 5 difference - @RandyMcMillan
+        [[super presentingViewController] didReceiveMemoryWarning];
+        //[super didReceiveMemoryWarning];
+        
+    } else {
+        [super didReceiveMemoryWarning];
+    }
+    
 	// Release any cached data, images, etc that aren't in use.
 }
 
@@ -92,21 +88,29 @@
 }
 
 
-//- (void)dealloc {
-
-//	webView.delegate = nil;
-	
+- (void)dealloc {
+    
+	webView.delegate = nil;
+    webView = nil;
 	//[webView release];
+    closeBtn = nil;
 	//[closeBtn release];
+    refreshBtn = nil;
 	//[refreshBtn release];
+    addressLabel = nil;
 	//[addressLabel release];
-	//[backBtn release];
-	//[fwdBtn release];
-	//[safariBtn release];
-	//[spinner release];
-	//[ supportedOrientations release];
-	//[super dealloc];
-//}
+	backBtn = nil;
+    //[backBtn release];
+	fwdBtn = nil;
+    //[fwdBtn release];
+	safariBtn = nil;
+    //[safariBtn release];
+	spinner = nil;
+    //[spinner release];
+	supportedOrientations = nil;
+    //[ supportedOrientations release];
+	[super dealloc];
+}
 
 -(void)closeBrowser
 {
@@ -121,17 +125,17 @@
         [[super presentingViewController] dismissViewControllerAnimated:YES completion:nil];
         
         } else {
-            
+        
         [[super parentViewController] dismissModalViewControllerAnimated:YES];
     }
-
+    
     
 }
 
 -(IBAction) onDoneButtonPress:(id)sender
 {
 	[ self closeBrowser];
-
+    
     //NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"about:blank"]];
     //[webView loadRequest:request];
 }
@@ -155,8 +159,8 @@
 		NSURLRequest *request = webView.request;
 		[[UIApplication sharedApplication] openURL:request.URL];
 	}
-
-	 
+    
+    
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation) interfaceOrientation 
@@ -178,29 +182,37 @@
 
 - (void)loadURL:(NSString*)url
 {
+    
+    NSURLCache* cache = [NSURLCache sharedURLCache];
+    [cache setMemoryCapacity:4 * 1024 * 1024]; //refer NSURLCache.h line:130 for alt values
+    [cache setDiskCapacity:512*1024];
+    
 	NSLog(@"Opening Url : %@",url);
-	 
+    
 	if( [url hasSuffix:@".png" ]  || 
-	    [url hasSuffix:@".jpg" ]  || 
-		[url hasSuffix:@".jpeg" ] || 
-		[url hasSuffix:@".bmp" ]  || 
-		[url hasSuffix:@".gif" ]  )
+       [url hasSuffix:@".jpg" ]  || 
+       [url hasSuffix:@".jpeg" ] || 
+       [url hasSuffix:@".bmp" ]  || 
+       [url hasSuffix:@".gif" ]  )
 	{
-		//[ imageURL release ];
+        //[ imageURL release ];
+		imageURL = nil;
 		imageURL = [url copy];
 		isImage = YES;
 		NSString* htmlText = @"<html><body style='background-color:#333;margin:0px;padding:0px;'><img style='min-height:200px;margin:0px;padding:0px;width:100%;height:auto;' alt='' src='IMGSRC'/></body></html>";
 		htmlText = [ htmlText stringByReplacingOccurrencesOfString:@"IMGSRC" withString:url ];
-
+        
 		[webView loadHTMLString:htmlText baseURL:[NSURL URLWithString:@""]];
 		
 	}
 	else
 	{
+        
 		imageURL = @"";
 		isImage = NO;
-		NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+		NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url] cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:10.0];
 		[webView loadRequest:request];
+        
 	}
 	webView.hidden = NO;
 }
@@ -230,7 +242,7 @@
 	{
 		[delegate onChildLocationChange:request.URL.absoluteString];		
 	}
-
+    
 }
 
 

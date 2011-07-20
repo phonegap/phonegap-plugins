@@ -155,14 +155,17 @@
 {    
 	if ([streamer isWaiting])
 	{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 		[self setStatus:@"isWaiting"];
 	}
 	else if ([streamer isPlaying])
 	{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 		[self setStatus:@"isPlaying"];
 	}
 	else if ([streamer isIdle])
 	{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 		[self destroyStreamer];
 		[self setStatus:@"isPlaying"];
 	}

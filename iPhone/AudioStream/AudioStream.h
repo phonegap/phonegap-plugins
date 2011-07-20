@@ -1,6 +1,6 @@
 //
 //  AudioStream.h
-//  DevgeeksAudioStreamerPlugin
+//  AudioStreamer PhoneGap Plugin
 //
 //  Created by Tommy-Carlos Williams on 20/07/11.
 //  Copyright 2011 Devgeeks. All rights reserved.

@@ -14,8 +14,21 @@ Platforms
 ---------
 Currently available on:
 
-* Android (don't forget android.permission.WAKE_LOCK in your AndroidManifest.xml)
-* iOS (don't forget to add it to your PhoneGap.plist)
+### Android
+Copy the *PowerManagement.java* file to your *src/* directory.
+
+Edit your *AndroidManifest.xml* and add the following permission:
+`<uses-permission android:name="android.permission.WAKE_LOCK" />`
+
+In addition you have to edit your *res/xml/plugins.xml* file to let PhoneGap know about the plugin:
+`<plugin name="PowerManagement" value="com.phonegap.plugin.PowerManagement"/>`
+
+### iOS
+Copy the *PowerManagement.h* and *PowerManagement.m* files to your project.
+
+Add the PowerManagement plugin to the *PhoneGap.plist*:
+See http://wiki.phonegap.com/w/page/41733808/PhoneGap-iOS-Plugins-Problems
+
 
 License
 =======

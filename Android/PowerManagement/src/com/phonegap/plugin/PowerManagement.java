@@ -21,7 +21,7 @@
  * PhoneGap (Android) plugin for accessing the power-management functions of the device
  * @author Wolfgang Koller <viras@users.sourceforge.net>
  */
-package com.phonegap.plugin.powermanagement;
+package com.phonegap.plugin;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +37,7 @@ import com.phonegap.api.PluginResult.Status;
 /**
  * Plugin class which does the actual handling
  */
-public class PowerManagementPlugin extends Plugin {
+public class PowerManagement extends Plugin {
 	// As we only allow one wake-lock, we keep a reference to it here
 	private PowerManager.WakeLock wakeLock = null;
 

@@ -1,4 +1,4 @@
-olumeSlider
+VolumeSlider
 ============
 
 Installation
@@ -10,8 +10,9 @@ Add the plugin much like any other:
 
 1.      Add the VolumeSlider.h and VolumeSlider.m classes to your Plugins folder in Xcode
 2.      Add the VolumeSlider.js file to your www folder
-3.      Add the plugin to the PhoneGap.plist
-4.      Here is where it differs slightly, add the MediaPlayer.framework to your project in Xcode (this is where MPVolumeView comes from).
+3.	Add the VolumeSlider.js to your html file. eg: `<script type="text/javascript" charset="utf-8" src="VolumeSlider.js"></script>`
+4.      Add the plugin to the PhoneGap.plist
+5.      Here is where it differs slightly, add the MediaPlayer.framework to your project in Xcode (this is where MPVolumeView comes from).
 
 ### Example
 

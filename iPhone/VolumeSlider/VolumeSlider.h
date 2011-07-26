@@ -1,9 +1,10 @@
 //
-//  VolumeSlider.h
-//  Volume Slider PhoneGap Plugin
+//  	VolumeSlider.h
+//  	Volume Slider PhoneGap Plugin
 //
-//  Created by Tommy-Carlos Williams on 20/07/25.
-//  Copyright 2011 Devgeeks. All rights reserved.
+//  	Created by Tommy-Carlos Williams on 20/07/25.
+//  	Copyright 2011 Tommy-Carlos Williams. All rights reserved.
+//      MIT Licensed
 //
 
 #ifdef PHONEGAP_FRAMEWORK

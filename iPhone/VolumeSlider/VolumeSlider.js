@@ -1,9 +1,10 @@
 //
-//  VolumeSlider.js
-//  Volume Slider PhoneGap Plugin
+//  	VolumeSlider.js
+//  	Volume Slider PhoneGap Plugin
 //
-//  Created by Tommy-Carlos Williams on 20/07/25.
-//  Copyright 2011 Devgeeks. All rights reserved.
+//  	Created by Tommy-Carlos Williams on 20/07/25.
+//  	Copyright 2011 Devgeeks. All rights reserved.
+//      MIT Licensed
 //
 
 var VolumeSlider = function(){ 

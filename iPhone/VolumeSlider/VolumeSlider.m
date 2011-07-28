@@ -72,10 +72,12 @@
 - (void)showVolumeSlider:(NSArray*)arguments withDict:(NSDictionary*)options
 {
 	self.myVolumeView.showsVolumeSlider = YES;
+	self.mpVolumeViewParentView.hidden = NO;
 }
 
 - (void)hideVolumeSlider:(NSArray*)arguments withDict:(NSDictionary*)options
 {
+	self.mpVolumeViewParentView.hidden = YES;
 	self.myVolumeView.showsVolumeSlider = NO;
 }
 

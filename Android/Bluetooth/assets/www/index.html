@@ -1,0 +1,229 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>PhoneGap</title>
+<script type="text/javascript" charset="utf-8" src="phonegap.0.9.6.js"></script>
+<script type="text/javascript" charset="utf-8" src="bluetooth.js"></script>
+
+
+<script type="text/javascript" charset="utf-8">
+
+//------------------------------------------------------ listDevices example ------------------------------------------------------
+ document.addEventListener('deviceready', function() {
+      	var btn = document.getElementById("list-devices");
+	    btn.onclick = function() {
+	    
+	    	window.plugins.bluetooth.listDevices(null,
+			    function(r){printResult(r)},
+			    function(e){log(e)}
+		    );
+	    }
+	    btn.disabled=false;
+ }, true);
+ 
+ 
+ function printResult(resultadoString){
+	 var htmlText ="";
+	 var i=0;
+
+	 var resultado = eval(resultadoString);
+
+	 for(i=0;i<resultado.length;i++)
+	 {
+	 htmlText=htmlText+"<ul><li>Name Device: "+resultado[i].name+"</li></ul>";
+	 htmlText=htmlText+"<ul><li>Address Device: "+resultado[i].address+"</li></ul>";    
+	 }  
+     document.getElementById("result").innerHTML=htmlText;
+ }
+
+
+
+
+
+//------------------------------------------------------ isBTEnabled example ------------------------------------------------------
+ document.addEventListener('deviceready', function() {
+   	var btn = document.getElementById("isBTEnabled");
+	    btn.onclick = function() {
+	    
+	    	window.plugins.bluetooth.isBTEnabled(null,
+			    function(r){printResult2(r)},
+			    function(e){log(e)}
+		    );
+	    }
+	    btn.disabled=false;
+}, true);
+
+ function printResult2(resultado){
+
+	 var htmlText="<ul><li>is Bluetooth Enabled?: "+resultado+"</li></ul>";
+     document.getElementById("result").innerHTML=htmlText;
+ }
+
+
+
+
+ 
+//------------------------------------------------------ enableBT example ------------------------------------------------------
+ document.addEventListener('deviceready', function() {
+	   	var btn = document.getElementById("enableBT");
+		    btn.onclick = function() {
+		    
+		    	window.plugins.bluetooth.enableBT(null,
+				    function(r){printResult3(r)},
+				    function(e){log(e)}
+			    );
+		    }
+		    btn.disabled=false;
+	}, true);
+
+	 function printResult3(resultado){
+
+		 var htmlText="<ul><li>Bluetooth Enabled?: "+resultado+"</li></ul>";
+	     document.getElementById("result").innerHTML=htmlText;
+	 }
+
+
+
+
+	 
+//------------------------------------------------------ disableBT example ------------------------------------------------------
+ document.addEventListener('deviceready', function() {
+	   	var btn = document.getElementById("disableBT");
+		    btn.onclick = function() {
+		    
+		    	window.plugins.bluetooth.disableBT(null,
+				    function(r){printResult4(r)},
+				    function(e){log(e)}
+			    );
+		    }
+		    btn.disabled=false;
+	}, true);
+
+	 function printResult4(resultado){
+
+		 var htmlText="<ul><li>Bluetooth Disabled?: "+resultado+"</li></ul>";
+	     document.getElementById("result").innerHTML=htmlText;
+	 }
+
+
+
+
+		 
+//------------------------------------------------------ pairBT example ------------------------------------------------------
+ document.addEventListener('deviceready', function() {
+	   	var btn = document.getElementById("pairBT");
+		    btn.onclick = function() {
+		    
+		    	window.plugins.bluetooth.pairBT("6C:9B:02:44:FA:BF",
+				    function(r){printResult5(r)},
+				    function(e){log(e)}
+			    );
+		    }
+		    btn.disabled=false;
+	}, true);
+
+	 function printResult5(resultado){
+
+		 var htmlText="<ul><li>Pairing with my mobile: "+resultado+"</li></ul>";
+	     document.getElementById("result").innerHTML=htmlText;
+	 }
+
+
+
+
+					 
+//------------------------------------------------------ listBoundDevices example ------------------------------------------------------
+ document.addEventListener('deviceready', function() {
+      	var btn = document.getElementById("list-bound-devices");
+	    btn.onclick = function() {
+	    
+	    	window.plugins.bluetooth.listBoundDevices(null,
+			    function(r){printResult6(r)},
+			    function(e){log(e)}
+		    );
+	    }
+	    btn.disabled=false;
+ }, true);
+ 
+ 
+ function printResult6(resultadoString){
+	 var htmlText ="";
+	 var i=0;
+
+	 var resultado = eval(resultadoString);
+
+	 for(i=0;i<resultado.length;i++)
+	 {
+	 htmlText=htmlText+"<ul><li>Name Device: "+resultado[i].name+"</li></ul>";
+	 htmlText=htmlText+"<ul><li>Address Device: "+resultado[i].address+"</li></ul>";    
+	 }  
+     document.getElementById("result").innerHTML=htmlText;
+ }
+
+
+
+
+
+//------------------------------------------------------ stopDiscovering example ------------------------------------------------------
+ document.addEventListener('deviceready', function() {
+	   	var btn = document.getElementById("stopDiscovering");
+		    btn.onclick = function() {
+		    
+		    	window.plugins.bluetooth.stopDiscovering(null,
+				    function(r){printResult7(r)},
+				    function(e){log(e)}
+			    );
+		    }
+		    btn.disabled=false;
+	}, true);
+
+	 function printResult7(resultado){
+
+		 var htmlText="<ul><li>Stopping Discovering Bluetooth Devices: "+resultado+"</li></ul>";
+	     document.getElementById("result").innerHTML=htmlText;
+	 }
+
+
+
+
+
+//------------------------------------------------------ isBound example ------------------------------------------------------
+ document.addEventListener('deviceready', function() {
+	   	var btn = document.getElementById("isBound");
+		    btn.onclick = function() {
+		    
+		    	window.plugins.bluetooth.isBound("6C:9B:02:44:FA:BF",
+				    function(r){printResult8(r)},
+				    function(e){log(e)}
+			    );
+		    }
+		    btn.disabled=false;
+	}, true);
+
+	 function printResult8(resultado){
+
+		 var htmlText="<ul><li>is Device bound with mobile address 6C:9B:02:44:FA:BF?: "+resultado+"</li></ul>";
+	     document.getElementById("result").innerHTML=htmlText;
+	 }
+ 
+</script>		
+</head>
+<body >
+    <input disabled id="isBTEnabled" type="button" value="Is Bluetooth Enabled?"  />
+    <input disabled id="enableBT" type="button" value="Enable Bluetooth"  />
+    <input disabled id="disableBT" type="button" value="Disable Bluetooth"  />
+    <input disabled id="list-devices" type="button" value="List Bluetooth Devices"  />
+    <input disabled id="list-bound-devices" type="button" value="List Bluetooth Bound Devices"  />
+    <input disabled id="pairBT" type="button" value="Pair Device"  />
+    <input disabled id="stopDiscovering" type="button" value="Stop Discovering"  />
+    <input disabled id="isBound" type="button" value="Is Device bound with mobile"  />
+    
+    <hr>
+    
+    <div id="result"></div>
+    
+    <hr>
+
+    
+</body>
+</html>

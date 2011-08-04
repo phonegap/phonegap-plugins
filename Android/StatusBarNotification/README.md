@@ -24,6 +24,14 @@ Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonega
 
     &lt;plugin name="StatusBarNotification" value="com.phonegap.plugins.statusBarNotification.StatusBarNotification"/&gt;
 
+5. You will need to add a nofication.png file to you applications res/drawable-ldpi, res/drawable-mdpi & res/drawable-hdpi directories.
+
+6. You will need to add an import line like:
+
+	import com.my.app.R; 
+	
+Where com.my.app is your applications package name in order for this to compile.
+
 ## Using the plugin ##
 
 The plugin creates the object `window.plugins.statusBarNotification`. To use, call one of the following, available methods:

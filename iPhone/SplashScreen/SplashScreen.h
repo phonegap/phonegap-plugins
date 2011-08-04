@@ -6,17 +6,17 @@
 //  MIT licensed
 //
 
-#import <Foundation/Foundation.h>
 #ifdef PHONEGAP_FRAMEWORK
 #import <PhoneGap/PGPlugin.h>
 #else
 #import "PGPlugin.h"
 #endif
 
+
 @interface SplashScreen : PGPlugin {
 	IBOutlet UIImageView *imageView;
 }
-- (void)createSplashScreen;
+- (void)createSplashScreen:(NSString*)imageName : (NSString*)imageType;
 - (void)show:(NSArray*)arguments withDict:(NSDictionary*)options;
 - (void)hide:(NSArray*)arguments withDict:(NSDictionary*)options;
 @end

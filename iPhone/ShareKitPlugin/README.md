@@ -15,7 +15,7 @@ Command /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/llvm-gcc
 
 ld: duplicate symbol _OBJC_IVAR_$_Reachability.reachabilityRef in /Users/Shared/PhoneGap/Frameworks/PhoneGap.framework/PhoneGap and /Users/erick/Library/Developer/Xcode/DerivedData/example-astibrvgfpejembjdszybqhnmdee/Build/Intermediates/example.build/Debug-iphonesimulator/example.build/Objects-normal/i386/Reachability.o for architecture i386
 
-To fix this error you need to delete the files Reachabily.h and Reachability.m from the ShareKit Folder in Xcode. Then modify the dependency in the file SHK.h, from this:
+To fix this error you need to delete the files Reachabily.h and Reachability.m from the ShareKit Folder in Xcode. Then modify the dependency in the file SHK.m, from this:
 
 `#import "Reachability.h"`
 

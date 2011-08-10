@@ -17,6 +17,7 @@ A simple use case would be:
 
 - Initialize Analytics object with the appropriate Google Analytics account.
 - Send page views upon user navigation.
+- Send event data upon user interaction.
   </description>
 
   <author href="http://www.worklight.com/" email="asafy@worklight.com">Asaf Yishai</author>

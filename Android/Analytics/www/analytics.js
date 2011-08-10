@@ -45,6 +45,31 @@ Analytics.prototype.trackPageView = function(key, successCallback, failureCallba
 };
 
 /**
+ * Track an event on Google Analytics
+ * @param category			The name that you supply as a way to group objects that you want to track
+ * @param action			The name the type of event or interaction you want to track for a particular web object
+ * @param label				Provides additional information for events that you want to track (optional)
+ * @param value				Assign a numerical value to a tracked page object (optional)
+
+ * @param successCallback	The success callback
+ * @param failureCallback	The error callback 
+ */
+
+Analytics.prototype.trackEvent = function(category, action, label, value, successCallback, failureCallback){
+	return PhoneGap.exec(
+				successCallback,			
+				failureCallback,		
+				'GoogleAnalyticsTracker',
+				'trackEvent',		
+				[
+				    category, 
+				    action, 
+				    typeof label === "undefined" ? "" : label, 
+				    (isNaN(parseInt(value,10))) ? 0 : parseInt(value, 10)
+				]);					
+}
+
+/**
  * Load Analytics
  */
 PhoneGap.addConstructor(function() {

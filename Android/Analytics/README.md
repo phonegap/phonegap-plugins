@@ -6,6 +6,7 @@ A simple use case would be:
 
 - Initialize Analytics object with the appropriate Google Analytics account.
 - Send page views upon user navigation.
+- Send events upon user interaction.
 
 ## Adding the Plugin to your project ##
 
@@ -63,10 +64,34 @@ Sample use:
 
     window.plugins.analytics.trackPageView("page1.html", function(){alert("Track: success");}, function(){alert("Track: failure");});
 	
+<pre>
+/**
+ * Track an event on Google Analytics
+ * @param category			The name that you supply as a way to group objects that you want to track
+ * @param action			The name the type of event or interaction you want to track for a particular web object
+ * @param label				Provides additional information for events that you want to track (optional)
+ * @param value				Assign a numerical value to a tracked page object (optional)
+
+ * @param successCallback	The success callback
+ * @param failureCallback	The error callback 
+ */
+
+  trackEvent(category, action, label, value, successCallback, failureCallback);
+</pre>
+
+Sample use:
+
+	window.plugins.analytics.trackPageView("category", "action", "event", 1, function(){alert("Track: success");}, function(){alert("Track: failure");});
+
+
 Please keep in mind that these methods, as in any other plugin, are ready to be invoked only after '[deviceready](http://docs.phonegap.com/phonegap_events_events.md.html#deviceready)' event has been fired
     
 
 ## RELEASE NOTES ##
+
+### AUG, 10, 2011 ###
+
+* Added event tracking
 
 ### Jul 24, 2011 ###
 

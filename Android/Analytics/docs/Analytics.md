@@ -39,7 +39,15 @@ Quick Example
         alert("A page view has failed to be submitted to Google Analytics");
     }
 	
+	var onEventSuccess = function() {
+  		alert("An event has been successfully sent to Google Analytics.");
+	}
+	
+    var onEventFailure = function() {
+        alert("An event has failed to be submitted to Google Analytics");
+    }
+
 	var myGoogleAnalyticsAccountId = "Your-Account-ID-Here"; // Get your account id from http://www.google.com/analytics/
     window.plugins.analytics.start(myGoogleAnalyticsAccountId, onStartSuccess, onStartFailure);
 	window.plugins.analytics.trackPageView("page1.html", onTrackSuccess, onTrackFailure);
-    
+	window.plugins.analytics.trackEvent("category", "action", "event", 1, onEventSuccess, onEventFailure);    

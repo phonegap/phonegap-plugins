@@ -93,6 +93,18 @@
             }
         });
     }
+        
+    function loginToFacebook( ) {
+        shareKit.facebookConnect( );
+    }
+        
+    function shareToFacebook( message, url ) {
+        shareKit.shareToFacebook( message, url );
+    }    
+        
+    function disableAutoShare( ) {
+        shareKit.disableAutoShare( );
+    }      
     
     </script>
   </head>
@@ -113,6 +125,12 @@
       </p>
       <p>
       <button ontouchend="logoutFromFacebook()">logout from Facebook</button>
+      </p>
+      <p>
+      <button ontouchend="loginToFacebook()">Facebook Connect login</button>
+      </p>
+      <p>
+      <button ontouchend="shareToFacebook( 'testing', 'http://www.google.com')">Share to Facebook</button>
       </p>
   </body>
 </html>

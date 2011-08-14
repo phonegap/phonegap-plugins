@@ -11,10 +11,10 @@ function ShareKitPlugin()
 	console.log('creating plugin');
 };
 
-ShareKitPlugin.prototype.share = function(message, title)
+ShareKitPlugin.prototype.share = function(message, url)
 {
 	
-	PhoneGap.exec(null, null, "ShareKitPlugin", "share", [message, title]);
+	PhoneGap.exec(null, null, "ShareKitPlugin", "share", [message, url]);
     
 };
 
@@ -45,6 +45,24 @@ ShareKitPlugin.prototype.logoutFromFacebook = function()
     PhoneGap.exec(null, null, "ShareKitPlugin", "logoutFromFacebook", [] );
 
 };
+
+
+ShareKitPlugin.prototype.facebookConnect = function()
+{
+	
+    PhoneGap.exec(null, null, "ShareKitPlugin", "facebookConnect", [] );
+    
+};
+
+ShareKitPlugin.prototype.shareToFacebook = function( message, url)
+{
+	
+    PhoneGap.exec(null, null, "ShareKitPlugin", "shareToFacebook", [message, url] );
+    
+};
+
+
+
 
 ShareKitPlugin.install = function()
 {

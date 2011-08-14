@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "SHK.h"
-
+#import "SHKSharer+Phonegap.h"
 #ifdef PHONEGAP_FRAMEWORK
 #import <PhoneGap/PGPlugin.h>
 #import <PhoneGap/PluginResult.h>
@@ -29,7 +29,7 @@
 }
 
 
-- (void) share:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)share:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 - (void)isLoggedToTwitter:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
@@ -39,5 +39,8 @@
 
 - (void)logoutFromFacebook:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
+- (void)facebookConnect:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+- (void)shareToFacebook:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 @end

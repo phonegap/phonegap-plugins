@@ -60,4 +60,22 @@
     [SHKFacebook logout];
 }
 
+- (void)facebookConnect:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
+    if (![SHKFacebook isServiceAuthorized]) {
+        [[SHK currentHelper] setRootViewController:self.appViewController];
+        [SHKFacebook loginToService];
+    }
+}
+
+- (void)shareToFacebook:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
+    NSString *message = [arguments objectAtIndex:1];
+    if ([arguments objectAtIndex:2]) {
+       NSURL *itemUrl = [NSURL URLWithString:[arguments objectAtIndex:2]];     
+       [SHKFacebook shareURL:itemUrl title:message];
+    } else {
+        [SHKFacebook shareText:message];
+    }
+    
+}
+
 @end

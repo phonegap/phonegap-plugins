@@ -99,6 +99,7 @@
 		A77DB7BE13EDCDA900961E2C /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A77DB7BD13EDCDA900961E2C /* MessageUI.framework */; };
 		A77DB7C113EDD1E200961E2C /* ShareKitPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = A77DB7C013EDD1E200961E2C /* ShareKitPlugin.m */; };
 		A77DB7C313EDD20500961E2C /* www in Resources */ = {isa = PBXBuildFile; fileRef = A77DB7C213EDD20500961E2C /* www */; };
+		A7A29BA513F772FE003409BB /* SHKSharer+Phonegap.m in Sources */ = {isa = PBXBuildFile; fileRef = A7A29BA413F772FE003409BB /* SHKSharer+Phonegap.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -264,6 +265,8 @@
 		A77DB7BF13EDD1E200961E2C /* ShareKitPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareKitPlugin.h; path = Plugins/ShareKitPlugin.h; sourceTree = "<group>"; };
 		A77DB7C013EDD1E200961E2C /* ShareKitPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareKitPlugin.m; path = Plugins/ShareKitPlugin.m; sourceTree = "<group>"; };
 		A77DB7C213EDD20500961E2C /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = SOURCE_ROOT; };
+		A7A29BA313F772FE003409BB /* SHKSharer+Phonegap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SHKSharer+Phonegap.h"; path = "Plugins/SHKSharer+Phonegap.h"; sourceTree = "<group>"; };
+		A7A29BA413F772FE003409BB /* SHKSharer+Phonegap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SHKSharer+Phonegap.m"; path = "Plugins/SHKSharer+Phonegap.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -424,6 +427,8 @@
 		A77DB6D713EDCD2B00961E2C /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				A7A29BA313F772FE003409BB /* SHKSharer+Phonegap.h */,
+				A7A29BA413F772FE003409BB /* SHKSharer+Phonegap.m */,
 				A77DB7BF13EDD1E200961E2C /* ShareKitPlugin.h */,
 				A77DB7C013EDD1E200961E2C /* ShareKitPlugin.m */,
 				A77DB6D813EDCD2B00961E2C /* README */,
@@ -807,6 +812,9 @@
 /* Begin PBXProject section */
 		A77DB68513EDCD2A00961E2C /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = A77DB68813EDCD2A00961E2C /* Build configuration list for PBXProject "example" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -933,6 +941,7 @@
 				A77DB7B913EDCD7300961E2C /* SHKShareMenu.m in Sources */,
 				A77DB7BA13EDCD7300961E2C /* SHKViewControllerWrapper.m in Sources */,
 				A77DB7C113EDD1E200961E2C /* ShareKitPlugin.m in Sources */,
+				A7A29BA513F772FE003409BB /* SHKSharer+Phonegap.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1084,6 +1093,7 @@
 				A77DB6DD13EDCD2B00961E2C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

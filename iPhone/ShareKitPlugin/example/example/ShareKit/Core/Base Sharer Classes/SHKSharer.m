@@ -150,6 +150,8 @@
 
 - (BOOL)shouldAutoShare
 {	
+    
+    
 	return [[NSUserDefaults standardUserDefaults] boolForKey:[NSString stringWithFormat:@"%@_shouldAutoShare", [self sharerId]]];
 }
 
@@ -254,6 +256,7 @@
 }
 
 
+
 #pragma mark -
 #pragma mark Commit Share
 
@@ -329,6 +332,7 @@
 
 - (void)setShouldAutoShare:(BOOL)b
 {
+    NSLog(@"shouldAutoShare %@",[NSString stringWithFormat:@"%@_shouldAutoShare", [self sharerId]] );
 	return [[NSUserDefaults standardUserDefaults] setBool:b forKey:[NSString stringWithFormat:@"%@_shouldAutoShare", [self sharerId]]];
 }
 

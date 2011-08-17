@@ -13,7 +13,7 @@
 	#import <PhoneGap/SBJSON.h>
 #else
 	#import "SBJsonParser.h"
-	#import "SBJSON.h
+	#import "SBJSON.h"
 #endif
 
 @implementation MapKitView
@@ -154,8 +154,6 @@
 	
 	
 	SBJSON *parser=[[SBJSON alloc] init];
-	NSArray *pins = [parser objectWithString:[arguments objectAtIndex:0]];
-#pragma unused(pins)
 	[parser autorelease];
 	CGRect webViewBounds = self.webView.bounds;
 	

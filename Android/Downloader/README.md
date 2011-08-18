@@ -41,3 +41,7 @@ An example could be:
 	
 I will be happy to receive any comment, patch,  bug report or insult!
 
+
+## Reference ##
+
+http://www.toforge.com/2011/02/phonegap-android-plugin-for-download-files-from-url-on-sd-card/

@@ -86,7 +86,7 @@ public class GlobalizationCommand extends Plugin  {
 		JSONObject obj = new JSONObject();
 		String value = null;		
 		try{			
-			value = Locale.getDefault().getDisplayName(); //get the locale from the Android Device
+			value = Locale.getDefault().toString(); //get the locale from the Android Device
 			obj.put("value",value);		
 			return obj;		
 		}catch(Exception e){

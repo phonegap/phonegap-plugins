@@ -1,21 +1,38 @@
-# Share plugin for Android/Phonegap #
+# Share plugin for Android/Phonegap
 By Kevin Schaul - @foxyNinja7
 
-## Using the plugin ##
+## Using the plugin
 
-	window.plugins.share.show({
-		subject: 'I like turtles',
-		text: 'http://www.mndaily.com'},
-		function() {},
-		function() {alert('Share failed')}
-	);
+### PhoneGap 1.0 and later
 
-## Release notes ##
+* Add java code to your project's build source
 
-### 7/11/2011 ###
+* Register the plugin in the plugins.xml file
+
+```xml
+<plugin name="Share" value="com.schaul.plugins.share.Share"/>
+```
+
+* Call the plugin, specifying subject, text, success function, and failure function
+
+```javascript
+window.plugins.share.show({
+	subject: 'I like turtles',
+	text: 'http://www.mndaily.com'},
+	function() {}, // Success function
+	function() {alert('Share failed')} // Failure function
+);
+```
+
+## Release notes
+
+### 8/22/2011
+* Updated for PhoneGap 1.0
+
+### 7/11/2011
 * Initial release
 
-## Licence ##
+## License
 
 The MIT License
 

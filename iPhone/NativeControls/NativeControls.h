@@ -23,11 +23,11 @@
 @interface NativeControls : PGPlugin <UITabBarDelegate, UIActionSheetDelegate> {
 	UITabBar* tabBar;
 	NSMutableDictionary* tabBarItems;
-
+    
 	UIToolbar* toolBar;
 	UIBarButtonItem* toolBarTitle;
 	NSMutableArray* toolBarItems;
-
+    
 	CGRect	originalWebViewBounds;
 }
 
@@ -40,6 +40,8 @@
 - (void)createTabBarItem:(NSArray*)arguments withDict:(NSDictionary*)options;
 - (void)updateTabBarItem:(NSArray*)arguments withDict:(NSDictionary*)options;
 - (void)selectTabBarItem:(NSArray*)arguments withDict:(NSDictionary*)options;
+
+
 
 /* Tool Bar methods
  */

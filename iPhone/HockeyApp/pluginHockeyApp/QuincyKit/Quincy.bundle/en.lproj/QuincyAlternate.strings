@@ -1,0 +1,46 @@
+/* 
+ Localizable.strings
+ QuincyKit
+ 
+ Created by Andreas Linde on 04.03.09.
+ Copyright 2011 Andreas Linde. All rights reserved.
+ */
+
+
+/* Crash dialog */
+
+/* Title showing in the alert box when crash report data has been found */
+"CrashDataFoundTitle" = "Crash data found";
+
+/* Description explaining that crash data has been found and ask the user if the data might be uploaded to the developers server */
+"CrashDataFoundDescription" = "Would you like to send an anonymous report so we can fix the problem?";
+
+/* Alert box button if the users wants to send crash data always automatically */
+"CrashSendReportAlways" = "Always Send";
+
+/* Alert box button to send the crash report once */
+"CrashSendReport" = "Send Report";
+
+/* Alert box button to decline sending the report */
+"CrashDontSendReport" = "Don't Send";
+
+/* Text showing in a processing box that the crash data is being uploaded to the server */
+"CrashReportSending" = "Sending…";
+
+
+/* Crash status dialog */
+
+/* Title for the alertview giving feedback about the crash */
+"CrashResponseTitle" = "%@ Crash Feedback";
+
+/* Full text telling the bug is fixed and will be available in the next release */
+"CrashResponseNextRelease" = "The bug has been fixed for a future update. Stay tuned.";
+
+/* Full text telling the bug is fixed and the new release is waiting at Apple */
+"CrashResponseWaitingApple" = "The bug has been fixed, and we submitted an update to Apple. Hang tight while it’s in review!";
+
+/* Full text telling the bug is fixed and an update is available in the AppStore */
+"CrashResponseAvailable" = "The bug has been fixed. Update to the latest version in the App Store.";
+
+/* For dialogs ok buttons */
+"CrashResponseTitleOK" = "OK";

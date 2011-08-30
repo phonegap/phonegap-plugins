@@ -1,0 +1,43 @@
+
+
+HockeyApp PhoneGap Plugin
+
+http://hockeyapp.net is a fantastic help for any budding App maker.
+
+Please note that the commercial service is based on the Open Source:
+- http://hockeykit.net 
+- http://quincykit.net.
+I chose the name HockeyApp as it contains the meaning of both kits...
+
+Implements the most basic needs in the HockeyKit, via javascript :)
+- checkForUpdate(): starts a check and shows a dialog as to if one should update now
+- testCrash(): create a crash so one can see that the App asks to send a crash report on when the App is started again
+
+There is a demo based on the v1.0.0 PhoneGap default Xcode Project.
+- please remember to add your App ID in AppDelegate.m.
+
+The demo was created with these steps for using the commercial service, the Open Source is just as easy but there is a 1 month free trial of the service and is a lot easier (I have tried both methods)
+- Get PhoneGap from http://www.phonegap.com and install for iOS
+- Try the PhoneGap default Xcode Project (note that one has to build once, then add files www and run again as of v1.0.0)
+- Get the "Hockey AppKit-iOS-latest.zip" from https://github.com/TheRealKerni/HockeyKit/downloads
+- Integrate into  PhoneGap project: done by just reading the online docs
+- Place the js in www folder, the .h and .m in the PhoneGap/Plugins folder
+- Add  "HockeyApp" in the Plugins for PhoneGap.plist (HockeyApp string HockeyApp).
+- Some html/js alterations in the index.html to call the js routines
+
+To test one has to upload a version, then bump the version and upload again. Try the App and see that it prompts for upgrade.
+There is a fine little button that one can push that causes instant crash.  On next start of App it will ask if crash data can be sent. 
+
+The next step, remove the code from the AppDelegate.m that init's the Kits so these are done via js so that no alterations are needed in base PhoneGap code.
+ 
+ [[BWHockeyManager sharedHockeyManager] setAppIdentifier:@"xxx"];
+ [[BWQuincyManager sharedQuincyManager] setAppIdentifier:@"xxx"];
+ 
+There are other structures in the Hockey Kit that could be prep'ed as well, so need some strange little js structure with reasonable defaults
+
+https://github.com/TheRealKerni/HockeyKit/wiki/iOS-Client-API
+- good list of possible functions to implement
+
+https://github.com/TheRealKerni/QuincyKit/wiki
+- hmm, have to find the same as HockeyKit ...
+

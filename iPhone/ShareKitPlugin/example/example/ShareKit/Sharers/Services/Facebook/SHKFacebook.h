@@ -28,7 +28,7 @@
 #import <Foundation/Foundation.h>
 #import "SHKSharer.h"
 #import "FBConnect.h"
-
+#import "ShareKitPlugin.h"
 typedef enum 
 {
 	SHKFacebookPendingNone,
@@ -48,5 +48,6 @@ typedef enum
 @property (retain) FBSession *session;
 @property SHKFacebookPendingAction pendingFacebookAction;
 @property (retain) FBLoginDialog *login;
+
 
 @end

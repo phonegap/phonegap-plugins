@@ -47,19 +47,32 @@ ShareKitPlugin.prototype.logoutFromFacebook = function()
 };
 
 
-ShareKitPlugin.prototype.facebookConnect = function()
+ShareKitPlugin.prototype.facebookConnect = function(callback)
 {
 	
-    PhoneGap.exec(null, null, "ShareKitPlugin", "facebookConnect", [] );
+    PhoneGap.exec(callback, null, "ShareKitPlugin", "facebookConnect", [] );
     
 };
-
 ShareKitPlugin.prototype.shareToFacebook = function( message, url)
 {
 	
     PhoneGap.exec(null, null, "ShareKitPlugin", "shareToFacebook", [message, url] );
     
 };
+
+
+
+ShareKitPlugin.prototype.twitterConnect = function(callback)
+{
+    PhoneGap.exec(callback, null, "ShareKitPlugin", "twitterConnect", [] );
+};
+ShareKitPlugin.prototype.shareToTwitter = function(message, url)
+{
+	
+    PhoneGap.exec(null, null, "ShareKitPlugin", "shareToTwitter", [message, url] );
+    
+};
+
 
 
 
@@ -71,8 +84,10 @@ ShareKitPlugin.install = function()
         window.plugins = {};	
     }
 
+    
     window.plugins.shareKit = new ShareKitPlugin();
     return window.plugins.shareKit;
 };
+
 
 PhoneGap.addConstructor(ShareKitPlugin.install);

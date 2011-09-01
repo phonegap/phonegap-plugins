@@ -43,4 +43,8 @@
 
 - (void)shareToFacebook:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
+
+- (void)fbLoginEventListener:(NSNotification*)notif;
+- (void)twLoginEventListener:(NSNotification*)notif;
+
 @end

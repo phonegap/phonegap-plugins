@@ -190,7 +190,7 @@
 	// share and/or show UI
 	[controller share];
 	
-	return [controller autorelease];
+	return [controller autorelease];    
 }
 
 + (id)shareURL:(NSURL *)url
@@ -578,13 +578,21 @@
 
 - (BOOL)tryToSend
 {
+    NSLog(@"tryToSend");
+    
+    
+    
+    //[SHK addToOfflineQueue:item forSharer:[self sharerId]];
+    //[SHK flushOfflineQueue];
+    //return NO;
+    
 	if (![[self class] shareRequiresInternetConnection] || [SHK connected])
 		return [self send];
 	
 	else if ([[self class] canShareOffline])
-		return [SHK addToOfflineQueue:item forSharer:[self sharerId]];
-	
-	else if (!quiet)
+      return [SHK addToOfflineQueue:item forSharer:[self sharerId]];
+        
+    else if (!quiet) 
 	{
 		[[[[UIAlertView alloc] initWithTitle:SHKLocalizedString(@"Offline")
 									 message:SHKLocalizedString(@"You must be online in order to share with %@", [self sharerTitle])
@@ -595,12 +603,12 @@
 		return YES;
 	}
 	
-	
 	return NO;
 }
 
 - (BOOL)send
 {	
+    NSLog(@"SEND");
 	// Does not actually send anything.
 	// Your subclass should implement the sending logic.
 	// There is no reason to call [super send] in your subclass

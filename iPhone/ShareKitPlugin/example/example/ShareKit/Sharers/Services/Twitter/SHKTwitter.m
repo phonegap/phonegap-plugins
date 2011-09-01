@@ -103,6 +103,7 @@
 
 - (void)promptAuthorization
 {		
+    NSLog(@"promptAuthorization");
 	if (xAuth)
 		[super authorizationFormShow]; // xAuth process
 	
@@ -115,11 +116,14 @@
 
 + (NSString *)authorizationFormCaption
 {
+    NSLog(@"authorizationFormCaption");
 	return SHKLocalizedString(@"Create a free account at %@", @"Twitter.com");
 }
 
 + (NSArray *)authorizationFormFields
 {
+     NSLog(@"authorizationFormFields");
+    
 	if ([SHKTwitterUsername isEqualToString:@""])
 		return [super authorizationFormFields];
 	
@@ -132,12 +136,14 @@
 
 - (void)authorizationFormValidate:(SHKFormController *)form
 {
+    NSLog(@"authorizationFormValidate");
 	self.pendingForm = form;
 	[self tokenAccess];
 }
 
 - (void)tokenAccessModifyRequest:(OAMutableURLRequest *)oRequest
 {	
+     NSLog(@"tokenAccessModifyRequest");
 	if (xAuth)
 	{
 		NSDictionary *formValues = [pendingForm formValues];
@@ -157,6 +163,11 @@
 
 - (void)tokenAccessTicket:(OAServiceTicket *)ticket didFinishWithData:(NSData *)data 
 {
+    
+    NSNotification *not = [NSNotification notificationWithName:@"twDidLogin" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:not];
+
+    
 	if (xAuth) 
 	{
 		if (ticket.didSucceed)
@@ -175,7 +186,7 @@
 			return;
 		}
 	}
-
+     
 	[super tokenAccessTicket:ticket didFinishWithData:data];		
 }
 
@@ -185,6 +196,7 @@
 
 - (void)show
 {
+    NSLog(@"show");
 	if (item.shareType == SHKShareTypeURL)
 	{
 		[self shortenURL];
@@ -205,6 +217,8 @@
 
 - (void)showTwitterForm
 {
+    NSLog(@"showTwitterForm");
+
 	SHKTwitterForm *rootView = [[SHKTwitterForm alloc] initWithNibName:nil bundle:nil];	
 	rootView.delegate = self;
 	
@@ -221,6 +235,7 @@
 
 - (void)sendForm:(SHKTwitterForm *)form
 {	
+    NSLog(@"sendForm");
 	[item setCustomValue:form.textView.text forKey:@"status"];
 	[self tryToSend];
 }
@@ -230,6 +245,8 @@
 
 - (void)shortenURL
 {	
+    
+    NSLog(@"shortenURL");
 	if (![SHK connected])
 	{
 		[item setCustomValue:[NSString stringWithFormat:@"%@ %@", item.title, [item.URL.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] forKey:@"status"];
@@ -254,6 +271,7 @@
 
 - (void)shortenURLFinished:(SHKRequest *)aRequest
 {
+      NSLog(@"shortenURLFinished");
 	[[SHKActivityIndicator currentIndicator] hide];
 	
 	NSString *result = [[aRequest getResult] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
@@ -288,6 +306,8 @@
 
 - (BOOL)validate
 {
+    NSLog(@"validate");
+
 	NSString *status = [item customValueForKey:@"status"];
 	return status != nil && status.length >= 0 && status.length <= 140;
 }

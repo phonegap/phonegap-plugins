@@ -15,6 +15,7 @@
     SHKSharer *controller = [[self alloc] init];
     if( ![controller isAuthorized] ) {
         [controller promptAuthorization];
+        
     }
     
     return [controller autorelease];

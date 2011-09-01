@@ -29,7 +29,7 @@
     
 	SHKActionSheet *actionSheet = [SHKActionSheet actionSheetForItem:item];
     [[SHK currentHelper] setRootViewController:self.appViewController];
-
+    
 	[actionSheet showInView:self.appViewController.view];
 }
 
@@ -56,26 +56,74 @@
 }
 
 - (void)logoutFromFacebook:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
-   
+    
     [SHKFacebook logout];
 }
 
 - (void)facebookConnect:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fbLoginEventListener:) name:@"fbDidLogin" object:nil];
+    
     if (![SHKFacebook isServiceAuthorized]) {
         [[SHK currentHelper] setRootViewController:self.appViewController];
         [SHKFacebook loginToService];
+        
     }
+}
+
+
+- (void)fbLoginEventListener:(NSNotification*)notif
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self writeJavascript:@"signal.apis.facebookConnectedDone()"];    
+
 }
 
 - (void)shareToFacebook:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
     NSString *message = [arguments objectAtIndex:1];
     if ([arguments objectAtIndex:2]) {
-       NSURL *itemUrl = [NSURL URLWithString:[arguments objectAtIndex:2]];     
-       [SHKFacebook shareURL:itemUrl title:message];
+        NSURL *itemUrl = [NSURL URLWithString:[arguments objectAtIndex:2]];     
+        [SHKFacebook shareURL:itemUrl title:message];
     } else {
         [SHKFacebook shareText:message];
     }
     
 }
+
+
+
+
+- (void)twitterConnect:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(twLoginEventListener:) name:@"twDidLogin" object:nil];
+    
+    if (![SHKTwitter isServiceAuthorized]) {
+        [[SHK currentHelper] setRootViewController:self.appViewController];
+        [SHKTwitter loginToService];
+        
+    }
+}
+
+
+
+- (void)twLoginEventListener:(NSNotification*)notif
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self writeJavascript:@"signal.apis.twitterConnectedDone()"];    
+    
+}
+
+
+- (void)shareToTwitter:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
+    NSString *message = [arguments objectAtIndex:1];
+    if ([arguments objectAtIndex:2]) {
+        NSURL *itemUrl = [NSURL URLWithString:[arguments objectAtIndex:2]];     
+        [SHKTwitter shareText:message];
+    } else {
+        [SHKTwitter shareText:message];
+    }
+}
+
+
 
 @end

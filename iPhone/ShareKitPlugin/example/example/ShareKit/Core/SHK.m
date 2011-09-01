@@ -190,6 +190,7 @@ BOOL SHKinit;
 		else
 			self.currentView = nil;
 	}
+
 }
 
 - (void)showPendingView

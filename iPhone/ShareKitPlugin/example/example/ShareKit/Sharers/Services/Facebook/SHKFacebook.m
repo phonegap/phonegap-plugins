@@ -25,6 +25,7 @@
 //
 //
 
+
 #import "SHKFacebook.h"
 #import "SHKFBStreamDialog.h"
 
@@ -68,7 +69,7 @@
 
 + (BOOL)canShareOffline
 {
-	return NO; // TODO - would love to make this work
+	return YES; // TODO - would love to make this work
 }
 
 #pragma mark -
@@ -76,6 +77,7 @@
 
 - (BOOL)shouldAutoShare
 {
+   
 	return YES; // FBConnect presents its own dialog
 }
 
@@ -107,6 +109,7 @@
 
 - (void)promptAuthorization
 {
+     NSLog(@"promptAuthorization");
 	self.pendingFacebookAction = SHKFacebookPendingLogin;
 	self.login = [[[FBLoginDialog alloc] initWithSession:[self session]] autorelease];
 	[login show];
@@ -114,7 +117,7 @@
 
 - (void)authFinished:(SHKRequest *)request
 {		
-	
+	NSLog(@"authFinished");
 }
 
 + (void)logout
@@ -160,6 +163,7 @@
 							  SHKEncode(SHKMyAppName),
 							  SHKEncode(SHKMyAppURL)];
 		[dialog show];
+        
 		
 	}
 	
@@ -202,6 +206,8 @@
 
 - (void)dialogDidSucceed:(FBDialog*)dialog
 {
+    NSLog(@"dialogDidSucceed");
+
 	if (pendingFacebookAction == SHKFacebookPendingImage)
 		[self sendImage];
 	
@@ -213,12 +219,14 @@
 
 - (void)dialogDidCancel:(FBDialog*)dialog
 {
+      NSLog(@"dialogDidCancel");
 	if (pendingFacebookAction == SHKFacebookPendingStatus)
 		[self sendDidCancel];
 }
 
 - (BOOL)dialog:(FBDialog*)dialog shouldOpenURLInExternalBrowser:(NSURL*)url
 {
+     NSLog(@"shouldOpenURLInExternalBrowser");
 	return YES;
 }
 
@@ -227,12 +235,16 @@
 
 - (void)session:(FBSession*)session didLogin:(FBUID)uid 
 {
+     NSLog(@"didLogin");
 	// Try to share again
 	if (pendingFacebookAction == SHKFacebookPendingLogin)
 	{
 		self.pendingFacebookAction = SHKFacebookPendingNone;
 		[self share];
 	}
+    
+    NSNotification *not = [NSNotification notificationWithName:@"fbDidLogin" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:not];
 }
 
 - (void)session:(FBSession*)session willLogout:(FBUID)uid 
@@ -254,6 +266,7 @@
 
 - (void)request:(FBRequest*)aRequest didFailWithError:(NSError*)error 
 {
+     NSLog(@"didFailWithError");
 	[self sendDidFailWithError:error];
 }
 

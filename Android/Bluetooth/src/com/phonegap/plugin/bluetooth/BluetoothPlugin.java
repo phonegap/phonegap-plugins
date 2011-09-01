@@ -44,6 +44,7 @@ public class BluetoothPlugin extends Plugin {
 	public static final String ACTION_ENABLE_BT="enableBT";
 	public static final String ACTION_DISABLE_BT="disableBT";
 	public static final String ACTION_PAIR_BT="pairBT";
+	public static final String ACTION_UNPAIR_BT="unPairBT";
 	public static final String ACTION_STOP_DISCOVERING_BT="stopDiscovering";
 	public static final String ACTION_IS_BOUND_BT="isBound";
 	private static BluetoothAdapter btadapter;	
@@ -214,7 +215,7 @@ public class BluetoothPlugin extends Plugin {
 				BluetoothDevice device = btadapter.getRemoteDevice(addressDevice);
 				boolean paired = false;
 							
-				Log.d("BluetoothPlugin","Paring with " + device.getName()+" in address "+device.getAddress());
+				Log.d("BluetoothPlugin","Pairing with Bluetooth device with name " + device.getName()+" and address "+device.getAddress());
 		          	
 				try {
 					Method m = device.getClass().getMethod("createBond");
@@ -231,11 +232,46 @@ public class BluetoothPlugin extends Plugin {
 				Log.d("BluetoothPlugin - "+ACTION_PAIR_BT, "Got Exception "+ Ex.getMessage());
 				result = new PluginResult(Status.ERROR);
 			}
+			
+			
+			
+			
 						
+		} else 	if (ACTION_UNPAIR_BT.equals(action)) {
+			try {							
+				Log.d("BluetoothPlugin", "We're in "+ACTION_UNPAIR_BT);
+				
+				String addressDevice = arg1.getString(0);
+				
+				if (btadapter.isDiscovering()) {
+		        	btadapter.cancelDiscovery();
+		        }
+
+				BluetoothDevice device = btadapter.getRemoteDevice(addressDevice);
+				boolean unpaired = false;
+							
+				Log.d("BluetoothPlugin","Unpairing Bluetooth device with " + device.getName()+" and address "+device.getAddress());
+		          	
+				try {
+					Method m = device.getClass().getMethod("removeBond");
+					unpaired = (Boolean) m.invoke(device);					
+				} catch (Exception e) 
+				{
+					e.printStackTrace();
+				}  
+				
+				
+				Log.d("BluetoothPlugin - "+ACTION_UNPAIR_BT, "Returning "+ "Result: "+unpaired);
+				result = new PluginResult(Status.OK, unpaired);
+			} catch (Exception Ex) {
+				Log.d("BluetoothPlugin - "+ACTION_UNPAIR_BT, "Got Exception "+ Ex.getMessage());
+				result = new PluginResult(Status.ERROR);
+			}
 			
 			
 			
 			
+						
 		} else 	if (ACTION_LIST_BOUND_DEVICES.equals(action)) {
 			try {							
 				Log.d("BluetoothPlugin", "We're in "+ACTION_LIST_BOUND_DEVICES);

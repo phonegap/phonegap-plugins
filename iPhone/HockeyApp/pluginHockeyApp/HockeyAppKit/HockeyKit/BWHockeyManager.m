@@ -209,12 +209,21 @@ static NSString *kHockeyErrorDomain = @"HockeyErrorDomain";
     return [formatter stringFromDate:[NSDate dateWithTimeIntervalSinceReferenceDate:[(NSNumber *)[[NSUserDefaults standardUserDefaults] valueForKey:kDateOfVersionInstallation] doubleValue]]];
 }
 
+- (NSString *)deviceIdentifier {
+  if ([[UIDevice currentDevice] respondsToSelector:@selector(uniqueIdentifier)]) {
+    return [[UIDevice currentDevice] performSelector:@selector(uniqueIdentifier)];
+  }
+  else {
+    return @"invalid";
+  }
+}
+
 - (NSString *)authenticationToken {
     return [BWmd5([NSString stringWithFormat:@"%@%@%@%@", 
                    authenticationSecret_, 
                    [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"],
                    [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"],
-                   [[UIDevice currentDevice] uniqueIdentifier]
+                   [self deviceIdentifier]
                    ]
                   ) lowercaseString];
 }
@@ -609,7 +618,7 @@ static NSString *kHockeyErrorDomain = @"HockeyErrorDomain";
     
     [parameter appendFormat:@"?format=json&authorize=yes&app_version=%@&udid=%@",
      [[[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] bw_URLEncodedString],
-     [[[UIDevice currentDevice] uniqueIdentifier] bw_URLEncodedString]
+     [[self deviceIdentifier] bw_URLEncodedString]
      ];
     
     // build request & send
@@ -695,7 +704,7 @@ static NSString *kHockeyErrorDomain = @"HockeyErrorDomain";
     
     NSMutableString *parameter = [NSMutableString stringWithFormat:@"api/2/apps/%@?format=json&udid=%@", 
                                   [[self encodedAppIdentifier_] bw_URLEncodedString],
-                                  [[[UIDevice currentDevice] uniqueIdentifier] bw_URLEncodedString]];
+                                  [[self deviceIdentifier] bw_URLEncodedString]];
     
     // add additional statistics if user didn't disable flag
     if ([self canSendUserData]) {
@@ -752,7 +761,7 @@ static NSString *kHockeyErrorDomain = @"HockeyErrorDomain";
     
     NSString *extraParameter = [NSString string];
     if ([self canSendUserData]) {
-        extraParameter = [NSString stringWithFormat:@"&udid=%@", [[UIDevice currentDevice] uniqueIdentifier]];
+        extraParameter = [NSString stringWithFormat:@"&udid=%@", [self deviceIdentifier]];
     }
     
     NSString *hockeyAPIURL = [NSString stringWithFormat:@"%@api/2/apps/%@?format=plist%@", self.updateURL, [self encodedAppIdentifier_], extraParameter];
@@ -982,7 +991,7 @@ static NSString *kHockeyErrorDomain = @"HockeyErrorDomain";
         appIdentifier_ = [anAppIdentifier copy];
     }
     
-    [self setUpdateURL:@"https://beta.hockeyapp.net/"];
+    [self setUpdateURL:@"https://rink.hockeyapp.net/"];
 }
 
 - (void)setCheckForUpdateOnLaunch:(BOOL)flag {

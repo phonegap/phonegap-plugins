@@ -2,13 +2,11 @@
 //  AppDelegate.m
 //  pluginHockeyApp
 //
-//  Created by Owen Brotherwood on 8/24/11.
+//  Created by Owen Brotherwood on 9/6/11.
 //  Copyright __MyCompanyName__ 2011. All rights reserved.
 //
 
 #import "AppDelegate.h"
-#import "BWHockeyManager.h"
-#import "BWQuincyManager.h"
 #ifdef PHONEGAP_FRAMEWORK
 	#import <PhoneGap/PhoneGapViewController.h>
 #else
@@ -32,9 +30,7 @@
  */
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	 [[BWHockeyManager sharedHockeyManager] setAppIdentifier:@"xxx"];
-    [[BWQuincyManager sharedQuincyManager] setAppIdentifier:@"xxx"];
-    
+	
 	NSArray *keyArray = [launchOptions allKeys];
 	if ([launchOptions objectForKey:[keyArray objectAtIndex:0]]!=nil) 
 	{

@@ -213,7 +213,7 @@ NSString *BWQuincyLocalize(NSString *stringToken) {
         _appIdentifier = [anAppIdentifier copy];
     }
     
-    [self setSubmissionURL:@"https://beta.hockeyapp.net/"];
+    [self setSubmissionURL:@"https://rink.hockeyapp.net/"];
 }
 
 
@@ -422,6 +422,14 @@ NSString *BWQuincyLocalize(NSString *stringToken) {
 	return platform;
 }
 
+- (NSString *)deviceIdentifier {
+  if ([[UIDevice currentDevice] respondsToSelector:@selector(uniqueIdentifier)]) {
+    return [[UIDevice currentDevice] performSelector:@selector(uniqueIdentifier)];
+  }
+  else {
+    return @"invalid";
+  }
+}
 
 - (void)_performSendingCrashReports {
     NSMutableDictionary *approvedCrashReports = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey: kApprovedCrashReports]];
@@ -434,7 +442,7 @@ NSString *BWQuincyLocalize(NSString *stringToken) {
 	NSString *description = @"";
 	
     if (self.autoSubmitDeviceUDID) {
-        userid = [[UIDevice currentDevice] uniqueIdentifier];
+        userid = [self deviceIdentifier];
     } else if (self.delegate != nil && [self.delegate respondsToSelector:@selector(crashReportUserID)]) {
 		userid = [self.delegate crashReportUserID];
 	}

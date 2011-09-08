@@ -34,6 +34,8 @@ Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonega
 
 The plugin creates the object `window.plugins.childBrowser`.  To use, call one of the following, available methods:
 
+Note that unlike the iphone version, android childbrowser doesn't require a call to `ChildBrowser.install()`
+
 <pre>
   /**
    * Display a new browser with the specified URL.

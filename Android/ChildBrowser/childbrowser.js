@@ -25,6 +25,10 @@ ChildBrowser.prototype.showWebPage = function(url, usePhoneGap) {
     PhoneGap.exec(null, null, "ChildBrowser", "showWebPage", [url, usePhoneGap]);
 };
 
+ChildBrowser.install = function() {
+    
+}
+
 /**
  * Load ChildBrowser
  */

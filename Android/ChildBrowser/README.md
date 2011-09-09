@@ -12,21 +12,23 @@ This command creates a popup browser that is shown in front of your app, when th
 
 Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonegap-android).
 
-1. To install the plugin, move childbrowser.js to your project's www folder and include a reference to it in your html file after phonegap.js.
+1. To install the plugin, move www/childbrowser.js to your project's www folder and include a reference to it in your html file after phonegap.js.
 
     &lt;script type="text/javascript" charset="utf-8" src="phonegap.js"&gt;&lt;/script&gt;<br/>
     &lt;script type="text/javascript" charset="utf-8" src="childbrowser.js"&gt;&lt;/script&gt;
+    
+2. Copy the image files folder www/childbrowser to your project'w www folder. Note you need the entire folder not just the images.
 
-2. Create a directory within your project called "src/com/phonegap/plugins/childBrowser" and move ChildBrowser.java into it.
+3. Create a directory within your project called "src/com/phonegap/plugins/childBrowser" and move ChildBrowser.java into it.
 
-3. Add the following activity to your AndroidManifest.xml file.  It should be added inside the &lt;application&gt; tag.
+4. Add the following activity to your AndroidManifest.xml file.  It should be added inside the &lt;application&gt; tag.
 
     &lt;activity android:name="com.phonegap.DroidGap" android:label="@string/app_name"&gt;<br/>
       &lt;intent-filter&gt;<br/>
       &lt;/intent-filter&gt;<br/>
     &lt;/activity&gt;
 
-4. In your res/xml/plugins.xml file add the following line:
+5. In your res/xml/plugins.xml file add the following line:
 
     &lt;plugin name="ChildBrowser" value="com.phonegap.plugins.childBrowser.ChildBrowser"/&gt;
 
@@ -35,6 +37,55 @@ Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonega
 The plugin creates the object `window.plugins.childBrowser`.  To use, call one of the following, available methods:
 
 Note that unlike the iphone version, android childbrowser doesn't require a call to `ChildBrowser.install()`
+
+<pre>
+  /**
+	* Display a new browser with the specified URL.
+    * This method loads up a new web view in a dialog.
+    *
+    * @param url           The url to load
+    * @param options       An object that specifies additional options
+    */
+  showWebPage(url, [options])
+</pre>
+
+Sample use:
+
+    window.plugins.childBrowser.showWebPage("http://www.google.com", { showLocationBar: true });
+
+<pre>
+  /**
+	* Close the browser.
+    */
+  close() {
+</pre>
+
+Sample use:
+
+    window.plugins.childBrowser.close();
+
+<pre>
+  /**
+	* A user supplied call back which is run when the browser is closed.
+    */
+  onClose() 
+</pre>
+
+Sample use:
+
+    window.plugins.childBrowser.onClose();
+
+<pre>
+  /**
+	* A user supplied call back which is run when the browser location changes.
+	* The method is called with the new location of the browser.
+    */
+  onLocationChange(location) 
+</pre>
+
+Sample use:
+
+    window.plugins.childBrowser.onLocationChange(location);
 
 <pre>
   /**
@@ -47,12 +98,12 @@ Note that unlike the iphone version, android childbrowser doesn't require a call
    * @param usePhoneGap   Load url in PhoneGap webview [optional] - Default: false
    */
    
-  showWebPage(url, [usePhoneGap])
+  openExternal(url, [usePhoneGap])
 </pre>
 
 Sample use:
 
-    window.plugins.childBrowser.showWebPage("http://www.google.com");
+    window.plugins.childBrowser.openExternal("http://www.google.com");
 
 ## RELEASE NOTES ##
 
@@ -68,6 +119,10 @@ Sample use:
 ### Dec 2, 2010 ###
 
 * Added warning comments about loading URLs when usePhoneGap=true.
+
+### September 9, 2011 ###
+
+* Modified ChildBrowser to more closely model the iOS ChildBrowser
 
 ## BUGS AND CONTRIBUTIONS ##
 
@@ -89,7 +144,7 @@ The text of the MIT and BSD licenses is reproduced below.
 
 ### The "New" BSD License
 
-Copyright (c) 2005-2010, Nitobi Software Inc.
+Copyright (c) 2005-2011, Nitobi Software Inc.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -119,7 +174,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ### The MIT License
 
-Copyright (c) <2010> <Nitobi Software Inc., et. al., >
+Copyright (c) <2011> <Nitobi Software Inc., et. al., >
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal

@@ -25,6 +25,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -310,8 +311,14 @@ public class ChildBrowser extends Plugin {
                 }
                 rl.addView(webview);
 
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(dialog.getWindow().getAttributes());
+                lp.width = WindowManager.LayoutParams.FILL_PARENT;
+                lp.height = WindowManager.LayoutParams.FILL_PARENT;
+                
                 dialog.setContentView(rl);
                 dialog.show();
+                dialog.getWindow().setAttributes(lp);
             }
             
             private Bitmap loadDrawable(String filename) throws java.io.IOException {

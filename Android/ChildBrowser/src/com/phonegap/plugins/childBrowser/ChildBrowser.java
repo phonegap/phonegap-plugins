@@ -21,7 +21,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -31,7 +30,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import com.phonegap.api.PhonegapActivity;
 import com.phonegap.api.Plugin;
@@ -216,23 +215,18 @@ public class ChildBrowser extends Plugin {
                         }
                 });
 
-                RelativeLayout.LayoutParams rlParams = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-                RelativeLayout.LayoutParams backParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-                RelativeLayout.LayoutParams forwardParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-                forwardParams.addRule(RelativeLayout.RIGHT_OF, 1);
-                RelativeLayout.LayoutParams editParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-                editParams.width = 250;
-                editParams.addRule(RelativeLayout.RIGHT_OF, 2);                
-                RelativeLayout.LayoutParams closeParams = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT);
-                closeParams.addRule(RelativeLayout.RIGHT_OF, 3);
-                closeParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                RelativeLayout.LayoutParams wvParams = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-                wvParams.addRule(RelativeLayout.BELOW, 4);
+                LinearLayout.LayoutParams backParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams forwardParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams editParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT, 1.0f);
+                LinearLayout.LayoutParams closeParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams wvParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
                 
-                RelativeLayout rl = new RelativeLayout(ctx);
-                rl.setPadding(1, 1, 1, 1);
-                rl.setGravity(Gravity.CENTER);
-
+                LinearLayout main = new LinearLayout(ctx);
+                main.setOrientation(LinearLayout.VERTICAL);
+                
+                LinearLayout toolbar = new LinearLayout(ctx);
+                toolbar.setOrientation(LinearLayout.HORIZONTAL);
+                
                 ImageButton back = new ImageButton(ctx);
                 back.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -299,24 +293,22 @@ public class ChildBrowser extends Plugin {
                 webview.setId(5);
                 webview.setLayoutParams(wvParams);
                 
-                rl.setLayoutParams(rlParams);
-
-                // If we shouldn't show the location bar then we skip adding 
-                // the elements to the relative view.
+                toolbar.addView(back);
+                toolbar.addView(forward);
+                toolbar.addView(edittext);
+                toolbar.addView(close);
+                
                 if (getShowLocationBar()) {
-                    rl.addView(back);
-                    rl.addView(forward);
-                    rl.addView(edittext);
-                    rl.addView(close);
+                    main.addView(toolbar);
                 }
-                rl.addView(webview);
+                main.addView(webview);
 
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 lp.copyFrom(dialog.getWindow().getAttributes());
                 lp.width = WindowManager.LayoutParams.FILL_PARENT;
                 lp.height = WindowManager.LayoutParams.FILL_PARENT;
                 
-                dialog.setContentView(rl);
+                dialog.setContentView(main);
                 dialog.show();
                 dialog.getWindow().setAttributes(lp);
             }

@@ -2,7 +2,7 @@
 //  main.m
 //  pluginHockeyApp
 //
-//  Created by Owen Brotherwood on 9/6/11.
+//  Created by Owen Brotherwood on 9/12/11.
 //  Copyright __MyCompanyName__ 2011. All rights reserved.
 //
 

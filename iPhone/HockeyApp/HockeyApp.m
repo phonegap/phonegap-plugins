@@ -10,22 +10,25 @@
 #import "BWQuincyManager.h"
 
 
-
 @implementation HockeyApp
 
 - (void) init:(NSArray*)arguments withDict:(NSDictionary*)options
-{    
-    // collect appIdentifier from JavaScript or just hardcode it here. 
+{   
+    // collect appIdentifier from JavaScript or just hardcode it here.
     NSString* appIdentifier = [options valueForKey:@"appIdentifier"];
     [[BWHockeyManager sharedHockeyManager] setAppIdentifier:appIdentifier];
-    [[BWQuincyManager sharedQuincyManager] setAppIdentifier:appIdentifier];
-    
+    [[BWQuincyManager sharedQuincyManager] setAppIdentifier:appIdentifier];    
 }
 
-// produces a requester with HockeyApp default defaults
+// produces a requester with HockeyApp
 - (void) checkForUpdate:(NSArray*)arguments withDict:(NSDictionary*)options
 {
     [[BWHockeyManager sharedHockeyManager] checkForUpdate];
+}
+
+- (void) showUpdateView:(NSArray*)arguments withDict:(NSDictionary*)options
+{
+    [[BWHockeyManager sharedHockeyManager] showUpdateView];
 }
 
 - (void) isUpdateAvailable:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options

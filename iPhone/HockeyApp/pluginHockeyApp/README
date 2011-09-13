@@ -1,2 +1,3 @@
-Project is Xcode 4.02
-Remember to alter App ID in index.html or Plugins/HockeyApp.m
+Basic demo
+- only some html and some of the HockeyApp functions with "basic buttons"
+

@@ -10,21 +10,11 @@ I chose the name HockeyApp as it contains the meaning of both kits...
 
 Implements the most basic needs in the HockeyKit, via javascript :)
 
-There is a demo based on the v1.0.0 PhoneGap default Xcode (4.02) Project.
-The necessary js, m and h files are in the demo.
+Demos based on the v1.0.0 PhoneGap default Xcode (4.02) Project.
 
+The projectfiles contains a script, makeIT, that creates a directory structure and collects HockeyKit and QuincyKit.
+Also, not that the HockeyApp.js is copied into the www folders by the build script (otherwise I will have multiple instances of the js ...)
 
-The demo was created with these steps for using the commercial service, the Open Source is just as easy but there is a 1 month free trial of the service and is a lot easier (I have tried both methods)
-- Get PhoneGap from http://www.phonegap.com and install for iOS
-- Try the PhoneGap default Xcode Project (note that one has to build once, then add files by referance  www (folder is in the project)  and run again (this is something in PhoneGap v1.0.0 that may be fixed latter in PhoneGap)
-- Get the "Hockey AppKit-iOS-latest.zip" from https://github.com/TheRealKerni/HockeyKit/downloads and add the files (I did this using group and copy)
-- Place the js in www folder, the .h and .m in the PhoneGap/Plugins folder
-- Add  "HockeyApp" in the Plugins for PhoneGap.plist (HockeyApp string HockeyApp).
-- Some html/js alterations in the index.html to call the js routines
-- Remember to alter App ID in html or Plugin/HockeyApp.m
-
-To test one has to upload a version to HockeyApp.net, then bump the version and upload again. Try the App and see that it prompts for upgrade.
-There is a fine little button that one can push that causes instant crash.  On next start of App it will ask if crash data can be sent. 
 
 https://github.com/TheRealKerni/HockeyKit/wiki/iOS-Client-API
 - good list of possible functions to implement
@@ -32,3 +22,10 @@ https://github.com/TheRealKerni/HockeyKit/wiki/iOS-Client-API
 https://github.com/TheRealKerni/QuincyKit/wiki
 - hmm, have to find the same as HockeyKit ...
 
+Get going ...
+1 Install PhoneGap Version 1.0
+2 Run the makeIT in a directory for your work
+3 Find the demo project you would like to see
+4 Run the demo
+
+Note: the App ID in these demo's will stop at some stage as it is from a one month free trial.

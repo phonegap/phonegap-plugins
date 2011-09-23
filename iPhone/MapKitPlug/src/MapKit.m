@@ -140,11 +140,8 @@
 	{
 		height=[[options objectForKey:@"height"] floatValue];
 	}
-<<<<<<< HEAD
-    if ([options objectForKey:@"position"]) 
-=======
     if ([options objectForKey:@"offsetTop"]) 
->>>>>>> fork/master
+
 	{
 		offsetTop=[[options objectForKey:@"offsetTop"] floatValue];
 	}

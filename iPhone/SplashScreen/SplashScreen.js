@@ -8,8 +8,13 @@
 
 function SplashScreen() {}
 
-SplashScreen.prototype.show = function() {
-    PhoneGap.exec('SplashScreen.show');
+SplashScreen.prototype.show = function(image) {
+    var imageSplit = image.split(".");
+    var imageName = imageSplit[0];
+    for(var i = 1, len = imageSplit.length-1;i < len;i++)
+		imageName += '.' + imageSplit[i];
+   
+    PhoneGap.exec('SplashScreen.show',imageName,imageSplit[imageSplit.length-1]);
 };
 
 SplashScreen.prototype.hide = function() {

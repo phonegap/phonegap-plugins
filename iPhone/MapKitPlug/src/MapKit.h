@@ -13,15 +13,12 @@
     #import "PGPlugin.h"
 #endif
 
+
 @interface MapKitView : PGPlugin <MKMapViewDelegate> 
 {
-	UIView* childView;
-    MKMapView* mapView;
-	NSString* buttonCallback;
-	UIButton*  imageButton;
 }
 
-@property (nonatomic, retain) NSString *buttonCallback;
+@property (nonatomic, copy) NSString *buttonCallback;
 @property (nonatomic, retain) UIView* childView;
 @property (nonatomic, retain) MKMapView* mapView;
 @property (nonatomic, retain) UIButton*  imageButton;
@@ -33,6 +30,10 @@
 - (void)hideMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 - (void)destroyMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+- (void)clearMapPins:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+- (void)addMapPins:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 - (void)setMapData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 

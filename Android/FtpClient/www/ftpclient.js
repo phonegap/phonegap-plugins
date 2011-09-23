@@ -37,9 +37,11 @@ FtpClient.prototype.get = function(file, url, successCallback, errorCallback) {
 };
 
 /**
- * Load ChildBrowser
+ * Load FtpClient
  */
 PhoneGap.addConstructor(function() {
     PhoneGap.addPlugin("ftpclient", new FtpClient());
-    PluginManager.addService("FtpClient", "com.phonegap.plugins.ftpclient.FtpClient");
+// @deprecated: No longer needed in PhoneGap 1.0. Uncomment the addService code for earlier 
+// PhoneGap releases.
+//     PluginManager.addService("FtpClient", "com.phonegap.plugins.ftpclient.FtpClient");
 });

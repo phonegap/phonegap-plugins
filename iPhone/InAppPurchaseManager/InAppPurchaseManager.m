@@ -15,23 +15,23 @@
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
 }
 
-- (void) requestProductData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
+- (void) requestProductData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
 	if([arguments count] < 3) {
-		return;	
+		return;
 	}
 	NSLog(@"Getting product data");
 	NSSet *productIdentifiers = [NSSet setWithObject:[arguments objectAtIndex:0]];
     SKProductsRequest *productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
-	
+
 	ProductsRequestDelegate* delegate = [[[ProductsRequestDelegate alloc] init] retain];
 	delegate.command = self;
 	delegate.successCallback = [arguments objectAtIndex:1];
 	delegate.failCallback = [arguments objectAtIndex:2];
-	
+
     productsRequest.delegate = delegate;
     [productsRequest start];
-    
+
 }
 
 /**
@@ -57,42 +57,42 @@
 	[productsRequest start];
 }
 
-- (void) makePurchase:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
+- (void) makePurchase:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
 	NSLog(@"About to do IAP");
 	if([arguments count] < 1) {
-		return;	
+		return;
 	}
-	
+
     SKMutablePayment *payment = [SKMutablePayment paymentWithProductIdentifier:[arguments objectAtIndex:0]];
-	
+
 	if([arguments count] > 1) {
 		id quantity = [arguments objectAtIndex:1];
 		if ([quantity respondsToSelector:@selector(integerValue)]) {
-			payment.quantity = [quantity integerValue];	
+			payment.quantity = [quantity integerValue];
 		}
 	}
 	[[SKPaymentQueue defaultQueue] addPayment:payment];
 }
 
-- (void) restoreCompletedTransactions:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
+- (void) restoreCompletedTransactions:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
 
 // SKPaymentTransactionObserver methods
-// called when the transaction status is updated 
+// called when the transaction status is updated
 //
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
 {
 	NSString *state, *error, *transactionIdentifier, *transactionReceipt, *productId;
 	NSInteger errorCode;
-	
+
     for (SKPaymentTransaction *transaction in transactions)
     {
 		error = state = transactionIdentifier = transactionReceipt = productId = @"";
 		errorCode = 0;
-		
+
         switch (transaction.transactionState)
         {
 			case SKPaymentTransactionStatePurchasing:
@@ -104,7 +104,7 @@
 				transactionReceipt = [[transaction transactionReceipt] base64EncodedString];
 				productId = transaction.payment.productIdentifier;
                 break;
-            
+
 			case SKPaymentTransactionStateFailed:
 				state = @"PaymentTransactionStateFailed";
 				error = transaction.error.localizedDescription;
@@ -112,14 +112,14 @@
 				NSLog(@"error %d %@", errorCode, error);
 
                 break;
-            
+
 			case SKPaymentTransactionStateRestored:
 				state = @"PaymentTransactionStateRestored";
 				transactionIdentifier = transaction.originalTransaction.transactionIdentifier;
-				transactionReceipt = [[[transaction originalTransaction] transactionReceipt] base64EncodedString];
+				transactionReceipt = [[transaction transactionReceipt] base64EncodedString];
 				productId = transaction.originalTransaction.payment.productIdentifier;
                 break;
-				
+
             default:
 				NSLog(@"Invalid state");
                 continue;
@@ -136,7 +136,7 @@
 
 @end
 
-@implementation ProductsRequestDelegate 
+@implementation ProductsRequestDelegate
 
 @synthesize successCallback, failCallback, command;
 

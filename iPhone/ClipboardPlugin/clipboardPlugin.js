@@ -18,6 +18,16 @@ ClipboardPlugin.prototype.setText = function(text)
 }
 
 /**
+ * Get the clipboard text
+ *
+ * @param {String} text The new clipboard content
+ */
+ClipboardPlugin.prototype.getText = function(callback)
+{
+	PhoneGap.exec("ClipboardPlugin.getText", GetFunctionName(callback));
+}
+
+/**
  * Register the plugin with PhoneGap
  */
 ClipboardPlugin.install = function()

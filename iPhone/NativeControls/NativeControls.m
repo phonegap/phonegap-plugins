@@ -87,11 +87,11 @@
 	if (!tabBar.hidden) {
 		return;
 	}
-
+    
     CGFloat height = 0.0f;
     BOOL atBottom = YES;
 	
-//	CGRect offsetRect = [ [UIApplication sharedApplication] statusBarFrame];
+    //	CGRect offsetRect = [ [UIApplication sharedApplication] statusBarFrame];
     
     if (options) 
 	{
@@ -105,43 +105,43 @@
 	}
 	
     tabBar.hidden = NO;
-     CGRect webViewBounds = originalWebViewBounds;
-     CGRect tabBarBounds;
+    CGRect webViewBounds = originalWebViewBounds;
+    CGRect tabBarBounds;
 	
 	NSNotification* notif = [NSNotification notificationWithName:@"PGLayoutSubviewAdded" object:tabBar];
 	[[NSNotificationQueue defaultQueue] enqueueNotification:notif postingStyle: NSPostASAP];
 	
-     if (atBottom) 
-	 {
-         tabBarBounds = CGRectMake(
-             webViewBounds.origin.x,
-             webViewBounds.origin.y + webViewBounds.size.height - height,
-             webViewBounds.size.width,
-             height
-         );
-         webViewBounds = CGRectMake(
-            webViewBounds.origin.x,
-            webViewBounds.origin.y,
-            webViewBounds.size.width,
-			webViewBounds.size.height - height
-         );
-     } 
-	 else 
-	 {
-         tabBarBounds = CGRectMake(
-             webViewBounds.origin.x,
-             webViewBounds.origin.y,
-             webViewBounds.size.width,
-             height
-         );
-         webViewBounds = CGRectMake(
-            webViewBounds.origin.x,
-            webViewBounds.origin.y + height,
-            webViewBounds.size.width,
-            webViewBounds.size.height - height
-         );
-     }
-     
+    if (atBottom) 
+    {
+        tabBarBounds = CGRectMake(
+                                  webViewBounds.origin.x,
+                                  webViewBounds.origin.y + webViewBounds.size.height - height,
+                                  webViewBounds.size.width,
+                                  height
+                                  );
+        webViewBounds = CGRectMake(
+                                   webViewBounds.origin.x,
+                                   webViewBounds.origin.y,
+                                   webViewBounds.size.width,
+                                   webViewBounds.size.height - height
+                                   );
+    } 
+    else 
+    {
+        tabBarBounds = CGRectMake(
+                                  webViewBounds.origin.x,
+                                  webViewBounds.origin.y,
+                                  webViewBounds.size.width,
+                                  height
+                                  );
+        webViewBounds = CGRectMake(
+                                   webViewBounds.origin.x,
+                                   webViewBounds.origin.y + height,
+                                   webViewBounds.size.width,
+                                   webViewBounds.size.height - height
+                                   );
+    }
+    
     [tabBar setFrame:tabBarBounds];
 	
 	
@@ -198,12 +198,12 @@
 {
     if (!tabBar)
         [self createTabBar:nil withDict:nil];
-
+    
     NSString  *name      = [arguments objectAtIndex:0];
     NSString  *title     = [arguments objectAtIndex:1];
     NSString  *imageName = [arguments objectAtIndex:2];
     int tag              = [[arguments objectAtIndex:3] intValue];
-
+    
     UITabBarItem *item = nil;    
     if ([imageName length] > 0) {
         UIBarButtonSystemItem systemItem = -1;
@@ -226,7 +226,7 @@
     if (item == nil) {
         item = [[UITabBarItem alloc] initWithTitle:title image:[UIImage imageNamed:imageName] tag:tag];
     }
-
+    
     if ([options objectForKey:@"badge"])
         item.badgeValue = [options objectForKey:@"badge"];
     
@@ -247,11 +247,11 @@
 {
     if (!tabBar)
         [self createTabBar:nil withDict:nil];
-
+    
     NSString  *name = [arguments objectAtIndex:0];
     UITabBarItem *item = [tabBarItems objectForKey:name];
     if (item)
-        item.badgeValue = [options objectForKey:@"badge"];
+        item.badgeValue = [options objectForKey:@"bad   ge"];
 }
 
 
@@ -296,7 +296,7 @@
 {
     if (!tabBar)
         [self createTabBar:nil withDict:nil];
-
+    
     NSString *itemName = [arguments objectAtIndex:0];
     UITabBarItem *item = [tabBarItems objectForKey:itemName];
     if (item)
@@ -322,7 +322,7 @@
     CGFloat height   = 45.0f;
     BOOL atTop       = YES;
     UIBarStyle style = UIBarStyleBlackOpaque;
-
+    
     NSDictionary* toolBarSettings = options;//[settings objectForKey:@"ToolBarSettings"];
     if (toolBarSettings) 
 	{
@@ -342,14 +342,14 @@
         else if ([styleStr isEqualToString:@"BlackTranslucent"])
             style = UIBarStyleBlackTranslucent;
     }
-
+    
     CGRect webViewBounds = self.webView.bounds;
     CGRect toolBarBounds = CGRectMake(
-                              webViewBounds.origin.x,
-                              webViewBounds.origin.y - 1.0f,
-                              webViewBounds.size.width,
-                              height
-                              );
+                                      webViewBounds.origin.x,
+                                      webViewBounds.origin.y - 1.0f,
+                                      webViewBounds.size.width,
+                                      height
+                                      );
     webViewBounds = CGRectMake(
                                webViewBounds.origin.x,
                                webViewBounds.origin.y + height,
@@ -364,10 +364,10 @@
     toolBar.userInteractionEnabled = YES;
     toolBar.barStyle               = style;
 	
-
+    
     [toolBar setFrame:toolBarBounds];
     [self.webView setFrame:webViewBounds];
-
+    
     [self.webView.superview addSubview:toolBar];
 }
 
@@ -376,10 +376,10 @@
 	NSLog(@"about to reset toolBarItems");
 	toolBarItems = nil;
 	/*
-	if (toolBarItems)
-	{
-		[toolBarItems release];
-	}
+     if (toolBarItems)
+     {
+     [toolBarItems release];
+     }
 	 */
 }
 
@@ -407,11 +407,15 @@
 {
     if (!toolBar)
         [self createToolBar:nil withDict:nil];
-
+    
     NSString *title = [arguments objectAtIndex:0];
+    
+       
     if (!toolBarTitle) {
+         NSLog(@"not : %@", title);
         toolBarTitle = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(toolBarTitleClicked)];
     } else {
+         NSLog(@"is: %@", title);
         toolBarTitle.title = title;
     }
 }
@@ -464,7 +468,7 @@
 	{
 		toolBarItems = [[NSMutableArray alloc] initWithCapacity:1];
 	}
-
+    
     NSString  *tagId      = [arguments objectAtIndex:0];
     NSString  *title     = [arguments objectAtIndex:1];
 	NSString  *imageName;
@@ -483,7 +487,7 @@
 	{
 		style = @"UIBarButtonItemStylePlain";
 	}
-
+    
 	
 	UIBarButtonItemStyle useStyle;
 	
@@ -499,7 +503,7 @@
 	{
 		useStyle = UIBarButtonItemStylePlain;
 	}
-
+    
     UIBarButtonItem *item = nil;    
     if ([imageName length] > 0) 
 	{
@@ -637,7 +641,7 @@
 - (void) toolBarButtonTapped:(UIBarButtonItem *)button
 {
 	int count = 0;
-
+    
 	for (UIBarButtonItem* currentButton in toolBarItems)
 	{
 		if (currentButton == button) {
@@ -657,15 +661,15 @@
 {
     
 	NSString* title = [options objectForKey:@"title"];
-
+    
 	
 	UIActionSheet* actionSheet = [ [UIActionSheet alloc ] 
-						 initWithTitle:title 
-						 delegate:self 
-						 cancelButtonTitle:nil 
-						 destructiveButtonTitle:nil
-						 otherButtonTitles:nil
-						 ];
+                                  initWithTitle:title 
+                                  delegate:self 
+                                  cancelButtonTitle:nil 
+                                  destructiveButtonTitle:nil
+                                  otherButtonTitles:nil
+                                  ];
 	
 	int count = [arguments count];
 	for(int n = 0; n < count; n++)
@@ -689,12 +693,12 @@
 }
 
 
-
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
 	NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.nativeControls._onActionSheetDismissed(%d);", buttonIndex];    
     [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
 }
+
 
 
 @end

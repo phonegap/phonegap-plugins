@@ -27,6 +27,10 @@ Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonega
 
 4. Copy "libs/commons-net-2.2.jar" into the libs directory within your project.  You will also need to right click on this file in eclipse and add the jar to the build path.
 
+5. In your res/xml/plugins.xml file add the following line:
+
+    &lt;plugin name="FtpClient" value="com.phonegap.plugins.ftpclient.FtpClient"/&gt;
+
 ## Using the plugin ##
 
 The plugin creates the object `window.plugins.ftpclient`.  To use, call one of the following, available methods:

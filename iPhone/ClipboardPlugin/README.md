@@ -10,6 +10,9 @@ Using this plugin requires [PhoneGap for iPhone](http://github.com/phonegap/phon
 
 ## RELEASE NOTES ##
 
+### 20101223 ###
+* Added support for getting clipboard text.
+
 ### 20100812 ###
 * Initial release
 * Currently only supports setting clipboard text. Retrieving clipboard text will be added later.

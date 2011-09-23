@@ -9,7 +9,11 @@
 //
 
 #import "NotificationEx.h"
-#import "Categories.h"
+#ifdef PHONEGAP_FRAMEWORK
+    #import <PhoneGap/Categories.h>
+#else
+    #import "Categories.h"
+#endif 
 #import "UIColor-Expanded.h"
 
 

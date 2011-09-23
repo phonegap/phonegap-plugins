@@ -91,8 +91,10 @@ TTS.prototype.setLanguage = function(lang, successCallback, errorCallback) {
 
 /**
  * Load TTS
- */
+ */ 
 PhoneGap.addConstructor(function() {
     PhoneGap.addPlugin("tts", new TTS());
-    PluginManager.addService("TTS", "com.phonegap.plugins.speech.TTS");
+// @deprecated: No longer needed in PhoneGap 1.0. Uncomment the addService code for earlier 
+// PhoneGap releases.
+//     PluginManager.addService("TTS", "com.phonegap.plugins.speech.TTS");
 });

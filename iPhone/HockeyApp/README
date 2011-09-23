@@ -1,0 +1,31 @@
+HockeyApp PhoneGap Plugin
+by Owen Brotherwood
+
+http://hockeyapp.net is a fantastic help for any budding App maker.
+
+Please note that the commercial service is based on the Open Source:
+- http://hockeykit.net 
+- http://quincykit.net.
+I chose the name HockeyApp as it contains the meaning of both kits...
+
+Implements the most basic needs in the HockeyKit, via javascript :)
+
+Demos based on the v1.0.0 PhoneGap default Xcode (4.02) Project.
+
+The projectfiles contains a script, makeIT, that creates a directory structure and collects HockeyKit and QuincyKit.
+Also, not that the HockeyApp.js is copied into the www folders by the build script (otherwise I will have multiple instances of the js ...)
+
+
+https://github.com/TheRealKerni/HockeyKit/wiki/iOS-Client-API
+- good list of possible functions to implement
+
+https://github.com/TheRealKerni/QuincyKit/wiki
+- hmm, have to find the same as HockeyKit ...
+
+Get going ...
+1 Install PhoneGap Version 1.0
+2 Run the makeIT in a directory for your work
+3 Find the demo project you would like to see
+4 Run the demo
+
+Note: the App ID in these demo's will stop at some stage as it is from a one month free trial.

@@ -36,6 +36,7 @@ public class ContactView extends Plugin {
 	public void onActivityResult(int reqCode, int resultCode, Intent data) {
 		String name = null;
 		String number = null;
+		String email = null;
 		switch (reqCode) {
 		case (PICK_CONTACT):
 			if (resultCode == Activity.RESULT_OK) {
@@ -59,12 +60,27 @@ public class ContactView extends Plugin {
 									.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 						}
 					}
+					// get email address
+					Cursor emailCur = this.ctx.managedQuery( 
+							ContactsContract.CommonDataKinds.Email.CONTENT_URI, 
+							null,
+							ContactsContract.CommonDataKinds.Email.CONTACT_ID + "='" + ContactID + "'", null,null); 
+						while (emailCur.moveToNext()) { 
+						    // This would allow you get several email addresses
+					            // if the email addresses were stored in an array
+						    email = emailCur.getString(
+					                      emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+					 	    //String emailType = emailCur.getString(
+					          //            emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE)); 
+					 	} 
+					 	emailCur.close();
 
 					name = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
 					JSONObject contactObject = new JSONObject();
 					try {
 						contactObject.put("name", name);
 						contactObject.put("phone", number);
+						contactObject.put("email", email);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}

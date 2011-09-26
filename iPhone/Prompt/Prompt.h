@@ -4,9 +4,9 @@
 
 #import <Foundation/Foundation.h>
 #ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PhoneGapCommand.h>
+#import <PhoneGap/PGPlugin.h>
 #else
-#import "PhoneGapCommand.h"
+#import "PGPlugin.h"
 #endif
 
 @interface PromptAlertView : UIAlertView {
@@ -26,7 +26,7 @@
 - (NSString *)getCallback;
 @end
 
-@interface Prompt : PhoneGapCommand {
+@interface Prompt : PGPlugin {
 
 }
 

@@ -98,7 +98,15 @@
 
 - (void)addMapPins:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 {
-  SBJSON *parser=[[SBJSON alloc] init];
+    id parser;
+    Class SBJSON = NSClassFromString(@"SBJSON");
+    parser = [[SBJSON alloc] init];
+    if (parser == nil)
+    {
+        Class PG_SBJSON = NSClassFromString(@"PG_SBJSON");
+        parser = [[PG_SBJSON alloc] init];
+        
+    }
 	NSArray *pins = [parser objectWithString:[arguments objectAtIndex:0]];
 	[parser autorelease];
 	
@@ -153,7 +161,15 @@
 	CLLocationDistance diameter = [[options objectForKey:@"diameter"] floatValue];
 	
 	
-	SBJSON *parser=[[SBJSON alloc] init];
+    id parser;
+    Class SBJSON = NSClassFromString(@"SBJSON");
+    parser = [[SBJSON alloc] init];
+    if (parser == nil)
+    {
+        Class PG_SBJSON = NSClassFromString(@"PG_SBJSON");
+        parser = [[PG_SBJSON alloc] init];
+        
+    }
 	[parser autorelease];
 	CGRect webViewBounds = self.webView.bounds;
 	

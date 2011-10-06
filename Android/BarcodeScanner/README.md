@@ -5,14 +5,17 @@ By Matt Kane
 This plugin requires the end user to install [the ZXing Barcode Scanner app](http://code.google.com/p/zxing/)
 If the user doesn't have the app install they will be promped to install it the first time the plugin is used.
 
-1. To install the plugin, move barcodescanner.js to your project's www folder and include a reference to it 
+1. To install the plugin, move `barcodescanner.js` to your project's www folder and include a reference to it 
 in your html files. 
 2. Create a folder called 'src/com/beetight/barcodescanner' within your project's src/com/ folder.
 3. And copy the java file into that new folder.
 
-`mkdir <your_project>/src/com/beetight/barcodescanner`
+    mkdir -p <your_project>/src/com/beetight/barcodescanner
+    cp ./BarcodeScanner.java <your_project>/src/com/beetight/barcodescanner
+    
+4. Add a plugin line to `res/xml/plugins.xml`
 
-`cp ./BarcodeScanner.java <your_project>/src/com/beetight/barcodescanner`
+    `<plugin name="BarcodeScanner" value="com.beetight.barcodescanner.BarcodeScanner"/>`
 
 ## Using the plugin ##
 The plugin creates the object `window.plugins.barcodeScanner` with one method `scan(types, success, fail, options)`
@@ -67,12 +70,12 @@ Supported encoding types:
 
 A full example could be:
 
-            window.plugins.barcodeScanner.encode(BarcodeScanner.Encode.TEXT_TYPE, "http://www.nytimes.com", function(success) {
-  	        alert("encode success: " + success);
-  	      }, function(fail) {
-  	        alert("encoding failed: " + fail);
-  	      }, {yesString: "Install"}
-  	    );
+    window.plugins.barcodeScanner.encode(BarcodeScanner.Encode.TEXT_TYPE, "http://www.nytimes.com", function(success) {
+        alert("encode success: " + success);
+      }, function(fail) {
+        alert("encoding failed: " + fail);
+      }, {yesString: "Install"}
+    );
 
 	
 ## BUGS AND CONTRIBUTIONS ##

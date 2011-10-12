@@ -4,18 +4,58 @@ By Arne de Bree
 ## Adding the Plugin to your project ##
 1. To install the plugin, move `Torch.js` to your project's www folder and include a reference to it 
 in your html files. 
+
+    &lt;script src="Torch.js"&gt;&lt;/script&gt;
+
 2. Create a folder called 'nl/debree/phonegap/plugin/torch' within your project's src folder.
 3. And copy the java file into that new folder.
 
+<pre>
     mkdir -p <your_project>/src/nl/debree/phonegap/plugin/torch/
     cp ./TorchPlugin.java <your_project>/src/nl/debree/phonegap/plugin/torch/
+</pre>
     
 4. Add a plugin line to `res/xml/plugins.xml`
 
-    `<plugin name="Torch" value="nl.debree.phonegap.plugin.torch.TorchPlugin" />`
+    &lt;plugin name="Torch" value="nl.debree.phonegap.plugin.torch.TorchPlugin" /&gt;
 
 ## Using the plugin ##
-The plugin creates the object `window.plugins.Torch` with 
+The plugin creates the object `window.plugins.Torch` within your DOM. This object
+exposes the following functions:
+
+- isOn
+- isCapable
+- toggle
+- turnOn
+- turnOff
+
+<pre>
+    window.plugins.Torch.isOn( 
+        function( result ) { console.log( "isOn: " + result.on ) }      // success
+    ,   function() { console.log( "error" ) }                           // error
+    );
+    
+    window.plugins.Torch.isCapable( 
+        function( result ) { console.log( "isCapable: " + result.capable ) }      // success
+    ,   function() { console.log( "error" ) }                           // error
+    );
+    
+    window.plugins.Torch.toggle( 
+        function() { console.log( "toggle" ) }                          // success
+    ,   function() { console.log( "error" ) }                           // error
+    );
+
+    window.plugins.Torch.turnOn( 
+        function() { console.log( "turnOn" ) }                          // success
+    ,   function() { console.log( "error" ) }                           // error
+    );
+
+    window.plugins.Torch.turnOff( 
+        function() { console.log( "turnOff" ) }                         // success
+    ,   function() { console.log( "error" ) }                           // error
+    );
+</pre>
+ 
 	
 ## BUGS AND CONTRIBUTIONS ##
 The latest bleeding-edge version is available [on GitHub](http://github.com/adebrees/phonegap-plugins/tree/master/Android/)

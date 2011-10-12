@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<title>PhoneGap</title>
+	<script src="phonegap-1.1.0-android.js"></script>
+	<script src="Torch.js"></script>
+	<style>
+		input {
+			width:		100%;
+			height:		3em;
+		}
+	</style>
+</head>
+<body>
+<input type="button" value="On" id="btnOn"/>
+<input type="button" value="Off" id="btnOff" />
+<input type="button" value="Toggle" id="btnToggle" />
+<input type="button" value="Is on?" id="btnIsOn" />
+<input type="button" value="Is capable?" id="btnIsCapable" />
+
+<div id="result"></div>
+
+ <script>
+	document.addEventListener('deviceready', function() 
+	{
+		printResult( "ready!" );
+		
+		var d 				= document
+		,	btnOn 			= d.getElementById( "btnOn" )
+		,	btnOff			= d.getElementById( "btnOff" )
+		,	btnToggle		= d.getElementById( "btnToggle" )
+		,	btnIsOn			= d.getElementById( "btnIsOn" )
+		,	btnIsCapable 	= d.getElementById( "btnIsCapable" )
+		;
+		
+		btnOn.onclick = function() {
+			console.log( "on" );
+			window.plugins.Torch.turnOn( 
+				function() { printResult( "On" ) }
+			,	function() { printResult( "Error" ) }
+			);
+		};
+		
+		btnOff.onclick = function() {
+			window.plugins.Torch.turnOff( 
+				function() { printResult( "Off" ) }
+			,	function() { printResult( "Error" ) }
+			);
+		};
+		
+		btnToggle.onclick = function() {
+			window.plugins.Torch.toggle( 
+				function() { printResult( "Toggle" ) }
+			,	function() { printResult( "Error" ) }
+			);
+		};
+		
+		btnIsOn.onclick = function() {
+			window.plugins.Torch.isOn( 
+				function( r ) { printResult( "isOn " + r.on ) }
+			,	function() { printResult( "Error" ) }
+			);
+		};
+		
+		btnIsCapable.onclick = function() {
+			window.plugins.Torch.isCapable( 
+				function( r ) { printResult( "isCapable " + r.capable ) }
+			,	function() { printResult( "Error" ) }
+			);
+		};	 
+ 
+ 		function printResult( msg )
+ 		{    
+  			document.getElementById("result").innerHTML += "<br />" + msg;
+ 		}
+	} );
+</script>
+</body>
+</html>

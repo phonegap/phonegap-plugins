@@ -45,7 +45,12 @@ ChildBrowser.prototype.close = function() {
  * @param usePhoneGap   Load url in PhoneGap webview [optional]
  */
 ChildBrowser.prototype.openExternal = function(url, usePhoneGap) {
-    PhoneGap.exec(null, null, "ChildBrowser", "openExternal", [url, usePhoneGap]);
+    if (usePhoneGap === true) {
+        navigator.app.loadUrl(url);
+    }
+    else {
+        PhoneGap.exec(null, null, "ChildBrowser", "openExternal", [url, usePhoneGap]);
+    }
 };
 
 /**

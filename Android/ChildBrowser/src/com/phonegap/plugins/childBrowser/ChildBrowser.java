@@ -294,12 +294,16 @@ public class ChildBrowser extends Plugin {
                                 
                 webview = new WebView(ctx);
                 webview.getSettings().setJavaScriptEnabled(true);
+                webview.getSettings().setBuiltInZoomControls(true);
                 WebViewClient client = new ChildBrowserClient(ctx, edittext);
                 webview.setWebViewClient(client);                
                 webview.loadUrl(url);
                 webview.setId(5);
+                webview.setInitialScale(0);
                 webview.setLayoutParams(wvParams);
                 webview.requestFocus();
+                webview.requestFocusFromTouch();
+                
                 
                 toolbar.addView(back);
                 toolbar.addView(forward);
@@ -371,7 +375,7 @@ public class ChildBrowser extends Plugin {
         public void onPageStarted(WebView view, String url,  Bitmap favicon) {
             super.onPageStarted(view, url, favicon);            
             String newloc;
-            if (url.startsWith("http")) {
+            if (url.startsWith("http:")) {
                 newloc = url;
             } else {
                 newloc = "http://" + url;

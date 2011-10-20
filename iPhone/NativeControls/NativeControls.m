@@ -206,7 +206,7 @@
     
     UITabBarItem *item = nil;    
     if ([imageName length] > 0) {
-        UIBarButtonSystemItem systemItem = -1;
+    	UITabBarSystemItem systemItem = -1;
         if ([imageName isEqualToString:@"tabButton:More"])       systemItem = UITabBarSystemItemMore;
         if ([imageName isEqualToString:@"tabButton:Favorites"])  systemItem = UITabBarSystemItemFavorites;
         if ([imageName isEqualToString:@"tabButton:Featured"])   systemItem = UITabBarSystemItemFeatured;

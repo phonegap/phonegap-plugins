@@ -102,6 +102,11 @@ InAppPurchaseManager.prototype.onRestored = null;
 /* function(errorCode, errorText) */
 InAppPurchaseManager.prototype.onFailed = null;
 
+/* function() */
+InAppPurchaseManager.prototype.onRestoreCompletedTransactionsFinished = null;
+
+/* function(errorCode) */
+InAppPurchaseManager.prototype.onRestoreCompletedTransactionsFailed = null;
 
 /* This is called from native.*/
 
@@ -134,7 +139,19 @@ InAppPurchaseManager.prototype.updatedTransactionCallback = function(state, erro
 			}
 			return;
 	}
-}
+};
+
+InAppPurchaseManager.prototype.restoreCompletedTransactionsFinished = function() {
+  if (this.onRestoreCompletedTransactionsFinished) {
+    this.onRestoreCompletedTransactionsFinished();
+  }
+};
+
+InAppPurchaseManager.prototype.restoreCompletedTransactionsFailed = function(errorCode) {
+  if (this.onRestoreCompletedTransactionsFailed) {
+    this.onRestoreCompletedTransactionsFailed(errorCode);
+  }
+};
 
 /*
  * This queue stuff is here because we may be sent events before listeners have been registered. This is because if we have 

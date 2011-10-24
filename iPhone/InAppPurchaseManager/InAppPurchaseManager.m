@@ -133,6 +133,17 @@
     }
 }
 
+- (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTranactionsFailedWithError:(NSError *)error
+{
+	NSString *js = [NSString stringWithFormat:@"plugins.inAppPurchaseManager.onRestoreCompletedTransactionsFailed(%d)", error.code];
+	[self writeJavascript: js];
+}
+
+- (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
+{
+	NSString *js = @"plugins.inAppPurchaseManager.onRestoreCompletedTransactionsFinished()";
+	[self writeJavascript: js];
+}
 
 @end
 

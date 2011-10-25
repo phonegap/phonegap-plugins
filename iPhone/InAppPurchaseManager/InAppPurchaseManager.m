@@ -133,7 +133,7 @@
     }
 }
 
-- (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTranactionsFailedWithError:(NSError *)error
+- (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
 {
 	NSString *js = [NSString stringWithFormat:@"plugins.inAppPurchaseManager.onRestoreCompletedTransactionsFailed(%d)", error.code];
 	[self writeJavascript: js];

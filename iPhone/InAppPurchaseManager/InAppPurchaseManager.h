@@ -31,7 +31,7 @@
 - (void) requestProductData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) requestProductsData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions;
-- (void) paymentQueue:(SKPaymentQueue *)queue restoreCompletedTranactionsFailedWithError:(NSError *)error;
+- (void) paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error;
 - (void) paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue;
 
 @end

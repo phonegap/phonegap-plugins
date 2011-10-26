@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright 2007 ZXing authors
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<project name="core" default="build">
+
+  <property file="../build.properties"/>
+
+  <target name="init">
+    <tstamp/>
+  </target>
+
+  <target name="compile" depends="init">
+    <mkdir dir="build"/>
+    <javac srcdir="src"
+           destdir="build"
+           source="1.2"
+           target="1.2"
+           optimize="true"
+           debug="${generate-debug}"
+           deprecation="true"
+           fork="true"
+           includeantruntime="false"/>
+    <jar jarfile="core.jar" basedir="build">
+      <!-- These entries allow core.jar to function as an OSGi bundle, and also specifies
+           additional attributes for compatibility with BugLabs's BUG platform.
+           Thanks to David Albert for this change. -->
+      <manifest>
+        <attribute name="Bundle-Name" value="ZXing"/>
+        <attribute name="Bundle-Vendor" value="ZXing Project"/>
+        <attribute name="Bundle-SymbolicName" value="ZXing"/>
+        <attribute name="Bundle-Version" value="${version}"/>
+        <attribute name="Export-Package" value="com.google.zxing,com.google.zxing.common,com.google.zxing.client.result"/>
+        <attribute name="Bug-Bundle-Type" value="Application"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="build" depends="clean">
+    <antcall target="compile">
+      <param name="generate-debug" value="true"/>
+    </antcall>
+  </target>
+
+  <!-- This target is needed for building a core.jar which the Android client can use and run
+       ProGuard on successfully, because dx doesn't like debugging info. -->
+  <target name="build-no-debug" depends="clean">
+    <antcall target="compile">
+      <param name="generate-debug" value="false"/>
+    </antcall>
+  </target>
+
+  <!-- This target builds an optimized core.jar using ProGuard. It is not intended for our Android
+  client - use build-no-debug intead, then build the client which runs ProGuard on everything. -->
+  <target name="build-optimized" depends="clean">
+    <antcall target="compile">
+      <param name="generate-debug" value="false"/>
+    </antcall>
+
+    <delete file="core.jar"/>
+    <mkdir dir="optimized"/>
+    <java jar="${proguard-jar}" fork="true" failonerror="true">
+      <jvmarg value="-Dmaximum.inlined.code.length=48"/>
+      <arg value="-injars build"/>
+      <arg value="-outjars optimized"/>
+      <!-- Needed for Mac OS. -->
+      <!--<arg value="-libraryjars ${java.home}/../Classes/classes.jar"/>-->
+      <!-- Needed for other Android apps besides Barcode Scanner. -->
+      <!--<arg value="-libraryjars ${android-home}/platforms/android-3/android.jar"/>-->
+      <arg value="-keep class com.google.zxing.* {public protected *;}"/>
+      <arg value="-keep class com.google.zxing.common.*Binarizer {public protected *;}"/>
+      <!-- Remove this line is you only use the Result base object and want the smallest jar. -->
+      <arg value="-keep class com.google.zxing.client.result.* {public protected *;}"/>
+      <!-- Contains a useful UPC-E to UPC-A method. -->
+      <arg value="-keep class com.google.zxing.oned.UPCEReader {public *;}"/>
+      <arg value="-target 1.2"/>
+      <arg value="-optimizationpasses 4"/>
+      <arg value="-dontobfuscate"/>
+      <arg value="-dontskipnonpubliclibraryclasses"/>
+      <arg value="-verbose"/>
+    </java>
+    <jar jarfile="core.jar" basedir="optimized"/>
+  </target>
+
+  <target name="build-test" depends="init,build">
+    <fail message="Please build 'javase' first">
+      <condition>
+        <not>
+          <available file="../javase/javase.jar" type="file"/>
+        </not>
+      </condition>
+    </fail>
+    <mkdir dir="build-test"/>
+    <javac srcdir="test/src"
+           destdir="build-test"
+           debug="true"
+           deprecation="true"
+           includeantruntime="false">
+      <classpath>
+        <pathelement location="core.jar"/>
+        <pathelement location="../javase/javase.jar"/>
+        <pathelement location="lib/junit-4.8.2.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="test-blackbox" depends="build-test">
+    <parallel failonany="true">
+      <antcall target="test-blackbox-subset">
+        <param name="subdir" value="aztec"/>
+      </antcall>
+      <antcall target="test-blackbox-subset">
+        <param name="subdir" value="datamatrix"/>
+      </antcall>
+      <antcall target="test-blackbox-subset">
+        <param name="subdir" value="negative"/>
+      </antcall>
+      <antcall target="test-blackbox-subset">
+        <param name="subdir" value="oned"/>
+      </antcall>
+      <antcall target="test-blackbox-subset">
+        <param name="subdir" value="pdf417"/>
+      </antcall>
+      <antcall target="test-blackbox-subset">
+        <param name="subdir" value="qrcode"/>
+      </antcall>
+    </parallel>
+  </target>
+
+  <target name="test-blackbox-subset">
+    <junit printsummary="on" haltonfailure="on" haltonerror="on" fork="true" dir=".">
+      <formatter type="plain" usefile="false"/>
+      <classpath>
+        <pathelement location="core.jar"/>
+        <pathelement location="build-test"/>
+        <pathelement location="../javase/javase.jar"/>
+        <pathelement location="lib/junit-4.8.2.jar"/>
+      </classpath>
+      <assertions>
+        <enable/>
+      </assertions>
+      <jvmarg value="-Djava.awt.headless=true"/>
+      <batchtest>
+        <fileset dir="test/src">
+          <include name="**/${subdir}/*BlackBox*TestCase.java"/>
+          <exclude name="**/Abstract*.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="test-unit" depends="build-test">
+    <junit printsummary="on" haltonfailure="on" haltonerror="on" fork="true" dir=".">
+      <formatter type="plain" usefile="false"/>
+      <classpath>
+        <pathelement location="core.jar"/>
+        <pathelement location="build-test"/>
+        <pathelement location="../javase/javase.jar"/>
+        <pathelement location="lib/junit-4.8.2.jar"/>
+      </classpath>
+      <assertions>
+        <enable/>
+      </assertions>
+      <jvmarg value="-Djava.awt.headless=true"/>
+      <batchtest>
+        <fileset dir="test/src">
+          <include name="**/*TestCase.java"/>
+          <exclude name="**/*BlackBox*TestCase.java"/>
+          <exclude name="**/Abstract*.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="test" depends="test-unit,test-blackbox"/>
+
+  <target name="clean">
+    <delete dir="build"/>
+    <delete dir="build-test"/>
+    <delete dir="optimized"/>
+    <delete file="core.jar"/>
+    <delete file="ZXingReader.*"/>
+    <delete file="proguard-dump.txt"/>
+  </target>
+
+</project>

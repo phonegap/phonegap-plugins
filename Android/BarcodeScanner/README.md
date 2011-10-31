@@ -28,10 +28,6 @@ Updates by Simon MacDonald
               android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
               android:windowSoftInputMode="stateAlwaysHidden">
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-      </intent-filter>
-      <intent-filter>
         <action android:name="com.phonegap.plugins.barcodescanner.SCAN"/>
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>

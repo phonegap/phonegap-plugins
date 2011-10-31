@@ -17,11 +17,11 @@ Updates by Simon MacDonald
 
 7. In your res/xml/plugins.xml file add the following line:
 
-<plugin name="BarcodeScanner" value="com.phonegap.plugins.barcodescanner.BarcodeScanner"/>
+    `<plugin name="BarcodeScanner" value="com.phonegap.plugins.barcodescanner.BarcodeScanner"/>`
 
 8. Add the following activity to your AndroidManifest.xml file. It should be added inside the <application> tag.
 
-    <!-- ZXing activities -->
+    `<!-- ZXing activities -->
     <activity android:name="com.google.zxing.client.android.CaptureActivity"
               android:screenOrientation="landscape"
               android:configChanges="orientation|keyboardHidden"
@@ -41,7 +41,7 @@ Updates by Simon MacDonald
         <action android:name="com.phonegap.plugins.barcodescanner.ENCODE"/>
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
-    </activity>
+    </activity>`
 
 ## Using the plugin ##
 The plugin creates the object `window.plugins.barcodeScanner` with the method `scan(success, fail)`. 

@@ -129,7 +129,7 @@
 	
 	if(isImage)
 	{
-		NSURL* pURL = [ [NSURL alloc] initWithString:imageURL ];
+		NSURL* pURL = [[ [NSURL alloc] initWithString:imageURL ] autorelease];
 		[ [ UIApplication sharedApplication ] openURL:pURL  ];
 	}
 	else

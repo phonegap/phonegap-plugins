@@ -23,7 +23,7 @@ Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonega
 
 4. Add the following activity to your AndroidManifest.xml file.  It should be added inside the &lt;application&gt; tag.
 
-    &lt;activity android:name="com.phonegap.DroidGap" android:label="@string/app_name"&gt;<br/>
+    &lt;activity android:name="com.phonegap.plugins.childBrowser.ChildBrowser" android:label="@string/app_name"&gt;<br/>
       &lt;intent-filter&gt;<br/>
       &lt;/intent-filter&gt;<br/>
     &lt;/activity&gt;

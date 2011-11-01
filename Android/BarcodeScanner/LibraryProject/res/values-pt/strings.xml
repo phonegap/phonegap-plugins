@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (C) 2010 ZXing authors
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+<resources>
+  <string name="app_name">Barcode Scanner</string>
+  <string name="app_picker_name">Applications</string>
+  <string name="bookmark_picker_name">Marcadores</string>
+  <string name="button_add_calendar">Adicionar ao calendário</string>
+  <string name="button_add_contact">Adicionar contactos</string>
+  <string name="button_back">Anterior</string>
+  <string name="button_book_search">Pesquisar livro</string>
+  <string name="button_cancel">Cancelar</string>
+  <string name="button_clipboard_empty">Área de transferência vazia</string>
+  <string name="button_custom_product_search">Pesquisa personalizada</string>
+  <string name="button_dial">Marcar número</string>
+  <string name="button_done">Concluído</string>
+  <string name="button_email">Enviar e-mail</string>
+  <string name="button_get_directions">Obter direcções</string>
+  <string name="button_google_shopper">Google Shopper</string>
+  <string name="button_mms">Enviar MMS</string>
+  <string name="button_ok">OK</string>
+  <string name="button_open_browser">Abrir browser</string>
+  <string name="button_product_search">Pesquisar produto</string>
+  <string name="button_read_book">Procurar livro</string>
+  <string name="button_search_book_contents">Pesquisar conteúdo livro</string>
+  <string name="button_share_app">Application</string>
+  <string name="button_share_bookmark">Marcador</string>
+  <string name="button_share_by_email">Partilhar por e-mail</string>
+  <string name="button_share_by_sms">Partilhar por SMS</string>
+  <string name="button_share_clipboard">Área de transferência</string>
+  <string name="button_share_contact">Contacto</string>
+  <string name="button_show_map">Mostrar mapa</string>
+  <string name="button_sms">Enviar SMS</string>
+  <string name="button_web_search">Pesquisa Web</string>
+  <string name="button_wifi">Conectar à rede</string>
+  <string name="contents_contact">Info do contacto</string>
+  <string name="contents_email">Endereço electrónico</string>
+  <string name="contents_location">Coordenadas geográficas</string>
+  <string name="contents_phone">Número de telefone</string>
+  <string name="contents_sms">Endereço SMS</string>
+  <string name="contents_text">Texto simples</string>
+  <string name="history_clear_text">Limpar histórico</string>
+  <string name="history_email_title">Barcode Scanner história</string>
+  <string name="history_send">Enviar história</string>
+  <string name="history_title">Histórico</string>
+  <string name="menu_about">Acerca de</string>
+  <string name="menu_help">Ajuda</string>
+  <string name="menu_history">Histórico</string>
+  <string name="menu_settings">Definições</string>
+  <string name="menu_share">Partilhar</string>
+  <string name="msg_about">Baseado na biblioteca de código de barras de código aberto ZXing</string>
+  <string name="msg_buggy">Este dispositivo tem bugs conhecidos que causam problemas de varredura de código de barras. Para obter mais informações, visite http://code.google.com/p/zxing/wiki/FrequentlyAskedQuestions</string>
+  <string name="msg_bulk_mode_scanned">Bulk modo: código de barras digitalizado e guardado</string>
+  <string name="msg_camera_framework_bug">Desculpe, a câmera Android encontrou um problema. Você pode precisar reiniciar o dispositivo.</string>
+  <string name="msg_default_contents">Conteúdos</string>
+  <string name="msg_default_format">Formato</string>
+  <string name="msg_default_meta">Metadados</string>
+  <string name="msg_default_mms_subject">Olá</string>
+  <string name="msg_default_status">Coloque um código de barras dentro do retângulo do visor para decodificá-lo.</string>
+  <string name="msg_default_time">Tempo</string>
+  <string name="msg_default_type">Tipo</string>
+  <string name="msg_encode_barcode_failed">Não foi possível criar código de barras pedido.</string>
+  <string name="msg_encode_contents_failed">Não foi possível codificar código de barras dos dados fornecidos.</string>
+  <string name="msg_google_shopper_missing">Google Shopper não está instalado.</string>
+  <string name="msg_install_google_shopper">Google Shopper combina escaneamento de código de barras com os preços, opiniões e muito mais sem precisar abrir o navegador. Você gostaria de experimentar?</string>
+  <string name="msg_intent_failed">Lamentamos, não foi possível iniciar a aplicação pedida. Conteúdos do código de barras inválidos..</string>
+  <string name="msg_loading_apps">Carregando lista de pedidos\u2026</string>
+  <string name="msg_not_our_results">Você está deixando o presente pedido. Os resultados da pesquisa, você verá não estão ligadas a este pedido.</string>
+  <string name="msg_redirect">Redirecionar</string>
+  <string name="msg_sbc_book_not_searchable">Lamentamos, não é possível pesquisar este livro.</string>
+  <string name="msg_sbc_failed">Lamentamos, ocorreu um problema com a pesquisa.</string>
+  <string name="msg_sbc_no_page_returned">Não foram encontradas páginas</string>
+  <string name="msg_sbc_page">Página</string>
+  <string name="msg_sbc_searching_book">A pesquisar livro\u2026</string>
+  <string name="msg_sbc_snippet_unavailable">Recorte não disponível</string>
+  <string name="msg_sbc_unknown_page">Página desconhecida</string>
+  <string name="msg_share_explanation">Pode partilhar dados exibindo um código de barras no ecrã e digitalizando-o com outro telefone.</string>
+  <string name="msg_share_subject_line">Aqui está o conteúdo de um código de barras que digitalizei</string>
+  <string name="msg_share_text">Ou digite algum texto</string>
+  <string name="msg_unmount_usb">Desculpa, o cartão SD não está acessível.</string>
+  <string name="preferences_actions_title">Quando um código de barras é encontrado\u2026</string>
+  <string name="preferences_bulk_mode_summary">Digitalizar e salvar muitas barras continuamente</string>
+  <string name="preferences_bulk_mode_title">Bulk modo de digitalização</string>
+  <string name="preferences_copy_to_clipboard_title">Copiar para a área de transferência</string>
+  <string name="preferences_custom_product_search_title">URL de pesquisa personalizada </string>
+  <string name="preferences_decode_1D_title">Código de barras 1D</string>
+  <string name="preferences_decode_Data_Matrix_title">Data Matrix</string>
+  <string name="preferences_decode_QR_title">Códigos QR</string>
+  <string name="preferences_front_light_summary">Melhora a digitalização em baixa luminosidade em alguns aparelhos, mas pode causar ofuscamento. Não funciona em todos os telefones.</string>
+  <string name="preferences_front_light_title">Use a luz da frente</string>
+  <string name="preferences_general_title">Definições Gerais</string>
+  <string name="preferences_name">Definições</string>
+  <string name="preferences_play_beep_title">Bip</string>
+  <string name="preferences_remember_duplicates_summary">Armazenar vários scans do mesmo código de barras em História</string>
+  <string name="preferences_remember_duplicates_title">Lembre-se de duplicatas</string>
+  <string name="preferences_result_title">Definições de resultados</string>
+  <string name="preferences_reverse_image_summary">Use em dispositivos com uma câmera frontal só</string>
+  <string name="preferences_reverse_image_title">Invertida imagem da câmara</string>
+  <string name="preferences_scanning_title">Quando a digitalização de códigos de barras, descodificar\u2026</string>
+  <string name="preferences_supplemental_summary">Tente obter mais informações sobre o conteúdo do código de barras</string>
+  <string name="preferences_supplemental_title">Obter mais informações</string>
+  <string name="preferences_vibrate_title">Vibrar</string>
+  <string name="result_address_book">Info de contacto encontrada</string>
+  <string name="result_calendar">Evento de calendário encontrado </string>
+  <string name="result_email_address">Endereço electrónico encontrado</string>
+  <string name="result_geo">Coordenadas geográficas encontradas</string>
+  <string name="result_isbn">Livro encontrado</string>
+  <string name="result_product">Produto encontrado</string>
+  <string name="result_sms">Endereço SMS encontrado</string>
+  <string name="result_tel">Número de telefone encontrado</string>
+  <string name="result_text">Texto simples encontrado</string>
+  <string name="result_uri">URL encontrado</string>
+  <string name="result_wifi">Configuração de rede encontrados</string>
+  <string name="sbc_name">Pesquisa Google Book</string>
+  <string name="share_name">Partilhar por código de barras</string>
+  <string name="title_about">Scanner de código barras v</string>
+  <string name="wa_name">Configuração de rede</string>
+  <string name="wifi_changing_network">Mudar Rede</string>
+  <string name="wifi_connect_failed">A conexão de rede não</string>
+  <string name="wifi_connected">Ligado</string>
+  <string name="wifi_creating_network">Criação da rede</string>
+  <string name="wifi_modifying_network">Modificando Rede</string>
+  <string name="wifi_ssid_label">Nome da Rede</string>
+  <string name="wifi_ssid_missing">Nome da rede em falta</string>
+  <string name="wifi_type_incorrect">Rede de tipo incorreto</string>
+  <string name="wifi_type_label">Tipo</string>
+  <string name="zxing_url">http://code.google.com/p/zxing</string>
+</resources>

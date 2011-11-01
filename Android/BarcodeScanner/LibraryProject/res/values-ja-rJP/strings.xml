@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (C) 2010 ZXing authors
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+<resources>
+  <string name="app_name">QRコードスキャナー</string>
+  <string name="app_picker_name">アプリケーション</string>
+  <string name="bookmark_picker_name">ブックマーク</string>
+  <string name="button_add_calendar">カレンダーに追加</string>
+  <string name="button_add_contact">連絡先を追加</string>
+  <string name="button_back">戻る</string>
+  <string name="button_book_search">書籍を検索</string>
+  <string name="button_cancel">キャンセル</string>
+  <string name="button_clipboard_empty">クリップボードは空です</string>
+  <string name="button_custom_product_search">カスタム サーチ</string>
+  <string name="button_dial">発信</string>
+  <string name="button_done">完了</string>
+  <string name="button_email">メール送信</string>
+  <string name="button_get_directions">道案内</string>
+  <string name="button_google_shopper">Google ショッパー</string>
+  <string name="button_mms">MMS 送信</string>
+  <string name="button_ok">OK</string>
+  <string name="button_open_browser">ブラウザ起動</string>
+  <string name="button_product_search">商品検索</string>
+  <string name="button_read_book">図書の閲覧</string>
+  <string name="button_search_book_contents">書籍の内容を検索する</string>
+  <string name="button_share_app">アプリを共有する</string>
+  <string name="button_share_bookmark">ブックマークを送信する</string>
+  <string name="button_share_by_email">メールで送信する</string>
+  <string name="button_share_by_sms">SMSで送信する</string>
+  <string name="button_share_clipboard">クリップボードを送信する</string>
+  <string name="button_share_contact">連絡先を送信する</string>
+  <string name="button_show_map">地図を表示する</string>
+  <string name="button_sms">SMS送信</string>
+  <string name="button_web_search">インターネット検索</string>
+  <string name="button_wifi">ネットワークにつながる</string>
+  <string name="contents_contact">連絡先</string>
+  <string name="contents_email">メールアドレス</string>
+  <string name="contents_location">位置情報</string>
+  <string name="contents_phone">電話番号</string>
+  <string name="contents_sms">SMSアドレス</string>
+  <string name="contents_text">テキストデータ</string>
+  <string name="history_clear_text">履歴の削除</string>
+  <string name="history_email_title">QRコードスキャナー歴史</string>
+  <string name="history_send">履歴を送信</string>
+  <string name="history_title">履歴</string>
+  <string name="menu_about">詳細</string>
+  <string name="menu_help">ヘルプ</string>
+  <string name="menu_history">履歴</string>
+  <string name="menu_settings">設定</string>
+  <string name="menu_share">共有</string>
+  <string name="msg_about">オープンソースのバーコード ライブラリ、ZXing を使用しています</string>
+  <string name="msg_buggy">このデバイスでは、バーコードのスキャンに問題があります。 詳細については、http://code.google.com/p/zxing/wiki/FrequentlyAskedQuestions を参照してください </string>
+  <string name="msg_bulk_mode_scanned">連続モード：バーコードスキャンして保存</string>
+  <string name="msg_camera_framework_bug">申し訳ありませんが、Androidのカメラに問題が発生しました。デバイスを再起動する必要があります。</string>
+  <string name="msg_default_contents">コンテンツ</string>
+  <string name="msg_default_format">フォーマット</string>
+  <string name="msg_default_meta">メタデータ</string>
+  <string name="msg_default_mms_subject">こんにちは！</string>
+  <string name="msg_default_status">バーコードをカメラ画面の読み取り範囲内に写してスキャンしてください。</string>
+  <string name="msg_default_time">時間</string>
+  <string name="msg_default_type">タイプ</string>
+  <string name="msg_encode_barcode_failed">バーコードを作成できませんでした。</string>
+  <string name="msg_encode_contents_failed">このデータからバーコードを作成できませんでした。</string>
+  <string name="msg_google_shopper_missing">Google ショッパーがインストールされていません</string>
+  <string name="msg_install_google_shopper">Google ショッパーは、ブラウザを使わなくても、価格やレビューなどを見ることができます。試しますか？</string>
+  <string name="msg_intent_failed">指定されたアプリケーションを起動できませんでした。バーコードの内容が無効である可能性があります。</string>
+  <string name="msg_loading_apps">アプリケーションの一覧を読み込んでいます</string>
+  <string name="msg_not_our_results">このアプリケーションを終了します。この後に表示される検索結果は、このアプリケーションとは関係ありません。</string>
+  <string name="msg_redirect">リダイレクト</string>
+  <string name="msg_sbc_book_not_searchable">この書籍は検索できません。</string>
+  <string name="msg_sbc_failed">検索中に問題が発生しました。</string>
+  <string name="msg_sbc_no_page_returned">検索結果はありません</string>
+  <string name="msg_sbc_page">ページ</string>
+  <string name="msg_sbc_searching_book">書籍を検索中</string>
+  <string name="msg_sbc_snippet_unavailable">要約文はありません</string>
+  <string name="msg_sbc_unknown_page">不明なページ</string>
+  <string name="msg_share_explanation">画面にバーコードを表示させ、別の端末でスキャンすれば データを共有することができます。</string>
+  <string name="msg_share_subject_line">スキャンしたバーコードの内容を送信します。</string>
+  <string name="msg_share_text">または一部のテキストを入力</string>
+  <string name="msg_unmount_usb">申し訳ありませんが、SDカードにアクセスできません。</string>
+  <string name="preferences_actions_title">バーコード発見時</string>
+  <string name="preferences_bulk_mode_summary">多くのバーコード連続してスキャンし、保存する</string>
+  <string name="preferences_bulk_mode_title">連続モードでのスキャン</string>
+  <string name="preferences_copy_to_clipboard_title">クリップボードにコピーする</string>
+  <string name="preferences_custom_product_search_title">カスタム商品サーチ URL</string>
+  <string name="preferences_decode_1D_title">1Dバーコードを読み取る</string>
+  <string name="preferences_decode_Data_Matrix_title">データマトリックスコードを読み取る</string>
+  <string name="preferences_decode_QR_title">QRコードを読み取る</string>
+  <string name="preferences_front_light_summary">可能な場合、フロントライトを有効にする</string>
+  <string name="preferences_front_light_title">フロントライト</string>
+  <string name="preferences_general_title">一般設定</string>
+  <string name="preferences_name">設定</string>
+  <string name="preferences_play_beep_title">通知音</string>
+  <string name="preferences_remember_duplicates_summary">履歴に、同じバーコードを複数記録する</string>
+  <string name="preferences_remember_duplicates_title">重複する履歴の記録</string>
+  <string name="preferences_result_title">検索結果の設定</string>
+  <string name="preferences_reverse_image_summary">フロントカメラのみを持つデバイスで有効にする</string>
+  <string name="preferences_reverse_image_title">カメラ画像の反転</string>
+  <string name="preferences_scanning_title">バーコードスキャン時</string>
+  <string name="preferences_supplemental_summary">バーコード内容についての詳細情報を取得してみてください</string>
+  <string name="preferences_supplemental_title">取得の詳細情報をもっと見る</string>
+  <string name="preferences_vibrate_title">バイブ</string>
+  <string name="result_address_book">連絡先がヒットしました</string>
+  <string name="result_calendar">カレンダーの予定がヒットしました</string>
+  <string name="result_email_address">メールアドレスがヒットしました</string>
+  <string name="result_geo">地理座標がヒットしました</string>
+  <string name="result_isbn">書籍がヒットしました</string>
+  <string name="result_product">商品がヒットしました</string>
+  <string name="result_sms">SMS 連絡先がヒットしました</string>
+  <string name="result_tel">電話番号がヒットしました</string>
+  <string name="result_text">テキストデータがヒットしました</string>
+  <string name="result_uri">URL がヒットしました</string>
+  <string name="result_wifi">ネットワーク構成がヒットしました</string>
+  <string name="sbc_name">Google ブックス</string>
+  <string name="share_name">バーコードで共有する</string>
+  <string name="title_about">>QRコードスキャナー v</string>
+  <string name="wa_name">ネットワーク構成</string>
+  <string name="wifi_changing_network">ネットワークを変更する</string>
+  <string name="wifi_connect_failed">ネットワーク接続が失敗しました。</string>
+  <string name="wifi_connected">接続</string>
+  <string name="wifi_creating_network">ネットワーク作成</string>
+  <string name="wifi_modifying_network">ネットワークを変更する</string>
+  <string name="wifi_ssid_label">ネットワーク名</string>
+  <string name="wifi_ssid_missing">SSIDがありません</string>
+  <string name="wifi_type_incorrect">ネットワーク種類が不正</string>
+  <string name="wifi_type_label">タイプ</string>
+  <string name="zxing_url">http://code.google.com/p/zxing</string>
+</resources>

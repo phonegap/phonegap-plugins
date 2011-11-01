@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
@@ -46,6 +48,7 @@ public class ChildBrowser extends Plugin {
 
     private Dialog dialog;
     private WebView webview;
+    private EditText edittext; 
     private boolean showLocationBar = true;
 
     /**
@@ -166,11 +169,15 @@ public class ChildBrowser extends Plugin {
      * 
      * @param url to load
      */
-    private void navigate(String url) {
+    private void navigate(String url) {        
+        InputMethodManager imm = (InputMethodManager)this.ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(edittext.getWindowToken(), 0);
+
         if (!url.startsWith("http")) {
             this.webview.loadUrl("http://" + url);            
         }
         this.webview.loadUrl(url);
+        this.webview.requestFocus();
     }
 
 
@@ -255,7 +262,7 @@ public class ChildBrowser extends Plugin {
                 }               
                 forward.setLayoutParams(forwardParams);
                 
-                final EditText edittext = new EditText(ctx);
+                edittext = new EditText(ctx);
                 edittext.setOnKeyListener(new View.OnKeyListener() {
                     public boolean onKey(View v, int keyCode, KeyEvent event) {
                         // If the event is a key-down event on the "enter" button
@@ -270,7 +277,7 @@ public class ChildBrowser extends Plugin {
                 edittext.setSingleLine(true);
                 edittext.setText(url);
                 edittext.setLayoutParams(editParams);
-                    
+                
                 ImageButton close = new ImageButton(ctx);                
                 close.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -287,11 +294,16 @@ public class ChildBrowser extends Plugin {
                                 
                 webview = new WebView(ctx);
                 webview.getSettings().setJavaScriptEnabled(true);
+                webview.getSettings().setBuiltInZoomControls(true);
                 WebViewClient client = new ChildBrowserClient(ctx, edittext);
                 webview.setWebViewClient(client);                
                 webview.loadUrl(url);
                 webview.setId(5);
+                webview.setInitialScale(0);
                 webview.setLayoutParams(wvParams);
+                webview.requestFocus();
+                webview.requestFocusFromTouch();
+                
                 
                 toolbar.addView(back);
                 toolbar.addView(forward);
@@ -363,7 +375,7 @@ public class ChildBrowser extends Plugin {
         public void onPageStarted(WebView view, String url,  Bitmap favicon) {
             super.onPageStarted(view, url, favicon);            
             String newloc;
-            if (url.startsWith("http")) {
+            if (url.startsWith("http:")) {
                 newloc = url;
             } else {
                 newloc = "http://" + url;

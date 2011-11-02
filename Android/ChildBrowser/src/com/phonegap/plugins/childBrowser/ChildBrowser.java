@@ -375,7 +375,7 @@ public class ChildBrowser extends Plugin {
         public void onPageStarted(WebView view, String url,  Bitmap favicon) {
             super.onPageStarted(view, url, favicon);            
             String newloc;
-            if (url.startsWith("http:")) {
+            if (url.startsWith("http:") || url.startsWith("https:")) {
                 newloc = url;
             } else {
                 newloc = "http://" + url;

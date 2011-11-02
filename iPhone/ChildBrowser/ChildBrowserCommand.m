@@ -35,10 +35,15 @@
 
 	PhoneGapViewController* cont = (PhoneGapViewController*)[ super appViewController ];
 	childBrowser.supportedOrientations = cont.supportedOrientations;
-	[ cont presentModalViewController:childBrowser animated:YES ];
-	
+	//[ cont presentModalViewController:childBrowser animated:YES ];
+    
+    if ([self respondsToSelector:@selector(presentViewController)]) { //Reference UIViewController.h Line:179 for update to iOS 5 difference - @RandyMcMillan
+        [ cont presentViewController:childBrowser animated:YES completion:nil];        
+    } else {
+        [ cont presentModalViewController:childBrowser animated:YES ];
+    }
+    
 	NSString *url = (NSString*) [arguments objectAtIndex:0];
-	
 
 	[childBrowser loadURL:url  ];
 
@@ -73,8 +78,5 @@
 	[self.webView stringByEvaluatingJavaScriptFromString:jsCallback];
 
 }
-
-
-
 
 @end

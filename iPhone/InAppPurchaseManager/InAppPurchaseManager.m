@@ -7,7 +7,7 @@
 //
 
 #import "InAppPurchaseManager.h"
-
+#import "JSONKit.h"
 
 @implementation InAppPurchaseManager
 
@@ -195,24 +195,19 @@
 @synthesize callback, command;
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
-	NSString *validProductsJS = @"";
-	NSString *invalidProductsJS = @"";
-	NSString *js = @"";
 
+    NSMutableArray *validProducts = [NSMutableArray array];
 	for (SKProduct *product in response.products) {
-		validProductsJS = [NSString
-							  stringWithFormat:
-								@"%@{id: '%@', title: '%@', description: '%@', price: '%@'}, ",
-							  validProductsJS,
-							  product.productIdentifier,
-							  product.localizedTitle,
-							  product.localizedDescription,
-							  product.localizedPrice];
+        [validProducts addObject:
+         [NSDictionary dictionaryWithObjectsAndKeys:
+          product.productIdentifier, @"id",
+          product.localizedTitle, @"title",
+          product.localizedDescription, @"description",
+          product.localizedPrice, @"price",
+          nil]];
     }
 
-	invalidProductsJS = [response.invalidProductIdentifiers componentsJoinedByString:@", "];
-
-	js = [NSString stringWithFormat:@"%@([%@], [%@]);", callback, validProductsJS, invalidProductsJS];
+	NSString *js = [NSString stringWithFormat:@"%@(%@, %@);", callback, [validProducts JSONString], [response.invalidProductIdentifiers JSONString]];
 	[command writeJavascript: js];
 
 	[request release];

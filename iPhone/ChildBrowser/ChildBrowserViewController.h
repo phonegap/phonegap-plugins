@@ -31,14 +31,18 @@
 	IBOutlet UIBarButtonItem* backBtn;
 	IBOutlet UIBarButtonItem* fwdBtn;
 	IBOutlet UIBarButtonItem* safariBtn;
+  IBOutlet UIBarButtonItem* documentBtn;
 	IBOutlet UIActivityIndicatorView* spinner;
+  UIDocumentInteractionController* docController;
 	BOOL scaleEnabled;
 	BOOL isImage;
 	NSString* imageURL;
 	NSArray* supportedOrientations;
 	id <ChildBrowserDelegate> delegate;
+  id <UIDocumentInteractionControllerDelegate> docControllerDelegate;
 }
 
+@property (retain) UIDocumentInteractionController* docController;
 @property (nonatomic, retain)id <ChildBrowserDelegate> delegate;
 @property (nonatomic, retain) 	NSArray* supportedOrientations;
 @property(retain) NSString* imageURL;
@@ -48,7 +52,9 @@
 - (ChildBrowserViewController*)initWithScale:(BOOL)enabled;
 - (IBAction)onDoneButtonPress:(id)sender;
 - (IBAction)onSafariButtonPress:(id)sender;
+- (IBAction)onDocumentButtonPress:(id)sender;
+- (UIDocumentInteractionController *)setupControllerWithURL:(NSURL *)fileURL usingDelegate:(id <UIDocumentInteractionControllerDelegate>)interactionDelegate;
 - (void)loadURL:(NSString*)url;
--(void)closeBrowser;
+- (void)closeBrowser;
 
 @end

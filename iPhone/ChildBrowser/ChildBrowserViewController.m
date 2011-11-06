@@ -99,16 +99,22 @@
 	[super dealloc];
 }
 
--(void)closeBrowser
-{
-	
-	if(delegate != NULL)
-	{
-		[delegate onClose];		
-	}
-	
-	[ [super parentViewController] dismissModalViewControllerAnimated:YES];
-}
+-(void)closeBrowser 
+{ 
+    if(delegate != NULL) 
+    { 
+        [self.delegate onClose]; 
+    } 
+    
+    if ([[super parentViewController] 
+         respondsToSelector:@selector(dismissModalViewControllerAnimated:)]) { 
+        [[super parentViewController] dismissModalViewControllerAnimated:YES]; 
+    } else { 
+        
+        [[super presentingViewController] dismissViewControllerAnimated:YES 
+                                                             completion:nil]; 
+    } 
+} 
 
 -(IBAction) onDoneButtonPress:(id)sender
 {

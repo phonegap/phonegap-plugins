@@ -1,13 +1,13 @@
 # ClipboardManager plugin for Phonegap #
 By Omer Saatcioglu
+Enhanced by Guillaume Charhon
 
 ## Adding the Plugin to your project ##
 1. To install the plugin, move clipboardmanager.js to your project's www folder and include a reference to it in your html files. 
 2. Create a folder called 'src/com/saatcioglu/phonegap/clipboardmanager' within your project's src folder.
-3. And copy ClipboardManagerPlugin.java into that new folder.
-
-`mkdir <your_project>/src/com/saatcioglu/phonegap/clipboardmanager`
-`cp ./ClipboardManagerPlugin.java <your_project>/src/com/beetight/barcodescanner`
+3. Copy ClipboardManagerPlugin.java into that new folder.
+4. Add in your plugins.xml (located in /res/xml/)
+<plugin name="ClipboardManager" value="com.saatcioglu.phonegap.clipboardmanager.ClipboardManagerPlugin"/>
 
 ## Using the plugin ##
 The plugin creates the object `window.plugins.clipboardManager` with the methods 
@@ -32,10 +32,6 @@ An example for paste:
 		function(e){alert(e)}
 	);
 
-	
-## BUGS AND CONTRIBUTIONS ##
-The latest version is available [at GitHub](https://github.com/osaatcioglu/phonegap-plugins/tree/master/Android)
-If you have a patch, fork my repo baby and send me a pull request. Submit bug reports on GitHub, please.
 	
 ## Licence ##
 The MIT License

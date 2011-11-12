@@ -251,7 +251,7 @@
     NSString  *name = [arguments objectAtIndex:0];
     UITabBarItem *item = [tabBarItems objectForKey:name];
     if (item)
-        item.badgeValue = [options objectForKey:@"bad   ge"];
+        item.badgeValue = [options objectForKey:@"badge"];
 }
 
 

@@ -12,7 +12,7 @@ is available before using it, so you should be able to link this into an
 application targeting iOS 3.x or earlier (though the barcode scanning will
 not work).
 
-The plugin creates the object `window.plugins.barcodescanner` with two methods:
+The plugin creates the object `window.plugins.barcodeScanner` with two methods:
 
     scan(success, fail)
     encode(type, data, success, fail, options)
@@ -35,7 +35,7 @@ The `scan` function is invoked as follows:
 
 A full example could be:
 
-    window.plugins.barcodescanner.scan(
+    window.plugins.barcodeScanner.scan(
         function(result) {
             if (result.cancelled)
                 alert("the user cancelled the scan")
@@ -69,7 +69,9 @@ Barcode formats constants in the zxing code.
 
 * Copy the .h, .cpp and .mm files to the Plugins directory in your project.
 * Copy the .js file to your www directory and reference it from your html file(s).
-* In the `Supporting Files` directory of your project, add a new plugin:
+* In the `Supporting Files` directory of your project, add a new plugin
+by editing the file `PhoneGap.plist` and in the `Plugins` dictionary adding
+the following key/value pair:
  * key: `com.phonegap.barcodeScanner`
  * value: `PGBarcodeScanner`
 * Add the following libraries to your Xcode project, if not already there:
@@ -86,6 +88,11 @@ Barcode formats constants in the zxing code.
 
 ## Building ##
 
+Note that you only need to follow the instructions below if you are intending
+on **making changes** to the zxing code.  If you just want
+to **use** the barcode scanner plugin, you don't need to build.  All the build
+step does is rebuild the `zxing-all-in-one` files.
+
 To make life a little easier for folks using this plugin, all the of zxing
 code is combined into a single file, rather than dealing with Xcode subprojects.
 To build the `zxing-all-in-one.cpp` and
@@ -96,18 +103,8 @@ corresponding `.h` file, cd into the `build` directory and run `make`.
 Under the `test` directory is a test case you can use to test the plugin.
 It has two parts - a desktop web page, and a phonegap app.
 
-To build the phonegap app, drop all the files in `test/phonegap-app` into
-a new PhoneGap project and build it per the instructions above.
-
-Once the phonegap app has build built, run it on your device.
-
-Next, run the desktop app, by opening the `test/desktop-app/index.html` file in a browser.
-
-The desktop app and phone app are synchronized to display a barcode and then
-have you scan that barcode.  The results of scanning the barcodes is provided
-once all the barcodes have been scanned.  If you can't get the scanner to
-recognized a particular barcode, use the `Cancel` button (which will cause
-that test to fail).
+To build the test applications, follow the instructions in the `README.md` file
+in the `test` directory.
 
 ## Licence ##
 

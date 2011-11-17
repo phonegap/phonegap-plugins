@@ -86,6 +86,50 @@ the following key/value pair:
 
 * You may need to set the compile options for zxing-all-in-one.cc to turn off optimization.
 
+## Compile Errors for Automagic Reference Counting (ARC) ##
+
+For people developing on Mac OS X >= 10.7 (Lion) and using XCode >= 4.2, the
+option of using "Automatic Reference Counting" (ARC) is available.  For more
+information on ARC, see the documentation for it at the [clang documentation site](http://clang.llvm.org/docs/AutomaticReferenceCounting.html).
+
+Unfortunately, the native code for BarcodeScanner (the .cpp, .mm, etc files) is
+not compatible with ARC.  If you try to compile the native code with ARC
+enabled, you will see compile errors referencing ARC, such as:
+
+    /some/file.mm:40:1: error: 'NSXyzSomething' is unavailable: not available in automatic reference counting mode
+
+You will need to ensure you are not compiling the
+plugin native code with ARC to avoid these compile errors.
+There are several ways to do this:
+
+* Set the project compiler to "LLVM GCC 4.2", instead of "Apple LLVM 3.0"; ARC is
+only supported when you use Apple LLVM. To set the project compiler,
+in your Project, under
+"Build Settings", and then under "Build Options", there is a setting for
+"Compiler for C/C++/Objective-C". Change that value to "LLVM GCC 4.2".
+
+* Set the project compiler to "Apple LLVM 3.0", but disable ARC.
+To disable ARC, in your Project, under "Build Settings", and then under
+"Apple LLVM compiler 3.0 - Language", in the setting
+"Objective-C Automatic Reference Counting", change the setting to "No".
+
+* Disable ARC on a per-file basis.  To disable ARC for a file,
+in your Target, in the "Build Phases", and then in the "Compile Sources" section,
+double-click each .m/.mm/.cpp/.c/etc file, and add the compiler flag
+"-fno-objc-arc" (no quotes).
+
+Also note that when you create a new Xcode project, you will be given the
+option of enabling ARC or not for the project.  The option appears as a check
+box in one of the dialogs you are presented with while creating the project.
+You can keep that check box unselected (unchecked) and then not having to worry
+about ARC issues for the project.  If you enable ARC for the project (checked),
+you will have to disable ARC for the plugin natives using one of the methods above.
+
+Further note that if you do **not** enable ARC during the project creation,
+the "Objective-C Automatic Reference Counting" setting under the
+"Apple LLVM compiler 3.0 - Language" section (second bullet above) will not
+appear.
+
 ## Building ##
 
 Note that you only need to follow the instructions below if you are intending

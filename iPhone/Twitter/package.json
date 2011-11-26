@@ -1,0 +1,15 @@
+{
+  "author": "Brian Antonelli",
+  "name": "com.phonegap.twitter",
+  "description": "PhoneGap Twitter Plugin",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/brianantonelli/phonegap-plugin-twitter.git"
+  },
+  "engines": {
+    "phonegap": "1.0.0"
+  },
+  "dependencies": {},
+  "development_dependencies": {}
+}

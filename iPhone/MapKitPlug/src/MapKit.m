@@ -9,11 +9,10 @@
 #import "AsyncImageView.h"
 
 #ifdef PHONEGAP_FRAMEWORK
-	#import <PhoneGap/SBJsonParser.h>
-	#import <PhoneGap/SBJSON.h>
+	#import <PhoneGap/JSONKit.h>
 #else
-	#import "SBJsonParser.h"
-	#import "SBJSON.h"
+	// https://github.com/johnezang/JSONKit
+	#import "JSONKit.h"
 #endif
 
 @implementation MapKitView
@@ -98,9 +97,8 @@
 
 - (void)addMapPins:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 {
-  SBJSON *parser=[[SBJSON alloc] init];
-	NSArray *pins = [parser objectWithString:[arguments objectAtIndex:0]];
-	[parser autorelease];
+
+  NSArray *pins = [[arguments objectAtIndex:0] objectFromJSONString];
 	
   for (int y = 0; y < pins.count; y++) 
 	{
@@ -152,9 +150,6 @@
 	CLLocationCoordinate2D centerCoord = { [[options objectForKey:@"lat"] floatValue] , [[options objectForKey:@"lon"] floatValue] };
 	CLLocationDistance diameter = [[options objectForKey:@"diameter"] floatValue];
 	
-	
-	SBJSON *parser=[[SBJSON alloc] init];
-	[parser autorelease];
 	CGRect webViewBounds = self.webView.bounds;
 	
 	CGRect mapBounds;

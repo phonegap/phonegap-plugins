@@ -7,7 +7,7 @@ GoogleAnalyticsPlugin.prototype.startTrackerWithAccountID = function(id) {
 GoogleAnalyticsPlugin.prototype.trackPageview = function(pageUri) {
 	PhoneGap.exec("GoogleAnalyticsPlugin.trackPageview",pageUri);
 };
-														
+
 GoogleAnalyticsPlugin.prototype.trackEvent = function(category,action,label,value) {
 	var options = {category:category,
 		action:action,
@@ -16,10 +16,13 @@ GoogleAnalyticsPlugin.prototype.trackEvent = function(category,action,label,valu
 	PhoneGap.exec("GoogleAnalyticsPlugin.trackEvent",options);
 };
 
+GoogleAnalyticsPlugin.prototype.hitDispatched = function(hitString) {
+	//console.log("hitDispatched :: " + hitString);
+};
 GoogleAnalyticsPlugin.prototype.trackerDispatchDidComplete = function(count) {
 	//console.log("trackerDispatchDidComplete :: " + count);
 };
- 
+
 PhoneGap.addConstructor(function() {
   if(!window.plugins) window.plugins = {};
   window.plugins.googleAnalyticsPlugin = new GoogleAnalyticsPlugin();

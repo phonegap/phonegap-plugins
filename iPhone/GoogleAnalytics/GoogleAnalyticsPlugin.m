@@ -20,7 +20,7 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 
 	[[GANTracker sharedTracker] startTrackerWithAccountID:accountId
 										   dispatchPeriod:kGANDispatchPeriodSec
-												 delegate:nil];
+												 delegate:self];
 
 }
 
@@ -58,12 +58,20 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 	}
 }
 
-- (void)trackerDispatchDidComplete:(GANTracker *)tracker
-                  eventsDispatched:(NSUInteger)eventsDispatched
-              eventsFailedDispatch:(NSUInteger)eventsFailedDispatch
+- (void) hitDispatched:(NSString *)hitString
+{
+	NSString* callback = [NSString stringWithFormat:@"window.plugins.googleAnalyticsPlugin.hitDispatched(%d);",
+						  hitString];
+	[ self.webView stringByEvaluatingJavaScriptFromString:callback];
+
+}
+
+- (void) trackerDispatchDidComplete:(GANTracker *)tracker
+                  eventsDispatched:(NSUInteger)hitsDispatched
+              eventsFailedDispatch:(NSUInteger)hitsFailedDispatch
 {
 	NSString* callback = [NSString stringWithFormat:@"window.plugins.googleAnalyticsPlugin.trackerDispatchDidComplete(%d);",
-							eventsDispatched];
+							hitsDispatched];
 	[ self.webView stringByEvaluatingJavaScriptFromString:callback];
 
 }

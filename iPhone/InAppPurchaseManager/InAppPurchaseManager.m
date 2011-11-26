@@ -7,7 +7,27 @@
 //
 
 #import "InAppPurchaseManager.h"
-#import "JSONKit.h"
+
+// Help create NSNull objects for nil items (since neither NSArray nor NSDictionary can store nil values).
+#define NILABLE(obj) ((obj) != nil ? (NSObject *)(obj) : (NSObject *)[NSNull null])
+
+// To avoid compilation warning, declare JSONKit and SBJson's
+// category methods without including their header files.
+@interface NSArray (StubsForSerializers)
+- (NSString *)JSONString;
+- (NSString *)JSONRepresentation;
+@end
+
+// Helper category method to choose which JSON serializer to use.
+@interface NSArray (JSONSerialize)
+- (NSString *)JSONSerialize;
+@end
+
+@implementation NSArray (JSONSerialize)
+- (NSString *)JSONSerialize {
+    return [self respondsToSelector:@selector(JSONString)] ? [self JSONString] : [self JSONRepresentation];
+}
+@end
 
 @implementation InAppPurchaseManager
 
@@ -125,7 +145,15 @@
                 continue;
         }
 		NSLog(@"state: %@", state);
-		NSString *js = [NSString stringWithFormat:@"plugins.inAppPurchaseManager.updatedTransactionCallback('%@',%d, '%@','%@','%@','%@')", state, errorCode, error, transactionIdentifier, productId, transactionReceipt ];
+        NSArray *callbackArgs = [NSArray arrayWithObjects:
+                                 NILABLE(state),
+                                 [NSNumber numberWithInt:errorCode],
+                                 NILABLE(error),
+                                 NILABLE(transactionIdentifier),
+                                 NILABLE(productId),
+                                 NILABLE(transactionReceipt),
+                                 nil];
+		NSString *js = [NSString stringWithFormat:@"plugins.inAppPurchaseManager.updatedTransactionCallback.apply(null, %@)", [callbackArgs JSONSerialize]];
 		NSLog(@"js: %@", js);
 		[self writeJavascript: js];
 		[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
@@ -157,7 +185,13 @@
 	NSLog(@"got iap product response");
     for (SKProduct *product in response.products) {
 		NSLog(@"sending js for %@", product.productIdentifier);
-		NSString *js = [NSString stringWithFormat:@"%@('%@','%@','%@','%@')", successCallback, product.productIdentifier, product.localizedTitle, product.localizedDescription, product.localizedPrice];
+        NSArray *callbackArgs = [NSArray arrayWithObjects:
+                                 NILABLE(product.productIdentifier),
+                                 NILABLE(product.localizedTitle),
+                                 NILABLE(product.localizedDescription),
+                                 NILABLE(product.localizedPrice),
+                                 nil];
+		NSString *js = [NSString stringWithFormat:@"%@.apply(null, %@)", successCallback, [callbackArgs JSONSerialize]];
 		NSLog(@"js: %@", js);
 		[command writeJavascript: js];
     }
@@ -200,14 +234,18 @@
 	for (SKProduct *product in response.products) {
         [validProducts addObject:
          [NSDictionary dictionaryWithObjectsAndKeys:
-          product.productIdentifier, @"id",
-          product.localizedTitle, @"title",
-          product.localizedDescription, @"description",
-          product.localizedPrice, @"price",
+          NILABLE(product.productIdentifier),    @"id",
+          NILABLE(product.localizedTitle),       @"title",
+          NILABLE(product.localizedDescription), @"description",
+          NILABLE(product.localizedPrice),       @"price",
           nil]];
     }
 
-	NSString *js = [NSString stringWithFormat:@"%@(%@, %@);", callback, [validProducts JSONString], [response.invalidProductIdentifiers JSONString]];
+    NSArray *callbackArgs = [NSArray arrayWithObjects:
+                             NILABLE(validProducts),
+                             NILABLE(response.invalidProductIdentifiers),
+                             nil];
+	NSString *js = [NSString stringWithFormat:@"%@.apply(null, %@);", callback, [callbackArgs JSONSerialize]];
 	[command writeJavascript: js];
 
 	[request release];

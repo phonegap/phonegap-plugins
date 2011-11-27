@@ -8,6 +8,8 @@ Using this plugin requires [PhoneGap for iPhone](http://github.com/phonegap/phon
 1. Add the ClipboardPlugin.h and ClipboardPlugin.m files to your "Plugins" folder in your PhoneGap project
 2. Add the clipboardPlugin.js files to your "www" folder on disk, and add a reference to the .js file as <link> tags in your html file(s)
 
+This plugin supports copying and pasting only text and no other data types right now, as it uses the Uniform Type Identifier public.text, but it could be extended to work with any UTI, e.g. by passing the type as optional parameter.
+
 ## RELEASE NOTES ##
 
 ### 20101223 ###

@@ -43,4 +43,8 @@
 
 - (void)shareToFacebook:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
+- (void)shareToTwitter:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+- (void)shareToMail:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
 @end

@@ -68,13 +68,54 @@
 }
 
 - (void)shareToFacebook:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
+        
+    [[SHK currentHelper] setRootViewController:self.appViewController];
+    
+    SHKItem *item;
+    
     NSString *message = [arguments objectAtIndex:1];
     if ([arguments objectAtIndex:2]) {
-       NSURL *itemUrl = [NSURL URLWithString:[arguments objectAtIndex:2]];     
-       [SHKFacebook shareURL:itemUrl title:message];
+        NSURL *itemUrl = [NSURL URLWithString:[arguments objectAtIndex:2]];  
+        item = [SHKItem URL:itemUrl title:message];
     } else {
-        [SHKFacebook shareText:message];
+        item = [SHKItem text:message];
     }
+    
+    [SHKFacebook shareItem:item];
+    
+}
+
+- (void)shareToTwitter:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
+    [[SHK currentHelper] setRootViewController:self.appViewController];
+    
+    SHKItem *item;
+    
+    NSString *message = [arguments objectAtIndex:1];
+    if ([arguments objectAtIndex:2]) {
+        NSURL *itemUrl = [NSURL URLWithString:[arguments objectAtIndex:2]];  
+        item = [SHKItem URL:itemUrl title:message];
+    } else {
+        item = [SHKItem text:message];
+    }
+    
+    [SHKTwitter shareItem:item];
+
+}
+
+- (void)shareToMail:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
+    [[SHK currentHelper] setRootViewController:self.appViewController];
+    
+    SHKItem *item;
+    
+    NSString *message = [arguments objectAtIndex:1];
+    if ([arguments objectAtIndex:2]) {
+        NSURL *itemUrl = [NSURL URLWithString:[arguments objectAtIndex:2]];  
+        item = [SHKItem URL:itemUrl title:message];
+    } else {
+        item = [SHKItem text:message];
+    }
+    
+    [SHKMail shareItem:item];
     
 }
 

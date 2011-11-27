@@ -61,6 +61,20 @@ ShareKitPlugin.prototype.shareToFacebook = function( message, url)
     
 };
 
+ShareKitPlugin.prototype.shareToTwitter = function( message, url)
+{
+	
+    PhoneGap.exec(null, null, "ShareKitPlugin", "shareToTwitter", [message, url] );
+    
+};
+
+ShareKitPlugin.prototype.shareToMail = function( subject, message)
+{
+	
+    PhoneGap.exec(null, null, "ShareKitPlugin", "shareToMail", [subject, message] );
+    
+};
+
 
 
 

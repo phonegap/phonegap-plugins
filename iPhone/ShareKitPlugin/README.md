@@ -69,6 +69,10 @@ you must logout the current one first );
 
 7. `shareToFacebook(message, url )` Shows only the post in the wall form of Facebook if the user is logged in. 
 
+8. `shareToTwitter(message, url)` Shares an item specifically with Twitter, will automatically shorten the URL
+
+9. `shareToMail(subject, body)` Opens up the iOS mail dialog with pre-filled subject and body
+
 ## Running the example
 The example is a project for XCode 4. It shows a basic use case for the plugin, in order to use it you must add the API keys of the services that you want to test in the SHKConfig.h file.
 

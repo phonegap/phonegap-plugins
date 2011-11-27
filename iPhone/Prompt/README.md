@@ -1,6 +1,10 @@
 # Prompt plugin for Phonegap #
 By Paul Panserrieu, Zenexity
 
+## ChangeLog ##
+
+* 11/15/2011 Fixing the textField background for ios 5.
+
 ## Credits ##
 This plugin is highly inspirated by a blog post from Jeff Lamarche 
 ( http://iphonedevelopment.blogspot.com/2009/02/alert-view-with-prompt.html )

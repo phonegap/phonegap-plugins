@@ -1,7 +1,15 @@
 # PhoneGap MessageBox Plugin #
-by Olivier Louvignes
+by `Olivier Louvignes`
 
-## Adding the Plugin to your project ##
+## DESCRIPTION ##
+
+* This plugin provides an unified API to use the `UIAlertView` native component from IOS. It does comply with the latest (future-2.x) phonegap standards.
+
+* Compared to the `iPhone/Prompt` plugin, it is more documented/simpler to understand & provide new options for prompt (message, multiline, input type password).
+
+* You can use this `Sencha Touch 2.0` plugin to easily leverage this plugin [here](https://github.com/mgcrea/phonegap-plugins/wiki/iPhone-MessageBox)
+
+## SETUP ##
 
 Using this plugin requires [iPhone PhoneGap](http://github.com/phonegap/phonegap-iphone).
 
@@ -49,8 +57,10 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## CREDITS
+## CREDITS ##
 
-Inspired by
+Inspired by :
+
 * [Prompt Phonegap plugin](https://github.com/phonegap/phonegap-plugins/tree/master/iPhone/Prompt)
+
 * [MessageBox Sencha Touch 2.0 class](http://docs.sencha.com/touch/2-0/#!/api/Ext.MessageBox)

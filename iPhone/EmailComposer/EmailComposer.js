@@ -1,5 +1,5 @@
 // window.plugins.emailComposer
-													  
+
 function EmailComposer()
 {
 	this.resultCallback = null; // Function
@@ -34,7 +34,7 @@ EmailComposer.prototype.showEmailComposer = function(subject,body,toRecipients,c
 	if(bIsHTML)
 		args.bIsHTML = bIsHTML;
 
-	PhoneGap.exec("EmailComposer.showEmailComposer",args);
+	PhoneGap.exec("com.phonegap.emailComposer.showEmailComposer",args);
 }
 
 // this will be forever known as the orch-func -jm

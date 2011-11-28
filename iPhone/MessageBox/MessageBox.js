@@ -25,7 +25,7 @@ MessageBox.prototype.prompt = function(title, msg, fn, options) {
 		title : title+'' || 'Prompt',
 		message : msg+'' || '',
 		callback : fn || function(){},
-		scope: null,
+		scope: options.hasOwnProperty('scope') ? options.scope : null,
 		type : options.hasOwnProperty('type') ? options.type+'' : 'text',
 		placeholder : options.hasOwnProperty('placeholder') ? options.placeholder+'' : '',
 		okButtonTitle : options.hasOwnProperty('okButtonTitle') ? options.okButtonTitle+'' : 'OK',

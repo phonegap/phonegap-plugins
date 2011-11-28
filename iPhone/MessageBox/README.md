@@ -7,7 +7,7 @@ by `Olivier Louvignes`
 
 * Compared to the `iPhone/Prompt` plugin, it is more documented & simpler to understand. It does also provide new options for prompt (message, multiline, input type password).
 
-* There is a `Sencha Touch 2.0` plugin to easily leverage this plugin [here](https://github.com/mgcrea/phonegap-plugins/wiki/iPhone-MessageBox)
+* There is a `Sencha Touch 2.0` plugin to easily leverage this plugin [here](https://github.com/mgcrea/sencha-touch-plugins/blob/master/PhonegapMessageBox.js)
 
 ## SETUP ##
 

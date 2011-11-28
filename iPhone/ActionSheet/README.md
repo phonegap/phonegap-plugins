@@ -7,14 +7,14 @@ by `Olivier Louvignes`
 
 * Compared to the `iPhone/NativeControls` plugin, it is more documented & simpler to understand (only handle actionSheets). It does also provide new options (style).
 
-* There is a `Sencha Touch 2.0` plugin to easily leverage this plugin [here](https://github.com/mgcrea/phonegap-plugins/wiki/iPhone-ActionSheet)
+* There is a `Sencha Touch 2.0` plugin to easily leverage this plugin [here](https://github.com/mgcrea/sencha-touch-plugins/blob/master/PhonegapActionSheet.js)
 
 ## SETUP ##
 
 Using this plugin requires [iPhone PhoneGap](http://github.com/phonegap/phonegap-iphone).
 
 1. Make sure your PhoneGap Xcode project has been [updated for the iOS 4 SDK](http://wiki.phonegap.com/Upgrade-your-PhoneGap-Xcode-Template-for-iOS-4)
-2. Drag and drop the `MessageBox` folder from Finder to your Plugins folder in XCode, using "Create groups for any added folders"
+2. Drag and drop the `ActionSheet` folder from Finder to your Plugins folder in XCode, using "Create groups for any added folders"
 3. Add the .js files to your `www` folder on disk, and add reference(s) to the .js files as <link> tags in your html file(s)
 4. Add new entry with key `ActionSheet` and value `ActionSheet` to `Plugins` in `PhoneGap.plist`
 

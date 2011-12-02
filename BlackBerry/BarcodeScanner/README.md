@@ -30,15 +30,15 @@ Using this plugin requires [BlackBerry-WebWorks PhoneGap](http://github.com/phon
 
     &lt;script type="text/javascript" charset="utf-8" src="barcodescanner.js"&gt;&lt;/script&gt;
 
-2. Add the common plugin source to your phonegap.jar in your projects ext folder.  The phonegap.jar file is a jar of source code.  Open phonegap.jar with your favorite archive manager or use the jar command to create a directory called "src/com/phonegap/plugins/barcodescanner" inside the jar and copy `BarcodeScanner.java`, `EncodeAction.java`, `ScanAction.java` into it.
+2. Add the common plugin source to your phonegap.jar in your projects ext folder.  The phonegap.jar file is a jar of source code.  Open phonegap.jar with your favorite archive manager or use the jar command to create a directory called "com/phonegap/plugins/barcodescanner" inside the jar and copy `BarcodeScanner.java`, `EncodeAction.java`, `ScanAction.java` into it.
 
 3. Add the OS specific code to the phonegap.jar file.
 
-    *For an OS 5 based build:* Copy `AdvancedMultimediaManager.java`, `Encoder.java`, `LuminanceSourceBitmap.java`, and `Scanner.java` from the OS5 directory to "src/com/phonegap/plugins/barcodescanner" in phonegap.jar.  Copy the prebuilt ZXing jar `zxingcore.jar` from the OS5 directory to the root (same level in hierarchy as src folder) of phonegap.jar.
+    *For an OS 5 based build:* Copy `AdvancedMultimediaManager.java`, `Encoder.java`, `LuminanceSourceBitmap.java`, and `Scanner.java` from the OS5 directory to "com/phonegap/plugins/barcodescanner" in phonegap.jar.  Copy the prebuilt ZXing jar `zxingcore.jar` from the OS5 directory to the root (same level in hierarchy as com folder and library.xml) of phonegap.jar.
 
-    *For an OS 6 based build:* Copy `Encoder.java` and `Scanner.java` from the OS6 directory to "src/com/phonegap/plugins/barcodescanner" in phonegap.jar.
+    *For an OS 6 based build:* Copy `Encoder.java` and `Scanner.java` from the OS6 directory to "com/phonegap/plugins/barcodescanner" in phonegap.jar.
 
-4. If you had to unjar phonegap.jar to add the plugin source, recreate the phonegap.jar by creating a jar archive which has the src folder (and zxingcore.jar for OS 5) at its root.  Make sure the resulting phonegap.jar is in your projects ext folder and is the only phonegap.jar in the folder.
+4. If you had to unjar phonegap.jar to add the plugin source, recreate the phonegap.jar by creating a jar archive which has the com folder and library.xml (and zxingcore.jar for OS 5) at its root.  Make sure the resulting phonegap.jar is in your projects ext folder and is the only phonegap.jar in the folder.
 
 5. In your projects plugins.xml file add the following line:
 

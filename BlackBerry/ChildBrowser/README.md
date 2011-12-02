@@ -17,7 +17,7 @@ Using this plugin requires [BlackBerry PhoneGap](http://github.com/callback/call
 
 2. Copy the image files folder www/childbrowser to your project's www folder. Note, you need the entire folder not just the images.
 
-3. Add the plugin source to your phonegap.jar in your projects ext folder.  The phonegap.jar file is a jar of source code.  Open phonegap.jar with your favorite archive manager or use the jar command to create a directory called "src/com/phonegap/plugins/childbrowser" and copy the `.java` files into it.
+3. Add the plugin source to your phonegap.jar in your projects ext folder.  The phonegap.jar file is a jar of source code.  Open phonegap.jar with your favorite archive manager or use the jar command to create a directory called "com/phonegap/plugins/childbrowser" and copy the `.java` files into it.
 
 4. In your projects plugins.xml file add the following line:
 

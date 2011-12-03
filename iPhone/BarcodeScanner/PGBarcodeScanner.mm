@@ -286,7 +286,7 @@
     - (NSString*)setUpCaptureSession {
         NSError* error = nil;
 
-        AVCaptureSession* captureSession = [[[AVCaptureSession alloc] init] autorelease];
+        AVCaptureSession* captureSession = [[AVCaptureSession alloc] init];
         self.captureSession = captureSession;
 
         AVCaptureDevice* device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];

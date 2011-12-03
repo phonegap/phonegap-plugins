@@ -16,15 +16,17 @@
 
 
 @interface VolumeSlider : PGPlugin <UITabBarDelegate> {
+	NSString* callbackId;
 	UIView* mpVolumeViewParentView;
 	MPVolumeView* myVolumeView;
 }
 
+@property (nonatomic, copy) NSString* callbackId;
 @property (nonatomic, retain) UIView* mpVolumeViewParentView;
 @property (nonatomic, retain) MPVolumeView* myVolumeView;
 
-- (void)createVolumeSlider:(NSArray*)arguments withDict:(NSDictionary*)options;
-- (void)showVolumeSlider:(NSArray*)arguments withDict:(NSDictionary*)options;
-- (void)hideVolumeSlider:(NSArray*)arguments withDict:(NSDictionary*)options;
+- (void)createVolumeSlider:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)showVolumeSlider:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)hideVolumeSlider:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 @end

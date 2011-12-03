@@ -44,8 +44,11 @@ BarcodeScanner.prototype.scan = function(success, fail, options) {
         fail("success callback parameter must be a function")
         return
     }
+  
+    if ( null == options ) 
+      options = []
 
-    return PhoneGap.exec(successWrapper, fail, "com.phonegap.barcodeScanner", "scan", [])
+    return PhoneGap.exec(successWrapper, fail, "com.phonegap.barcodeScanner", "scan", options)
 }
 
 //-------------------------------------------------------------------

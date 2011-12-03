@@ -12,7 +12,7 @@ is available before using it, so you should be able to link this into an
 application targeting iOS 3.x or earlier (though the barcode scanning will
 not work).
 
-The plugin creates the object `window.plugins.barcodescanner` with two methods:
+The plugin creates the object `window.plugins.barcodeScanner` with two methods:
 
     scan(success, fail)
     encode(type, data, success, fail, options)
@@ -35,7 +35,7 @@ The `scan` function is invoked as follows:
 
 A full example could be:
 
-    window.plugins.barcodescanner.scan(
+    window.plugins.barcodeScanner.scan(
         function(result) {
             if (result.cancelled)
                 alert("the user cancelled the scan")
@@ -65,11 +65,32 @@ Barcode formats constants in the zxing code.
 * CODE_128
 * CODE_39
 
+## Creating and using custom UI overlay XIB
+
+You can customize the scanning UI by creating a new overlay in XCode4. Heres how:
+
+* File -> New File
+* Select "User Interface" > "View" and click "Next"
+* Select "iPhone" for device family and click "Next"
+* Enter a file name, say "BarcodeOverlay" and click "Create"
+* Select the "File's Owner" and click on the "Identity Inspector" icon, or on your keyboard press OPTION-CMD-3
+* Change the "Class' from NSObject to PGbcsViewController
+* Add any UI elements to the view that you want in your overlay.
+* Add a Button to your view and ensure it's selected.
+* Click the "Connections Inspector" or on your keyboard press OPTION-CMD-6
+* Drag from the circle beside "Touch Up Inside" to the "File's Owner" object.
+* Select "cancelButtonPressed:" from the popup.
+* Save the interface file and use it by passing the overlay name in as an argument to the `scan` function:
+
+    window.plugins.barcodeScanner.scan(success, fail, ["BarcodeOverlay"])
+
 ## Adding the plugin to your project ##
 
 * Copy the .h, .cpp and .mm files to the Plugins directory in your project.
 * Copy the .js file to your www directory and reference it from your html file(s).
-* In the `Supporting Files` directory of your project, add a new plugin:
+* In the `Supporting Files` directory of your project, add a new plugin
+by editing the file `PhoneGap.plist` and in the `Plugins` dictionary adding
+the following key/value pair:
  * key: `com.phonegap.barcodeScanner`
  * value: `PGBarcodeScanner`
 * Add the following libraries to your Xcode project, if not already there:
@@ -84,7 +105,56 @@ Barcode formats constants in the zxing code.
 
 * You may need to set the compile options for zxing-all-in-one.cc to turn off optimization.
 
+## Compile Errors for Automagic Reference Counting (ARC) ##
+
+For people developing on Mac OS X >= 10.7 (Lion) and using XCode >= 4.2, the
+option of using "Automatic Reference Counting" (ARC) is available.  For more
+information on ARC, see the documentation for it at the [clang documentation site](http://clang.llvm.org/docs/AutomaticReferenceCounting.html).
+
+Unfortunately, the native code for BarcodeScanner (the .cpp, .mm, etc files) is
+not compatible with ARC.  If you try to compile the native code with ARC
+enabled, you will see compile errors referencing ARC, such as:
+
+    /some/file.mm:40:1: error: 'NSXyzSomething' is unavailable: not available in automatic reference counting mode
+
+You will need to ensure you are not compiling the
+plugin native code with ARC to avoid these compile errors.
+There are several ways to do this:
+
+* Set the project compiler to "LLVM GCC 4.2", instead of "Apple LLVM 3.0"; ARC is
+only supported when you use Apple LLVM. To set the project compiler,
+in your Project, under
+"Build Settings", and then under "Build Options", there is a setting for
+"Compiler for C/C++/Objective-C". Change that value to "LLVM GCC 4.2".
+
+* Set the project compiler to "Apple LLVM 3.0", but disable ARC.
+To disable ARC, in your Project, under "Build Settings", and then under
+"Apple LLVM compiler 3.0 - Language", in the setting
+"Objective-C Automatic Reference Counting", change the setting to "No".
+
+* Disable ARC on a per-file basis.  To disable ARC for a file,
+in your Target, in the "Build Phases", and then in the "Compile Sources" section,
+double-click each .m/.mm/.cpp/.c/etc file, and add the compiler flag
+"-fno-objc-arc" (no quotes).
+
+Also note that when you create a new Xcode project, you will be given the
+option of enabling ARC or not for the project.  The option appears as a check
+box in one of the dialogs you are presented with while creating the project.
+You can keep that check box unselected (unchecked) and then not having to worry
+about ARC issues for the project.  If you enable ARC for the project (checked),
+you will have to disable ARC for the plugin natives using one of the methods above.
+
+Further note that if you do **not** enable ARC during the project creation,
+the "Objective-C Automatic Reference Counting" setting under the
+"Apple LLVM compiler 3.0 - Language" section (second bullet above) will not
+appear.
+
 ## Building ##
+
+Note that you only need to follow the instructions below if you are intending
+on **making changes** to the zxing code.  If you just want
+to **use** the barcode scanner plugin, you don't need to build.  All the build
+step does is rebuild the `zxing-all-in-one` files.
 
 To make life a little easier for folks using this plugin, all the of zxing
 code is combined into a single file, rather than dealing with Xcode subprojects.
@@ -96,18 +166,8 @@ corresponding `.h` file, cd into the `build` directory and run `make`.
 Under the `test` directory is a test case you can use to test the plugin.
 It has two parts - a desktop web page, and a phonegap app.
 
-To build the phonegap app, drop all the files in `test/phonegap-app` into
-a new PhoneGap project and build it per the instructions above.
-
-Once the phonegap app has build built, run it on your device.
-
-Next, run the desktop app, by opening the `test/desktop-app/index.html` file in a browser.
-
-The desktop app and phone app are synchronized to display a barcode and then
-have you scan that barcode.  The results of scanning the barcodes is provided
-once all the barcodes have been scanned.  If you can't get the scanner to
-recognized a particular barcode, use the `Cancel` button (which will cause
-that test to fail).
+To build the test applications, follow the instructions in the `README.md` file
+in the `test` directory.
 
 ## Licence ##
 

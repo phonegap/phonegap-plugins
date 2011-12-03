@@ -63,7 +63,7 @@
     if (self) {
         UITextField *theTextField = [[UITextField alloc] 
                                         initWithFrame:CGRectMake(12.0, 45.0, 260.0, 25.0)]; 
-        [theTextField setBackgroundColor:[UIColor clearColor]];
+        [theTextField setOpaque:NO];
         [theTextField setBorderStyle : UITextBorderStyleRoundedRect];
         [self addSubview:theTextField];
         self.textField = theTextField;

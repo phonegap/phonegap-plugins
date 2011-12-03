@@ -1,10 +1,15 @@
-package com.phonegap.plugins.video;
+/*
+ * PhoneGap is available under *either* the terms of the modified BSD license *or* the
+ * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
+ *
+ * Copyright (c) 2005-2010, Nitobi Software Inc.
+ * Copyright (c) 2011, IBM Corporation
+ */
 
-import java.io.File;
+package com.phonegap.plugins.video;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +18,7 @@ import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 
 public class VideoPlayer extends Plugin {
+    private static final String YOU_TUBE = "youtube.com";
 
     @Override
     public PluginResult execute(String action, JSONArray args, String callbackId) {
@@ -35,11 +41,19 @@ public class VideoPlayer extends Plugin {
     private void playVideo(String url) {
         // Create URI
         Uri uri = Uri.parse(url);
-        // Display video player
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(uri, "video/*");
+
+        Intent intent = null;
+        // Check to see if someone is trying to play a YouTube page.
+        if (url.contains(YOU_TUBE)) {
+            // If we don't do it this way you don't have the option for youtube
+            uri = Uri.parse("vnd.youtube:" + uri.getQueryParameter("v"));
+            intent = new Intent(Intent.ACTION_VIEW, uri);
+        } else {        
+            // Display video player
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "video/*");
+        }
         
         this.ctx.startActivity(intent);
     }
-
 }

@@ -19,7 +19,7 @@ Updates by Simon MacDonald
 
     `<plugin name="BarcodeScanner" value="com.phonegap.plugins.barcodescanner.BarcodeScanner"/>`
 
-8. Add the following activity to your AndroidManifest.xml file. It should be added inside the <application> tag.
+8. Add the following activity to your AndroidManifest.xml file. It should be added inside the &lt;application/&gt; tag.
 
     `<!-- ZXing activities -->
     <activity android:name="com.google.zxing.client.android.CaptureActivity"

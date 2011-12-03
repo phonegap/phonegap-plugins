@@ -3,6 +3,8 @@
 //
 //  Created by Jesse MacFadyen on 21/07/09.
 //  Copyright 2009 Nitobi. All rights reserved.
+//  Copyright (c) 2011, IBM Corporation
+//  Copyright 2011, Randy McMillan
 //
 
 #import "ChildBrowserViewController.h"
@@ -99,22 +101,20 @@
 	[super dealloc];
 }
 
--(void)closeBrowser 
-{ 
-    if(delegate != NULL) 
-    { 
-        [self.delegate onClose]; 
-    } 
-    
-    if ([[super parentViewController] 
-         respondsToSelector:@selector(dismissModalViewControllerAnimated:)]) { 
-        [[super parentViewController] dismissModalViewControllerAnimated:YES]; 
-    } else { 
-        
-        [[super presentingViewController] dismissViewControllerAnimated:YES 
-                                                             completion:nil]; 
-    } 
-} 
+-(void)closeBrowser
+{
+	
+	if(delegate != NULL)
+	{
+		[delegate onClose];		
+	}
+    if ([self respondsToSelector:@selector(presentingViewController)]) { 
+        //Reference UIViewController.h Line:179 for update to iOS 5 difference - @RandyMcMillan
+        [[self presentingViewController] dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        [[self parentViewController] dismissModalViewControllerAnimated:YES];
+    }
+}
 
 -(IBAction) onDoneButtonPress:(id)sender
 {

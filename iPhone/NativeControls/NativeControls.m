@@ -206,7 +206,7 @@
     
     UITabBarItem *item = nil;    
     if ([imageName length] > 0) {
-        UIBarButtonSystemItem systemItem = -1;
+        UITabBarSystemItem systemItem = -1;
         if ([imageName isEqualToString:@"tabButton:More"])       systemItem = UITabBarSystemItemMore;
         if ([imageName isEqualToString:@"tabButton:Favorites"])  systemItem = UITabBarSystemItemFavorites;
         if ([imageName isEqualToString:@"tabButton:Featured"])   systemItem = UITabBarSystemItemFeatured;
@@ -251,7 +251,7 @@
     NSString  *name = [arguments objectAtIndex:0];
     UITabBarItem *item = [tabBarItems objectForKey:name];
     if (item)
-        item.badgeValue = [options objectForKey:@"bad   ge"];
+        item.badgeValue = [options objectForKey:@"badge"];
 }
 
 
@@ -468,10 +468,11 @@
 	{
 		toolBarItems = [[NSMutableArray alloc] initWithCapacity:1];
 	}
-    
-    NSString  *tagId      = [arguments objectAtIndex:0];
-    NSString  *title     = [arguments objectAtIndex:1];
-	NSString  *imageName;
+
+  NSString  *tagId      = [arguments objectAtIndex:0];
+  NSString  *title     = [arguments objectAtIndex:1];
+	NSString  *imageName = nil;
+
 	if (arguments.count >= 2)
 	{
 		imageName = [arguments objectAtIndex:2];
@@ -505,9 +506,9 @@
 	}
     
     UIBarButtonItem *item = nil;    
-    if ([imageName length] > 0) 
+    if (imageName && [imageName length] > 0) 
 	{
-        UIBarButtonSystemItem systemItem;
+        UIBarButtonSystemItem systemItem = -1;
         if ([imageName isEqualToString:@"UIBarButtonSystemItemDone"])
 		{
 			systemItem = UIBarButtonSystemItemDone;

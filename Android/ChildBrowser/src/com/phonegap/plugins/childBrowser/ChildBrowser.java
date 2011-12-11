@@ -147,6 +147,7 @@ public class ChildBrowser extends Plugin {
      */
     private void closeDialog() {
         if (dialog != null) {
+            this.webview.stopLoading();
             dialog.dismiss();
         }
     }

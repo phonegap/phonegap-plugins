@@ -22,7 +22,7 @@ Check out the /example/www/index.html to see how it works.
    `-TwitterPlugin.js
 </pre>
 
-/native/ios is the native code for the plugin on ios.
+/native/ios is the native code for the plugin on iOS
 
 /www/TwitterPlugin.js is the JavaScript code for the plugin
 

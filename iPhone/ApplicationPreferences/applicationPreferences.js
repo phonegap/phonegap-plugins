@@ -1,16 +1,19 @@
 function applicationPreferences() {
 }
 
-applicationPreferences.prototype.get = function(name,success,fail) 
+applicationPreferences.prototype.get = function(key,success,fail) 
 {
-
-    PhoneGap.exec("applicationPreferences.getSetting", name,GetFunctionName(success),GetFunctionName(fail));
+    var args = {};
+    args.key = key;
+    PhoneGap.exec(success,fail,"applicationPreferences","getSetting",[args]);
 };
 
-applicationPreferences.prototype.set = function(name,value,success,fail) 
+applicationPreferences.prototype.set = function(key,value,success,fail) 
 {
-
-    PhoneGap.exec("applicationPreferences.setSetting", name,value,GetFunctionName(success),GetFunctionName(fail));
+    var args = {};
+    args.key = key;
+    args.value = value;
+    PhoneGap.exec(success,fail,"applicationPreferences","setSetting",[args]);
 };
 
 PhoneGap.addConstructor(function() 

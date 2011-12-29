@@ -11,16 +11,17 @@
 
 
 @implementation applicationPreferences
+
+
+
 - (void)getSetting:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
-	NSUInteger argc = [arguments count];
+	NSString* callbackID = [arguments pop];
 	NSString* jsString;
-	if(argc == 3)
-	{
-	
-		NSString *settingsName = [arguments objectAtIndex:0];
-		NSString *successCallback = [arguments objectAtIndex:1];
-		NSString *failCallback = [arguments objectAtIndex:2];
+
+        
+		NSString *settingsName = [options objectForKey:@"key"];
+        PluginResult* result = nil;
 	
 		@try 
 		{
@@ -34,49 +35,46 @@
 				if (returnVar == nil) 
 					@throw [NSException exceptionWithName:nil reason:@"Key not found" userInfo:nil];;
 			}
-			
-			jsString = [NSString stringWithFormat:@"%@(\"%@\");",successCallback,returnVar];
-					
+			result = [PluginResult resultWithStatus:PGCommandStatus_OK messageAsString:returnVar];
+			jsString = [result toSuccessCallbackString:callbackID];		
 		}
 		@catch (NSException * e) 
 		{
-			jsString = [NSString stringWithFormat:@"%@(\"%@\");",failCallback,[e reason]];
+			result = [PluginResult resultWithStatus:PGCommandStatus_NO_RESULT messageAsString:[e reason]];
+            jsString = [result toErrorCallbackString:callbackID];
 		}
 		@finally 
 		{
 			[self writeJavascript:jsString]; //Write back to JS
 		}
-	}
 }
 
 - (void)setSetting:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
+    NSString* callbackID = [arguments pop];
+	NSString* jsString;    
+    PluginResult* result;
 
-	NSUInteger argc = [arguments count];
-	NSString* jsString;
-	if(argc == 4)
-	{
+    NSString *settingsName = [options objectForKey:@"key"];
+    NSString *settingsValue = [options objectForKey:@"value"];
+
 		
-		NSString *settingsName = [arguments objectAtIndex:0];
-		NSString *settingsValue = [arguments objectAtIndex:1];
-		NSString *successCallback = [arguments objectAtIndex:2];
-		NSString *failCallback = [arguments objectAtIndex:3];
-		
-		@try 
-		{
-			[[NSUserDefaults standardUserDefaults] setValue:settingsValue forKey:settingsName];
-			jsString = [NSString stringWithFormat:@"%@();",successCallback];
+    @try 
+    {
+        [[NSUserDefaults standardUserDefaults] setValue:settingsValue forKey:settingsName];
+        result = [PluginResult resultWithStatus:PGCommandStatus_OK];
+        jsString = [result toSuccessCallbackString:callbackID];
 			
-		}
-		@catch (NSException * e) 
-		{
-			jsString = [NSString stringWithFormat:@"%@(\"%@\");",failCallback,[e reason]];
-		}
-		@finally 
-		{
-			[self writeJavascript:jsString];
-		}
-	}
+    }
+    @catch (NSException * e) 
+    {
+        result = [PluginResult resultWithStatus:PGCommandStatus_NO_RESULT messageAsString:[e reason]];
+        jsString = [result toErrorCallbackString:callbackID];
+    }
+    @finally 
+    {
+        [self writeJavascript:jsString]; //Write back to JS
+    }
 }
 /*
   Parsing the Root.plist for the key, because there is a bug/feature in Settings.bundle

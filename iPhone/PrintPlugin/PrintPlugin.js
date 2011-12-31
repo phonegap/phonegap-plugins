@@ -8,6 +8,9 @@ var PrintPlugin = function() {
     
 }
 
+PrintPlugin.prototype.sCB = null;
+PrintPlugin.prototype.eCB = null;
+
 /*
  print      - html string or DOM node (if latter, innerHTML is used to get the contents). REQUIRED.
  success    - callback function called if print successful.     {success: true}
@@ -44,15 +47,20 @@ PrintPlugin.prototype.print = function(printHTML, success, fail, options) {
         }
     }
     
+    var args = {};
+    args.printHTML = printHTML;
+    args.dialogLeftPos = dialogLeftPos;
+    args.dialogTopPos = dialogTopPos;
     
-    return PhoneGap.exec("PrintPlugin.print", printHTML, GetFunctionName(success), GetFunctionName(fail), dialogLeftPos, dialogTopPos);
+    return PhoneGap.exec(success,fail,"PrintPlugin","print", [args]);
 };
 
 /*
  * Callback function returns {available: true/false}
  */
 PrintPlugin.prototype.isPrintingAvailable = function(result) {
-    return PhoneGap.exec("PrintPlugin.isPrintingAvailable", GetFunctionName(result));
+    
+    return PhoneGap.exec(result,result,"PrintPlugin","isPrintingAvailable", []);
 };
 
 PhoneGap.addConstructor(function() {

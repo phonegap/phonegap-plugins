@@ -17,8 +17,7 @@
 
 
 @interface PrintPlugin : PGPlugin {
-    NSString* successCallback;
-    NSString* failCallback;
+    NSString* callBackId;
     NSString* printHTML;
     
     //Options
@@ -26,8 +25,7 @@
     NSInteger dialogTopPos;
 }
 
-@property (nonatomic, copy) NSString* successCallback;
-@property (nonatomic, copy) NSString* failCallback;
+@property (nonatomic, copy) NSString* callBackId;
 @property (nonatomic, copy) NSString* printHTML;
 
 //Print Settings

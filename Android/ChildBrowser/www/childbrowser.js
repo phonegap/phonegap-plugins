@@ -27,7 +27,7 @@ ChildBrowser.prototype.showWebPage = function(url, options) {
         var options = new Object();
         options.showLocationBar = true;
     }
-    PhoneGap.exec(this._onEvent, null, "ChildBrowser", "showWebPage", [url, options]);
+    PhoneGap.exec(this._onEvent, this._onError, "ChildBrowser", "showWebPage", [url, options]);
 };
 
 /**
@@ -45,22 +45,32 @@ ChildBrowser.prototype.close = function() {
  * @param usePhoneGap   Load url in PhoneGap webview [optional]
  */
 ChildBrowser.prototype.openExternal = function(url, usePhoneGap) {
-    PhoneGap.exec(null, null, "ChildBrowser", "openExternal", [url, usePhoneGap]);
+    if (usePhoneGap === true) {
+        navigator.app.loadUrl(url);
+    }
+    else {
+        PhoneGap.exec(null, null, "ChildBrowser", "openExternal", [url, usePhoneGap]);
+    }
 };
 
 /**
- * Method called when the child browser is closed.
+ * Method called when the child browser has an event.
  */
 ChildBrowser.prototype._onEvent = function(data) {
-    console.log("In _onEvent");
-    console.log("data type = " + data.type);
     if (data.type == ChildBrowser.CLOSE_EVENT && typeof window.plugins.childBrowser.onClose === "function") {
-        console.log("Calling onClose");
         window.plugins.childBrowser.onClose();
     }
     if (data.type == ChildBrowser.LOCATION_CHANGED_EVENT && typeof window.plugins.childBrowser.onLocationChange === "function") {
-        console.log("Calling onLocChange");
         window.plugins.childBrowser.onLocationChange(data.location);
+    }
+};
+
+/**
+ * Method called when the child browser has an error.
+ */
+ChildBrowser.prototype._onError = function(data) {
+    if (typeof window.plugins.childBrowser.onError === "function") {
+        window.plugins.childBrowser.onError(data);
     }
 };
 

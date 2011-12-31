@@ -28,6 +28,10 @@ Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonega
 
 4. Copy "lib/libGoogleAnalytics.jar" into the libs directory within your project.  You will also need to right click on this file in eclipse and add the jar to the build path.
 
+5. In your res/xml/plugins.xml file add the following line:
+
+<plugin name="GoogleAnalyticsTracker" value="com.phonegap.plugins.analytics.GoogleAnalyticsTracker" />
+
 ## Using the plugin ##
 
 The plugin creates the object `window.plugins.analytics`.  To use, call one of the following, available methods:

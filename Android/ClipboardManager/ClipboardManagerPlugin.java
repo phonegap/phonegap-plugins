@@ -1,6 +1,7 @@
 /**
  * Phonegap ClipboardManager plugin
  * Omer Saatcioglu 2011
+ * enhanced by Guillaume Charhon - Smart Mobile Software 2011
  *
  */
 
@@ -12,7 +13,6 @@ import org.json.JSONException;
 import android.content.Context;
 import android.text.ClipboardManager;
 
-import com.phonegap.DroidGap;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 
@@ -24,11 +24,6 @@ public class ClipboardManagerPlugin extends Plugin {
 
 	private ClipboardManager mClipboardManager;
 
-	public void setContext(DroidGap ctx) {
-		super.setContext(ctx);
-		mClipboardManager = (ClipboardManager) ctx
-				.getSystemService(Context.CLIPBOARD_SERVICE);
-	}
 
 	/**
 	 * Executes the request and returns PluginResult.
@@ -42,6 +37,12 @@ public class ClipboardManagerPlugin extends Plugin {
 	 * @return A PluginResult object with a status and message.
 	 */
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
+		// If we do not have the clipboard
+		if(mClipboardManager == null)
+			// get it
+			mClipboardManager = (ClipboardManager)ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+		
+		// Copy
 		if (action.equals(actionCopy)) {
 			String arg = "";
 			try {
@@ -53,6 +54,8 @@ public class ClipboardManagerPlugin extends Plugin {
 				return new PluginResult(PluginResult.Status.ERROR, errorUnknown);
 			}
 			return new PluginResult(PluginResult.Status.OK, arg);
+			
+		// Paste
 		} else if (action.equals(actionPaste)) {
 			String arg = (String) mClipboardManager.getText();
 			if (arg == null) {

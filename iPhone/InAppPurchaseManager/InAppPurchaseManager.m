@@ -8,6 +8,26 @@
 
 #import "InAppPurchaseManager.h"
 
+// Help create NSNull objects for nil items (since neither NSArray nor NSDictionary can store nil values).
+#define NILABLE(obj) ((obj) != nil ? (NSObject *)(obj) : (NSObject *)[NSNull null])
+
+// To avoid compilation warning, declare JSONKit and SBJson's
+// category methods without including their header files.
+@interface NSArray (StubsForSerializers)
+- (NSString *)JSONString;
+- (NSString *)JSONRepresentation;
+@end
+
+// Helper category method to choose which JSON serializer to use.
+@interface NSArray (JSONSerialize)
+- (NSString *)JSONSerialize;
+@end
+
+@implementation NSArray (JSONSerialize)
+- (NSString *)JSONSerialize {
+    return [self respondsToSelector:@selector(JSONString)] ? [self JSONString] : [self JSONRepresentation];
+}
+@end
 
 @implementation InAppPurchaseManager
 
@@ -15,23 +35,23 @@
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
 }
 
-- (void) requestProductData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
+- (void) requestProductData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
 	if([arguments count] < 3) {
-		return;	
+		return;
 	}
 	NSLog(@"Getting product data");
 	NSSet *productIdentifiers = [NSSet setWithObject:[arguments objectAtIndex:0]];
     SKProductsRequest *productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
-	
+
 	ProductsRequestDelegate* delegate = [[[ProductsRequestDelegate alloc] init] retain];
 	delegate.command = self;
 	delegate.successCallback = [arguments objectAtIndex:1];
 	delegate.failCallback = [arguments objectAtIndex:2];
-	
+
     productsRequest.delegate = delegate;
     [productsRequest start];
-    
+
 }
 
 /**
@@ -57,42 +77,42 @@
 	[productsRequest start];
 }
 
-- (void) makePurchase:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
+- (void) makePurchase:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
 	NSLog(@"About to do IAP");
 	if([arguments count] < 1) {
-		return;	
+		return;
 	}
-	
+
     SKMutablePayment *payment = [SKMutablePayment paymentWithProductIdentifier:[arguments objectAtIndex:0]];
-	
+
 	if([arguments count] > 1) {
 		id quantity = [arguments objectAtIndex:1];
 		if ([quantity respondsToSelector:@selector(integerValue)]) {
-			payment.quantity = [quantity integerValue];	
+			payment.quantity = [quantity integerValue];
 		}
 	}
 	[[SKPaymentQueue defaultQueue] addPayment:payment];
 }
 
-- (void) restoreCompletedTransactions:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
+- (void) restoreCompletedTransactions:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
 
 // SKPaymentTransactionObserver methods
-// called when the transaction status is updated 
+// called when the transaction status is updated
 //
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
 {
 	NSString *state, *error, *transactionIdentifier, *transactionReceipt, *productId;
 	NSInteger errorCode;
-	
+
     for (SKPaymentTransaction *transaction in transactions)
     {
 		error = state = transactionIdentifier = transactionReceipt = productId = @"";
 		errorCode = 0;
-		
+
         switch (transaction.transactionState)
         {
 			case SKPaymentTransactionStatePurchasing:
@@ -104,7 +124,7 @@
 				transactionReceipt = [[transaction transactionReceipt] base64EncodedString];
 				productId = transaction.payment.productIdentifier;
                 break;
-            
+
 			case SKPaymentTransactionStateFailed:
 				state = @"PaymentTransactionStateFailed";
 				error = transaction.error.localizedDescription;
@@ -112,20 +132,28 @@
 				NSLog(@"error %d %@", errorCode, error);
 
                 break;
-            
+
 			case SKPaymentTransactionStateRestored:
 				state = @"PaymentTransactionStateRestored";
 				transactionIdentifier = transaction.originalTransaction.transactionIdentifier;
-				transactionReceipt = [[[transaction originalTransaction] transactionReceipt] base64EncodedString];
+				transactionReceipt = [[transaction transactionReceipt] base64EncodedString];
 				productId = transaction.originalTransaction.payment.productIdentifier;
                 break;
-				
+
             default:
 				NSLog(@"Invalid state");
                 continue;
         }
 		NSLog(@"state: %@", state);
-		NSString *js = [NSString stringWithFormat:@"plugins.inAppPurchaseManager.updatedTransactionCallback('%@',%d, '%@','%@','%@','%@')", state, errorCode, error, transactionIdentifier, productId, transactionReceipt ];
+        NSArray *callbackArgs = [NSArray arrayWithObjects:
+                                 NILABLE(state),
+                                 [NSNumber numberWithInt:errorCode],
+                                 NILABLE(error),
+                                 NILABLE(transactionIdentifier),
+                                 NILABLE(productId),
+                                 NILABLE(transactionReceipt),
+                                 nil];
+		NSString *js = [NSString stringWithFormat:@"plugins.inAppPurchaseManager.updatedTransactionCallback.apply(null, %@)", [callbackArgs JSONSerialize]];
 		NSLog(@"js: %@", js);
 		[self writeJavascript: js];
 		[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
@@ -133,10 +161,21 @@
     }
 }
 
+- (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
+{
+	NSString *js = [NSString stringWithFormat:@"plugins.inAppPurchaseManager.onRestoreCompletedTransactionsFailed(%d)", error.code];
+	[self writeJavascript: js];
+}
+
+- (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
+{
+	NSString *js = @"plugins.inAppPurchaseManager.onRestoreCompletedTransactionsFinished()";
+	[self writeJavascript: js];
+}
 
 @end
 
-@implementation ProductsRequestDelegate 
+@implementation ProductsRequestDelegate
 
 @synthesize successCallback, failCallback, command;
 
@@ -146,7 +185,13 @@
 	NSLog(@"got iap product response");
     for (SKProduct *product in response.products) {
 		NSLog(@"sending js for %@", product.productIdentifier);
-		NSString *js = [NSString stringWithFormat:@"%@('%@','%@','%@','%@')", successCallback, product.productIdentifier, product.localizedTitle, product.localizedDescription, product.localizedPrice];
+        NSArray *callbackArgs = [NSArray arrayWithObjects:
+                                 NILABLE(product.productIdentifier),
+                                 NILABLE(product.localizedTitle),
+                                 NILABLE(product.localizedDescription),
+                                 NILABLE(product.localizedPrice),
+                                 nil];
+		NSString *js = [NSString stringWithFormat:@"%@.apply(null, %@)", successCallback, [callbackArgs JSONSerialize]];
 		NSLog(@"js: %@", js);
 		[command writeJavascript: js];
     }
@@ -184,24 +229,23 @@
 @synthesize callback, command;
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
-	NSString *validProductsJS = @"";
-	NSString *invalidProductsJS = @"";
-	NSString *js = @"";
 
+    NSMutableArray *validProducts = [NSMutableArray array];
 	for (SKProduct *product in response.products) {
-		validProductsJS = [NSString
-							  stringWithFormat:
-								@"%@{id: '%@', title: '%@', description: '%@', price: '%@'}, ",
-							  validProductsJS,
-							  product.productIdentifier,
-							  product.localizedTitle,
-							  product.localizedDescription,
-							  product.localizedPrice];
+        [validProducts addObject:
+         [NSDictionary dictionaryWithObjectsAndKeys:
+          NILABLE(product.productIdentifier),    @"id",
+          NILABLE(product.localizedTitle),       @"title",
+          NILABLE(product.localizedDescription), @"description",
+          NILABLE(product.localizedPrice),       @"price",
+          nil]];
     }
 
-	invalidProductsJS = [response.invalidProductIdentifiers componentsJoinedByString:@", "];
-
-	js = [NSString stringWithFormat:@"%@([%@], [%@]);", callback, validProductsJS, invalidProductsJS];
+    NSArray *callbackArgs = [NSArray arrayWithObjects:
+                             NILABLE(validProducts),
+                             NILABLE(response.invalidProductIdentifiers),
+                             nil];
+	NSString *js = [NSString stringWithFormat:@"%@.apply(null, %@);", callback, [callbackArgs JSONSerialize]];
 	[command writeJavascript: js];
 
 	[request release];

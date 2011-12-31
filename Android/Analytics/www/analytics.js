@@ -74,5 +74,8 @@ Analytics.prototype.trackEvent = function(category, action, label, value, succes
  */
 PhoneGap.addConstructor(function() {
 	PhoneGap.addPlugin('analytics', new Analytics());
- 	PluginManager.addService("GoogleAnalyticsTracker", "com.phonegap.plugins.analytics.GoogleAnalyticsTracker");
+	
+//	@deprecated: No longer needed in PhoneGap 1.0. Uncomment the addService code for earlier 
+//	PhoneGap releases.
+// 	PluginManager.addService("GoogleAnalyticsTracker", "com.phonegap.plugins.analytics.GoogleAnalyticsTracker");
 });

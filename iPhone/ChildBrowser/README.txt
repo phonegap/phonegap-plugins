@@ -1,6 +1,3 @@
-
-
-
 The child browser allows you to display external webpages within your PhoneGap application.
 
 A simple use case would be:
@@ -66,6 +63,22 @@ Sample use:
 		alert("In index.html onOpenExternal");
 	}
 </code>
+
+================================
+
+Oct 6, 2011
+
+SubDomains must be listed individually.
+
+EXAMPLE:
+
+geoiplookup.wikimedia.org
+meta.wikimedia.org
+wikipedia.org
+upload.wikimedia.org
+
+================================ @RandyMcMillan
+
 
 
 

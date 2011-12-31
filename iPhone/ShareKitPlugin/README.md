@@ -11,9 +11,9 @@ Most of the services used by ShareKit need API keys, add them in the SHKConfig.h
 
 Both ShareKit and Phonegap use a class called Reachability. Thus, if you compile the project at this point, you will get the following compiler error:
 
-Command /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/llvm-gcc-4.2 failed with exit code 1
+    Command /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/llvm-gcc-4.2 failed with exit code 1
 
-ld: duplicate symbol _OBJC_IVAR_$_Reachability.reachabilityRef in /Users/Shared/PhoneGap/Frameworks/PhoneGap.framework/PhoneGap and /Users/erick/Library/Developer/Xcode/DerivedData/example-astibrvgfpejembjdszybqhnmdee/Build/Intermediates/example.build/Debug-iphonesimulator/example.build/Objects-normal/i386/Reachability.o for architecture i386
+    ld: duplicate symbol _OBJC_IVAR_$_Reachability.reachabilityRef in /Users/Shared/PhoneGap/Frameworks/PhoneGap.framework/PhoneGap and /Users/erick/Library/Developer/Xcode/DerivedData/example-astibrvgfpejembjdszybqhnmdee/Build/Intermediates/example.build/Debug-iphonesimulator/example.build/Objects-normal/i386/Reachability.o for architecture i386
 
 To fix this error you need to delete the files Reachabily.h and Reachability.m from the ShareKit Folder in Xcode. Then modify the dependency in the file SHK.m, from this:
 
@@ -21,12 +21,13 @@ To fix this error you need to delete the files Reachabily.h and Reachability.m f
 
 To this:
 
-	#ifdef PHONEGAP_FRAMEWORK
-	#import <PhoneGap/Reachability.h>
-	#else
-	#import "Reachability.h"
+    #ifdef PHONEGAP_FRAMEWORK
+    #import <PhoneGap/Reachability.h>
+    #else
+    #import "Reachability.h"
+    #endif
  
-Now you should be able to succesfully compile your project.
+Now you should be able to successfully compile your project.
 
 
 ## Adding the Plugin to the Project
@@ -40,6 +41,7 @@ ShareKitPlugin and value ShareKitPlugin.
 
 
 ## Using the plugin
+
 
 Add the js file to your html. 
 
@@ -68,6 +70,10 @@ you must logout the current one first );
 6. `facebookConnect( )` Shows the Facebook Login form, if the user is not logged in. Convenient method for login to Facebook without showing the post in the wall form.
 
 7. `shareToFacebook(message, url )` Shows only the post in the wall form of Facebook if the user is logged in. 
+
+8. `shareToTwitter(message, url)` Shares an item specifically with Twitter, will automatically shorten the URL
+
+9. `shareToMail(subject, body)` Opens up the iOS mail dialog with pre-filled subject and body
 
 ## Running the example
 The example is a project for XCode 4. It shows a basic use case for the plugin, in order to use it you must add the API keys of the services that you want to test in the SHKConfig.h file.

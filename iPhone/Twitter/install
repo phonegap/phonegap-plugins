@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+def replace_in_file(filepath, regexp, *args, &block)
+  content = File.read(filepath).gsub(regexp, *args, &block)
+  File.open(filepath, 'wb') { |file| file.write(content) }
+end
+
+file = File.expand_path(ARGV[0])
+platform = ( File.extension(file) == ".plist" ? "ios" : "android" )
+
+if (platform == "ios")
+  replace_in_file(file, /\s*<key>com.phonegap.twitter<\/key>\n/mi) do |match|
+    ""
+  end
+  replace_in_file(file, /\s*<string>TwitterPlugin<\/string>\n/mi) do |match|
+    ""
+  end
+  replace_in_file(file, /<key>Plugins<\/key>\n\s*<dict>/mi) do |match|
+    "<key>Plugins</key>\n\t<dict>\n\t\t<key>com.phonegap.twitter</key>\n\t\t<string>TwitterPlugin</string>"
+  end
+elsif (platform == "android")
+end

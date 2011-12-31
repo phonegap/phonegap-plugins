@@ -8,8 +8,10 @@
 #import <Foundation/Foundation.h>
 #ifdef PHONEGAP_FRAMEWORK
 #import <PhoneGap/PGPlugin.h>
+#import <PhoneGap/PluginResult.h>
 #else
 #import "PGPlugin.h"
+#import "PluginResult.h"
 #endif
 #import "ClipboardPlugin.h"
 
@@ -19,19 +21,18 @@
 	UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
 	NSString     *text       = [arguments objectAtIndex:0];
 
-	[pasteboard setValue:text forPasteboardType:@"public.utf8-plain-text"];
+	[pasteboard setValue:text forPasteboardType:@"public.text"];
 }
 
 -(void)getText:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
+    NSString* callbackID = [arguments pop];
 	UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-	NSString     *jsCallback = [arguments objectAtIndex:0];
 
-	NSString *text = [pasteboard valueForPasteboardType:@"public.utf8-plain-text"];
+	NSString *text = [pasteboard valueForPasteboardType:@"public.text"];
+    
+    PluginResult* pluginResult = [PluginResult resultWithStatus:PGCommandStatus_OK messageAsString:text];
   
-  NSString* jsString = [[NSString alloc] initWithFormat:@"%@(\"%@\");", jsCallback, text];
-  [self writeJavascript:jsString];
-  
-	[jsString release];
+    [self writeJavascript: [pluginResult toSuccessCallbackString:callbackID]];
 }
 
 @end

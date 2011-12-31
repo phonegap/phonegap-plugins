@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <!-- Change this if you want to allow scaling -->
+    <meta name="viewport" content="width=default-width; user-scalable=no" />
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+    <title>PhoneGapWithUAPush</title>
+    
+    <!-- iPad/iPhone specific css below, add after your main css >
+    <link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />        
+    <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />        
+    -->
+    <script type="text/javascript" charset="utf-8" src="phonegap-1.0.0.js"></script>
+    <script type="text/javascript" charset="utf-8" src="PushNotification.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+    // If you want to prevent dragging, uncomment this section
+    /*
+    function preventBehavior(e) { 
+      e.preventDefault(); 
+    };
+    document.addEventListener("touchmove", preventBehavior, false);
+    */
+    
+    function onBodyLoad() {
+        document.addEventListener("deviceready",onDeviceReady,false);
+    }
+    
+    /* When this function is called, PhoneGap has been initialized and is ready to roll */
+    function onDeviceReady() {
+        registerAPN()
+    }
+
+    /**
+     * Customize following callbacks in your application
+     */
+    
+    // Customized callback for receiving notification
+    PushNotification.prototype.notificationCallback = function (notification) {
+        var msg = '';
+        for (var property in notification) {
+            msg += property + ' : ' + notification[property] + '<br>';
+        }
+        message.innerHTML='notification received:<br><br>' + msg;
+        
+        alert(notification['alert']);
+        
+    };
+
+    // when APN register succeeded
+    function successCallback(e) {
+        result.innerHTML="Device registered. Device token:<br>" + e.deviceToken + '<br><br>';
+        registerUAPush(e.deviceToken, e.host, e.appKey, e.appSecret);
+    }
+    
+    // when APN register failed
+    function errorCallback(e) {
+        result.innerHTML='Error during registration: '+e.error;
+        registerButton.disabled=false;
+    }
+
+    // register button action
+    function registerAPN() {
+        
+        registerButton.disabled=true;
+        result.innerHTML='Registering...';
+        
+        window.plugins.pushNotification.register(successCallback, errorCallback, [{ alert:true, badge:true, sound:true }]);
+
+        //or unregister
+        //navigator.pushNotification.register();
+    }
+    
+    // register urban airship push service after APN is registered successfully
+    function registerUAPush(deviceToken, host, appKey, appSecret) {
+        
+        var resultStr = result.innerHTML;
+        result.innerHTML += 'Registering with Urban Airship Push Service...';
+        
+        var request = new XMLHttpRequest();
+        
+        // open the client and encode our URL
+        request.open('PUT', host+'api/device_tokens/'+deviceToken, true, appKey, appSecret);
+        
+        // callback when request finished
+        request.onload = function() {
+            result.innerHTML = resultStr + 'Status: ' + this.status + '<br>';
+            
+            if(this.status == 200 || this.status == 201) {
+                // register UA push success
+                result.innerHTML = result.innerHTML + 'UA push service successfully registered.';
+            } else {
+              // error
+                result.innerHTML = result.innerHTML + 'Error when registering UA push service.<br>error: '+this.statusText;
+            }
+            
+            // for demo, you can re-register again
+            registerButton.disabled=false;
+        };
+
+        request.send();
+    }
+
+    </script>
+  </head>
+
+  <body onload="onBodyLoad()">
+    <p id="result"></p>
+    <p id="message"></p>
+  </body>
+</html>

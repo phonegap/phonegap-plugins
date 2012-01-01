@@ -1,0 +1,34 @@
+AccountList Phonegap Plugin for Android
+=======================================
+This plugin allows you to obtain an array containing all the accounts configured on the device
+
+Adding the Plugin to your project
+=================================
+
+    To install the plugin, copy accountlist.js to your project's www folder and include a reference to it in your html files.
+
+    <script type="text/javascript" src="accountlist.js"></script>
+
+    Create a folder called 'com/seltzlab/mobile' within your project's src folder and copy AccountList.java file into that new folder.
+
+    Add a plugin line to res/xml/plugins.xml
+    <plugin name="AccountList" value="com.seltzlab.com.AccountList" />
+
+    Add a permission line to the AndroidManifest.xml
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    
+Using the plugin
+================
+    window.plugins.AccountList.get(
+        {
+            type: 'account type' // if not specified get all accounts
+        }, 
+        function (result) {
+            console.log(res.length);
+    		for (i in res)
+    		    console.log(res[i]);
+        },
+        function (error) {
+            console.log(error);
+        }
+    );

@@ -17,60 +17,43 @@
 
 @implementation PrintPlugin
 
-@synthesize successCallback, failCallback, printHTML, dialogTopPos, dialogLeftPos;
+@synthesize callBackId, printHTML, dialogTopPos, dialogLeftPos;
 
 /*
  Is printing available. Callback returns true/false if printing is available/unavailable.
  */
 - (void) isPrintingAvailable:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options{
-    NSUInteger argc = [arguments count];
-	
-	if (argc < 1) {
-		return;	
-	}
+    self.callBackId = [arguments pop];
+    NSDictionary* dic = [NSDictionary dictionaryWithObject:([self isPrintServiceAvailable] ? @"true" : @"false") forKey:@"available"]; 
     
-    
-    NSString *callBackFunction = [arguments objectAtIndex:0];
-    [self callbackWithFuntion:callBackFunction withData:
-            [NSString stringWithFormat:@"{available: %@}", ([self isPrintServiceAvailable] ? @"true" : @"false")]];
-    
+    PluginResult* result = [PluginResult resultWithStatus:PGCommandStatus_OK messageAsDictionary:dic];
+            //[NSString stringWithFormat:@"%@", ([self isPrintServiceAvailable] ? @"true" : @"false")]];
+    NSString* jsString = [result toSuccessCallbackString:callBackId];
+    [[self webView] stringByEvaluatingJavaScriptFromString:jsString];
 }
 
 - (void) print:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options{
-    NSUInteger argc = [arguments count];
-	
-	if (argc < 1) {
-		return;	
-	}
-    self.printHTML = [arguments objectAtIndex:0];
+    self.callBackId = [arguments pop];
     
-    if (argc >= 2){
-        self.successCallback = [arguments objectAtIndex:1];
-    }
-    
-    if (argc >= 3){
-        self.failCallback = [arguments objectAtIndex:2];
-    }
-    
-    if (argc >= 4){
-        self.dialogLeftPos = [[arguments objectAtIndex:3] intValue];
-    }
-    
-    if (argc >= 5){
-        self.dialogTopPos = [[arguments objectAtIndex:4] intValue];
-    }
-    
-    
-    
-    
+    self.printHTML = [options objectForKey:@"printHTML"];
+    self.dialogLeftPos = [[options objectForKey:@"dialogLeftPos"] intValue];
+    self.dialogTopPos = [[options objectForKey:@"dialogTopPos"] intValue];
+
     [self doPrint];
 
 }
 
 - (void) doPrint{
+
     if (![self isPrintServiceAvailable]){
-        [self callbackWithFuntion:self.failCallback withData: @"{success: false, available: false}"];
-        
+        PluginResult* result;
+        NSString * jsString;
+        NSArray * keys = [NSArray arrayWithObjects:@"success",@"available", nil];
+        NSArray * values = [NSArray arrayWithObjects:@"false",@"false", nil];
+        NSDictionary* dic = [NSDictionary dictionaryWithObjects:values forKeys:keys];
+        result = [PluginResult resultWithStatus:PGCommandStatus_ERROR messageAsDictionary:dic];
+        jsString = [result toErrorCallbackString:self.callBackId];
+        [self writeJavascript:jsString];
         return;
     }
     
@@ -105,15 +88,26 @@
 		void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
 		^(UIPrintInteractionController *printController, BOOL completed, NSError *error) {
             if (!completed || error) {
-                [self callbackWithFuntion:self.failCallback withData:
-                    [NSString stringWithFormat:@"{success: false, available: true, error: \"%@\"}", error.localizedDescription]];
-                
+                PluginResult* result;
+                NSString * jsString; 
+                NSArray * keys = [NSArray arrayWithObjects:@"success",@"available",@"error", nil];
+                NSArray * values = [NSArray arrayWithObjects:@"false",@"true",[NSString stringWithFormat:@"%@",error.localizedDescription], nil];
+                NSDictionary* dic = [NSDictionary dictionaryWithObjects:values forKeys:keys];
+                result = [PluginResult resultWithStatus:PGCommandStatus_ERROR messageAsDictionary:dic];
+                jsString = [result toErrorCallbackString:self.callBackId];
+                [self writeJavascript:jsString];
                 [webViewPrint release];
                 
 			}
             else{
-                [self callbackWithFuntion:self.successCallback withData: @"{success: true, available: true}"];
-                
+                PluginResult* result;
+                NSString * jsString;   
+                NSArray * keys = [NSArray arrayWithObjects:@"success",@"available", nil];
+                NSArray * values = [NSArray arrayWithObjects:@"true",@"true", nil];
+                NSDictionary* dic = [NSDictionary dictionaryWithObjects:values forKeys:keys];
+                result = [PluginResult resultWithStatus:PGCommandStatus_OK messageAsDictionary:dic];
+                jsString = [result toSuccessCallbackString:self.callBackId];
+                [self writeJavascript:jsString];
                 [webViewPrint release];
             }
         };
@@ -144,14 +138,6 @@
 
 #pragma mark -
 #pragma mark Return messages
-                 
--(void) callbackWithFuntion:(NSString *)function withData:(NSString *)value{
-    if (!function || [@"" isEqualToString:function]){
-        return;
-    }
-    
-    NSString* jsCallBack = [NSString stringWithFormat:@"%@(%@);", function, value];
-    [self writeJavascript: jsCallBack];
-}
+
 
 @end

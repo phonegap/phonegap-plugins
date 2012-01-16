@@ -224,6 +224,7 @@
     [spinner stopAnimating];
     addressLabel.text = @"Failed";
     if (error != NULL) {
+        if (error.code == NSURLErrorCancelled) return;
         UIAlertView *errorAlert = [[UIAlertView alloc]
                                    initWithTitle: [error localizedDescription]
                                    message: [error localizedFailureReason]

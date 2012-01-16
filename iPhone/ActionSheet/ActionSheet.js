@@ -16,7 +16,7 @@ ActionSheet.prototype.create = function(title, items, fn, options) {
 		callbackId = service + (PhoneGap.callbackId + 1);
 
 	var config = {
-		title : title+'' || '',
+		title : title || '',
 		items : items || ['Cancel'],
 		callback : fn || function(){},
 		scope: options.hasOwnProperty('scope') ? options.scope : null,

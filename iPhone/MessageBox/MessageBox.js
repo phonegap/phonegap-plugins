@@ -22,8 +22,8 @@ MessageBox.prototype.prompt = function(title, msg, fn, options) {
 	if(!options) options = {};
 
 	var config = {
-		title : title+'' || 'Prompt',
-		message : msg+'' || '',
+		title : title || 'Prompt',
+		message : msg || '',
 		callback : fn || function(){},
 		scope: options.hasOwnProperty('scope') ? options.scope : null,
 		type : options.hasOwnProperty('type') ? options.type+'' : 'text',

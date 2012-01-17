@@ -83,8 +83,6 @@ var html = document.getElementById("printHTML").innerHTML;
  );
 ```
 
-## LICENSE ##
-
 ### Supporting devices running below iOS < 4.2 ###
 In order to compile this for versions of iOS earlier than 4.2 (when printing was introduced) then you will need to add -weak_framework UIKit to the project settings under "Other Linker Flags". See the Stack Overflow article for more information: http://stackoverflow.com/questions/4297723/ios-add-printing-but-keep-compatibility-with-ios-3.
 
@@ -113,6 +111,16 @@ Note: you will need to add an extra top margin to new pages.
 Printing is only supported on AirPrint-enabled printers or with the use of third-party software on your computer. The following pages contain more information:
  - AirPrint-enabled printers: http://www.apple.com/ipad/features/airprint.html
  - Enabling AirPrint on your computer: http://reviews.cnet.com/8301-19512_7-20023976-233.html, or http://www.ecamm.com/mac/printopia/
+
+### EXC_BAD_ACCESS in iOS Simulator ###
+(Taken from the Twitter plugin).
+
+If you have issues with the app crashing with EXC_BAD_ACCESS on iOS
+Simulator you may have a weak linking issue. With your project highlighted
+in the left column in XCode go to Targets > Your Project > Build Settings >
+Linking > Other Linker Flags and replace -weak_library with -weak-lSystem For
+more information see:
+http://stackoverflow.com/questions/6738858/use-of-blocks-crashes-app-in-iphone-simulator-4-3-xcode-4-2-and-4-0-2
 
 
 ## LICENSE ##

@@ -1,4 +1,9 @@
+PhoneGap.plist plugin mapping note.
 
+ChildBrowser requires 
+Key: ChildBrowserCommand
+Type: String
+Value: ChildBrowserCommand
 
 
 The child browser allows you to display external webpages within your PhoneGap application.

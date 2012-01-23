@@ -86,12 +86,17 @@ public class WebIntent extends Plugin {
 			return new PluginResult(PluginResult.Status.JSON_EXCEPTION);
 		}
 	}
-	
+
 	void startActivity(String action, Uri uri, String type, Map<String, String> extras) {
-		Intent i = (uri != null ? new Intent(action, uri) : new Intent(action));
-		if (type != null) {
-			i.setType(type);
-		}
+
+		Intent i = new Intent(action);
+		
+		if (uri!=null)
+			if (type!=null)
+				i.setDataAndType(uri, type);
+			else
+				i.setData(uri);
+		
 		for (String key : extras.keySet()) {
 			String value = extras.get(key);
 			i.putExtra(key, value);

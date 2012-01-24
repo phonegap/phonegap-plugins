@@ -6,7 +6,7 @@ By Boris Smus
 2. Create a folder called "borismus" within your project's src/com/ folder and move the java file into it.
 
 ## Using the plugin ##
-The plugin creates the object `window.plugins.webintent` with three methods:
+The plugin creates the object `window.plugins.webintent` with five methods:
 
 ### startActivity ###
 Launches an Android intent. For example:
@@ -41,7 +41,25 @@ Gets the extra that this app was invoked with. For example:
             // There was no extra supplied.
         }
     );
-	
+
+### getUri ###
+Gets the Uri the app was invoked with. For example:
+
+    window.plugins.webintent.getUri(function(url) {
+        if(url !== "") {
+            // url is the url the intent was launched with
+        }
+    });
+
+### onNewIntent ###
+Gets called when onNewIntent is called for the parent activity. Used in only certain launchModes. For example:
+
+    window.plugins.webintent.onNewIntent(function(url) {
+        if(url !== "") {
+            // url is the url that was passed to onNewIntent
+        }
+    });
+
 ## Licence ##
 
 The MIT License

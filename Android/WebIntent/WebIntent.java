@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
@@ -25,6 +26,7 @@ import com.phonegap.api.PluginResult;
  */
 public class WebIntent extends Plugin {
 
+	private String onNewIntentCallback = null;
 	/**
 	 * Executes the request and returns PluginResult.
 	 * 
@@ -79,11 +81,37 @@ public class WebIntent extends Plugin {
 				} else {
 					return new PluginResult(PluginResult.Status.ERROR);
 				}
+			} else if (action.equals("getUri")) {
+				if (args.length() != 0) {
+					return new PluginResult(PluginResult.Status.INVALID_ACTION);
+				}
+
+				Intent i = this.ctx.getIntent();
+				String uri = i.getDataString();
+				return new PluginResult(PluginResult.Status.OK, uri);
+			} else if (action.equals("onNewIntent")) {
+				if (args.length() != 0) {
+					return new PluginResult(PluginResult.Status.INVALID_ACTION);
+				}
+				
+				this.onNewIntentCallback = callbackId;
+				PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
+				result.setKeepCallback(true);
+				return result;
 			}
 			return new PluginResult(PluginResult.Status.INVALID_ACTION);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return new PluginResult(PluginResult.Status.JSON_EXCEPTION);
+		}
+	}
+	
+	@Override
+	public void onNewIntent(Intent intent) {
+		if (this.onNewIntentCallback != null) {
+			PluginResult result = new PluginResult(PluginResult.Status.OK, intent.getDataString());
+			result.setKeepCallback(true);
+			this.success(result, this.onNewIntentCallback);
 		}
 	}
 	

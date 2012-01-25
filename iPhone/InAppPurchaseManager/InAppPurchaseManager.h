@@ -22,10 +22,11 @@
 #endif
 
 #import "SKProduct+LocalizedPrice.h"
-
 @interface InAppPurchaseManager : PGPlugin <SKPaymentTransactionObserver> {
-
 }
+@property (nonatomic, retain) NSObject * singleProductDelegate;
+@property (nonatomic, retain) NSObject * batchProductDelegate;
+
 - (void) setup:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) makePurchase:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) requestProductData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
@@ -34,15 +35,11 @@
 - (void) paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error;
 - (void) paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue;
 
+
 @end
 
 @interface ProductsRequestDelegate : NSObject <SKProductsRequestDelegate>{
-	NSString* successCallback;
-	NSString* failCallback;
-
-	InAppPurchaseManager* command;
 }
-
 @property (nonatomic, copy) NSString* successCallback;
 @property (nonatomic, copy) NSString* failCallback;
 @property (nonatomic, retain) InAppPurchaseManager* command;
@@ -50,10 +47,7 @@
 @end;
 
 @interface BatchProductsRequestDelegate : NSObject <SKProductsRequestDelegate> {
-	NSString* callback;
-	InAppPurchaseManager* command;
 }
-
 @property (nonatomic, copy) NSString* callback;
 @property (nonatomic, retain) InAppPurchaseManager* command;
 

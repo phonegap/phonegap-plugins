@@ -4,6 +4,8 @@ By Boris Smus
 ## Adding the Plugin to your project ##
 1. To install the plugin, move webintent.js to your project's www folder and include a reference to it in your html files. 
 2. Create a folder called "borismus" within your project's src/com/ folder and move the java file into it.
+3. Add this line in in res/xml/plugins.xml.
+  <plugin name="WebIntent" value="com.borismus.webintent.WebIntent">
 
 ## Using the plugin ##
 The plugin creates the object `window.plugins.webintent` with three methods:

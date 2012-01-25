@@ -38,5 +38,4 @@ WebIntent.prototype.getExtra = function(params, success, fail) {
 
 PhoneGap.addConstructor(function() {
 	PhoneGap.addPlugin('webintent', new WebIntent());
-	PluginManager.addService("WebIntent","com.borismus.webintent.WebIntent");
 });

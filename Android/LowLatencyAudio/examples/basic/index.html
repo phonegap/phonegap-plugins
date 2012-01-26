@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+        <meta charset="utf-8">
+            
+            
+            <script type="text/javascript" charset="utf-8" src="phonegap-1.3.0.js"></script>
+            <script type="text/javascript" charset="utf-8" src="PGLowLatencyAudio.js"></script>
+            <script type="text/javascript">
+                
+                
+                function onBodyLoad()
+                {		
+                    document.addEventListener("deviceready", onDeviceReady, false);
+                }
+                
+                function onDeviceReady()
+                {
+                    // do your thing!
+                }
+                
+                function overlap()
+                {
+                    setTimeout( function() {PGLowLatencyAudio.play('cymbal');}, 300 );
+                    setTimeout( function() {PGLowLatencyAudio.play('drum');}, 600 );
+                    setTimeout( function() {PGLowLatencyAudio.play('cymbal');}, 900 );
+                    setTimeout( function() {PGLowLatencyAudio.play('drum');}, 900 );
+                    setTimeout( function() {PGLowLatencyAudio.play('drum');}, 950 );
+                    setTimeout( function() {PGLowLatencyAudio.play('drum');}, 2000 );
+                    setTimeout( function() {PGLowLatencyAudio.play('cymbal');}, 2000 );
+                }
+                
+                function successHandler (result) {
+                    alert( result );
+                }
+                
+                function errorHandler (error) {
+                    alert( error );
+                }
+                
+                </script>
+            
+            <style>
+                
+                * {
+                    -webkit-overflow-scrolling: none;
+                }
+                
+                body {
+                    background-color:#FFF;
+                    background-image: url('assets/carbonFiber.png');
+                    font-size: 40px;
+                }
+                </style>
+            </head>
+    <body onload="onBodyLoad()">
+        <h1>Hey, it's PhoneGap!</h1>
+        
+        <br />
+        <ol>
+            <li><a href="javascript:PGLowLatencyAudio.preloadAudio('cymbal', 'assets/cymbal.mp3', 3, successHandler, errorHandler);">preload cymbal</a></li>
+            <li><a href="javascript:PGLowLatencyAudio.preloadFX('drum', 'assets/drum.mp3', successHandler, errorHandler);">preload drum</a></li>
+            <li><a href="javascript:PGLowLatencyAudio.play('cymbal', successHandler, errorHandler);">play cymbal</a></li>
+            <li><a href="javascript:PGLowLatencyAudio.play('drum', successHandler, errorHandler);">play drum</a></li>
+            <li><a href="javascript:PGLowLatencyAudio.unload('cymbal', successHandler, errorHandler);">unload cymbal</a></li>
+            <li><a href="javascript:PGLowLatencyAudio.unload('drum', successHandler, errorHandler);">unload drum</a></li>
+            <li><a href="javascript:overlap();">overlap</a></li>
+            <li><a href="javascript:PGLowLatencyAudio.loop('cymbal', successHandler, errorHandler);">loop</a></li>
+            <li><a href="javascript:PGLowLatencyAudio.stop('cymbal', successHandler, errorHandler);">stop cymbal</a></li>
+        </ol>
+        <ol>
+            <li><a href="javascript:PGLowLatencyAudio.preloadAudio('cymbal123', 'assets/cymbal123.mp3', 3, successHandler, errorHandler);">error - missing Audio asset</a></li>
+            <li><a href="javascript:PGLowLatencyAudio.preloadFX('drum123', 'assets/drum123.mp3', successHandler, errorHandler);">error - missing Fx asset</a></li>
+        </ol>
+    </body>
+</html>

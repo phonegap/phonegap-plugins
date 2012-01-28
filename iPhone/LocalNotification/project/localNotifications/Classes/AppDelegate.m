@@ -31,13 +31,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 	
-	NSArray *keyArray = [launchOptions allKeys];
+	/*NSArray *keyArray = [launchOptions allKeys];
 	if ([launchOptions objectForKey:[keyArray objectAtIndex:0]]!=nil) 
 	{
 		NSURL *url = [launchOptions objectForKey:[keyArray objectAtIndex:0]];
 		self.invokeString = [url absoluteString];
 		NSLog(@"localNotifications launchOptions = %@",url);
-	}
+	}*/
 	
 	return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }

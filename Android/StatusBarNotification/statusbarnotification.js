@@ -41,6 +41,13 @@ NotificationMessenger.prototype.notify = function(title, body) {
 };
 
 /**
+ * Clears the Notificaiton Bar
+ */
+NotificationMessenger.prototype.clear = function() {
+    return PhoneGap.exec(null, null, 'StatusBarNotification', 'clear', []);
+};
+
+/**
  * 	Load StatusBarNotification
  * */
 

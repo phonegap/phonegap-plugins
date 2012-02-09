@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>PhoneGap</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="jquery.mobile-1.0b2.min.css" />
+		<script type="text/javascript" src="jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="jquery.mobile-1.0b2.min.js"></script>
+		<script type="text/javascript" src="phonegap-1.0.0.js"></script>
+		<script type="text/javascript" src="localizable.js"></script>
+		<script type="text/javascript" src="index.js"></script>
+	</head>
+	<body onload="onBodyLoad()">
+		<div  data-role="page">
+			<div data-role="header">
+				<h1>Dell PGap Localization</h1>
+			</div>
+			<div data-role="content">
+				<div data-role="controlgroup">
+				<a href="javascript:onPhoneGapLoad();" data-role="button" data-icon="arrow-l">Hello Button One</a>
+				<a href="javascript:alert('Hi');" data-role="button" data-icon="arrow-l">Hello Button Two</a>
+				</div>
+			</div>
+			<div data-role="footer"></div>
+		</div>
+	</body>
+</html>

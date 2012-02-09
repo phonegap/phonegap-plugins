@@ -77,9 +77,10 @@
 // view controller for the ui
 //------------------------------------------------------------------------------
 @interface PGbcsViewController : UIViewController {}
-    @property (nonatomic, retain) PGbcsProcessor* processor;
-    @property (nonatomic, retain) NSString*       alternateXib;
-    @property (nonatomic)         BOOL            shutterPressed;
+    @property (nonatomic, retain) PGbcsProcessor*  processor;
+    @property (nonatomic, retain) NSString*        alternateXib;
+    @property (nonatomic)         BOOL             shutterPressed;
+    @property (nonatomic, retain) IBOutlet UIView* overlayView;
 
     - (id)initWithProcessor:(PGbcsProcessor*)processor alternateOverlay:(NSString *)alternateXib;
     - (void)startCapturing;
@@ -590,6 +591,7 @@
     @synthesize processor      = _processor;
     @synthesize shutterPressed = _shutterPressed;
     @synthesize alternateXib   = _alternateXib;
+    @synthesize overlayView    = _overlayView;
 
     //--------------------------------------------------------------------------
     - (id)initWithProcessor:(PGbcsProcessor*)processor alternateOverlay:(NSString *)alternateXib {
@@ -599,6 +601,7 @@
         self.processor = processor;
         self.shutterPressed = NO;
         self.alternateXib = alternateXib;
+        self.overlayView = nil;
         return self;
     }
 
@@ -608,7 +611,7 @@
         self.processor = nil;
         self.shutterPressed = NO;
         self.alternateXib = nil;
-
+        self.overlayView = nil;      
         [super dealloc];
     }
 
@@ -660,23 +663,17 @@
     }
 
     //--------------------------------------------------------------------------
-    - (UIView *)buildOverlayViewFromXib {
-      NSArray *nibContents = [[NSBundle mainBundle] loadNibNamed:self.alternateXib owner:self options:NULL];
-      NSEnumerator *nibEnumerator = [nibContents objectEnumerator];
+    - (UIView *)buildOverlayViewFromXib 
+    {
+      [[NSBundle mainBundle] loadNibNamed:self.alternateXib owner:self options:NULL];
       
-      UIView *view = nil;
-      NSObject* nibItem = nil;
-      
-      while ((nibItem = [nibEnumerator nextObject]) != nil) 
+      if ( self.overlayView == nil )
       {
-        if ([nibItem isKindOfClass:[UIView class]]) 
-        {
-          if ( ((UIView *)nibItem).tag == 50 )
-            view = (UIView *)nibItem;
-        }
+        NSLog(@"%@", @"An error occurred loading the overlay xib.  It appears that the overlayView outlet is not set.");
+        return nil;
       }
-
-      return view;
+      
+      return self.overlayView;        
     }
 
     //--------------------------------------------------------------------------

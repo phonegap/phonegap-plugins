@@ -57,7 +57,7 @@ public class SpeechRecognizer extends Plugin {
             if (!recognizerPresent) {
                 return new PluginResult(PluginResult.Status.ERROR, NOT_PRESENT_MESSAGE);
             }
-            if (!this.speechRecognizerCallbackId.isEmpty()) {
+            if (!(this.speechRecognizerCallbackId.length() == 0)) {
                 return new PluginResult(PluginResult.Status.ERROR, "Speech recognition is in progress.");
             }
             
@@ -125,7 +125,7 @@ public class SpeechRecognizer extends Plugin {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         if (maxMatches > 0)
             intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, maxMatches);
-        if (!prompt.isEmpty())
+        if (!(prompt.length() == 0))
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, prompt);
         ctx.startActivityForResult(this, intent, reqCode);
     }

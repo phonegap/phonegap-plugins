@@ -43,7 +43,7 @@ function speechOk(result) {
             requestCode = respObj.speechMatches.requestCode;
             
             for (match in respObj.speechMatches.speechMatch) {
-                console.log("possible match: " + match);
+                console.log("possible match: " + respObj.speechMatches.speechMatch[match]);
                 // regex comes in handy for dealing with these match strings
             }
         }        

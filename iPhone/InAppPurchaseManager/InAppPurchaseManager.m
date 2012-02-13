@@ -153,7 +153,7 @@
                                  NILABLE(productId),
                                  NILABLE(transactionReceipt),
                                  nil];
-		NSString *js = [NSString stringWithFormat:@"plugins.inAppPurchaseManager.updatedTransactionCallback.apply(null, %@)", [callbackArgs JSONSerialize]];
+		NSString *js = [NSString stringWithFormat:@"plugins.inAppPurchaseManager.updatedTransactionCallback.apply(plugins.inAppPurchaseManager, %@)", [callbackArgs JSONSerialize]];
 		NSLog(@"js: %@", js);
 		[self writeJavascript: js];
 		[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
@@ -191,7 +191,7 @@
                                  NILABLE(product.localizedDescription),
                                  NILABLE(product.localizedPrice),
                                  nil];
-		NSString *js = [NSString stringWithFormat:@"%@.apply(null, %@)", successCallback, [callbackArgs JSONSerialize]];
+		NSString *js = [NSString stringWithFormat:@"%@.apply(plugins.inAppPurchaseManager, %@)", successCallback, [callbackArgs JSONSerialize]];
 		NSLog(@"js: %@", js);
 		[command writeJavascript: js];
     }
@@ -245,7 +245,7 @@
                              NILABLE(validProducts),
                              NILABLE(response.invalidProductIdentifiers),
                              nil];
-	NSString *js = [NSString stringWithFormat:@"%@.apply(null, %@);", callback, [callbackArgs JSONSerialize]];
+	NSString *js = [NSString stringWithFormat:@"%@.apply(plugins.inAppPurchaseManager, %@);", callback, [callbackArgs JSONSerialize]];
 	[command writeJavascript: js];
 
 	[request release];

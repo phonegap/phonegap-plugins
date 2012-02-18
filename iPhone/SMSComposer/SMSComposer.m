@@ -9,6 +9,12 @@
 
 @implementation SMSComposer
 
+-(PGPlugin*) initWithWebView:(UIWebView*)theWebView
+{
+    self = (SMSComposer*)[super initWithWebView:theWebView];
+    return self;
+}
+
 - (void)showSMSComposer:(NSArray*)arguments withDict:(NSDictionary*)options
 {
 	
@@ -45,7 +51,7 @@
 	if(toRecipientsString != nil)
 		[picker setRecipients:[ toRecipientsString componentsSeparatedByString:@","]];
 
-    [[ super appViewController ] presentModalViewController:picker animated:YES];
+    [self.viewController presentModalViewController:picker animated:YES];
     [picker release];
 	
 }
@@ -72,7 +78,7 @@
 			break;
 	}
 	
-    [[ super appViewController ] dismissModalViewControllerAnimated:YES];
+    [self.viewController dismissModalViewControllerAnimated:YES];
 	
 	NSString* jsString = [[NSString alloc] initWithFormat:@"window.plugins.smsComposer._didFinishWithResult(%d);",webviewResult];
 	[self writeJavascript:jsString];

@@ -14,6 +14,12 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+@interface NativeControls(private)
+
+- (void)notifyTabBarItemOnSelect:(UITabBarItem *)item;
+
+@end
+
 @implementation NativeControls
 #ifndef __IPHONE_3_0
 @synthesize webView;
@@ -299,17 +305,17 @@
     
     NSString *itemName = [arguments objectAtIndex:0];
     UITabBarItem *item = [tabBarItems objectForKey:itemName];
-    if (item)
+    if (item) {
         tabBar.selectedItem = item;
-    else
+        [self notifyTabBarItemOnSelect:item];
+    } else
         tabBar.selectedItem = nil;
 }
 
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
-    NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.nativeControls.tabBarItemSelected(%d);", item.tag];    
-    [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+    [self notifyTabBarItemOnSelect:item];
 }
 
 #pragma mark -
@@ -700,6 +706,13 @@
     [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
 }
 
-
+#pragma mark -
+#pragma mark - Private
+    
+- (void)notifyTabBarItemOnSelect:(UITabBarItem *)item
+{
+    NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.nativeControls.tabBarItemSelected(%d);", item.tag];    
+    [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+}
 
 @end

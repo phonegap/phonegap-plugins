@@ -9,16 +9,21 @@
 #import "PGPlugin.h"
 #endif
 
+#ifndef k_DATEPICKER_DATETIME_FORMAT
+#define k_DATEPICKER_DATETIME_FORMAT @"yyyy-MM-dd'T'HH:mm:ss'Z'"
+#endif
 
-@interface DatePicker : PGPlugin {
-	UIActionSheet *datePickerSheet;
-	UIDatePicker *datePicker;
+@interface DatePicker : PGPlugin <UIActionSheetDelegate> {
+	UIActionSheet *_datePickerSheet;
+	UIDatePicker *_datePicker;
+	NSDateFormatter *_isoDateFormatter;
 	BOOL isVisible;
 
 }
 
 @property (nonatomic, retain) UIActionSheet* datePickerSheet;
 @property (nonatomic, retain) UIDatePicker* datePicker;
+@property (nonatomic, retain) NSDateFormatter* isoDateFormatter;
 
 
 //- (void) prepare:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;

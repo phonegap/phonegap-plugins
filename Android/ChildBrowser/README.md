@@ -17,18 +17,11 @@ Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonega
     &lt;script type="text/javascript" charset="utf-8" src="phonegap.js"&gt;&lt;/script&gt;<br/>
     &lt;script type="text/javascript" charset="utf-8" src="childbrowser.js"&gt;&lt;/script&gt;
     
-2. Copy the image files folder www/childbrowser to your project'w www folder. Note you need the entire folder not just the images.
+2. Copy the image files folder www/childbrowser to your project's www folder. Note you need the entire folder not just the images.
 
 3. Create a directory within your project called "src/com/phonegap/plugins/childBrowser" and move ChildBrowser.java into it.
 
-4. Add the following activity to your AndroidManifest.xml file.  It should be added inside the &lt;application&gt; tag.
-
-    &lt;activity android:name="com.phonegap.plugins.childBrowser.ChildBrowser" android:label="@string/app_name"&gt;<br/>
-      &lt;intent-filter&gt;<br/>
-      &lt;/intent-filter&gt;<br/>
-    &lt;/activity&gt;
-
-5. In your res/xml/plugins.xml file add the following line:
+4. In your res/xml/plugins.xml file add the following line:
 
     &lt;plugin name="ChildBrowser" value="com.phonegap.plugins.childBrowser.ChildBrowser"/&gt;
 

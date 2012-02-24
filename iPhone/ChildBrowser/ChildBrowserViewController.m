@@ -220,18 +220,27 @@
 }
 
 - (void)webView:(UIWebView *)wv didFailLoadWithError:(NSError *)error {
-    NSLog (@"webView:didFailLoadWithError");
     [spinner stopAnimating];
-    addressLabel.text = @"Failed";
     if (error != NULL) {
-        UIAlertView *errorAlert = [[UIAlertView alloc]
-                                   initWithTitle: [error localizedDescription]
-                                   message: [error localizedFailureReason]
-                                   delegate:nil
-                                   cancelButtonTitle:@"OK"
-                                   otherButtonTitles:nil];
-        [errorAlert show];
-        [errorAlert release];
+        //bugfix: https://discussions.apple.com/thread/1727260
+        if (error.code == NSURLErrorCancelled) {
+            
+            NSLog(@"webview:loading cancelled by user");
+            return;
+            
+        }else{
+            NSLog (@"webView:didFailLoadWithError");
+            addressLabel.text = @"Failed";
+        
+            UIAlertView *errorAlert = [[UIAlertView alloc]
+                                       initWithTitle: [error localizedDescription]
+                                       message: [error localizedFailureReason]
+                                       delegate:nil
+                                       cancelButtonTitle:@"OK"
+                                       otherButtonTitles:nil];
+            [errorAlert show];
+            [errorAlert release];
+        }
     }
 }
 

@@ -1,18 +1,16 @@
 //  Created by Jesse MacFadyen on 10-05-29.
 //  Copyright 2010 Nitobi. All rights reserved.
 //  Copyright (c) 2011, IBM Corporation
-//  Copyright 2011, Randy McMillan
 //  Copyright 2012, Randy McMillan
-//
 
 #import "ChildBrowserCommand.h"
 
 #ifdef PHONEGAP_FRAMEWORK
-//	#import <PhoneGap/PhoneGapViewController.h> //Reference PhoneGapLib/Classes/PGViewController.m LINE: 46
+//	#import <PhoneGap/PhoneGapViewController.h>
 #import <PhoneGap/PGViewController.h>
 #else
 //	#import <PhoneGap/PhoneGapViewController.h> TODO add based on PhoneGap version
-#import "PhoneGapViewController.h"
+#import "PGViewController.h"
 #endif
 
 
@@ -29,18 +27,8 @@
 		childBrowser.delegate = self;
 	}
 	
-/*  TODO: Work in progress
-    NSString* strOrientations = [ options objectForKey:@"supportedOrientations"];
-    NSArray* supportedOrientations = [strOrientations componentsSeparatedByString:@","];
-*/
-
-/* TODO Add back support pre 1.0 Check progress of https://github.com/alunny/ChildBrowser for PhoneGapBuild usage - @RandyMcMillan
-//Pre PhoneGap 1.0 
-//PhoneGapViewController* cont = (PhoneGapViewController*)[ super appViewController ];
-//Reference PhoneGapLib/Classes/PGPlugin.m LINE: 140
-*/
-   
-    PGViewController* cont = (PGViewController*)[ super viewController ]; 
+    //Before 1.4.1 PhoneGapViewController* cont = (PhoneGapViewController*)[ super appViewController ];
+    PGViewController* cont = (PGViewController*)[ super viewController ];
     childBrowser.supportedOrientations = cont.supportedOrientations;
     
     if ([cont respondsToSelector:@selector(presentViewController)]) {
@@ -85,8 +73,6 @@
 	[self.webView stringByEvaluatingJavaScriptFromString:jsCallback];
     
 }
-
-
 
 
 @end

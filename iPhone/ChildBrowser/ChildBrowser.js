@@ -1,7 +1,7 @@
 /* MIT licensed */
 // (c) 2010 Jesse MacFadyen, Nitobi
 
-/*global PhoneGap */
+/*global PhoneGap/Cordova */
 
 function ChildBrowser() {
   // Does nothing
@@ -43,13 +43,31 @@ ChildBrowser._onJSCallback = function(js,loc)
 // Show a webpage, will result in a callback to onLocationChange
 ChildBrowser.prototype.showWebPage = function(loc)
 {
-  PhoneGap.exec("ChildBrowserCommand.showWebPage", loc);
+    if (typeof PhoneGap !=== "undefined") {
+
+    PhoneGap.exec("ChildBrowserCommand.showWebPage", loc);
+    
+	} else {
+	
+    if (typeof Cordova !=== "undefined") {
+
+    Cordova.exec("ChildBrowserCommand.showWebPage", loc);
+    }
 };
 
 // close the browser, will NOT result in close callback
 ChildBrowser.prototype.close = function()
 {
-  PhoneGap.exec("ChildBrowserCommand.close");
+    if (typeof PhoneGap !=== "undefined") {
+
+    PhoneGap.exec("ChildBrowserCommand.close");
+    
+	} else {
+    
+	if (typeof Cordova !=== "undefined") {
+    
+    Cordova.exec("ChildBrowserCommand.close");
+    }
 };
 
 // Not Implemented

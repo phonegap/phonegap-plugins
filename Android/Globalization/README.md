@@ -14,7 +14,7 @@ Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonega
 
 3. In your res/xml/plugins.xml file add the following line:
 
-    &lt;plugin name="Globalization" value="com.phonegap.plugins.globalization.GlobalizationCommand"/&gt;
+    &lt;plugin name="GlobalizationCommand" value="com.phonegap.plugins.globalization.GlobalizationCommand"/&gt;
 
 
 ## RELEASE NOTES ##

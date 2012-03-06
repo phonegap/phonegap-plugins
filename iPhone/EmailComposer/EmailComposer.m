@@ -61,8 +61,9 @@
 	//  NSData *myData = [NSData dataWithContentsOfFile:path];
 	//  [picker addAttachmentData:myData mimeType:@"image/png" fileName:@"rainy"];
     
-    
-    [[ super appViewController ] presentModalViewController:picker animated:YES];
+    if (picker != nil) {
+        [[ super appViewController ] presentModalViewController:picker animated:YES];
+    }
     [picker release];
 }
 

@@ -48,6 +48,28 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 
 }
 
+- (void) setCustomVariable:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+    
+	int index = [[options valueForKey:@"index"] intValue];
+	NSString* name = [options valueForKey:@"name"];
+	NSString* value = [options valueForKey:@"value"];
+    
+	NSError *error;
+    
+	if (![[GANTracker sharedTracker] setCustomVariableAtIndex:index 
+                                                         name:name 
+                                                        value:value 
+                                                    withError:&error]) {
+		// Handle error here
+		NSLog(@"GoogleAnalyticsPlugin.setCustonVariable Error::%@",[error localizedDescription]);
+	}
+    
+    
+	NSLog(@"GoogleAnalyticsPlugin.setCustomVariable::%d, %@, %@", index, name, value);
+    
+}
+
 - (void) trackPageview:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
 	NSString* pageUri = [arguments objectAtIndex:0];

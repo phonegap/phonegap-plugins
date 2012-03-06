@@ -16,6 +16,13 @@ GoogleAnalyticsPlugin.prototype.trackEvent = function(category,action,label,valu
 	PhoneGap.exec("GoogleAnalyticsPlugin.trackEvent",options);
 };
 
+GoogleAnalyticsPlugin.prototype.setCustomVariable = function(index,name,value) {
+	var options = {index:index,
+		name:name,
+		value:value};
+	PhoneGap.exec("GoogleAnalyticsPlugin.setCustomVariable",options);
+};
+
 GoogleAnalyticsPlugin.prototype.hitDispatched = function(hitString) {
 	//console.log("hitDispatched :: " + hitString);
 };

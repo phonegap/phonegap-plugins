@@ -21,6 +21,7 @@
 
 - (void) startTrackerWithAccountID:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) trackEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) setCustomVariable:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) trackPageview:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 @end

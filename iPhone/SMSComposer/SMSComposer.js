@@ -19,7 +19,6 @@ NotSent:3
 
 SMSComposer.prototype.showSMSComposer = function(toRecipients, body)
 {
-
 	var args = {};
 	
 	if(toRecipients)
@@ -39,7 +38,9 @@ SMSComposer.prototype.showSMSComposerWithCB = function(cbFunction,toRecipients,b
 
 SMSComposer.prototype._didFinishWithResult = function(res)
 {
-	this.resultCallback(res);
+    // if showSMSComposer is called resultCallback is null so do null check
+    if(resultCallback)
+        this.resultCallback(res);
 }
 
 PhoneGap.addConstructor(function() {
@@ -48,4 +49,5 @@ PhoneGap.addConstructor(function() {
 		window.plugins = {};
 	}
 	window.plugins.smsComposer = new SMSComposer();
+
 });

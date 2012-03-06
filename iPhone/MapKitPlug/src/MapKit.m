@@ -140,6 +140,7 @@
 		height=[[options objectForKey:@"height"] floatValue];
 	}
     if ([options objectForKey:@"offsetTop"]) 
+
 	{
 		offsetTop=[[options objectForKey:@"offsetTop"] floatValue];
 	}

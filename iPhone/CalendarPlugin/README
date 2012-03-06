@@ -1,3 +1,14 @@
+//
+//								
+//  PhoneGap Calendar Plugin IOS    
+//									
+//  Author: Felix Montanez
+//  
+//  Collaborators:
+//  Abdurrahman Qadan
+//  Michael Brooks
+//
+//
 //  Usage Example: I put the code in my JS file that I'm calling the
 //  createEvent function. Declared cal as a global variable, then 
 //  onDeviceReady, i declared cal = window.plugins.calendarPlugin

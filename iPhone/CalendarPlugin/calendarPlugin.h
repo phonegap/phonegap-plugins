@@ -4,7 +4,11 @@
 //  Created by Felix Montanez on 01-17-2012
 //  MIT Licensed
 //
-//  Copyright 2012 AMFMMultiMedia. All Rights Reserved.
+//  Contributors:
+//  Abdurrahman Qadan
+//  Michael Brooks
+//
+//  
 //
 
 

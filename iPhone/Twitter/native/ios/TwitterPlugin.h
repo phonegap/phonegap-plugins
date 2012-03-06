@@ -21,8 +21,6 @@
     
 - (void) isTwitterSetup:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
-- (void) sendTweet:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-
 - (void) composeTweet:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 - (void) getPublicTimeline:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;

@@ -17,7 +17,7 @@ TwitterDemo = {
     },
     
     setup:function(){
-        var tests = ["isAvailable", "isSetup", "tweet", "compose", "timeline", "mentions"];
+        var tests = ["isAvailable", "isSetup", "tweet1", "tweet2", "tweet3", "tweet4", "tweet5", "tweet6", "timeline", "mentions"];
         for(var i=0, l=tests.length; i<l; i++){
             this.$(tests[i]).onclick = this[tests[i]];
         }
@@ -37,21 +37,66 @@ TwitterDemo = {
         });
     },
     
-    tweet:function(){
+    tweet1:function(){
         TwitterDemo.log("wait..");
-        window.plugins.twitter.sendTweet(
+        window.plugins.twitter.composeTweet(
             function(s){ TwitterDemo.log("tweet success"); }, 
             function(e){ TwitterDemo.log("tweet failure: " + e); }, 
-            "Tweety Poo", 
-            "https://github.com/brianantonelli", 
-            "http://zomgdinosaurs.com/zomg.jpg");
+            "Text, Image, URL", 
+            {
+                urlAttach:"https://github.com/brianantonelli", 
+                imageAttach:"http://zomgdinosaurs.com/zomg.jpg"
+            });
     },
-    
-    compose: function() {
+
+    tweet2:function(){
         TwitterDemo.log("wait..");
-          window.plugins.twitter.composeTweet();
+        window.plugins.twitter.composeTweet(
+            function(s){ TwitterDemo.log("tweet success"); }, 
+            function(e){ TwitterDemo.log("tweet failure: " + e); }, 
+            "Text, Remote Image", 
+            {
+                imageAttach:"http://zomgdinosaurs.com/zomg.jpg"
+            });
+    },
+
+    tweet6:function(){
+        TwitterDemo.log("wait..");
+        window.plugins.twitter.composeTweet(
+                                            function(s){ TwitterDemo.log("tweet success"); }, 
+                                            function(e){ TwitterDemo.log("tweet failure: " + e); }, 
+                                            "Text, Local Image", 
+                                            {
+                                            imageAttach:"www/ninja-lolcat.gif"
+                                            });
+    },
+
+    tweet3:function(){
+        TwitterDemo.log("wait..");
+        window.plugins.twitter.composeTweet(
+            function(s){ TwitterDemo.log("tweet success"); }, 
+            function(e){ TwitterDemo.log("tweet failure: " + e); }, 
+            "Text, URL", 
+            {
+                urlAttach:"https://github.com/brianantonelli"
+            });
+    },
+
+    tweet4:function(){
+        TwitterDemo.log("wait..");
+        window.plugins.twitter.composeTweet(
+            function(s){ TwitterDemo.log("tweet success"); }, 
+            function(e){ TwitterDemo.log("tweet failure: " + e); }, 
+            "Text");
     },
     
+    tweet5:function(){
+        TwitterDemo.log("wait..");
+        window.plugins.twitter.composeTweet(
+            function(s){ TwitterDemo.log("tweet success"); }, 
+            function(e){ TwitterDemo.log("tweet failure: " + e); });
+    },
+
     timeline:function(){
         TwitterDemo.log("wait..");
         window.plugins.twitter.getPublicTimeline(

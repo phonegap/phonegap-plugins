@@ -12,6 +12,7 @@
 
 @implementation EmailComposer
 
+
 - (void) showEmailComposer:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {	
 	// NSUInteger argc = [arguments count];
@@ -61,9 +62,8 @@
 	//  NSData *myData = [NSData dataWithContentsOfFile:path];
 	//  [picker addAttachmentData:myData mimeType:@"image/png" fileName:@"rainy"];
     
-    if (picker != nil) {
-        [[ super appViewController ] presentModalViewController:picker animated:YES];
-    }
+    
+    [self.viewController presentModalViewController:picker animated:YES];
     [picker release];
 }
 
@@ -93,7 +93,7 @@
             break;
     }
 	
-    [[ super appViewController ] dismissModalViewControllerAnimated:YES];
+    [self.viewController dismissModalViewControllerAnimated:YES];
 	
 	NSString* jsString = [[NSString alloc] initWithFormat:@"window.plugins.emailComposer._didFinishWithResult(%d);",webviewResult];
 	[self writeJavascript:jsString];

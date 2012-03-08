@@ -63,7 +63,10 @@
 	//  [picker addAttachmentData:myData mimeType:@"image/png" fileName:@"rainy"];
     
     
-    [self.viewController presentModalViewController:picker animated:YES];
+    
+   if (picker != nil) {  	
+        [self.viewController presentModalViewController:picker animated:YES];
+    }
     [picker release];
 }
 

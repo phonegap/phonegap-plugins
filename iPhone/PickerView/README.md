@@ -19,7 +19,7 @@ Using this plugin requires [iPhone PhoneGap](http://github.com/phonegap/phonegap
 ## JAVASCRIPT INTERFACE ##
 
     // After device ready, create a local alias
-    var pickerView = pickerView;
+    var pickerView = window.plugins.pickerView;
 
     // Basic with title
     var items = [{value: 'foo', text: 'Displayed Foo'}, {value: 'bar', text: 'Displayed Bar'}, {value: 'baz', text: 'Displayed Baz'}];

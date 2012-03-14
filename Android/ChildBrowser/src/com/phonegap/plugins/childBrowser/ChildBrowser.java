@@ -10,6 +10,7 @@ package com.phonegap.plugins.childBrowser;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.cordova.api.CordovaInterface;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -119,7 +120,7 @@ public class ChildBrowser extends Plugin {
         try {
             Intent intent = null;
             if (usePhoneGap) {
-                intent = new Intent().setClass(this.ctx, com.phonegap.DroidGap.class);
+                intent = new Intent().setClass((Context) this.ctx, org.apache.cordova.DroidGap.class);
                 intent.setData(Uri.parse(url)); // This line will be removed in future.
                 intent.putExtra("url", url);
 
@@ -211,7 +212,7 @@ public class ChildBrowser extends Plugin {
         // Create dialog in new thread 
         Runnable runnable = new Runnable() {
             public void run() {
-                dialog = new Dialog(ctx);
+                dialog = new Dialog((Context) ctx);
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setCancelable(true);
@@ -234,13 +235,13 @@ public class ChildBrowser extends Plugin {
                 LinearLayout.LayoutParams closeParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
                 LinearLayout.LayoutParams wvParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
                 
-                LinearLayout main = new LinearLayout(ctx);
+                LinearLayout main = new LinearLayout((Context) ctx);
                 main.setOrientation(LinearLayout.VERTICAL);
                 
-                LinearLayout toolbar = new LinearLayout(ctx);
+                LinearLayout toolbar = new LinearLayout((Context) ctx);
                 toolbar.setOrientation(LinearLayout.HORIZONTAL);
                 
-                ImageButton back = new ImageButton(ctx);
+                ImageButton back = new ImageButton((Context) ctx);
                 back.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         goBack();
@@ -254,7 +255,7 @@ public class ChildBrowser extends Plugin {
                 }
                 back.setLayoutParams(backParams);
 
-                ImageButton forward = new ImageButton(ctx);
+                ImageButton forward = new ImageButton((Context) ctx);
                 forward.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         goForward();
@@ -268,7 +269,7 @@ public class ChildBrowser extends Plugin {
                 }               
                 forward.setLayoutParams(forwardParams);
                 
-                edittext = new EditText(ctx);
+                edittext = new EditText((Context) ctx);
                 edittext.setOnKeyListener(new View.OnKeyListener() {
                     public boolean onKey(View v, int keyCode, KeyEvent event) {
                         // If the event is a key-down event on the "enter" button
@@ -284,7 +285,7 @@ public class ChildBrowser extends Plugin {
                 edittext.setText(url);
                 edittext.setLayoutParams(editParams);
                 
-                ImageButton close = new ImageButton(ctx);                
+                ImageButton close = new ImageButton((Context) ctx);                
                 close.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         closeDialog();
@@ -298,7 +299,7 @@ public class ChildBrowser extends Plugin {
                 }
                 close.setLayoutParams(closeParams);
                                 
-                webview = new WebView(ctx);
+                webview = new WebView((Context) ctx);
                 webview.getSettings().setJavaScriptEnabled(true);
                 webview.getSettings().setBuiltInZoomControls(true);
                 WebViewClient client = new ChildBrowserClient(ctx, edittext);
@@ -357,7 +358,7 @@ public class ChildBrowser extends Plugin {
      * The webview client receives notifications about appView
      */
     public class ChildBrowserClient extends WebViewClient {
-        PhonegapActivity ctx;
+        CordovaInterface ctx;
         EditText edittext;
 
         /**
@@ -366,7 +367,7 @@ public class ChildBrowser extends Plugin {
          * @param mContext
          * @param edittext 
          */
-        public ChildBrowserClient(PhonegapActivity mContext, EditText mEditText) {
+        public ChildBrowserClient(CordovaInterface mContext, EditText mEditText) {
             this.ctx = mContext;
             this.edittext = mEditText;
         }       

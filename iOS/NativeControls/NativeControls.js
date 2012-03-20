@@ -306,8 +306,4 @@ NativeControls.prototype.setStatusBarVisibilty = function(bHide)
 if(!window.plugins)
   window.plugins = {};
  
-<<<<<<< HEAD
  window.plugins.nativeControls = new NativeControls();
-=======
- window.plugins.nativeControls = new NativeControls();
->>>>>>> CordovaSupport

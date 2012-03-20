@@ -6,8 +6,8 @@
 //
 
 #import "TwitterPlugin.h"
-#ifdef PHONEGAP_FRAMEWORK
-    #import <PhoneGap/JSONKit.h>
+#ifdef CORDOVA_FRAMEWORK
+    #import <Cordova/JSONKit.h>
 #else
     #import "JSONKit.h"
 #endif
@@ -26,14 +26,14 @@
         [tweetViewController release];
     }
     
-    [super writeJavascript:[[PluginResult resultWithStatus:PGCommandStatus_OK messageAsInt:twitterSDKAvailable ? 1 : 0] toSuccessCallbackString:callbackId]];
+    [super writeJavascript:[[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:twitterSDKAvailable ? 1 : 0] toSuccessCallbackString:callbackId]];
 }
 
 - (void) isTwitterSetup:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options{
     NSString *callbackId = [arguments objectAtIndex:0];
     BOOL canTweet = [TWTweetComposeViewController canSendTweet];
 
-    [super writeJavascript:[[PluginResult resultWithStatus:PGCommandStatus_OK messageAsInt:canTweet ? 1 : 0] toSuccessCallbackString:callbackId]];
+    [super writeJavascript:[[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:canTweet ? 1 : 0] toSuccessCallbackString:callbackId]];
 }
 
 - (void) composeTweet:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options{
@@ -79,18 +79,18 @@
     
     
     if(!ok){        
-        [super writeJavascript:[[PluginResult resultWithStatus:PGCommandStatus_ERROR 
+        [super writeJavascript:[[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR 
                                                messageAsString:errorMessage] toErrorCallbackString:callbackId]];
     }
     else{
         [tweetViewController setCompletionHandler:^(TWTweetComposeViewControllerResult result) {
             switch (result) {
                 case TWTweetComposeViewControllerResultDone:
-                    [super writeJavascript:[[PluginResult resultWithStatus:PGCommandStatus_OK] toSuccessCallbackString:callbackId]];
+                    [super writeJavascript:[[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] toSuccessCallbackString:callbackId]];
                     break;
                 case TWTweetComposeViewControllerResultCancelled:
                 default:
-                    [super writeJavascript:[[PluginResult resultWithStatus:PGCommandStatus_ERROR 
+                    [super writeJavascript:[[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR 
                                                            messageAsString:@"Cancelled"] toErrorCallbackString:callbackId]];
                     break;
             }
@@ -116,11 +116,11 @@
         if([urlResponse statusCode] == 200) {
             NSString *dataString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
             NSDictionary *dict = [dataString objectFromJSONString];
-            jsResponse = [[PluginResult resultWithStatus:PGCommandStatus_OK messageAsDictionary:dict] toSuccessCallbackString:callbackId];
+            jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dict] toSuccessCallbackString:callbackId];
             [dataString release];
 		}
 		else{
-            jsResponse = [[PluginResult resultWithStatus:PGCommandStatus_ERROR 
+            jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR 
                                         messageAsString:[NSString stringWithFormat:@"HTTP Error: %i", [urlResponse statusCode]]] 
                             	  toErrorCallbackString:callbackId];
 		}
@@ -150,11 +150,11 @@
                     if([urlResponse statusCode] == 200) {
                         NSString *dataString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
                         NSDictionary *dict = [dataString objectFromJSONString];
-                        jsResponse = [[PluginResult resultWithStatus:PGCommandStatus_OK messageAsDictionary:dict] toSuccessCallbackString:callbackId];
+                        jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dict] toSuccessCallbackString:callbackId];
                         [dataString release];
                     }
                     else{
-                        jsResponse = [[PluginResult resultWithStatus:PGCommandStatus_ERROR 
+                        jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR 
                                                      messageAsString:[NSString stringWithFormat:@"HTTP Error: %i", [urlResponse statusCode]]] 
                                       toErrorCallbackString:callbackId];
                     }
@@ -164,14 +164,14 @@
                 [postRequest release];
             }
             else{
-                NSString *jsResponse = [[PluginResult resultWithStatus:PGCommandStatus_ERROR 
+                NSString *jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR 
                                              messageAsString:@"No Twitter accounts available"] 
                               toErrorCallbackString:callbackId];
                 [self performCallbackOnMainThreadforJS:jsResponse];
             }
         }
         else{
-            NSString *jsResponse = [[PluginResult resultWithStatus:PGCommandStatus_ERROR 
+            NSString *jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR 
                                          messageAsString:@"Access to Twitter accounts denied by user"] 
                           toErrorCallbackString:callbackId];
             [self performCallbackOnMainThreadforJS:jsResponse];

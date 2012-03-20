@@ -8,13 +8,13 @@
 #import <Foundation/Foundation.h>
 #import <Twitter/Twitter.h>
 #import <Accounts/Accounts.h>
-#ifdef PHONEGAP_FRAMEWORK
-    #import <PhoneGap/PGPlugin.h>
+#ifdef CORDOVA_FRAMEWORK
+    #import <Cordova/CDVPlugin.h>
 #else
-    #import "PGPlugin.h"
+    #import "CDVPlugin.h"
 #endif
 
-@interface TwitterPlugin : PGPlugin{
+@interface TwitterPlugin : CDVPlugin{
 }
 
 - (void) isTwitterAvailable:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;

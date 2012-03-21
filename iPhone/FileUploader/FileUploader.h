@@ -6,13 +6,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PGPlugin.h>
+#ifdef CORDOVA_FRAMEWORK
+#import <CORDOVA/CDVPlugin.h>
 #else
-#import "PGPlugin.h"
+#import "CORDOVA/CDVPlugin.h"
 #endif
 
-@interface FileUploader : PGPlugin {
+@interface FileUploader : CDVPlugin {
 
 }
 - (void) upload:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;

@@ -62,13 +62,13 @@ FileUploader.prototype._doUpload = function(method, server, file, params, fileKe
 	}
 	var callback = 'window.plugins.fileUploader.callbackMap.' + key;
 	
-    return PhoneGap.exec('FileUploader.' + method, callback + '.success', callback + '.fail', callback + '.progress', server, file, fileKey, fileName, mimeType, params);
+    return Cordova.exec('FileUploader.' + method, callback + '.success', callback + '.fail', callback + '.progress', server, file, fileKey, fileName, mimeType, params);
 }
 
 FileUploader.prototype.callbackMap = {};
 FileUploader.prototype.callbackIdx = 0;
 
-PhoneGap.addConstructor(function()  {
+Cordova.addConstructor(function()  {
 	if(!window.plugins) {
 		window.plugins = {};
 	}

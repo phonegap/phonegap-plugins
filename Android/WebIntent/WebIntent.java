@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.text.Html;
 
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;

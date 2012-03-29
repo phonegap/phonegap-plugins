@@ -8,9 +8,14 @@
 
 package com.phonegap.plugins.video;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -19,6 +24,7 @@ import com.phonegap.api.PluginResult;
 
 public class VideoPlayer extends Plugin {
     private static final String YOU_TUBE = "youtube.com";
+    private static final String ASSETS = "file:///android_asset/";
 
     @Override
     public PluginResult execute(String action, JSONArray args, String callbackId) {
@@ -35,6 +41,8 @@ public class VideoPlayer extends Plugin {
             return new PluginResult(status, result);
         } catch (JSONException e) {
             return new PluginResult(PluginResult.Status.JSON_EXCEPTION);
+        } catch (IOException e) {
+            return new PluginResult(PluginResult.Status.IO_EXCEPTION);
         }
     }
 
@@ -48,6 +56,21 @@ public class VideoPlayer extends Plugin {
             // If we don't do it this way you don't have the option for youtube
             uri = Uri.parse("vnd.youtube:" + uri.getQueryParameter("v"));
             intent = new Intent(Intent.ACTION_VIEW, uri);
+        } else if(url.contains(ASSETS)) {
+            // get file path in assets folder
+            String filepath = url.replace(ASSETS, "");
+            // get actual filename from path as command to write to internal storage doesn't like folders
+            String filename = filepath.substring(filepath.lastIndexOf("/")+1, filepath.length());
+            
+            // copy file to internal storage
+            this.copy(filepath, filename);
+
+            // change uri to be to the new file in internal storage
+            uri = Uri.parse("file://" + this.ctx.getFilesDir() + "/" + filename);
+            
+            // Display video player
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "video/*");
         } else {        
             // Display video player
             intent = new Intent(Intent.ACTION_VIEW);
@@ -55,5 +78,21 @@ public class VideoPlayer extends Plugin {
         }
         
         this.ctx.startActivity(intent);
+    }
+
+    private void copy(String fileFrom, String fileTo) throws IOException {
+        // get file to be copied from assets
+        InputStream in = this.ctx.getAssets().open(fileFrom);
+        // get file where copied too, in internal storage. 
+        // must be MODE_WORLD_READABLE or Android can't play it
+        FileOutputStream out = this.ctx.openFileOutput(fileTo, Context.MODE_WORLD_READABLE);
+
+        // Transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0)
+            out.write(buf, 0, len);
+        in.close();
+        out.close();
     }
 }

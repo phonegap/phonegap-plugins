@@ -77,7 +77,8 @@ ChildBrowser.prototype._onError = function(data) {
 /**
  * Maintain API consistency with iOS
  */
-ChildBrowser.prototype.install = function(){
+ChildBrowser.install = function(){
+    return window.plugins.childBrowser;
 };
 
 /**

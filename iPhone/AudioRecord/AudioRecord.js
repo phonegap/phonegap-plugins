@@ -16,9 +16,9 @@
  * Start recording audio file.
  */
 Media.prototype.startRecordWithSettings = function(options) {
-    PhoneGap.exec(null, null, "AudioRecord","startAudioRecord", [this.id, this.src, options]);
+    Cordova.exec(null, null, "AudioRecord","startAudioRecord", [this.id, this.src, options]);
 };
 
 Media.prototype.stopRecordWithSettings = function() {
-    PhoneGap.exec(null, null, "AudioRecord","stopAudioRecord", [this.id, this.src]);
+    Cordova.exec(null, null, "AudioRecord","stopAudioRecord", [this.id, this.src]);
 };

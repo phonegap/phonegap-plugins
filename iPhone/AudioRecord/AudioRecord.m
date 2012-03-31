@@ -16,7 +16,7 @@
 	NSString* mediaId = [arguments objectAtIndex:1];
     
     //Use Super's audio file.
-	PGAudioFile* audioFile = [super audioFileForResource:[arguments objectAtIndex:2] withId: mediaId];
+	CDVAudioFile* audioFile = [super audioFileForResource:[arguments objectAtIndex:2] withId: mediaId];
     NSString* jsString = nil;
     
     NSString* FormatIDString = [options objectForKey:@"FormatID"];
@@ -68,19 +68,19 @@
         
         
 		// create a new recorder for each start record
-		audioFile.recorder = [[AudioRecorder alloc] initWithURL:audioFile.resourceURL settings:recorderSettingsDict error:&error];
+		audioFile.recorder = [[CDVAudioRecorder alloc] initWithURL:audioFile.resourceURL settings:recorderSettingsDict error:&error];
 	
 		if (error != nil) {
 			NSLog(@"Failed to initialize AVAudioRecorder: %@\n", error);
 			audioFile.recorder = nil;
-			jsString = [NSString stringWithFormat: @"%@(\"%@\",%d,%d);", @"PhoneGap.Media.onStatus", mediaId, MEDIA_ERROR, MEDIA_ERR_ABORTED];
+			jsString = [NSString stringWithFormat: @"%@(\"%@\",%d,%d);", @"Cordova.Media.onStatus", mediaId, MEDIA_ERROR, MEDIA_ERR_ABORTED];
 			
 		} else {
 			audioFile.recorder.delegate = self;
 			audioFile.recorder.mediaId = mediaId;
 			[audioFile.recorder record];
 			NSLog(@"Started recording audio sample '%@'", audioFile.resourcePath);
-            jsString = [NSString stringWithFormat: @"%@(\"%@\",%d,%d);", @"PhoneGap.Media.onStatus", mediaId, MEDIA_STATE, MEDIA_RUNNING];
+            jsString = [NSString stringWithFormat: @"%@(\"%@\",%d,%d);", @"Cordova.Media.onStatus", mediaId, MEDIA_STATE, MEDIA_RUNNING];
 		}
 	}
     if (jsString) {
@@ -95,15 +95,15 @@
 	NSString* mediaId = [arguments objectAtIndex:1];
 
     //Use Super's soundCache
-	PGAudioFile* audioFile = [[super soundCache] objectForKey: [arguments objectAtIndex:2]];
+	CDVAudioFile* audioFile = [super audioFileForResource:[arguments objectAtIndex:2] withId:mediaId];
     NSString* jsString = nil;
 	
 	if (audioFile != nil && audioFile.recorder != nil) {
 		NSLog(@"Stopped recording audio sample '%@'", audioFile.resourcePath);
 		[audioFile.recorder stop];
-        jsString = [NSString stringWithFormat: @"%@(\"%@\",%d,%d);", @"PhoneGap.Media.onStatus", mediaId, MEDIA_STATE, MEDIA_STOPPED];
+        jsString = [NSString stringWithFormat: @"%@(\"%@\",%d,%d);", @"Cordova.Media.onStatus", mediaId, MEDIA_STATE, MEDIA_STOPPED];
 	} else {
-        jsString = [NSString stringWithFormat: @"%@(\"%@\",%d,%d);", @"PhoneGap.Media.onStatus", mediaId, MEDIA_ERROR, MEDIA_NONE];
+        jsString = [NSString stringWithFormat: @"%@(\"%@\",%d,%d);", @"Cordova.Media.onStatus", mediaId, MEDIA_ERROR, MEDIA_NONE];
     }
     if (jsString) {
         [super writeJavascript:jsString]; 
@@ -112,20 +112,20 @@
 
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder*)recorder successfully:(BOOL)flag {
 
-	AudioRecorder* aRecorder = (AudioRecorder*)recorder;
+	CDVAudioRecorder* aRecorder = (CDVAudioRecorder*)recorder;
 	NSString* mediaId = aRecorder.mediaId;
     
     //Use Super's soundCache
-	PGAudioFile* audioFile = [[super soundCache] objectForKey: [aRecorder.url path]]; //mediaId];
+	CDVAudioFile* audioFile = [[super soundCache] objectForKey: [aRecorder.url path]]; //mediaId];
 	NSString* jsString = nil;
 
 	
 	if (audioFile != nil) {
 		NSLog(@"Finished recording audio sample '%@'", audioFile.resourcePath);
 		if (flag){
-			jsString = [NSString stringWithFormat: @"%@(\"%@\",%d,%d);", @"PhoneGap.Media.onStatus", mediaId, MEDIA_STATE, MEDIA_STOPPED];
+			jsString = [NSString stringWithFormat: @"%@(\"%@\",%d,%d);", @"Cordova.Media.onStatus", mediaId, MEDIA_STATE, MEDIA_STOPPED];
 		} else {
-			jsString = [NSString stringWithFormat: @"%@(\"%@\",%d,%d);", @"PhoneGap.Media.onStatus", mediaId, MEDIA_ERROR, MEDIA_ERR_DECODE];
+			jsString = [NSString stringWithFormat: @"%@(\"%@\",%d,%d);", @"Cordova.Media.onStatus", mediaId, MEDIA_ERROR, MEDIA_ERR_DECODE];
 		}
 		[super writeJavascript:jsString];
 	}

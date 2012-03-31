@@ -26,6 +26,12 @@ Using this plugin requires [iPhone PhoneGap](http://github.com/phonegap/phonegap
 2. Add the .h and .m files to your Plugins folder in your project.
 3. Add the .js files to your "www" folder on disk, and add reference(s) to the .js files in your html file(s).
 
+## RELEASE NOTES ##
+
+#### 2012-03-31
+
+- Cordova 1.5.0 support by Francis Chong (@siuying) 
+
 ## LICENSE ##
 
 The MIT License

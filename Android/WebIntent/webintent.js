@@ -12,6 +12,7 @@ WebIntent.ACTION_VIEW= "android.intent.action.VIEW";
 WebIntent.EXTRA_TEXT = "android.intent.extra.TEXT";
 WebIntent.EXTRA_SUBJECT = "android.intent.extra.SUBJECT";
 WebIntent.EXTRA_STREAM = "android.intent.extra.STREAM";
+WebIntent.EXTRA_EMAIL = "android.intent.extra.EMAIL";
 
 WebIntent.prototype.startActivity = function(params, success, fail) {
 	return PhoneGap.exec(function(args) {

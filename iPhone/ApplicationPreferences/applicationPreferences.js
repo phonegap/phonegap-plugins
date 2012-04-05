@@ -5,7 +5,7 @@ applicationPreferences.prototype.get = function(key,success,fail)
 {
     var args = {};
     args.key = key;
-    PhoneGap.exec(success,fail,"applicationPreferences","getSetting",[args]);
+    Cordova.exec(success,fail,"applicationPreferences","getSetting",[args]);
 };
 
 applicationPreferences.prototype.set = function(key,value,success,fail) 
@@ -13,10 +13,10 @@ applicationPreferences.prototype.set = function(key,value,success,fail)
     var args = {};
     args.key = key;
     args.value = value;
-    PhoneGap.exec(success,fail,"applicationPreferences","setSetting",[args]);
+    Cordova.exec(success,fail,"applicationPreferences","setSetting",[args]);
 };
 
-PhoneGap.addConstructor(function() 
+Cordova.addConstructor(function() 
 {
 	if(!window.plugins)
 	{

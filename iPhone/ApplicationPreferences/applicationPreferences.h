@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#import <PhoneGap/PGPlugin.h>
+#import <Cordova/CDVPlugin.h>
 
-@interface applicationPreferences : PGPlugin 
+@interface applicationPreferences : CDVPlugin 
 {
 
 }

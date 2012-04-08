@@ -1,0 +1,190 @@
+<html>
+<head>
+<meta name="viewport" content="width=320; user-scalable=no" />
+<script type="text/javascript" src="phonegap-1.4.1.js"></script>
+<script type="text/javascript" src="wac.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+
+
+</head>
+<body onload="onPageLoad();" id="stage" >
+	<table align="center">
+		<thead>
+			<tr>
+				<td>
+					<table align="center">
+						<tr align="middle">
+							<td style="padding: 0px 0px 5px 0px;"><img
+								src="./images/waclogo-sm.png" alt="Phonegap Image"
+								style="height: 39px; width: 94px"></td>
+							<td valign="bottom" background="#FFFFFF">
+								<div
+									style="color: #FF9900; font-size: 1.90em; padding: 0px 0px 0px 0px;">&nbsp;Napi
+									Billing</div>
+							</td>
+
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+
+					<div id="payment_options" align="middle">
+						 <a href="#" class="btn large" onclick="return startPayment();">WAC Payment</a>
+
+						<div id="transaction_list">
+
+							<table border="0">
+								<tr>
+									<td colspan="2">&nbsp;</td>
+								</tr>
+								<tr align="left">
+									<td>
+										<h2>Transaction List</h2>
+									</td>
+									<td valign="top" style="padding: 0px 0px 0px 0px"><img
+										id="refresh_image" width="35" height="35" alt=""
+										src="./images/button-synchronize.png" onclick="transactionList()">&nbsp;&nbsp;&nbsp;<img
+										id="collapable_image" width="35" height="35" alt=""
+										src="./images/toggle-expand-alt.png" onclick="toggle()"></td>
+								</tr>
+
+								<tr>
+									<td colspan="2"><table id="transaction_list_products">
+										</table></td>
+								</tr>
+							</table>
+
+						</div>
+					</div>
+					<div id="view_transaction"
+						style="position: relative; display: none;">
+						<table>
+							<tr>
+								<td colspan="2">
+									<h2>Transaction Details</h2>
+								</td>
+							</tr>
+							<tr valign="top">
+								<td>Product Name :</td>
+								<td id="check_transaction_name"></td>
+							</tr>
+							<tr valign="top">
+								<td>Amount :</td>
+								<td id="check_transaction_amount"></td>
+							</tr>
+							<tr valign="top">
+								<td>Server Reference Code :</td>
+								<td id="check_transaction_ref"></td>
+							</tr>
+							<tr valign="top">
+								<td>Product Code :</td>
+								<td id="check_transaction_item_id"></td>
+							</tr>
+							<tr>
+								<td><a id="check_transaction_btn" href="#" class="btn">Check
+										Transaction</a></td>
+								<td><a id="check_transaction_done" href="#" class="btn"
+									onclick="continueShopping(); expandCollapablePanel();">Done</a></td>
+							</tr>
+						</table>
+					</div> <!-- div id="payment_operator" style="position:relative;display:none;">
+			      <H2>Select an operator</H2>
+			      <div id="payment_operator_list">
+			      </div>
+			   </div>-->
+					<div id="product_list" style="position: relative; display: none;">
+						<H2>Select a product</H2>
+						<table>
+							<tr>
+								<td colspan="2" id="itemColumn"></td>
+							</tr>
+							<tr>
+								<td><br/><a href="#" class="btn"
+									onclick="chargePayment();">Buy</a></td>
+								<td><br/><a href="#" class="btn"
+									onclick="continueShopping();">Cancel</a></td>
+							</tr>
+						</table>
+					</div>
+					<div id="products_bought"
+						style="position: relative; display: none;">
+						<table>
+							<tr>
+								<td colspan="2">
+									<h2>Transaction Successful !</h2>
+								</td>
+							</tr>
+							<tr>
+								<td>Product bought :</td>
+								<td id="productName"></td>
+							</tr>
+							<tr>
+								<td>Amount Paid :</td>
+								<td id="amount"></td>
+							</tr>
+							<tr>
+								<td colspan="2"><a href="#" class="btn"
+									onclick="continueShopping();">Continue Shopping</a></td>
+							</tr>
+						</table>
+					</div>
+					<div id="transaction_failed"
+						style="position: relative; display: none;">
+						<table>
+							<tr>
+								<td colspan="2">
+									<h2>Transaction Failed !</h2>
+								</td>
+							</tr>
+							<tr style="position: relative; display: none;">
+								<td>Error :</td>
+								<td id="error"></td>
+							</tr>
+							<tr>
+								<td>Details :</td>
+								<td id="errorDescription"></td>
+							</tr>
+							<tr>
+								<td colspan="2"><a href="#" class="btn"
+									onclick="continueShopping();">Continue Shopping</a></td>
+							</tr>
+						</table>
+					</div>
+					<center>
+						<img id="show_loading" src="./images/loadingAnimation.gif"
+							style="position: relative; display: none;" />
+					</center>
+
+					<div id="file_downloading" style="position: relative; display: none;">
+						<center>
+							Downloading file...
+						</center>
+					</div>
+
+
+				</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td>
+					<table >
+						<tr valign="middle">
+							<td valign="middle" background="#FFFFFF">
+								<div style="font-size: 0.90em; padding: 0px 0px 6px 0px;">WAC
+									Mobile Payments with Javascript Native apps Powered by</div>
+							</td>
+							<td><img src="./images/PhoneGap.png" alt="Phonegap Image"
+								width="72" height="69"></td>
+						</tr>
+					</table>
+			</tr>
+			</td>
+		</tfoot>
+	</table>
+</body>
+</html>

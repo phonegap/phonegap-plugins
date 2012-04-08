@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<!-- Change this if you want to allow scaling -->
+    <meta name="viewport" content="width=default-width; user-scalable=no" />
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+    <title>paypal-plugin-host</title>
+	
+	<!-- iPad/iPhone specific css below, add after your main css >
+	<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />		
+	<link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />		
+	-->
+	<script type="text/javascript" charset="utf-8" src="cordova-1.5.0.js"></script>
+	<script type="text/javascript" charset="utf-8" src="SAiOSPaypalPlugin.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+
+	// If you want to prevent dragging, uncomment this section
+	/*
+	function preventBehavior(e) 
+	{ 
+      e.preventDefault(); 
+    };
+	document.addEventListener("touchmove", preventBehavior, false);
+	*/
+	
+	function onBodyLoad()
+	{
+		document.addEventListener("deviceready", onDeviceReady,false);
+	}
+	
+	/* When this function is called, PhoneGap has been initialized and is ready to roll */
+	function onDeviceReady()
+	{
+		try {
+		
+		// do your thing!
+		document.addEventListener(PaypalPaymentEvent.Success, onPaymentSuccess,false);
+		document.addEventListener(PaypalPaymentEvent.Canceled, onPaymentCanceled,false);
+		document.addEventListener(PaypalPaymentEvent.Failed, onPaymentFailed,false);
+		
+		window.plugins.paypal.prepare(PayPalPaymentType.DONATION);
+		window.plugins.paypal.setPaymentInfo({
+				paymentCurrency : "USD",
+				paymentAmount : "10.00",
+				itemDesc : "network cable",
+				//recipient : "randy.lee.mcmillan@gmail.com",
+                merchantName : "iOS Dev"
+		});
+		
+		} catch (e) {
+			debug.error(e);
+		}
+	}
+	
+	function onPaymentSuccess(evt)
+	{
+		navigator.notification.alert("Payment success, transactionID: " + evt.transactionID);
+	}
+
+	function onPaymentCanceled(evt)
+	{
+		navigator.notification.alert("Payment canceled.");
+	}
+
+	function onPaymentFailed(evt)
+	{
+		navigator.notification.alert("Payment failed, errorType: " + evt.errorType);
+		// compare evt.errorType to PayPalFailureType enum values
+	}
+    
+    </script>
+  </head>
+  <body onload="onBodyLoad()">
+  	<button onclick="window.plugins.paypal.pay()">PAY</button>
+  </body>
+</html>

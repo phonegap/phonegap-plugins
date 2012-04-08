@@ -1,15 +1,31 @@
-New iOS plugins should be submitted here. As existing iPhone/iOS plugins are patched and COMPLETELY abandon the PhoneGap naming convention they will be placed here. The present https://github.com/phonegap/phonegap-plugins/tree/master/iPhone should be preserved.
+New iOS plugins should be submitted here.
+
+As existing iPhone/iOS plugins are patched and COMPLETELY abandon the PhoneGap naming convention they will be placed here.
+
+The present https://github.com/phonegap/phonegap-plugins/tree/master/iPhone should be preserved for use with projects still using PhoneGap 1.4.1 and before.
 
 * Added a ActionSheet (iOS) plugin with Cordova support.
 * Added a AdPlugin (iOS) plugin with Cordova support.
+* Added a ApplicationPreferences (iOS) plugin with Cordova support.
+* Added a Badge (iOS) plugin with Cordova support.
 * Added a BarCodeScanner (iOS) plugin with Cordova support.
+* Added a card.io (iOS) plugin with Cordova support.
 * Added a ChildBrowser (iOS) plugin with Cordova support.
+* Added a DatePicker (iOS) plugin with Cordova support.
 * Added a EmailComposer (iOS) plugin with Cordova support.
+* Added a NativeControls (iOS) plugin with Cordova support.
+* Added a PayPalPlugin (iOS) plugin with Cordova support.
+* Added a PrintPlugin (iOS) plugin with Cordova support.
+* Added a SMSComposer (iOS) plugin with Cordova support.
+* Added a Twitter (iOS) plugin with Cordova support.
 * Added a VolumeSlider (iOS) plugin with Cordova support.
+* More added regularly.
 
-Please refer to distributed Plugin Upgrade Guides for the most current version. 
+Please refer to the Plugin Upgrade Guides distributed in the [download](http://phonegap.com/download/) for the most current version. 
 
-Cordova Plugin Upgrade Guide
+**Cordova Plugin Upgrade Guide
+**
+
 This document is for developers who need to upgrade their Cordova plugins to a newer Cordova version. Starting with Cordova 1.5.0, some classes have been renamed, which will require the plugin to be upgraded. Make sure your project itself has been upgraded using the "Cordova Upgrade Guide" document.
 Upgrading older Cordova plugins to 1.5.0
 

@@ -1,0 +1,1 @@
+Do not add the PayPalPlugin-Hosts to your application

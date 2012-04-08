@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DetectPhoneNumber</key>
+	<true/>
+	<key>TopActivityIndicator</key>
+	<string>gray</string>
+	<key>EnableLocation</key>
+	<true/>
+	<key>EnableAcceleration</key>
+	<true/>
+	<key>UIControls</key>
+	<dict>
+		<key>TabBarSettings</key>
+		<dict>
+			<key>height</key>
+			<integer>49</integer>
+			<key>position</key>
+			<string>bottom</string>
+		</dict>
+		<key>ToolBarSettings</key>
+		<dict>
+			<key>style</key>
+			<string>Default</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

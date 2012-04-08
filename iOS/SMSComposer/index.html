@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta name="viewport" content="width=default-width; user-scalable=no" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+	<script type="text/javascript" charset="utf-8" src="cordova-1.5.0.js"></script>
+
+	<script type="text/javascript" charset="utf-8" src="SMSComposer.js"></script>
+    <script type="text/javascript" charset="utf-8">
+	
+	function onBodyLoad()
+	{
+		document.addEventListener("deviceready",onDeviceReady,false);
+	}
+	function onDeviceReady()
+	{
+		viewUpdate();
+	}
+    </script>
+  </head>
+  <body onload="onBodyLoad()">
+
+
+<input onclick="ComposeSMS();" type="button" value="Compose SMS text with number and body" /><br />
+<input onclick="ComposeSMS2();" type="button" value="Compose SMS text with no parameters" /><br />
+<input onclick="ComposeSMS3();" type="button" value="Compose SMS text to multiple recipients" /><br />
+<input onclick="ComposeSMSWithCallback();" type="button" value="Compose SMS text with callback" />
+
+
+<script>
+
+var ComposeSMS = function(){
+
+	window.plugins.smsComposer.showSMSComposer('3424221122', 'hello');
+}
+
+var ComposeSMS2 = function(){
+
+	window.plugins.smsComposer.showSMSComposer();
+}
+
+var ComposeSMS3 = function(){
+
+	window.plugins.smsComposer.showSMSComposer('3424221122,2134463330', 'hello');
+}
+
+var ComposeSMSWithCallback = function(){
+
+	window.plugins.smsComposer.showSMSComposerWithCB(myCallback,'3424221122,2134463330', 'hello');
+}
+
+var myCallback = function(result){
+
+if(result == 0)
+	alert("Cancelled");
+else if(result == 1)
+	alert("Sent");
+else if(result == 2)
+	alert("Failed.");
+else if(result == 3)
+	alert("Not Sent.");		
+}
+
+</script>
+  </body>
+</html>
+

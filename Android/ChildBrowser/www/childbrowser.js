@@ -1,5 +1,5 @@
 /*
- * PhoneGap is available under *either* the terms of the modified BSD license *or* the
+ * cordova is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
  * Copyright (c) 2005-2010, Nitobi Software Inc.
@@ -27,14 +27,14 @@ ChildBrowser.prototype.showWebPage = function(url, options) {
         var options = new Object();
         options.showLocationBar = true;
     }
-    PhoneGap.exec(this._onEvent, this._onError, "ChildBrowser", "showWebPage", [url, options]);
+    cordova.exec(this._onEvent, this._onError, "ChildBrowser", "showWebPage", [url, options]);
 };
 
 /**
  * Close the browser opened by showWebPage.
  */
 ChildBrowser.prototype.close = function() {
-    PhoneGap.exec(null, null, "ChildBrowser", "close", []);
+    cordova.exec(null, null, "ChildBrowser", "close", []);
 };
 
 /**
@@ -42,14 +42,14 @@ ChildBrowser.prototype.close = function() {
  * This method starts a new web browser activity.
  *
  * @param url           The url to load
- * @param usePhoneGap   Load url in PhoneGap webview [optional]
+ * @param usecordova   Load url in cordova webview [optional]
  */
-ChildBrowser.prototype.openExternal = function(url, usePhoneGap) {
-    if (usePhoneGap === true) {
+ChildBrowser.prototype.openExternal = function(url, usecordova) {
+    if (usecordova === true) {
         navigator.app.loadUrl(url);
     }
     else {
-        PhoneGap.exec(null, null, "ChildBrowser", "openExternal", [url, usePhoneGap]);
+        cordova.exec(null, null, "ChildBrowser", "openExternal", [url, usecordova]);
     }
 };
 
@@ -77,12 +77,13 @@ ChildBrowser.prototype._onError = function(data) {
 /**
  * Maintain API consistency with iOS
  */
-ChildBrowser.prototype.install = function(){
+ChildBrowser.install = function(){
+    return window.plugins.childBrowser;
 };
 
 /**
  * Load ChildBrowser
  */
-PhoneGap.addConstructor(function() {
-    PhoneGap.addPlugin("childBrowser", new ChildBrowser());
+cordova.addConstructor(function() {
+    cordova.addPlugin("childBrowser", new ChildBrowser());
 });

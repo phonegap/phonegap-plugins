@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.text.Html;
 
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
@@ -129,8 +130,10 @@ public class WebIntent extends Plugin {
 				//allowes sharing of images as attachments.
 				//value in this case should be a URI of a file
 				i.putExtra(key, Uri.parse(value));
-			}
-			else {
+			} else if(key.equals(Intent.EXTRA_EMAIL)){
+				//allows to add the email address of the receiver
+				i.putExtra(Intent.EXTRA_EMAIL, new String[]{value});
+			} else {
 				i.putExtra(key, value);
 			}	
 		}

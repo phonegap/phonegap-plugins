@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+        <meta charset="utf-8">
+            
+            
+            <!-- iPad/iPhone specific css below, add after your main css >
+             <link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />		
+             <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />		
+             -->
+            <!-- If your application is targeting iOS BEFORE 4.0 you MUST put json2.js from http://www.JSON.org/json2.js into your www directory and include it here -->
+            <script type="text/javascript" charset="utf-8" src="cordova-1.5.0.js"></script>
+            <script type="text/javascript" charset="utf-8" src="NativeControls.js"></script>
+
+            <script type="text/javascript">
+                
+                
+                // If you want to prevent dragging, uncomment this section
+                /*
+                 function preventBehavior(e) 
+                 { 
+                 e.preventDefault(); 
+                 };
+                 document.addEventListener("touchmove", preventBehavior, false);
+                 */
+                
+                /* If you are supporting your own protocol, the var invokeString will contain any arguments to the app launch.
+                 see http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
+                 for more details -jm */
+                /*
+                 function handleOpenURL(url)
+                 {
+                 // TODO: do something with the url passed in.
+                 }
+                 */
+                
+                function onBodyLoad()
+                {		
+                    document.addEventListener("deviceready", onDeviceReady, false);
+                }
+                
+                /* When this function is called, Cordova has been initialized and is ready to roll */
+                /* If you are supporting your own protocol, the var invokeString will contain any arguments to the app launch.
+                 see http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
+                 for more details -jm */
+                function onDeviceReady()
+                {
+                    
+				
+		Cordova.exec("NativeControls.createTabBar");	
+		//var options = "top";
+		var options = "bottom";
+					
+		window.onorientationchange = function() {
+		var orientation = window.orientation;
+	
+		switch(orientation) {
+	    	case 0:
+	        
+		Cordova.exec("NativeControls.showTabBar", options);
+		Cordova.exec("NativeControls.showToolBar");
+
+
+		/* Add a descriptive message on "Handling iPhone or iPod touch Orientation Events"  */
+	        document.getElementById("currentOrientation").innerHTML="Now in portrait orientation (Home button on the bottom).";
+	        break; 
+
+	    	case 90:
+
+	        Cordova.exec("NativeControls.showTabBar", options);
+		Cordova.exec("NativeControls.showToolBar");
+
+		document.getElementById("currentOrientation").innerHTML="Now in landscape orientation and turned to the left (Home button to the right).";
+	        break;
+
+	    	case -90: 
+	       	
+		Cordova.exec("NativeControls.showTabBar", options);
+		Cordova.exec("NativeControls.showToolBar");
+         
+	        document.getElementById("currentOrientation").innerHTML="Now in landscape orientation and turned to the right (Home button to the left).";
+	        break;
+          
+		default:
+
+		Cordova.exec("NativeControls.showTabBar", options);
+		Cordova.exec("NativeControls.showToolBar");
+
+          	document.getElementById("currentOrientation").innerHTML="Now the orientation must be -180. default: case: ";
+		break;         
+		}//end switch
+		}//end window.orientationchange
+
+
+				Cordova.exec("NativeControls.showTabBar", options);
+				Cordova.exec("NativeControls.showToolBar");
+
+
+                }
+                
+                </script>
+            </head>
+    <body onload="onBodyLoad()">
+        <p id="currentOrientation">Native Controls with Orientation Support. </p>
+    </body>
+</html>

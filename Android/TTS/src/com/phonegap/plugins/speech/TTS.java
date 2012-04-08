@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 
@@ -64,7 +65,7 @@ public class TTS extends Plugin implements OnInitListener {
 				if (mTts == null) {
 					this.startupCallbackId = callbackId;
 					state = TTS.INITIALIZING;
-		            mTts = new TextToSpeech(ctx, this);
+		            mTts = new TextToSpeech(ctx.getContext(), this);
 		            //mTts.setLanguage(Locale.US);			
 				}								
 				PluginResult pluginResult = new PluginResult(status, TTS.INITIALIZING);

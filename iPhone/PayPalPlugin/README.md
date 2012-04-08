@@ -1,3 +1,5 @@
+Project examples located in PayPalPlugin/.EXAMPLES  (hidden to minimize confusion when adding to xcode)
+
 # PhoneGap PayPal-Plugin #
 by Shazron Abdullah
 

@@ -2,6 +2,7 @@
  * A plugin to enable iOS In-App Purchases.
  *
  * Copyright (c) Matt Kane 2011
+ * Copyright (c) Guillaume Charhon 2012
  */
 
 var InAppPurchaseManager = function() { 
@@ -46,14 +47,14 @@ InAppPurchaseManager.prototype.restoreCompletedTransactions = function() {
 InAppPurchaseManager.prototype.requestProductData = function(productId, successCallback, failCallback) {
 	var key = 'f' + this.callbackIdx++;
 	window.plugins.inAppPurchaseManager.callbackMap[key] = {
-		success: function(productId, title, description, price ) {
-			if (productId == '__DONE') {
-				delete window.plugins.inAppPurchaseManager.callbackMap[key]
-				return;
-			}
-			successCallback(productId, title, description, price);
-		},
-		fail: failCallback
+    success: function(productId, title, description, price ) {
+        if (productId == '__DONE') {
+            delete window.plugins.inAppPurchaseManager.callbackMap[key]
+            return;
+        }
+        successCallback(productId, title, description, price);
+    },
+    fail: failCallback
 	}
 	var callback = 'window.plugins.inAppPurchaseManager.callbackMap.' + key;
     PhoneGap.exec('InAppPurchaseManager.requestProductData', productId, callback + '.success', callback + '.fail');	
@@ -111,46 +112,37 @@ InAppPurchaseManager.prototype.onRestoreCompletedTransactionsFailed = null;
 /* This is called from native.*/
 
 InAppPurchaseManager.prototype.updatedTransactionCallback = function(state, errorCode, errorText, transactionIdentifier, productId, transactionReceipt) {
+    alert(state);
 	switch(state) {
 		case "PaymentTransactionStatePurchased":
-			if(this.onPurchased) {
-				this.onPurchased(transactionIdentifier, productId, transactionReceipt);
-			} else {
-				this.eventQueue.push(arguments);
-				this.watchQueue();
-			}
+			if(window.plugins.inAppPurchaseManager.onPurchased)
+                window.plugins.inAppPurchaseManager.onPurchased(transactionIdentifier, productId, transactionReceipt);
+			
 			return; 
 			
 		case "PaymentTransactionStateFailed":
-			if(this.onFailed) {
-				this.onFailed(errorCode, errorText);
-			} else {
-				this.eventQueue.push(arguments);
-				this.watchQueue();
-			}
+			if(window.plugins.inAppPurchaseManager.onFailed)
+				window.plugins.inAppPurchaseManager.onFailed(errorCode, errorText);
+			
 			return;
-		
+            
 		case "PaymentTransactionStateRestored":
-			if(this.onRestored) {
-				this.onRestored(transactionIdentifier, productId, transactionReceipt);
-			} else {
-				this.eventQueue.push(arguments);
-				this.watchQueue();
-			}
+            if(window.plugins.inAppPurchaseManager.onRestored)
+                window.plugins.inAppPurchaseManager.onRestored(transactionIdentifier, productId, transactionReceipt);
 			return;
 	}
 };
 
 InAppPurchaseManager.prototype.restoreCompletedTransactionsFinished = function() {
-  if (this.onRestoreCompletedTransactionsFinished) {
-    this.onRestoreCompletedTransactionsFinished();
-  }
+    if (this.onRestoreCompletedTransactionsFinished) {
+        this.onRestoreCompletedTransactionsFinished();
+    }
 };
 
 InAppPurchaseManager.prototype.restoreCompletedTransactionsFailed = function(errorCode) {
-  if (this.onRestoreCompletedTransactionsFailed) {
-    this.onRestoreCompletedTransactionsFailed(errorCode);
-  }
+    if (this.onRestoreCompletedTransactionsFailed) {
+        this.onRestoreCompletedTransactionsFailed(errorCode);
+    }
 };
 
 /*
@@ -197,8 +189,8 @@ InAppPurchaseManager.prototype.eventQueue = [];
 InAppPurchaseManager.prototype.timer = null;
 
 PhoneGap.addConstructor(function()  {
-	if(!window.plugins) {
-		window.plugins = {};
-	}
-	window.plugins.inAppPurchaseManager = InAppPurchaseManager.manager = new InAppPurchaseManager();
-});
+                        if(!window.plugins) {
+                        window.plugins = {};
+                        }
+                        window.plugins.inAppPurchaseManager = InAppPurchaseManager.manager = new InAppPurchaseManager();
+                        });

@@ -1,0 +1,540 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		480CD68615119A44006CF0BE /* libPayPalMEP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 480CD67C15119A44006CF0BE /* libPayPalMEP.a */; };
+		480CD68715119A44006CF0BE /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 480CD68215119A44006CF0BE /* README.md */; };
+		480CD68915119A44006CF0BE /* SAiOSPaypalPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 480CD68515119A44006CF0BE /* SAiOSPaypalPlugin.m */; };
+		4834FE611511654D00188E08 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE601511654D00188E08 /* Foundation.framework */; };
+		4834FE631511654D00188E08 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE621511654D00188E08 /* UIKit.framework */; };
+		4834FE651511654D00188E08 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE641511654D00188E08 /* CoreGraphics.framework */; };
+		4834FE671511654D00188E08 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE661511654D00188E08 /* AddressBook.framework */; };
+		4834FE691511654D00188E08 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE681511654D00188E08 /* AddressBookUI.framework */; };
+		4834FE6B1511654E00188E08 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE6A1511654D00188E08 /* AudioToolbox.framework */; };
+		4834FE6D1511654E00188E08 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE6C1511654E00188E08 /* AVFoundation.framework */; };
+		4834FE6F1511654E00188E08 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE6E1511654E00188E08 /* CoreLocation.framework */; };
+		4834FE711511654E00188E08 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE701511654E00188E08 /* MediaPlayer.framework */; };
+		4834FE731511654E00188E08 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE721511654E00188E08 /* QuartzCore.framework */; };
+		4834FE751511654E00188E08 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE741511654E00188E08 /* SystemConfiguration.framework */; };
+		4834FE771511654E00188E08 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE761511654E00188E08 /* MobileCoreServices.framework */; };
+		4834FE791511654E00188E08 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE781511654E00188E08 /* CoreMedia.framework */; };
+		4834FE7F1511654E00188E08 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4834FE7D1511654E00188E08 /* InfoPlist.strings */; };
+		4834FE811511654E00188E08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4834FE801511654E00188E08 /* main.m */; };
+		4834FE841511654E00188E08 /* PhoneGap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4834FE831511654E00188E08 /* PhoneGap.framework */; };
+		4834FE891511654E00188E08 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4834FE871511654E00188E08 /* Localizable.strings */; };
+		4834FE8D1511654E00188E08 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4834FE8B1511654E00188E08 /* Localizable.strings */; };
+		4834FE901511654E00188E08 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4834FE8F1511654E00188E08 /* icon.png */; };
+		4834FE921511654E00188E08 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4834FE911511654E00188E08 /* icon@2x.png */; };
+		4834FE941511654E00188E08 /* icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 4834FE931511654E00188E08 /* icon-72.png */; };
+		4834FE971511654E00188E08 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 4834FE961511654E00188E08 /* Default.png */; };
+		4834FE991511654E00188E08 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4834FE981511654E00188E08 /* Default@2x.png */; };
+		4834FE9B1511654E00188E08 /* Capture.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4834FE9A1511654E00188E08 /* Capture.bundle */; };
+		4834FE9D1511654E00188E08 /* PhoneGap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4834FE9C1511654E00188E08 /* PhoneGap.plist */; };
+		4834FEA11511654E00188E08 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4834FEA01511654E00188E08 /* AppDelegate.m */; };
+		4834FEA41511654E00188E08 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4834FEA31511654E00188E08 /* MainViewController.m */; };
+		4834FEA61511654E00188E08 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4834FEA51511654E00188E08 /* MainViewController.xib */; };
+		4834FEAF151165DE00188E08 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 4834FEAE151165DE00188E08 /* www */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		480CD67C15119A44006CF0BE /* libPayPalMEP.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPayPalMEP.a; sourceTree = "<group>"; };
+		480CD67D15119A44006CF0BE /* MEPAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MEPAddress.h; sourceTree = "<group>"; };
+		480CD67E15119A44006CF0BE /* MEPAmounts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MEPAmounts.h; sourceTree = "<group>"; };
+		480CD67F15119A44006CF0BE /* PayPal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PayPal.h; sourceTree = "<group>"; };
+		480CD68015119A44006CF0BE /* PayPalContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PayPalContext.h; sourceTree = "<group>"; };
+		480CD68115119A44006CF0BE /* PayPalMEPPayment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PayPalMEPPayment.h; sourceTree = "<group>"; };
+		480CD68215119A44006CF0BE /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.md; path = ../../../README.md; sourceTree = "<group>"; };
+		480CD68315119A44006CF0BE /* SAiOSPaypalPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SAiOSPaypalPlugin.h; path = ../../../SAiOSPaypalPlugin.h; sourceTree = "<group>"; };
+		480CD68515119A44006CF0BE /* SAiOSPaypalPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SAiOSPaypalPlugin.m; path = ../../../SAiOSPaypalPlugin.m; sourceTree = "<group>"; };
+		4834FE5C1511654D00188E08 /* PayPalPLugin-Host141.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PayPalPLugin-Host141.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4834FE601511654D00188E08 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		4834FE621511654D00188E08 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		4834FE641511654D00188E08 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		4834FE661511654D00188E08 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		4834FE681511654D00188E08 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		4834FE6A1511654D00188E08 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		4834FE6C1511654E00188E08 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		4834FE6E1511654E00188E08 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		4834FE701511654E00188E08 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		4834FE721511654E00188E08 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		4834FE741511654E00188E08 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		4834FE761511654E00188E08 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		4834FE781511654E00188E08 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		4834FE7C1511654E00188E08 /* PayPalPLugin-Host141-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PayPalPLugin-Host141-Info.plist"; sourceTree = "<group>"; };
+		4834FE7E1511654E00188E08 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4834FE801511654E00188E08 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		4834FE821511654E00188E08 /* PayPalPLugin-Host141-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PayPalPLugin-Host141-Prefix.pch"; sourceTree = "<group>"; };
+		4834FE831511654E00188E08 /* PhoneGap.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhoneGap.framework; path = /Users/Shared/PhoneGap/Frameworks/PhoneGap.framework; sourceTree = "<absolute>"; };
+		4834FE881511654E00188E08 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Resources/en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4834FE8C1511654E00188E08 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = Resources/es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4834FE8F1511654E00188E08 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = Resources/icons/icon.png; sourceTree = "<group>"; };
+		4834FE911511654E00188E08 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon@2x.png"; path = "Resources/icons/icon@2x.png"; sourceTree = "<group>"; };
+		4834FE931511654E00188E08 /* icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-72.png"; path = "Resources/icons/icon-72.png"; sourceTree = "<group>"; };
+		4834FE961511654E00188E08 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = Resources/splash/Default.png; sourceTree = "<group>"; };
+		4834FE981511654E00188E08 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "Resources/splash/Default@2x.png"; sourceTree = "<group>"; };
+		4834FE9A1511654E00188E08 /* Capture.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Capture.bundle; path = Resources/Capture.bundle; sourceTree = "<group>"; };
+		4834FE9C1511654E00188E08 /* PhoneGap.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PhoneGap.plist; sourceTree = "<group>"; };
+		4834FE9F1511654E00188E08 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
+		4834FEA01511654E00188E08 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
+		4834FEA21511654E00188E08 /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MainViewController.h; path = Classes/MainViewController.h; sourceTree = "<group>"; };
+		4834FEA31511654E00188E08 /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MainViewController.m; path = Classes/MainViewController.m; sourceTree = "<group>"; };
+		4834FEA51511654E00188E08 /* MainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainViewController.xib; path = Classes/MainViewController.xib; sourceTree = "<group>"; };
+		4834FEAE151165DE00188E08 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4834FE561511654D00188E08 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4834FE611511654D00188E08 /* Foundation.framework in Frameworks */,
+				4834FE631511654D00188E08 /* UIKit.framework in Frameworks */,
+				4834FE651511654D00188E08 /* CoreGraphics.framework in Frameworks */,
+				4834FE671511654D00188E08 /* AddressBook.framework in Frameworks */,
+				4834FE691511654D00188E08 /* AddressBookUI.framework in Frameworks */,
+				4834FE6B1511654E00188E08 /* AudioToolbox.framework in Frameworks */,
+				4834FE6D1511654E00188E08 /* AVFoundation.framework in Frameworks */,
+				4834FE6F1511654E00188E08 /* CoreLocation.framework in Frameworks */,
+				4834FE711511654E00188E08 /* MediaPlayer.framework in Frameworks */,
+				4834FE731511654E00188E08 /* QuartzCore.framework in Frameworks */,
+				4834FE751511654E00188E08 /* SystemConfiguration.framework in Frameworks */,
+				4834FE771511654E00188E08 /* MobileCoreServices.framework in Frameworks */,
+				4834FE791511654E00188E08 /* CoreMedia.framework in Frameworks */,
+				4834FE841511654E00188E08 /* PhoneGap.framework in Frameworks */,
+				480CD68615119A44006CF0BE /* libPayPalMEP.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4834FE591511654D00188E08 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		480CD67B15119A44006CF0BE /* PayPal_MobilePayments_Library */ = {
+			isa = PBXGroup;
+			children = (
+				480CD67C15119A44006CF0BE /* libPayPalMEP.a */,
+				480CD67D15119A44006CF0BE /* MEPAddress.h */,
+				480CD67E15119A44006CF0BE /* MEPAmounts.h */,
+				480CD67F15119A44006CF0BE /* PayPal.h */,
+				480CD68015119A44006CF0BE /* PayPalContext.h */,
+				480CD68115119A44006CF0BE /* PayPalMEPPayment.h */,
+			);
+			name = PayPal_MobilePayments_Library;
+			path = ../../../PayPal_MobilePayments_Library;
+			sourceTree = "<group>";
+		};
+		4834FE4E1511654D00188E08 = {
+			isa = PBXGroup;
+			children = (
+				4834FEAE151165DE00188E08 /* www */,
+				4834FE7A1511654E00188E08 /* PayPalPLugin-Host141 */,
+				4834FE5F1511654D00188E08 /* Frameworks */,
+				4834FE5D1511654D00188E08 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4834FE5D1511654D00188E08 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4834FE5C1511654D00188E08 /* PayPalPLugin-Host141.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4834FE5F1511654D00188E08 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4834FE601511654D00188E08 /* Foundation.framework */,
+				4834FE621511654D00188E08 /* UIKit.framework */,
+				4834FE641511654D00188E08 /* CoreGraphics.framework */,
+				4834FE661511654D00188E08 /* AddressBook.framework */,
+				4834FE681511654D00188E08 /* AddressBookUI.framework */,
+				4834FE6A1511654D00188E08 /* AudioToolbox.framework */,
+				4834FE6C1511654E00188E08 /* AVFoundation.framework */,
+				4834FE6E1511654E00188E08 /* CoreLocation.framework */,
+				4834FE701511654E00188E08 /* MediaPlayer.framework */,
+				4834FE721511654E00188E08 /* QuartzCore.framework */,
+				4834FE741511654E00188E08 /* SystemConfiguration.framework */,
+				4834FE761511654E00188E08 /* MobileCoreServices.framework */,
+				4834FE781511654E00188E08 /* CoreMedia.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4834FE7A1511654E00188E08 /* PayPalPLugin-Host141 */ = {
+			isa = PBXGroup;
+			children = (
+				4834FE831511654E00188E08 /* PhoneGap.framework */,
+				4834FE851511654E00188E08 /* Resources */,
+				4834FE9E1511654E00188E08 /* Classes */,
+				4834FEA71511654E00188E08 /* Plugins */,
+				4834FE7B1511654E00188E08 /* Supporting Files */,
+			);
+			path = "PayPalPLugin-Host141";
+			sourceTree = "<group>";
+		};
+		4834FE7B1511654E00188E08 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4834FE7C1511654E00188E08 /* PayPalPLugin-Host141-Info.plist */,
+				4834FE7D1511654E00188E08 /* InfoPlist.strings */,
+				4834FE801511654E00188E08 /* main.m */,
+				4834FE821511654E00188E08 /* PayPalPLugin-Host141-Prefix.pch */,
+				4834FE9C1511654E00188E08 /* PhoneGap.plist */,
+				4834FEA51511654E00188E08 /* MainViewController.xib */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4834FE851511654E00188E08 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4834FE9A1511654E00188E08 /* Capture.bundle */,
+				4834FE861511654E00188E08 /* en.lproj */,
+				4834FE8A1511654E00188E08 /* es.lproj */,
+				4834FE8E1511654E00188E08 /* icons */,
+				4834FE951511654E00188E08 /* splash */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		4834FE861511654E00188E08 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				4834FE871511654E00188E08 /* Localizable.strings */,
+			);
+			name = en.lproj;
+			sourceTree = "<group>";
+		};
+		4834FE8A1511654E00188E08 /* es.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				4834FE8B1511654E00188E08 /* Localizable.strings */,
+			);
+			name = es.lproj;
+			sourceTree = "<group>";
+		};
+		4834FE8E1511654E00188E08 /* icons */ = {
+			isa = PBXGroup;
+			children = (
+				4834FE8F1511654E00188E08 /* icon.png */,
+				4834FE911511654E00188E08 /* icon@2x.png */,
+				4834FE931511654E00188E08 /* icon-72.png */,
+			);
+			name = icons;
+			sourceTree = "<group>";
+		};
+		4834FE951511654E00188E08 /* splash */ = {
+			isa = PBXGroup;
+			children = (
+				4834FE961511654E00188E08 /* Default.png */,
+				4834FE981511654E00188E08 /* Default@2x.png */,
+			);
+			name = splash;
+			sourceTree = "<group>";
+		};
+		4834FE9E1511654E00188E08 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				4834FE9F1511654E00188E08 /* AppDelegate.h */,
+				4834FEA01511654E00188E08 /* AppDelegate.m */,
+				4834FEA21511654E00188E08 /* MainViewController.h */,
+				4834FEA31511654E00188E08 /* MainViewController.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		4834FEA71511654E00188E08 /* Plugins */ = {
+			isa = PBXGroup;
+			children = (
+				480CD67B15119A44006CF0BE /* PayPal_MobilePayments_Library */,
+				480CD68215119A44006CF0BE /* README.md */,
+				480CD68315119A44006CF0BE /* SAiOSPaypalPlugin.h */,
+				480CD68515119A44006CF0BE /* SAiOSPaypalPlugin.m */,
+			);
+			name = Plugins;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4834FE5B1511654D00188E08 /* PayPalPLugin-Host141 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4834FEAB1511654E00188E08 /* Build configuration list for PBXNativeTarget "PayPalPLugin-Host141" */;
+			buildPhases = (
+				4834FE551511654D00188E08 /* Sources */,
+				4834FE561511654D00188E08 /* Frameworks */,
+				4834FE571511654D00188E08 /* Resources */,
+				4834FE581511654D00188E08 /* Sources */,
+				4834FE591511654D00188E08 /* Frameworks */,
+				4834FE5A1511654D00188E08 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PayPalPLugin-Host141";
+			productName = "PayPalPLugin-Host141";
+			productReference = 4834FE5C1511654D00188E08 /* PayPalPLugin-Host141.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4834FE501511654D00188E08 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = OpenOSX.org;
+			};
+			buildConfigurationList = 4834FE531511654D00188E08 /* Build configuration list for PBXProject "PayPalPLugin-Host141" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				es,
+			);
+			mainGroup = 4834FE4E1511654D00188E08;
+			productRefGroup = 4834FE5D1511654D00188E08 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4834FE5B1511654D00188E08 /* PayPalPLugin-Host141 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4834FE571511654D00188E08 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4834FE7F1511654E00188E08 /* InfoPlist.strings in Resources */,
+				4834FE891511654E00188E08 /* Localizable.strings in Resources */,
+				4834FE8D1511654E00188E08 /* Localizable.strings in Resources */,
+				4834FE901511654E00188E08 /* icon.png in Resources */,
+				4834FE921511654E00188E08 /* icon@2x.png in Resources */,
+				4834FE941511654E00188E08 /* icon-72.png in Resources */,
+				4834FE971511654E00188E08 /* Default.png in Resources */,
+				4834FE991511654E00188E08 /* Default@2x.png in Resources */,
+				4834FE9B1511654E00188E08 /* Capture.bundle in Resources */,
+				4834FE9D1511654E00188E08 /* PhoneGap.plist in Resources */,
+				4834FEA61511654E00188E08 /* MainViewController.xib in Resources */,
+				4834FEAF151165DE00188E08 /* www in Resources */,
+				480CD68715119A44006CF0BE /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4834FE5A1511654D00188E08 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "\n\t\t\t\t\t\t\t\tif [ ! -d \"$PROJECT_DIR/www\" ] ; then\n\t\t\t\t\t\t\t\t\tcp -R /Users/Shared/PhoneGap/Frameworks/PhoneGap.framework/www \"$PROJECT_DIR\"\n\t\t\t\t\t\t\t\tfi\n\t\t\t\t\t\t\t\t# detect www folder reference in project, if missing, print warning\n\t\t\t\t\t\t\t\tgrep \"{isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = \\\"<group>\\\"; };\" \"$PROJECT_DIR/$PROJECT_NAME.xcodeproj/project.pbxproj\"\n\t\t\t\t\t\t\t\trc=$? \n\t\t\t\t\t\t\t\tif [ $rc != 0 ] ; then\n\t\t\t\t\t\t\t\techo -e \"warning: Missing - Add $PROJECT_DIR/www as a folder reference in your project. Just drag and drop the folder into your project, into the Project Navigator of Xcode 4. Make sure you select the second radio-button: 'Create folder references for any added folders' (which will create a blue folder)\" 1>&2\n\t\t\t\t\t\t\t\tfi\t\t\t\t\t\t\t";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4834FE551511654D00188E08 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4834FE811511654E00188E08 /* main.m in Sources */,
+				4834FEA11511654E00188E08 /* AppDelegate.m in Sources */,
+				4834FEA41511654E00188E08 /* MainViewController.m in Sources */,
+				480CD68915119A44006CF0BE /* SAiOSPaypalPlugin.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4834FE581511654D00188E08 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		4834FE7D1511654E00188E08 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4834FE7E1511654E00188E08 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		4834FE871511654E00188E08 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4834FE881511654E00188E08 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		4834FE8B1511654E00188E08 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4834FE8C1511654E00188E08 /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4834FEA91511654E00188E08 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		4834FEAA1511654E00188E08 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4834FEAC1511654E00188E08 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = /Users/Shared/PhoneGap/Frameworks;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PayPalPLugin-Host141/PayPalPLugin-Host141-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = "PHONEGAP_FRAMEWORK=YES";
+				INFOPLIST_FILE = "PayPalPLugin-Host141/PayPalPLugin-Host141-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../PayPal_MobilePayments_Library\"",
+					"\"$(SRCROOT)/../AddTheseToYourApp/PayPal_MobilePayments_Library\"",
+					"\"$(SRCROOT)/../../PayPal_MobilePayments_Library\"",
+				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					UIKit,
+					"-weak_framework",
+					AVFoundation,
+					"-weak_framework",
+					CoreMedia,
+					"-weak_library",
+					/usr/lib/libSystem.B.dylib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		4834FEAD1511654E00188E08 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = /Users/Shared/PhoneGap/Frameworks;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PayPalPLugin-Host141/PayPalPLugin-Host141-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = "PHONEGAP_FRAMEWORK=YES";
+				INFOPLIST_FILE = "PayPalPLugin-Host141/PayPalPLugin-Host141-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../PayPal_MobilePayments_Library\"",
+					"\"$(SRCROOT)/../AddTheseToYourApp/PayPal_MobilePayments_Library\"",
+					"\"$(SRCROOT)/../../PayPal_MobilePayments_Library\"",
+				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					UIKit,
+					"-weak_framework",
+					AVFoundation,
+					"-weak_framework",
+					CoreMedia,
+					"-weak_library",
+					/usr/lib/libSystem.B.dylib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4834FE531511654D00188E08 /* Build configuration list for PBXProject "PayPalPLugin-Host141" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4834FEA91511654E00188E08 /* Debug */,
+				4834FEAA1511654E00188E08 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4834FEAB1511654E00188E08 /* Build configuration list for PBXNativeTarget "PayPalPLugin-Host141" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4834FEAC1511654E00188E08 /* Debug */,
+				4834FEAD1511654E00188E08 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4834FE501511654D00188E08 /* Project object */;
+}

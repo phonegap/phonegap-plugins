@@ -6,60 +6,77 @@ README.md for install notes
 */
 
 /**
- * Constructor
- */
+* Constructor
+*/
 function SAiOSAdPlugin()
 {
 }
-
 /**
- * show - true to show the ad, false to hide the ad
- */
+* show - true to show the ad, false to hide the ad
+*/
 SAiOSAdPlugin.prototype.orientationChanged = function()
 {
-    //PhoneGap.exec("SAiOSAdPlugin.orientationChanged", window.orientation);
-    Cordova.exec("SAiOSAdPlugin.orientationChanged", window.orientation);
+	if (typeof PhoneGap !== "undefined")
+	{
+		PhoneGap.exec("SAiOSAdPlugin.orientationChanged", window.orientation);
+	}
+	else
+	{
+		Cordova.exec("SAiOSAdPlugin.orientationChanged", window.orientation);
+	}
 }
-
 /**
- * show - true to show the ad, false to hide the ad
- */
+* show - true to show the ad, false to hide the ad
+*/
 SAiOSAdPlugin.prototype.showAd = function(show)
 {
-    //PhoneGap.exec("SAiOSAdPlugin.showAd", show);
-    Cordova.exec("SAiOSAdPlugin.showAd", show);
+	if (typeof PhoneGap !== "undefined")
+	{
+		PhoneGap.exec("SAiOSAdPlugin.showAd", show);
+	}
+	else
+	{
+		Cordova.exec("SAiOSAdPlugin.showAd", show);
+	}
 }
-
 /**
- * atBottom - true to put the ad at the bottom, false to put the ad at the top
- */
+* atBottom - true to put the ad at the bottom, false to put the ad at the top
+*/
 SAiOSAdPlugin.prototype.prepare = function(atBottom)
 {
-	if (!atBottom) {
+	if (!atBottom)
+	{
 		atBottom = false;
 	}
-    
-	//PhoneGap.exec("SAiOSAdPlugin.prepare", atBottom);
-	Cordova.exec("SAiOSAdPlugin.prepare", atBottom);
-    
+	if (typeof PhoneGap !== "undefined")
+	{
+		PhoneGap.exec("SAiOSAdPlugin.prepare", atBottom);
+	}
+	else
+	{
+		Cordova.exec("SAiOSAdPlugin.prepare", atBottom);
+	}
 }
-
 /**
- * Install function
- */
+* Install function
+*/
 SAiOSAdPlugin.install = function()
 {
-	if ( !window.plugins ) 
-		window.plugins = {}; 
-	if ( !window.plugins.iAdPlugin ) 
-		window.plugins.iAdPlugin = new SAiOSAdPlugin();
-	
-	
+	if (!window.plugins) 
+	window.plugins = {
+	};
+	if (!window.plugins.iAdPlugin) 
+	window.plugins.iAdPlugin = new SAiOSAdPlugin();
 }
-
-
 /**
- * Add to PhoneGap/Cordova constructor
- */
-//PhoneGap.addConstructor(SAiOSAdPlugin.install);
-Cordova.addConstructor(SAiOSAdPlugin.install);
+* Add to PhoneGap/Cordova constructor
+*/
+
+if (typeof PhoneGap !== "undefined")
+{
+	PhoneGap.addConstructor(SAiOSAdPlugin.install);
+}
+else
+{
+	Cordova.addConstructor(SAiOSAdPlugin.install);
+}

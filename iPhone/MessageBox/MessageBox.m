@@ -55,6 +55,8 @@
 		[textField setPlaceholder:placeholder];
 	}
 	if ([[type lowercaseString] isEqualToString:@"password"]) [textField setSecureTextEntry:YES];
+        if ([[type lowercaseString] isEqualToString:@"decimalpad"]) [textField setKeyboardType:UIKeyboardTypeDecimalPad];
+
 	[prompt addSubview:textField];
 	
 	// Position fix for iOS < 4

@@ -48,8 +48,8 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    
+	[super viewDidLoad];
+
 	refreshBtn.image = [UIImage imageNamed:[[self class] resolveImageResource:@"ChildBrowser.bundle/but_refresh"]];
 	backBtn.image = [UIImage imageNamed:[[self class] resolveImageResource:@"ChildBrowser.bundle/arrow_left"]];
 	fwdBtn.image = [UIImage imageNamed:[[self class] resolveImageResource:@"ChildBrowser.bundle/arrow_right"]];
@@ -61,14 +61,11 @@
 	NSLog(@"View did load");
 }
 
-
-
-
-
 - (void)didReceiveMemoryWarning {
+
 	// Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-	
+	[super didReceiveMemoryWarning];
+
 	// Release any cached data, images, etc that aren't in use.
 }
 
@@ -213,7 +210,7 @@
 
 }
 
-- (void)webView:(UIWebView *)wv didFailLoadWithError:(NSError *)error {
+/*- (void)webView:(UIWebView *)wv didFailLoadWithError:(NSError *)error {
     NSLog (@"webView:didFailLoadWithError");
     [spinner stopAnimating];
     addressLabel.text = @"Failed";
@@ -228,6 +225,7 @@
         [errorAlert release];
     }
 }
+*/
 
 
 

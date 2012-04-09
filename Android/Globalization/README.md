@@ -3,11 +3,11 @@ by IBM
 
 ## Adding the Plugin to your project ##
 
-Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonegap-android).
+Using this plugin requires [Apache Cordova for Android](https://github.com/apache/incubator-cordova-android).
 
-1. To install the plugin, copy globalization.js to your project's www folder and include a reference to it in your html file after phonegap.js.
+1. To install the plugin, copy globalization.js to your project's www folder and include a reference to it in your html file after cordova.js.
 
-    &lt;script type="text/javascript" charset="utf-8" src="phonegap.js"&gt;&lt;/script&gt;<br/>
+    &lt;script type="text/javascript" charset="utf-8" src="cordova-1.5.0.js"&gt;&lt;/script&gt;<br/>
     &lt;script type="text/javascript" charset="utf-8" src="globalization.js"&gt;&lt;/script&gt;
 
 2. Create a directory within your project called "src/com/phonegap/plugins/globalization" and copy GlobalizationCommand.java, GlobalizationError.java and Resources.java into it.
@@ -23,6 +23,9 @@ Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonega
 * Initial release
 * See the .js file for API docs
 * A globalization.tests.js file is provide to run with qunit as part of Mobile-Spec [Github](http://github.com/phonegap/mobile-spec)
+
+### 20120312 ###
+* Updated for Cordova 1.5.0
 
 ## BUGS AND CONTRIBUTIONS ##
 

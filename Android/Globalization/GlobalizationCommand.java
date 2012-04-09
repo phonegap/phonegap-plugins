@@ -9,8 +9,8 @@ import org.json.JSONObject;
 
 import android.text.format.Time;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
@@ -180,8 +180,8 @@ public class GlobalizationCommand extends Plugin  {
 		JSONObject obj = new JSONObject();
 		
 		try{
-			SimpleDateFormat fmtDate = (SimpleDateFormat)android.text.format.DateFormat.getDateFormat(this.ctx); //default user preference for date
-			SimpleDateFormat fmtTime = (SimpleDateFormat)android.text.format.DateFormat.getTimeFormat(this.ctx);	//default user preference for time
+			SimpleDateFormat fmtDate = (SimpleDateFormat)android.text.format.DateFormat.getDateFormat(this.ctx.getContext()); //default user preference for date
+			SimpleDateFormat fmtTime = (SimpleDateFormat)android.text.format.DateFormat.getTimeFormat(this.ctx.getContext());	//default user preference for time
 						
 			String fmt = fmtDate.toLocalizedPattern() + " " + fmtTime.toLocalizedPattern(); //default SHORT date/time format. ex. dd/MM/yyyy h:mm a
 						
@@ -193,9 +193,9 @@ public class GlobalizationCommand extends Plugin  {
 				if (!((JSONObject)options.getJSONObject(0).get(Resources.OPTIONS)).isNull(Resources.FORMATLENGTH)){					
 					String fmtOpt = (String)((JSONObject)options.getJSONObject(0).get(Resources.OPTIONS)).get(Resources.FORMATLENGTH);
 					if (fmtOpt.equalsIgnoreCase(Resources.MEDIUM)){//medium
-						fmtDate = (SimpleDateFormat)android.text.format.DateFormat.getMediumDateFormat(this.ctx);						
+						fmtDate = (SimpleDateFormat)android.text.format.DateFormat.getMediumDateFormat(this.ctx.getContext());						
 					}else if (fmtOpt.equalsIgnoreCase(Resources.LONG) || fmtOpt.equalsIgnoreCase(Resources.FULL)){ //long/full
-						fmtDate = (SimpleDateFormat)android.text.format.DateFormat.getLongDateFormat(this.ctx);
+						fmtDate = (SimpleDateFormat)android.text.format.DateFormat.getLongDateFormat(this.ctx.getContext());
 					}
 				}
 				
@@ -242,7 +242,7 @@ public class GlobalizationCommand extends Plugin  {
 		JSONArray value = new JSONArray();	
 		String[] list;
 		try{			
-			SimpleDateFormat s = (SimpleDateFormat)android.text.format.DateFormat.getDateFormat(this.ctx);
+			SimpleDateFormat s = (SimpleDateFormat)android.text.format.DateFormat.getDateFormat(this.ctx.getContext());
 			DateFormatSymbols ds = s.getDateFormatSymbols();
 			int type = 0; //default wide
 			int item = 0; //default months			

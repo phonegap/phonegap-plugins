@@ -3,7 +3,15 @@
 Cordova v1.5.0 Support added 2012 @RandyMcMillan
 README.md for install notes
 
+Cordova v1.6.0 Support added @shazron
 */
+
+// /////////////////////////
+(function() {
+// /////////////////////////
+
+// get local ref to global PhoneGap/Cordova/cordova object for exec function
+var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to new fallbacks
 
 /**
  * Constructor
@@ -17,7 +25,7 @@ function SAiOSAdPlugin()
  */
 SAiOSAdPlugin.prototype.orientationChanged = function()
 {
-    Cordova.exec("SAiOSAdPlugin.orientationChanged", window.orientation);
+    cordovaRef.exec("SAiOSAdPlugin.orientationChanged", window.orientation);
 }
 
 /**
@@ -25,7 +33,7 @@ SAiOSAdPlugin.prototype.orientationChanged = function()
  */
 SAiOSAdPlugin.prototype.showAd = function(show)
 {
-    Cordova.exec("SAiOSAdPlugin.showAd", show);
+    cordovaRef.exec("SAiOSAdPlugin.showAd", show);
 }
 
 /**
@@ -37,8 +45,7 @@ SAiOSAdPlugin.prototype.prepare = function(atBottom)
 		atBottom = false;
 	}
     
-	Cordova.exec("SAiOSAdPlugin.prepare", atBottom);
-    
+	cordovaRef.exec("SAiOSAdPlugin.prepare", atBottom);
 }
 
 /**
@@ -46,16 +53,25 @@ SAiOSAdPlugin.prototype.prepare = function(atBottom)
  */
 SAiOSAdPlugin.install = function()
 {
-	if ( !window.plugins ) 
-		window.plugins = {}; 
-	if ( !window.plugins.iAdPlugin ) 
+	if ( !window.plugins ) {
+		window.plugins = {};
+	} 
+	if ( !window.plugins.iAdPlugin ) {
 		window.plugins.iAdPlugin = new SAiOSAdPlugin();
-	
-	
+	}
 }
-
 
 /**
  * Add to Cordova constructor
  */
-Cordova.addConstructor(SAiOSAdPlugin.install);
+if (cordovaRef && cordovaRef.addConstructor) {
+	cordovaRef.addConstructor(SAiOSAdPlugin.install);
+} else {
+	console.log("iAd Cordova Plugin could not be installed.");
+	return null;
+}
+
+
+// /////////////////////////
+})();
+// /////////////////////////

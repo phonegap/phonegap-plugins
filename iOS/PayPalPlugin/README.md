@@ -12,7 +12,7 @@ Using this plugin requires [Cordova](http://github.com/apache/incubator-cordova-
 3. Add the .h and .m files to your Plugins folder in your project (as a Group "yellow folder" not a Reference "blue folder")
 4. Add the .js files to your "www" folder on disk, and add reference(s) to the .js files as &lt;script&gt; tags in your html file(s)
 5. In **Cordova.plist** (1.5.0 or greater) or **PhoneGap.plist** (1.4.1 or lesser), under the **Plugins** section, add an idential key and value of **"SAiOSPaypalPlugin"**
-5. Make sure you check the **"RELEASE NOTES"** section below!
+6. Make sure you check the **"RELEASE NOTES"** section below!
 
 ## RELEASE NOTES ##
 
@@ -35,12 +35,10 @@ Using this plugin requires [Cordova](http://github.com/apache/incubator-cordova-
 
 ## BUGS AND CONTRIBUTIONS ##
 
-Patches welcome! Send a pull request. Since this is not a part of PhoneGap Core (which requires a CLA), this should be easier.
+Patches welcome! Send a pull request. Since this is not a part of Cordova Core (which requires an Apache iCLA), this should be easier.
 
 Post issues in the [PhoneGap Google Groups](http://groups.google.com/group/phonegap), include in the subject heading - "PayPalPlugin" or on [Github](http://github.com/phonegap/phonegap-plugins/issues)
 (preferred)
-
-The latest code (my fork) will always be [here](http://github.com/shazron/phonegap-plugins/tree/master/iPhone/PayPalPlugin/)
 
 ## LICENSE ##
 

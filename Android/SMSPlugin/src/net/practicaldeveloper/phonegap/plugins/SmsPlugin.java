@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 package net.practicaldeveloper.phonegap.plugins;
 
+import org.apache.cordova.api.PluginResult.Status;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -30,7 +31,6 @@ import android.telephony.SmsManager;
 
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
-import com.phonegap.api.PluginResult.Status;
 
 public class SmsPlugin extends Plugin {
 	public final String ACTION_SEND_SMS = "SendSMS";
@@ -57,7 +57,7 @@ public class SmsPlugin extends Plugin {
 	private void sendSMS(String phoneNumber, String message) {
 		SmsManager manager = SmsManager.getDefault();
 		
-        PendingIntent sentIntent = PendingIntent.getActivity(this.ctx, 0, new Intent(), 0);  
+        PendingIntent sentIntent = PendingIntent.getActivity(this.ctx.getContext(), 0, new Intent(), 0);  
 		
 		manager.sendTextMessage(phoneNumber, null, message, sentIntent, null);
 	}

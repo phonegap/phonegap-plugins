@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package net.practicaldeveloper.demo;
 
-import com.phonegap.*;
+import org.apache.cordova.*;
 import android.os.Bundle;
 
 public class PluginExampleActivity extends DroidGap {

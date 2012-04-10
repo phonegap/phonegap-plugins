@@ -421,24 +421,6 @@
 	[self.webView setFrame:originalWebViewBounds];
 }
 
-
-- (void)setToolBarTitle:(NSArray*)arguments withDict:(NSDictionary*)options
-{
-    if (!toolBar)
-        [self createToolBar:nil withDict:nil];
-    
-    NSString *title = [arguments objectAtIndex:0];
-    
-       
-    if (!toolBarTitle) {
-         NSLog(@"not : %@", title);
-        toolBarTitle = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(toolBarTitleClicked)];
-    } else {
-         NSLog(@"is: %@", title);
-        toolBarTitle.title = title;
-    }
-}
-
 /**
  * Create a new tool bar button item for use on a previously created tool bar.  Use ::showToolBar to show the new item on the tool bar.
  *

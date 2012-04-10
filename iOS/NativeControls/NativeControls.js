@@ -155,14 +155,7 @@ NativeControls.prototype.createToolBar = function()
 {
     Cordova.exec("NativeControls.createToolBar");
 };
-/**
- * Function called when a tab bar item has been selected.
- * @param {String} title the title to set within the toolbar
- */
-NativeControls.prototype.setToolBarTitle = function(title)
-{
-    Cordova.exec("NativeControls.setToolBarTitle", title);
-};
+
 /*
  * Added by Emile khattar: emile818@gmail.com emile@sign.al
  * @ 2011-07-08 ,  5.00 AM

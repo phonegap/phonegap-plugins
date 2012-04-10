@@ -1,36 +1,41 @@
-function GoogleAnalyticsPlugin() {}
+(function(){
+	var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to new fallbacks
 
-GoogleAnalyticsPlugin.prototype.startTrackerWithAccountID = function(id) {
-	Cordova.exec("GoogleAnalyticsPlugin.startTrackerWithAccountID",id);
-};
+	function GoogleAnalyticsPlugin() {}
 
-GoogleAnalyticsPlugin.prototype.trackPageview = function(pageUri) {
-	Cordova.exec("GoogleAnalyticsPlugin.trackPageview",pageUri);
-};
+	GoogleAnalyticsPlugin.prototype.startTrackerWithAccountID = function(id) {
+		cordovaRef.exec("GoogleAnalyticsPlugin.startTrackerWithAccountID",id);
+	};
 
-GoogleAnalyticsPlugin.prototype.trackEvent = function(category,action,label,value) {
-	var options = {category:category,
-		action:action,
-		label:label,
-		value:value};
-	Cordova.exec("GoogleAnalyticsPlugin.trackEvent",options);
-};
+	GoogleAnalyticsPlugin.prototype.trackPageview = function(pageUri) {
+		cordovaRef.exec("GoogleAnalyticsPlugin.trackPageview",pageUri);
+	};
 
-GoogleAnalyticsPlugin.prototype.setCustomVariable = function(index,name,value) {
-	var options = {index:index,
-		name:name,
-		value:value};
-	Cordova.exec("GoogleAnalyticsPlugin.setCustomVariable",options);
-};
+	GoogleAnalyticsPlugin.prototype.trackEvent = function(category,action,label,value) {
+		var options = {category:category,
+			action:action,
+			label:label,
+			value:value};
+		cordovaRef.exec("GoogleAnalyticsPlugin.trackEvent",options);
+	};
 
-GoogleAnalyticsPlugin.prototype.hitDispatched = function(hitString) {
-	//console.log("hitDispatched :: " + hitString);
-};
-GoogleAnalyticsPlugin.prototype.trackerDispatchDidComplete = function(count) {
-	//console.log("trackerDispatchDidComplete :: " + count);
-};
+	GoogleAnalyticsPlugin.prototype.setCustomVariable = function(index,name,value) {
+		var options = {index:index,
+			name:name,
+			value:value};
+		cordovaRef.exec("GoogleAnalyticsPlugin.setCustomVariable",options);
+	};
 
-Cordova.addConstructor(function() {
-  if(!window.plugins) window.plugins = {};
-  window.plugins.googleAnalyticsPlugin = new GoogleAnalyticsPlugin();
-});
+	GoogleAnalyticsPlugin.prototype.hitDispatched = function(hitString) {
+		//console.log("hitDispatched :: " + hitString);
+	};
+	GoogleAnalyticsPlugin.prototype.trackerDispatchDidComplete = function(count) {
+		//console.log("trackerDispatchDidComplete :: " + count);
+	};
+
+	cordovaRef.addConstructor(function() {
+		if(!window.plugins) window.plugins = {};
+		window.plugins.googleAnalyticsPlugin = new GoogleAnalyticsPlugin();
+	});
+
+})();

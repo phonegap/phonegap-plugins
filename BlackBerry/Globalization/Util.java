@@ -4,7 +4,7 @@
  *
  * Copyright (c) 2011, IBM Corporation
  */
-package com.phonegap.plugins.globalization;
+package org.apache.cordova.plugins.globalization;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,11 +23,11 @@ import net.rim.device.api.util.StringMatch;
 import net.rim.device.api.util.StringUtilities;
 import net.rim.device.api.compress.GZIPInputStream;
 
-import com.phonegap.json4j.JSONArray;
-import com.phonegap.json4j.JSONObject;
-import com.phonegap.json4j.internal.Parser;
-import com.phonegap.util.StringUtils;
-import com.phonegap.util.Logger;
+import org.apache.cordova.json4j.JSONArray;
+import org.apache.cordova.json4j.JSONObject;
+import org.apache.cordova.json4j.internal.Parser;
+import org.apache.cordova.util.StringUtils;
+import org.apache.cordova.util.Logger;
 
 public class Util {
 
@@ -294,7 +294,7 @@ public class Util {
 
     /**
      * Splits string into a JSONArray Note: Other options are to use
-     * com.phonegap.util.StringUtils.split(String strString, String strDelimiter)
+     * org.apache.cordova.util.StringUtils.split(String strString, String strDelimiter)
      *
      * @param s
      *            String s (String to split)

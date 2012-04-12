@@ -78,7 +78,7 @@ var BarcodeScanner = BarcodeScanner || (function() {
         if (typeof options != 'undefined') {
 
         }
-        return PhoneGap.exec(function(args) {
+        return cordova.exec(function(args) {
             success(args);
         }, function(args) {
             fail(args);
@@ -139,15 +139,15 @@ var BarcodeScanner = BarcodeScanner || (function() {
             }
         }
 
-        return PhoneGap.exec(function(args) {
+        return cordova.exec(function(args) {
             success(args);
         }, function(args) {
             fail(args);
         }, 'BarcodeScanner', 'encode', params);
     };
 
-    PhoneGap.addConstructor(function() {
-        PhoneGap.addPlugin('barcodeScanner', new BarcodeScanner());
+    cordova.addConstructor(function() {
+        cordova.addPlugin('barcodeScanner', new BarcodeScanner());
     });
 
     /**

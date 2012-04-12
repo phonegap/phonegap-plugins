@@ -4,13 +4,13 @@
  *
  * Copyright (c) 2011, IBM Corporation
  */
-package com.phonegap.plugins.barcodescanner;
+package org.apache.cordova.plugins.barcodescanner;
 
 import net.rim.device.api.ui.UiApplication;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-import com.phonegap.json4j.JSONArray;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.json4j.JSONArray;
 
 /**
  * The BarcodeScanner plugin interface.

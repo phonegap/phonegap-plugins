@@ -4,7 +4,7 @@
  *
  * Copyright (c) 2011, IBM Corporation
  */
-package com.phonegap.plugins.barcodescanner;
+package org.apache.cordova.plugins.barcodescanner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,9 +13,9 @@ import net.rim.device.api.io.Base64OutputStream;
 import net.rim.device.api.system.Bitmap;
 import net.rim.device.api.system.PNGEncodedImage;
 
-import com.phonegap.api.PluginResult;
-import com.phonegap.json4j.JSONArray;
-import com.phonegap.json4j.JSONException;
+import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.json4j.JSONArray;
+import org.apache.cordova.json4j.JSONException;
 
 /**
  * Handles the common code for the barcode encode action. Implements argument

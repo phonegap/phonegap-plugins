@@ -31,7 +31,7 @@ EmailComposer.prototype.showEmailComposer = function(subject,body,toRecipients,c
 	if(bIsHTML)
 		args.bIsHTML = bIsHTML;
 
-  Cordova.exec(null, null, "org.apache.cordova.emailComposer", "showEmailComposer", [args]);
+  Cordova.exec(null, null, "EmailComposer", "showEmailComposer", [args]);
 }
 
 // this will be forever known as the orch-func -jm

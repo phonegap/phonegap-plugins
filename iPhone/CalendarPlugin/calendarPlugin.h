@@ -1,41 +1,43 @@
 //
 //  calendarPlugin.h
+//  Author: Felix Montanez
+//  Date: 01-17-2011
+//  Notes:
 //
-//  Created by Felix Montanez on 01-17-2012
-//  MIT Licensed
-//
-//  Contributors:
-//  Abdurrahman Qadan
-//  Michael Brooks
-//
-//  
-//
-
 
 #import <Foundation/Foundation.h>
-#ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PGPlugin.h>
+#ifdef CORDOVA_FRAMEWORK
+#import <Cordova/CDVPlugin.h>
 #else
-#import "PGPlugin.h"
+#import "CDVPlugin.h"
 #endif
 #import <EventKitUI/EventKitUI.h>
 #import <EventKit/EventKit.h>
 
-@interface calendarPlugin : PGPlugin <EKEventEditViewDelegate> {
+
+@interface calendarPlugin : CDVPlugin <EKEventEditViewDelegate> {
     
 	EKEventStore *eventStore;
     EKCalendar *defaultCalendar;
+    //NSArray *events;
     
-    EKEvent *myEvent;
-    EKEventStore *store;
+    //future plan to have global type variables
+    
     
 }
 
 @property (nonatomic,retain) EKEventStore *eventStore;
 @property (nonatomic,retain) EKCalendar *defaultCalendar;
 
+//-(NSArray *)fetchEvents;
 
 // Calendar Instance methods
 - (void)createEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+//- (void)modifyEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+//- (void)findEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+//- (void)deleteEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 @end

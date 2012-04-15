@@ -1,13 +1,14 @@
 //
 //								
-//  PhoneGap Calendar Plugin IOS    
+//  Cordova Calendar Plugin IOS    
 //									
 //  Author: Felix Montanez
 //  
 //  Collaborators:
-//  Abdurrahman Qadan
 //  Michael Brooks
 //
+//  Notes: this is a basic plugin which creates an event to the user's local calendar. There are methods that I'm working on for fetching an event, modifying and deleting 
+//  events in the calendar. 
 //
 //  Usage Example: I put the code in my JS file that I'm calling the
 //  createEvent function. Declared cal as a global variable, then 
@@ -52,7 +53,7 @@
 //  for testing I declared the necessary variables. You will need to comment these out and pass
 //  your variables normally through the function call.
 //
-//  In the PhoneGap.plist section, you need to add the plugin with the key/pair value of:
+//  In the Cordova.plist section, you need to add the plugin with the key/pair value of:
 //	
 // 	calendarPlugin   calendarPlugin
 //

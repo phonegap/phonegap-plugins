@@ -1,15 +1,9 @@
 //
 //  calendarPlugin.m
-//
-//  Created by Felix Montanez on 01-17-2012
-//  MIT Licensed
-//
-//  Contributors:
-//  Abdurrahman Qadan
-//  Michael Brooks
-//
-//  
-//
+//  Author: Felix Montanez
+//  Date: 01-17-2011
+//  Notes: 
+
 
 #import "calendarPlugin.h"
 #import <EventKitUI/EventKitUI.h>
@@ -20,8 +14,21 @@
 @synthesize defaultCalendar;
 
 
+- (CDVPlugin*) initWithWebView:(UIWebView*)theWebView
+{
+    self = (calendarPlugin*)[super initWithWebView:theWebView];
+    if (self) {
+		//[self setup];
+    }
+    return self;
+}
+
+
 -(void)createEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options 
 {
+    //Get the Event store object
+    EKEvent *myEvent;
+    EKEventStore *store;
     
     store = [[EKEventStore alloc] init];
     myEvent = [EKEvent eventWithEventStore: store];
@@ -66,10 +73,57 @@
                                               otherButtonTitles:nil];
         [alert show];
         [alert release];
-        [store release];
+        
         
     }
 }
+
+/***** NOT YET IMPLEMENTED BELOW ************/
+
+//-(void)deleteEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {}
+
+/*-(void)findEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
+ 
+ store = [[EKEventStore alloc] init];
+ myEvent = [EKEvent eventWithEventStore: store];
+ 
+ NSString *startSearchDate  = [arguments objectAtIndex:1];
+ NSString *endSearchDate    = [arguments objectAtIndex:2];
+ 
+ 
+ //creating the dateformatter object
+ NSDateFormatter *sDate = [[[NSDateFormatter alloc] init] autorelease];
+ [sDate setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+ NSDate *myStartDate = [sDate dateFromString:startSearchDate];
+ 
+ 
+ NSDateFormatter *eDate = [[[NSDateFormatter alloc] init] autorelease];
+ [eDate setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+ NSDate *myEndDate = [eDate dateFromString:endSearchDate];
+ 
+ 
+ // Create the predicate
+ NSPredicate *predicate = [eventStore predicateForEventsWithStartDate:myStartDate endDate:myEndDate calendars:defaultCalendar]; 
+ 
+ 
+ // eventStore is an instance variable.
+ // Fetch all events that match the predicate.
+ NSArray *events = [eventStore eventsMatchingPredicate:predicate];
+ [self setEvents:events];
+ 
+ 
+ }
+ 
+ //-(void)modifyEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options{
+ EKEventViewController *eventViewController = [[EKEventViewController alloc] init];
+ eventViewController.event = myEvent;
+ eventViewController.allowsEditing = YES;
+ navigationController we
+= [[UINavigationController alloc]
+ initWithRootViewController:eventViewController];
+ [eventViewController release];*/
+// }
+
 
 //delegate method for EKEventEditViewDelegate
 -(void)eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action {

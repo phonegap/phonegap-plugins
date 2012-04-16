@@ -47,7 +47,6 @@
  */
 - (void)createToolBar:(NSArray*)arguments withDict:(NSDictionary*)options;
 - (void)resetToolBar:(NSArray*)arguments withDict:(NSDictionary*)options;
-- (void)setToolBarTitle:(NSArray*)arguments withDict:(NSDictionary*)options;
 - (void)createToolBarItem:(NSArray*)arguments withDict:(NSDictionary*)options;
 - (void)showToolBar:(NSArray*)arguments withDict:(NSDictionary*)options;
 - (void)hideToolBar:(NSArray*)arguments withDict:(NSDictionary*)options;

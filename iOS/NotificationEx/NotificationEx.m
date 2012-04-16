@@ -12,7 +12,7 @@
 #ifdef CORDOVA_FRAMEWORK
     #import <Cordova/NSDictionary+Extensions.h>
 #else
-    #import "Categories.h"
+    #import "NSDictionary+Extensions.h"
 #endif 
 #import "UIColor-Expanded.h"
 

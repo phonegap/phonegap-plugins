@@ -1,5 +1,7 @@
-This code is completely dependent on the PhoneGap project, also hosted on
-GitHub ( github.com/phonegap/phonegap )
+This code is completely dependent on the Cordova BlackBerry WebWorks project,
+also hosted on GitHub:
+
+    http://www.github.com/apache/incubator-cordova-blackberry-webworks
 
 This folder is for BlackBerry specific plugins.
 Please include a readme in your plugin, and preferably some sample code for how to use it.
@@ -7,8 +9,6 @@ Please specify what devices+os versions your plugin supports.
 
 
 The MIT License
-
-Copyright (c) 2010 Nitoibi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

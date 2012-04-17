@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Globalization Example</title>
+        
+        <script type="text/javascript" charset="utf-8" src="cordova-1.6.0.js"></script>
+        <script type="text/javascript" charset="utf-8" src="Globalization.js"></script>
+
+        <script type="text/javascript" charset="utf-8">
+            
+            // Wait for PhoneGap to load
+            //
+            function onLoad() {
+                document.addEventListener("deviceready", onDeviceReady, false);
+            }
+            
+            // PhoneGap is ready
+            //
+            function onDeviceReady() {
+                
+                alert("onDeviceReady fired in globalization.html");
+                
+            }
+            function getLocale() {
+            	window.plugins.globalization.getLocaleName(
+            		function (locale) {alert('locale:' + locale.value + '\n');}, 
+            		function () {console.log("error getting locale");}
+                );
+            }
+            function getDate() {
+            	window.plugins.globalization.dateToString(new Date(),
+				function (date) {alert('date:' + date.value + '\n');},
+				function (errorCode) {alert(errorCode);},
+				{formatLength:'short'});
+            }
+            function getDatePattern() {
+            	window.plugins.globalization.getDatePattern(
+				function (date) { alert('pattern:' + date.pattern + '\n'); },
+				function () {console.log("error getting date pattern");},
+				{formatLength:'short'});
+            }
+            function isDayLightSavings() {
+                window.plugins.globalization.isDayLightSavingsTime(new Date(),
+                                                                  function (date) {alert('dst:' + date.dst + '\n');},
+                                                                  function () { console.log("error getting daylight savings value"); }
+                                                                  );
+
+            }
+            function getNumberPattern() {
+            	window.plugins.globalization.getNumberPattern(
+				function (pattern) {alert('Pattern:' + pattern.pattern + '\n');},
+				function () {console.log("error getting number pattern");});
+            }
+            
+            function addPlugin(){
+                var fileref=document.createElement('script');
+                fileref.setAttribute("type","text/javascript");
+                fileref.setAttribute("src", "Globalization.js");
+                document.getElementsByTagName("head")[0].appendChild(fileref);
+                alert("attempt to add globalization plugin again");
+            }
+         </script>
+     </head>
+     <body>
+     <h1>Globalization</h1>
+     <div><button onclick="getLocale();">Get Locale</button</div>
+     <div><button onclick="getDate();">Get Date</button></div>
+     <div><button onclick="getDatePattern();">Get Date Pattern</button></div>
+     <div><button onclick="getNumberPattern();">Get Number Pattern</button></div>
+     <div><button onclick="isDayLightSavings();">Is Daylight savings?</button></div>
+         <div><button onclick="addPlugin();">Include JS again</button></div>
+   
+
+     </body>
+</html>
+    

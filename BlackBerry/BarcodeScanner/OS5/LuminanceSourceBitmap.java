@@ -23,9 +23,9 @@
  * BlackBerry.
  */
 // BB: Package the file local to the plugin.
-package com.phonegap.plugins.barcodescanner;
+package org.apache.cordova.plugins.barcodescanner;
 
-import com.phonegap.plugins.barcodescanner.google.zxing.LuminanceSource;
+import org.apache.cordova.plugins.barcodescanner.google.zxing.LuminanceSource;
 
 //BB: Use Bitmap instead of Image
 import net.rim.device.api.system.Bitmap;

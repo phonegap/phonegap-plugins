@@ -4,17 +4,17 @@
  *
  * Copyright (c) 2011, IBM Corporation
  */
-package com.phonegap.plugins.barcodescanner;
+package org.apache.cordova.plugins.barcodescanner;
 
 import java.util.Hashtable;
 
 import net.rim.device.api.system.Bitmap;
 
-import com.phonegap.plugins.barcodescanner.google.zxing.BarcodeFormat;
-import com.phonegap.plugins.barcodescanner.google.zxing.EncodeHintType;
-import com.phonegap.plugins.barcodescanner.google.zxing.MultiFormatWriter;
-import com.phonegap.plugins.barcodescanner.google.zxing.WriterException;
-import com.phonegap.plugins.barcodescanner.google.zxing.common.BitMatrix;
+import org.apache.cordova.plugins.barcodescanner.google.zxing.BarcodeFormat;
+import org.apache.cordova.plugins.barcodescanner.google.zxing.EncodeHintType;
+import org.apache.cordova.plugins.barcodescanner.google.zxing.MultiFormatWriter;
+import org.apache.cordova.plugins.barcodescanner.google.zxing.WriterException;
+import org.apache.cordova.plugins.barcodescanner.google.zxing.common.BitMatrix;
 
 /**
  * BlackBerry OS 5 specific class containing barcode encoding related methods.

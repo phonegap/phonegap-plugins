@@ -55,7 +55,7 @@
             console.log("Globalization.getLocaleName Error: failureCB is not a function");
             return;
         }
-        PhoneGap.exec(successCB, failureCB, "Globalization",
+        cordova.exec(successCB, failureCB, "Globalization",
                 "getLocaleName", []);
     };
 
@@ -102,7 +102,7 @@
         if (date instanceof Date) {
             var dateValue;
             dateValue = date.valueOf();
-            PhoneGap.exec(successCB, failureCB, "Globalization",
+            cordova.exec(successCB, failureCB, "Globalization",
                     "dateToString", [ {"date" : dateValue, "options" : options} ]);
         } else {
             console.log("Globalization.dateToString Error: date is not a Date object");
@@ -158,7 +158,7 @@
             return;
         }
         if (typeof dateString == "string") {
-            PhoneGap.exec(successCB, failureCB, "Globalization",
+            cordova.exec(successCB, failureCB, "Globalization",
                     "stringToDate", [ {"dateString" : dateString, "options" : options} ]);
         } else {
             console.log("Globalization.stringToDate Error: dateString is not a string");
@@ -215,7 +215,7 @@
             return;
         }
 
-        PhoneGap.exec(successCB, failureCB, "Globalization",
+        cordova.exec(successCB, failureCB, "Globalization",
                 "getDatePattern", [ {"options" : options} ]);
     };
 
@@ -257,7 +257,7 @@
             console.log("Globalization.getDateNames Error: failureCB is not a function");
             return;
         }
-        PhoneGap.exec(successCB, failureCB, "Globalization",
+        cordova.exec(successCB, failureCB, "Globalization",
                 "getDateNames", [ {"options" : options} ]);
     };
 
@@ -300,7 +300,7 @@
         if (date instanceof Date) {
             var dateValue;
             dateValue = date.valueOf();
-            PhoneGap.exec(successCB, failureCB, "Globalization",
+            cordova.exec(successCB, failureCB, "Globalization",
                     "isDayLightSavingsTime", [ {"date" : dateValue} ]);
         } else {
             console.log("Globalization.isDayLightSavingsTime Error: date is not a Date object");
@@ -340,7 +340,7 @@
             return;
         }
 
-        PhoneGap.exec(successCB, failureCB, "Globalization",
+        cordova.exec(successCB, failureCB, "Globalization",
                 "getFirstDayOfWeek", []);
     };
 
@@ -383,7 +383,7 @@
         }
 
         if (typeof number == "number") {
-            PhoneGap.exec(successCB, failureCB, "Globalization",
+            cordova.exec(successCB, failureCB, "Globalization",
                     "numberToString", [ {"number" : number, "options" : options} ]);
         } else {
             console.log("Globalization.numberToString Error: number is not a number");
@@ -429,7 +429,7 @@
         }
 
         if (typeof numberString == "string") {
-            PhoneGap.exec(successCB, failureCB, "Globalization",
+            cordova.exec(successCB, failureCB, "Globalization",
                     "stringToNumber", [ {"numberString" : numberString,
                         "options" : options} ]);
         } else {
@@ -493,7 +493,7 @@
             return;
         }
 
-        PhoneGap.exec(successCB, failureCB, "Globalization",
+        cordova.exec(successCB, failureCB, "Globalization",
                 "getNumberPattern", [ {"options" : options} ]);
     };
 
@@ -544,15 +544,15 @@
         }
 
         if (typeof currencyCode == "string") {
-            PhoneGap.exec(successCB, failureCB, "Globalization",
+            cordova.exec(successCB, failureCB, "Globalization",
                     "getCurrencyPattern", [ {"currencyCode" : currencyCode} ]);
         } else {
             console.log("Globalization.getCurrencyPattern Error: currencyCode is not a currency code");
         }
     };
 
-    PhoneGap.addConstructor(function() {
-        PhoneGap.addPlugin('globalization', new Globalization());
+    cordova.addConstructor(function() {
+        cordova.addPlugin('globalization', new Globalization());
     });
 }());
 

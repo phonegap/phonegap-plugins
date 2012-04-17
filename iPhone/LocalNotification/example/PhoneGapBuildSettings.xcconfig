@@ -1,8 +1,0 @@
-//
-//  PhoneGap.xcconfig
-//  example
-//
-
-// Override this to use your project specific PHONEGAPLIB. 
-// You can base it off the current project path, $(PROJECT_DIR)
-PHONEGAPLIB = $(PHONEGAPLIB)

@@ -27,7 +27,7 @@ function NativeControls() {
  * Create a native tab bar that can have tab buttons added to it which can respond to events.
  */
 NativeControls.prototype.createTabBar = function() {
-    Cordova.exec("NativeControls.createTabBar");
+    cordova.exec("NativeControls.createTabBar");
 };
  
 /**
@@ -38,7 +38,7 @@ NativeControls.prototype.createTabBar = function() {
  */
 NativeControls.prototype.showTabBar = function(options) {
     if (!options) options = {'position' : 'bottom'};
-    Cordova.exec("NativeControls.showTabBar", options);
+    cordova.exec("NativeControls.showTabBar", options);
 };
  
 /**
@@ -47,7 +47,7 @@ NativeControls.prototype.showTabBar = function(options) {
 NativeControls.prototype.hideTabBar = function(animate) {
     if (animate == undefined || animate == null)
         animate = true;
-    Cordova.exec("NativeControls.hideTabBar", { animate: animate });
+    cordova.exec("NativeControls.hideTabBar", { animate: animate });
 };
  
 /**
@@ -83,7 +83,7 @@ NativeControls.prototype.createTabBarItem = function(name, label, image, options
         //delete options.onSelect;
     }
        
-    Cordova.exec("NativeControls.createTabBarItem", name, label, image, tag, options);
+    cordova.exec("NativeControls.createTabBarItem", name, label, image, tag, options);
 };
  
 /**
@@ -94,7 +94,7 @@ NativeControls.prototype.createTabBarItem = function(name, label, image, options
  */
 NativeControls.prototype.updateTabBarItem = function(name, options) {
     if (!options) options = {};
-    Cordova.exec("NativeControls.updateTabBarItem", name, options);
+    cordova.exec("NativeControls.updateTabBarItem", name, options);
 };
  
 /**
@@ -110,7 +110,7 @@ NativeControls.prototype.showTabBarItems = function() {
     for (var i = 0; i < arguments.length; i++) {
         parameters.push(arguments[i]);
     }
-    Cordova.exec.apply(this, parameters);
+    cordova.exec.apply(this, parameters);
 };
  
  
@@ -131,7 +131,7 @@ NativeControls.prototype.getSelectedTabBarItem = function() {
  * @see showTabBarItems
  */
 NativeControls.prototype.selectTabBarItem = function(tab) {
-    Cordova.exec("NativeControls.selectTabBarItem", tab);
+    cordova.exec("NativeControls.selectTabBarItem", tab);
 };
  
 /**
@@ -153,7 +153,7 @@ NativeControls.prototype.tabBarItemSelected = function(tag)
  */
 NativeControls.prototype.createToolBar = function()
 {
-    Cordova.exec("NativeControls.createToolBar");
+    cordova.exec("NativeControls.createToolBar");
 };
 /**
  * Function called when a tab bar item has been selected.
@@ -161,7 +161,7 @@ NativeControls.prototype.createToolBar = function()
  */
 NativeControls.prototype.setToolBarTitle = function(title)
 {
-    Cordova.exec("NativeControls.setToolBarTitle", title);
+    cordova.exec("NativeControls.setToolBarTitle", title);
 };
 /*
  * Added by Emile khattar: emile818@gmail.com emile@sign.al
@@ -171,14 +171,14 @@ NativeControls.prototype.setToolBarTitle = function(title)
  * Set toolBarItems = nil;
  */
 NativeControls.prototype.resetToolBar = function() {
-    Cordova.exec("NativeControls.resetToolBar");
+    cordova.exec("NativeControls.resetToolBar");
 };
 /**
  * Hide the tool bar
  * @brief hide the tool bar
  */
 NativeControls.prototype.hideToolBar = function() {
-    Cordova.exec("NativeControls.hideToolBar");
+    cordova.exec("NativeControls.hideToolBar");
 };
  
 /**
@@ -186,7 +186,7 @@ NativeControls.prototype.hideToolBar = function() {
  * @brief Show the tool bar
  */
 NativeControls.prototype.showToolBar = function() {
-    Cordova.exec("NativeControls.showToolBar");
+    cordova.exec("NativeControls.showToolBar");
 };
  
 /**
@@ -194,7 +194,7 @@ NativeControls.prototype.showToolBar = function() {
  * @param: title
  */
 NativeControls.prototype.setToolBarTitle = function(title) {
-    Cordova.exec("NativeControls.setToolBarTitle" , title );
+    cordova.exec("NativeControls.setToolBarTitle" , title );
 };
  
  
@@ -243,7 +243,7 @@ NativeControls.prototype.createToolBarItem = function(name , title , image , opt
     }
         //modify the NativeControls.m to change the options quickly
         // the instance name on the plugin can be passed with option for now it is hardcode in objc // Emile
-    Cordova.exec("NativeControls.createToolBarItem" , name , title , image , options );
+    cordova.exec("NativeControls.createToolBarItem" , name , title , image , options );
 };
  
 /**
@@ -283,7 +283,7 @@ NativeControls.prototype.createActionSheet = function(buttonTitles,actionSheetTi
         {
         params.push(buttonTitles[i]);
     }
-    Cordova.exec.apply(this, params);
+    cordova.exec.apply(this, params);
        
         this.actionSheetDelegate = {};
         return this.actionSheetDelegate;
@@ -299,7 +299,7 @@ NativeControls.prototype._onActionSheetDismissed = function(index)
  
 NativeControls.prototype.setStatusBarVisibilty = function(bHide)
 {
-        Cordova.exec("StatusBar.setHidden",bHide);
+        cordova.exec("StatusBar.setHidden",bHide);
 }
  
  

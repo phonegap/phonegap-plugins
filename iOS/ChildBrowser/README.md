@@ -22,6 +22,7 @@ Note, because this is open source, I could not include the graphics I usually us
 Here is a sample command to open google in a ChildBrowser :
 
 Cordova.exec("ChildBrowserCommand.showWebPage", "http://www.google.com" );
+cordova.exec("ChildBrowserCommand.showWebPage", "http://www.google.com" );
 
 =================================
 

@@ -1,4 +1,10 @@
-PhoneGap Twitter Plugin
+Cordova Twitter Plugin
+
+NEW PLIST VALUE is 
+
+TwitterPlugin / TwitterPlugin
+
+
 ================================
 
 The Twitter plugin for PhoneGap allows you to take advantage of the Twitter integration that ships with iOS 5. Please note that to use the APIs you must compile the application on the iOS 5 SDK. The plugin will not cause any issues if it is run on a pre-iOS 5 OS as long as you always validate that the Twitter SDK is available (see **Twitter.isTwitterAvailable()**)

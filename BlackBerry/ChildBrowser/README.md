@@ -1,6 +1,6 @@
-# ChildBrowser plugin for Phonegap #
+# ChildBrowser plugin for Cordova #
 
-The child browser allows you to display external web pages within your PhoneGap application in either a custom browser field or in the device's builtin browser.  Web pages accessed through the child browser plugin are not restricted by the whitelist entries in the applications config.xml.
+The child browser allows you to display external web pages within your Cordova application in either a custom browser field or in the device's builtin browser.  Web pages accessed through the child browser plugin are not restricted by the whitelist entries in the applications config.xml.
 
 The custom browser view provides advantages over the builtin browser.  The custom browser provides the ability to be notified of URL location changes and when the browser is closed.  Additionally, with the custom browser it is possible to have a chrome-less view or a view with a navigation bar at the top.
 
@@ -8,20 +8,20 @@ Whether the custom browser or builtin browser is used the user is always brought
 
 ## Adding the Plugin to your project ##
 
-Using this plugin requires [BlackBerry PhoneGap](http://github.com/callback/callback-blackberry).
+Using this plugin requires [Cordova BlackBerry-WebWorks](http://github.com/apache/incubator-cordova-blackberry-webworks).
 
-1. To install the plugin, move www/childbrowser.js to your project's www folder and include a reference to it in your html file after phonegap.js.
+1. To install the plugin, move www/childbrowser.js to your project's www folder and include a reference to it in your html file after cordova.js.
 
-    &lt;script type="text/javascript" charset="utf-8" src="phonegap.js"&gt;&lt;/script&gt;<br/>
+    &lt;script type="text/javascript" charset="utf-8" src="cordova.js"&gt;&lt;/script&gt;<br/>
     &lt;script type="text/javascript" charset="utf-8" src="childbrowser.js"&gt;&lt;/script&gt;
 
 2. Copy the image files folder www/childbrowser to your project's www folder. Note, you need the entire folder not just the images.
 
-3. Add the plugin source to your phonegap.jar in your projects ext folder.  The phonegap.jar file is a jar of source code.  Open phonegap.jar with your favorite archive manager or use the jar command to create a directory called "com/phonegap/plugins/childbrowser" and copy the `.java` files into it.
+3. Add the plugin source to your cordova.jar in your projects ext folder.  The cordova.jar file is a jar of source code.  Open cordova.jar with your favorite archive manager or use the jar command to create a directory called "org/apache/cordova/plugins/childbrowser" and copy the `.java` files into it.
 
 4. In your projects plugins.xml file add the following line:
 
-    &lt;plugin name="ChildBrowser" value="com.phonegap.plugins.childbrowser.ChildBrowser"/&gt;
+    &lt;plugin name="ChildBrowser" value="org.apache.cordova.plugins.childbrowser.ChildBrowser"/&gt;
 
 ## Using the plugin ##
 
@@ -85,10 +85,10 @@ Sample use:
 
 ### Load a URL in the device's builtin browser ###
 
-    openExternal(url, [usePhoneGap])
+    openExternal(url, [useCordova])
         Where:
             url:         The URL to load
-            usePhoneGap: Ignored. Maintained for API consistency with Android
+            useCordova: Ignored. Maintained for API consistency with Android
 
 Sample use:
 

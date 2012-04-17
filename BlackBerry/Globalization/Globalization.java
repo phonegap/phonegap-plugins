@@ -4,13 +4,13 @@
  *
  * Copyright (c) 2011, IBM Corporation
  */
-package com.phonegap.plugins.globalization;
+package org.apache.cordova.plugins.globalization;
 
-import com.phonegap.json4j.JSONArray;
-import com.phonegap.json4j.JSONObject;
+import org.apache.cordova.json4j.JSONArray;
+import org.apache.cordova.json4j.JSONObject;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 import net.rim.device.api.i18n.Locale;
 import net.rim.device.api.i18n.SimpleDateFormat;

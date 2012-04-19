@@ -1,19 +1,18 @@
-//
-//  Badge.h
-//
-//  Created by Simon Madine on 29/04/2010.
-//  Copyright 2010 The Angry Robot Zombie Factory.
-//  MIT licensed
-//
-//  Converted to Cordova by Joseph Stuhr.
-//
+/*
+ *  This code is adapted from the work of Michael Nachbaur 
+ *  by Simon Madine of The Angry Robot Zombie Factory
+ *   - Converted to Cordova 1.6.1 by Joseph Stuhr.
+ *  2012-04-19
+ *  MIT licensed
+ *
+ */
 
 #import <Foundation/Foundation.h>
 
 #ifdef CORDOVA_FRAMEWORK
-#import <Cordova/CDVPlugin.h>
+    #import <Cordova/CDVPlugin.h>
 #else
-#import "CDVPlugin.h"
+    #import "CDVPlugin.h"
 #endif
 
 @interface Badge : CDVPlugin {

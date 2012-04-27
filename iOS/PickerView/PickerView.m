@@ -27,8 +27,8 @@
 -(void)create:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options  
 {
 	
-    NSLog(@"PickerView::create():arguments: %@", arguments);
-	NSLog(@"PickerView::create():options: %@", options);
+    //NSLog(@"PickerView::create():arguments: %@", arguments);
+	//NSLog(@"PickerView::create():options: %@", options);
 	
 	// The first argument in the arguments parameter is the callbackID.
 	// We use this to send data back to the successCallback or failureCallback

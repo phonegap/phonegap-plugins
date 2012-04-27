@@ -72,8 +72,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ## CREDITS ##
 
-@RandyMcMillan - Added Initial Cordova 1.5 support - 2012
-
 Inspired by :
 
 * [MBProgressHUD project](https://github.com/jdg/MBProgressHUD)

@@ -1,6 +1,6 @@
 //
 //  ProgressHud.m
-//  
+//
 // Created by Olivier Louvignes on 04/25/2012.
 //
 // Copyright 2011 Olivier Louvignes. All rights reserved.
@@ -15,15 +15,16 @@
 #import "MBProgressHUD.h"
 
 @interface ProgressHud : CDVPlugin {
-	
+
 	NSString* callbackID;
-	
+	MBProgressHUD* progressHUD;
+
 }
 
 @property (nonatomic, copy) NSString* callbackID;
 @property (nonatomic, retain) MBProgressHUD* progressHUD;
 
-//Instance Method  
+//Instance Method
 - (void) show:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) set:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) hide:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;

@@ -1,4 +1,4 @@
-# PhoneGap MessageBox Plugin #
+# Cordova MessageBox Plugin #
 by `Olivier Louvignes`
 
 ## DESCRIPTION ##
@@ -13,13 +13,13 @@ by `Olivier Louvignes`
 
 Using this plugin requires [Cordova iOS](https://github.com/apache/incubator-cordova-ios).
 
-1. Make sure your PhoneGap Xcode project has been [updated for the iOS 4 SDK](http://wiki.phonegap.com/Upgrade-your-PhoneGap-Xcode-Template-for-iOS-4)
+1. Make sure your Xcode project has been [updated for Cordova](https://github.com/apache/incubator-cordova-ios/blob/master/guides/Cordova%20Upgrade%20Guide.md)
 2. Drag and drop the `MessageBox` folder from Finder to your Plugins folder in XCode, using "Create groups for any added folders"
 3. Add the .js files to your `www` folder on disk, and add reference(s) to the .js files using <script> tags in your html file(s)
 
     <script type="text/javascript" src="/js/plugins/MessageBox.js"></script>
 
-4. Add new entry with key `MessageBox` and value `MessageBox` to `Plugins` in `PhoneGap.plist`
+4. Add new entry with key `MessageBox` and value `MessageBox` to `Plugins` in `Cordova.plist`
 
 ## JAVASCRIPT INTERFACE ##
 
@@ -50,7 +50,7 @@ Using this plugin requires [Cordova iOS](https://github.com/apache/incubator-cor
 
 ## BUGS AND CONTRIBUTIONS ##
 
-Patches welcome! Send a pull request. Since this is not a part of PhoneGap Core (which requires a CLA), this should be easier.
+Patches welcome! Send a pull request. Since this is not a part of Cordova Core (which requires a CLA), this should be easier.
 
 Post issues on [Github](https://github.com/apache/incubator-cordova-ios/issues)
 

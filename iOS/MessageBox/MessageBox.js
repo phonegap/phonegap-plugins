@@ -17,7 +17,7 @@ MessageBox.prototype.alert = function(title, message, callback, options) {
 
 	var _callback = function(buttonIndex) {
 		var button = 'ok';
-		callback.call(config.scope, button);
+		if(typeof callback == 'function') callback.call(config.scope, button);
 	};
 
 	return navigator.notification.alert(message, _callback, title, config.okButtonTitle + '');
@@ -32,8 +32,8 @@ MessageBox.prototype.confirm = function(title, message, callback, options) {
 	};
 
 	var _callback = function(buttonIndex) {
-		var button = (buttonIndex === 0) ? 'yes' : 'no';
-		callback.call(config.scope, button);
+		var button = (buttonIndex === 2) ? 'yes' : 'no';
+		if(typeof callback == 'function') callback.call(config.scope, button);
 	};
 
 	return navigator.notification.confirm(message, _callback, title, config.noButtonTitle + ', ' + config.yesButtonTitle);
@@ -56,7 +56,7 @@ MessageBox.prototype.prompt = function(title, message, callback, options) {
 	var _callback = function(result) {
 		var value = (result.buttonIndex == 1) ? result.value : false;
 		button = (result.buttonIndex == 1) ? 'ok' : 'cancel';
-		callback.call(scope, button, value);
+		if(typeof callback == 'function') callback.call(scope, button, value);
 	};
 
 	return cordova.exec(_callback, _callback, 'MessageBox', 'prompt', [config]);

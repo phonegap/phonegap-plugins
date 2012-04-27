@@ -22,8 +22,8 @@ ActionSheet.prototype.create = function(title, items, callback, options) {
 		title : title || '',
 		items : items || ['Cancel'],
 		style : options.style || 'default',
-		destructiveButtonIndex : options.destructiveButtonIndex || undefined,
-		cancelButtonIndex : options.cancelButtonIndex || undefined
+		destructiveButtonIndex : options.hasOwnProperty('destructiveButtonIndex') ? options.destructiveButtonIndex : undefined,
+		cancelButtonIndex : options.hasOwnProperty('cancelButtonIndex') ? options.cancelButtonIndex : undefined
 	};
 
 	var _callback = function(result) {

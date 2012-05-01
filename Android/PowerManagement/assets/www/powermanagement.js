@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Wolfgang Koller
+ * Copyright (C) 2011-2012 Wolfgang Koller
  * 
  * This file is part of GOFG Sports Computer - http://www.gofg.at/.
  * 
@@ -17,14 +17,10 @@
  * along with GOFG Sports Computer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if( !PhoneGap.hasResource("PowerManagement") ) {
-	PhoneGap.addResource("PowerManagement");
-
-	/**
-	 * @returns instance of powermanagement
-	 */
-	var PowerManagement = function() {	
-	}
+cordova.define("cordova/plugin/powermanagement", function(require, exports, module) {
+	var exec = require('cordova/exec');
+	
+	var PowerManagement = function() {};
 	
 	/**
 	 * Acquire a new wake-lock (keep device awake)
@@ -33,9 +29,9 @@ if( !PhoneGap.hasResource("PowerManagement") ) {
 	 * @param errorCallback function to be called when there was a problem with acquiring the wake-lock
 	 */
 	PowerManagement.prototype.acquire = function(successCallback,failureCallback) {
-	    return PhoneGap.exec(successCallback, failureCallback, 'PowerManagement', 'acquire', []);
+	    exec(successCallback, failureCallback, 'PowerManagement', 'acquire', []);
 	}
-	
+
 	/**
 	 * Release the wake-lock
 	 * 
@@ -43,9 +39,9 @@ if( !PhoneGap.hasResource("PowerManagement") ) {
 	 * @param errorCallback function to be called when there was a problem while releasing the wake-lock
 	 */
 	PowerManagement.prototype.release = function(successCallback,failureCallback) {
-	    return PhoneGap.exec(successCallback, failureCallback, 'PowerManagement', 'release', []);
+	    exec(successCallback, failureCallback, 'PowerManagement', 'release', []);
 	}
-	
+
 	/**
 	 * Acquire a partial wake-lock, allowing the device to dim the screen
 	 *
@@ -53,14 +49,9 @@ if( !PhoneGap.hasResource("PowerManagement") ) {
 	 * @param errorCallback function to be called when there was a problem with acquiring the wake-lock
 	 */
 	PowerManagement.prototype.dim = function(successCallback,failureCallback) {
-	    return PhoneGap.exec(successCallback, failureCallback, 'PowerManagement', 'acquire', [true]);
+	    exec(successCallback, failureCallback, 'PowerManagement', 'acquire', [true]);
 	}
 	
-	/**
-	 * Register the plugin with PhoneGap
-	 */
-	PhoneGap.addConstructor(function() {
-		// Register the PowerManagement plugin with PhoneGap
-		PhoneGap.addPlugin('PowerManagement', new PowerManagement());
-	});
-}
+	var powermanagement = new PowerManagement();
+	module.exports = powermanagement;
+});

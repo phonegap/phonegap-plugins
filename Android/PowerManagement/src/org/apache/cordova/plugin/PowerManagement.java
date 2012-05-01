@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Wolfgang Koller
+ * Copyright (C) 2011-2012 Wolfgang Koller
  * 
  * This file is part of GOFG Sports Computer - http://www.gofg.at/.
  * 
@@ -18,10 +18,10 @@
  */
 
 /**
- * PhoneGap (Android) plugin for accessing the power-management functions of the device
+ * Cordova (Android) plugin for accessing the power-management functions of the device
  * @author Wolfgang Koller <viras@users.sourceforge.net>
  */
-package com.phonegap.plugin;
+package org.apache.cordova.plugin;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,9 +30,10 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.util.Log;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-import com.phonegap.api.PluginResult.Status;
+import org.apache.cordova.api.CordovaInterface;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.api.PluginResult.Status;
 
 /**
  * Plugin class which does the actual handling
@@ -40,9 +41,29 @@ import com.phonegap.api.PluginResult.Status;
 public class PowerManagement extends Plugin {
 	// As we only allow one wake-lock, we keep a reference to it here
 	private PowerManager.WakeLock wakeLock = null;
+	private PowerManager powerManager = null;
+	
+	/**
+	 * Sets the application context for this plugin
+	 * Used to obtain a reference to the powermanager
+	 */
+	@Override
+	public void setContext(CordovaInterface ctx) {
+		super.setContext(ctx);
+		
+		this.powerManager = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+	}
+	
+	/**
+	 * We have a synchronous interface to our plugin, since all calls return immediately
+	 */
+	@Override
+	public boolean isSynch(String action) {
+		return true;
+	}
 
 	/**
-	 * Called by the PhoneGap framework to handle a call to this plugin
+	 * Called by the cordova framework to handle a call to this plugin
 	 * @param action currently supported are 'acquire' and 'release'
 	 * @param data In case of action 'acquire' this may contain a parameter set to 'true' to indicate only a dim wake-lock
 	 */
@@ -52,22 +73,22 @@ public class PowerManagement extends Plugin {
 		Log.d("PowerManagementPlugin", "Plugin execute called - " + this.toString() );
 		Log.d("PowerManagementPlugin", "Action is " + action );
 		
-		if( action.equals("acquire") ) {
-			try {
-				if( data.length() > 0 && data.getBoolean(0) ) {
-					Log.d("PowerManagementPlugin", "Only dim lock" );
-					result = this.acquire( PowerManager.SCREEN_DIM_WAKE_LOCK );
-				}
-				else {
-					result = this.acquire( PowerManager.FULL_WAKE_LOCK );
-				}
+		try {
+			if( action.equals("acquire") ) {
+					if( data.length() > 0 && data.getBoolean(0) ) {
+						Log.d("PowerManagementPlugin", "Only dim lock" );
+						result = this.acquire( PowerManager.SCREEN_DIM_WAKE_LOCK );
+					}
+					else {
+						result = this.acquire( PowerManager.FULL_WAKE_LOCK );
+					}
 			}
-			catch( JSONException jsonEx ) {
-				result = new PluginResult(Status.JSON_EXCEPTION, jsonEx.getMessage());
+			else if( action.equals("release") ) {
+				result = this.release();
 			}
 		}
-		else if( action.equals("release") ) {
-			result = this.release();
+		catch( JSONException e ) {
+			result = new PluginResult(Status.JSON_EXCEPTION, e.getMessage());
 		}
 		
 		Log.d("PowerManagementPlugin", "Result is " + result.toString() );
@@ -83,15 +104,19 @@ public class PowerManagement extends Plugin {
 	private PluginResult acquire( int p_flags ) {
 		PluginResult result = null;
 		
-		if( this.wakeLock == null ) {
-			PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
-			this.wakeLock = pm.newWakeLock(p_flags, "PowerManagementPlugin");
-			this.wakeLock.acquire();
-
-			result = new PluginResult(PluginResult.Status.OK);
+		if (this.wakeLock == null) {
+			this.wakeLock = this.powerManager.newWakeLock(p_flags, "PowerManagementPlugin");
+			try {
+				this.wakeLock.acquire();
+				result = new PluginResult(PluginResult.Status.OK);
+			}
+			catch( Exception e ) {
+				this.wakeLock = null;
+				result = new PluginResult(PluginResult.Status.ERROR, "Can't acquire wake-lock - check your permissions!");
+			}
 		}
 		else {
-			result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION, "WakeLock already active - release first");
+			result = new PluginResult( PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION, "WakeLock already active - release first");
 		}
 		
 		return result;

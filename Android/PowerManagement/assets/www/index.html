@@ -1,0 +1,42 @@
+<html>
+	<head>
+		<script type="text/javascript" charset="utf-8" src="cordova-1.6.0.js"></script>
+		<script type="text/javascript" charset="utf-8" src="powermanagement.js"></script>
+		
+		<script type="text/javascript">
+		function deviceready() {
+			alert( 'cordova ready!' );
+		}
+		
+		function acquire() {
+			cordova.require('cordova/plugin/powermanagement').acquire(
+					function() { alert( 'hooray' ); },
+					function() { alert( 'oh no!' ); }
+					);
+		};
+		
+		function release() {
+			cordova.require('cordova/plugin/powermanagement').release(
+					function() { alert( 'hooray' ); },
+					function() { alert( 'oh no!' ); }
+					);
+		}
+		
+		function dim() {
+			cordova.require('cordova/plugin/powermanagement').dim(
+					function() { alert( 'hooray' ); },
+					function() { alert( 'oh no!' ); }
+					);
+		}
+		
+		document.addEventListener("deviceready", deviceready, true);
+		</script>
+	</head>
+	<body>
+	<button type="button" onclick="acquire();">acquire</button>
+	<br />
+	<button type="button" onclick="release();">release</button>
+	<br />
+	<button type="button" onclick="dim();">dim</button>
+	</body>
+</html>

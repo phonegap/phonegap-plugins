@@ -25,6 +25,8 @@
 
 - (void) getPublicTimeline:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
+- (void) getTwitterUsername:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
 - (void) getMentions:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 - (void) performCallbackOnMainThreadforJS:(NSString*)js;

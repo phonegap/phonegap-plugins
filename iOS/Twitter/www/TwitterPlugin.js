@@ -22,6 +22,10 @@ Twitter.prototype.getMentions = function(success, failure){
     cordova.exec(success, failure, "TwitterPlugin", "getMentions", []);
 };
 
+Twitter.prototype.getTwitterUsername = function(response){
+    cordova.exec(response, null, "TwitterPlugin", "getTwitterUsername", []);
+};
+
 cordova.addConstructor(function() {
 					   
 					   /* shim to work in 1.5 and 1.6  */

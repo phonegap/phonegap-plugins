@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Wolfgang Koller
+ * Copyright (C) 2011-2012 Wolfgang Koller
  * 
  * This file is part of GOFG Sports Computer - http://www.gofg.at/.
  * 
@@ -18,7 +18,7 @@
  */
 
 /**
- * PhoneGap (iOS) plugin for accessing the power-management functions of the device
+ * Cordova (iOS) plugin for accessing the power-management functions of the device
  */
 #import "PowerManagement.h"
 
@@ -28,7 +28,7 @@
 @implementation PowerManagement
 - (void) acquire:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
-    PluginResult* result = nil;
+    CDVPluginResult* result = nil;
     NSString* jsString = nil;
     NSString* callbackId = [arguments objectAtIndex:0];
     
@@ -38,11 +38,11 @@
     if( ![app isIdleTimerDisabled] ) {
         [app setIdleTimerDisabled:true];
         
-        result = [PluginResult resultWithStatus:PGCommandStatus_OK];
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         jsString = [result toSuccessCallbackString:callbackId];
     }
     else {
-        result = [PluginResult resultWithStatus:PGCommandStatus_ILLEGAL_ACCESS_EXCEPTION messageAsString:@"IdleTimer already disabled"];
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ILLEGAL_ACCESS_EXCEPTION messageAsString:@"IdleTimer already disabled"];
         jsString = [result toErrorCallbackString:callbackId];
     }
     
@@ -52,7 +52,7 @@
 
 - (void) release:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {    
-    PluginResult* result = nil;
+    CDVPluginResult* result = nil;
     NSString* jsString = nil;
     NSString* callbackId = [arguments objectAtIndex:0];
     
@@ -62,11 +62,11 @@
     if( [app isIdleTimerDisabled] ) {
         [app setIdleTimerDisabled:false];
         
-        result = [PluginResult resultWithStatus:PGCommandStatus_OK];
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         jsString = [result toSuccessCallbackString:callbackId];
     }
     else {
-        result = [PluginResult resultWithStatus:PGCommandStatus_ILLEGAL_ACCESS_EXCEPTION messageAsString:@"IdleTimer not disabled"];
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ILLEGAL_ACCESS_EXCEPTION messageAsString:@"IdleTimer not disabled"];
         jsString = [result toErrorCallbackString:callbackId];
     }
     

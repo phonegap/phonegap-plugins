@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Wolfgang Koller
+ * Copyright (C) 2011-2012 Wolfgang Koller
  * 
  * This file is part of GOFG Sports Computer - http://www.gofg.at/.
  * 
@@ -18,20 +18,19 @@
  */
 
 /**
- * PhoneGap (iOS) plugin for accessing the power-management functions of the device
+ * Cordova (iOS) plugin for accessing the power-management functions of the device
  */
-#import <Foundation/Foundation.h>
-#import <UIKit/UIApplication.h>
-#ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PGPlugin.h>
+
+#ifdef CORDOVA_FRAMEWORK
+#import <CORDOVA/CDVPlugin.h>
 #else
-#import "PGPlugin.h"
+#import "CORDOVA/CDVPlugin.h"
 #endif
 
 /**
  * Interface which does the actual handling
  */
-@interface PowerManagement : PGPlugin {    
+@interface PowerManagement :CDVPlugin {    
 }
 /**
  * Sets the idleTimerDisable property to true so that the idle timeout is disabled

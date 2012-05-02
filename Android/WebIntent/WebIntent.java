@@ -9,11 +9,13 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.text.Html;
+//import android.util.Log;
+//unused import
 
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
+import org.apache.cordova.DroidGap;
 
 /**
  * WebIntent is a PhoneGap plugin that bridges Android intents and web applications:
@@ -67,7 +69,7 @@ public class WebIntent extends Plugin {
 				if (args.length() != 1) {
 					return new PluginResult(PluginResult.Status.INVALID_ACTION);
 				}
-				Intent i = this.ctx.getIntent();
+				Intent i = ((DroidGap) this.ctx).getIntent();
 				String extraName = args.getString(0);
 				return new PluginResult(PluginResult.Status.OK, i.hasExtra(extraName));
 				
@@ -75,7 +77,7 @@ public class WebIntent extends Plugin {
 				if (args.length() != 1) {
 					return new PluginResult(PluginResult.Status.INVALID_ACTION);
 				}
-				Intent i = this.ctx.getIntent();
+				Intent i = ((DroidGap) this.ctx).getIntent();
 				String extraName = args.getString(0);
 				if (i.hasExtra(extraName)) {
 					return new PluginResult(PluginResult.Status.OK, i.getStringExtra(extraName));
@@ -87,7 +89,7 @@ public class WebIntent extends Plugin {
 					return new PluginResult(PluginResult.Status.INVALID_ACTION);
 				}
 
-				Intent i = this.ctx.getIntent();
+				Intent i = ((DroidGap) this.ctx).getIntent();
 				String uri = i.getDataString();
 				return new PluginResult(PluginResult.Status.OK, uri);
 			} else if (action.equals("onNewIntent")) {

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="hello">Hello World, MobileDeviceAPIActivity!</string>
-    <string name="app_name">Android Menu Plugin</string>
-    <string name="mainmenu_calendar">Calendar</string>
-    <string name="mainmenu_settings">Settings</string>
-    <string name="mainmenu_help">Help</string>
-    <string name="mainmenu_logout">Logout</string>
-</resources>

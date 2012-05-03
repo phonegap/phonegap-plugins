@@ -77,13 +77,13 @@
             // landscape
             case 90:
             case -90:
-                self.adView.currentContentSizeIdentifier = ADBannerContentSizeIdentifier480x32;
+                self.adView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierLandscape;
                 self.isLandscape = YES;
                 break;
             // portrait
             case 0:
             case 180:
-                self.adView.currentContentSizeIdentifier = ADBannerContentSizeIdentifier320x50;
+                self.adView.currentContentSizeIdentifier = ADBannerContentSizeIdentifierPortrait;
                 self.isLandscape = NO;
                 break;
             default:
@@ -146,11 +146,13 @@
         
 		self.adView = [[ADBannerView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
         // we are still using these constants even though they are deprecated - if it is changed, iOS 4 devices < 4.3 will crash.
-        // will need to do a run-time iOS version check
-		self.adView.requiredContentSizeIdentifiers = [NSSet setWithObjects: ADBannerContentSizeIdentifier320x50, ADBannerContentSizeIdentifier480x32, nil];		
+        // will need to do a run-time iOS version check	
+		self.adView.requiredContentSizeIdentifiers = [NSSet setWithObjects: ADBannerContentSizeIdentifierPortrait, ADBannerContentSizeIdentifierLandscape, nil];		
+
 		self.adView.delegate = self;
         
-        NSString* contentSizeId = (self.isLandscape ? ADBannerContentSizeIdentifier480x32 : ADBannerContentSizeIdentifier320x50);
+        NSString* contentSizeId = (self.isLandscape ? ADBannerContentSizeIdentifierLandscape : ADBannerContentSizeIdentifierPortrait);
+
         self.adView.currentContentSizeIdentifier = contentSizeId;
 		
 		if (atBottom) {

@@ -27,23 +27,11 @@ After you've added LocalNotifications to your plugins you need to make a minor a
 	{
 
 	    UIApplicationState state = [application applicationState];
-	    if (state == UIApplicationStateInactive) {
-	        // WAS IN BG
-	        NSLog(@"I was in the background");
-
-	        NSString *notCB = [notification.userInfo objectForKey:@"background"];
-	        NSString * jsCallBack = [NSString 
-	                                 stringWithFormat:@"%@", notCB]; 
-	        [self.viewController.webView stringByEvaluatingJavaScriptFromString:jsCallBack];         
-
-	        application.applicationIconBadgeNumber = 0;
-
-	    }
-	    else {
+	    if (state == UIApplicationStateActive) {
 	        // WAS RUNNING
 	        NSLog(@"I was currently active");
 
-	        NSString *notCB = [notification.userInfo objectForKey:@"forground"];
+	        NSString *notCB = [notification.userInfo objectForKey:@"foreground"];
 	        NSString * jsCallBack = [NSString 
 	                                 stringWithFormat:@"%@", notCB]; 
 
@@ -51,6 +39,19 @@ After you've added LocalNotifications to your plugins you need to make a minor a
 	        [self.viewController.webView  stringByEvaluatingJavaScriptFromString:jsCallBack];
 
 	        application.applicationIconBadgeNumber = 0;
+
+	    }
+	    else {
+
+			// WAS IN BG
+			NSLog(@"I was in the background");
+
+			NSString *notCB = [notification.userInfo objectForKey:@"background"];
+			NSString * jsCallBack = [NSString 
+			                         stringWithFormat:@"%@", notCB]; 
+			[self.viewController.webView stringByEvaluatingJavaScriptFromString:jsCallBack];         
+
+			application.applicationIconBadgeNumber = 0;
 	    }                 
 	}
 </pre>

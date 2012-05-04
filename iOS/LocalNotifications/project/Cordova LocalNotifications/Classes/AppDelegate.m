@@ -137,22 +137,10 @@
     
     UIApplicationState state = [application applicationState];
     if (state == UIApplicationStateInactive) {
-        // WAS IN BG
-        NSLog(@"I was in the background");
-        
-        NSString *notCB = [notification.userInfo objectForKey:@"background"];
-        NSString * jsCallBack = [NSString 
-                                 stringWithFormat:@"%@", notCB]; 
-        [self.viewController.webView stringByEvaluatingJavaScriptFromString:jsCallBack];         
-        
-        application.applicationIconBadgeNumber = 0;
-        
-    }
-    else {
         // WAS RUNNING
         NSLog(@"I was currently active");
         
-        NSString *notCB = [notification.userInfo objectForKey:@"forground"];
+        NSString *notCB = [notification.userInfo objectForKey:@"foreground"];
         NSString * jsCallBack = [NSString 
                                  stringWithFormat:@"%@", notCB]; 
         
@@ -160,6 +148,19 @@
         [self.viewController.webView  stringByEvaluatingJavaScriptFromString:jsCallBack];
         
         application.applicationIconBadgeNumber = 0;
+        
+    }
+    else {
+        
+		// WAS IN BG
+		NSLog(@"I was in the background");
+
+		NSString *notCB = [notification.userInfo objectForKey:@"background"];
+		NSString * jsCallBack = [NSString 
+		                         stringWithFormat:@"%@", notCB]; 
+		[self.viewController.webView stringByEvaluatingJavaScriptFromString:jsCallBack];         
+
+		application.applicationIconBadgeNumber = 0;
     }                 
 }
 

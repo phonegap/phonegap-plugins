@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+        <meta charset="utf-8">
+            
+            <script type="text/javascript" charset="utf-8" src="cordova-1.7.0rc1.js"></script>
+            <script type="text/javascript" charset="utf-8" src="diagnostic.js"></script>
+            <script type="text/javascript" charset="utf-8" src="init.js"></script>
+            </head>
+    
+    <body onload="onLoad()">
+        
+        <h1>Diagnostics.</h1>
+        <p>
+            The diagnostic of the iPhone's settings.
+        </p>
+        <ul>
+            <li >Location: <span id="location"></span></li>
+                <ul>
+                    <li >Location setting: <span id="locationSetting"></span></li>
+                    <li >Location authorization: <span id="locationAuthorization"></span></li>
+                </ul>
+            <li>WiFi Connection: <span id="wifi"></span></li>
+            <li>Camera: <span id="camera"></span></li>
+        </ul>
+        <button type="button" onclick="location.href = 'status.html'" >Refresh</button>
+    </body>
+</html>

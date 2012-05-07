@@ -7,5 +7,9 @@ var AppiraterPlugin = {
     
      sigEvent: function() {
           return Cordova.exec("AppiraterPlugin.sigEvent");
+     },
+     foreground: function() {
+          return Cordova.exec("AppiraterPlugin.foreground");
      }
+
 };

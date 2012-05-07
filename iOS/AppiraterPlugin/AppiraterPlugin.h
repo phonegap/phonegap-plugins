@@ -20,4 +20,5 @@
 //Significant Event Method
 
 - (void) sigEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) foreground:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 @end

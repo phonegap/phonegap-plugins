@@ -17,4 +17,9 @@
 	[Appirater userDidSignificantEvent:YES];
 }
 
+- (void) foreground:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+	[Appirater appEnteredForeground:NO];
+}
+
 @end

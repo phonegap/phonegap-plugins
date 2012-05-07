@@ -7,9 +7,9 @@
 // MIT Licensed
 
 #ifdef CORDOVA_FRAMEWORK
-#import <CORDOVA/CDVPlugin.h>
+	#import <CORDOVA/CDVPlugin.h>
 #else
-#import "CDVPlugin.h"
+	#import "CDVPlugin.h"
 #endif
 
 #import "MBProgressHUD.h"
@@ -22,7 +22,7 @@
 }
 
 @property (nonatomic, copy) NSString* callbackID;
-@property (nonatomic, retain) MBProgressHUD* progressHUD;
+@property (nonatomic, assign) MBProgressHUD* progressHUD;
 
 //Instance Method
 - (void) show:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;

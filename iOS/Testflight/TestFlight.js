@@ -82,6 +82,19 @@
         cordovaRef.exec(successCallback, failureCallback, this.serviceName, "openFeedbackView", []);
     };
 
+    /*
+     Sets up the device identifier used for tracking TestFlight QA users
+
+     @param successCallback function
+     @param failureCallback function
+     @param deviceIdentifier string
+    */
+    TestFlight.prototype.setDeviceIdentifier = function(successCallback, failureCallback, deviceIdentifier) {
+        cordovaRef.exec(successCallback, failureCallback, this.serviceName, "setDeviceIdentifier", [{
+	        deviceIdentifier: deviceIdentifier
+        }]);
+    };
+
     TestFlight.install = function(){
         if( !window.plugins){
             window.plugins = {};

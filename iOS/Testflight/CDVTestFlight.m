@@ -103,4 +103,20 @@
     [super writeJavascript:[result toSuccessCallbackString:callbackId]];
 }
 
+- (void)setDeviceIdentifier:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
+{
+    NSString* callbackId = [arguments pop];
+    CDVPluginResult* result = nil;
+
+    NSString* deviceIdentifier = [options objectForKey:@"deviceIdentifier"];    
+    if (deviceIdentifier) {
+        [TestFlight setDeviceIdentifier:deviceIdentifier];
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [super writeJavascript:[result toSuccessCallbackString:callbackId]];
+    } else {
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"deviceIdentifier property is missing."];
+        [super writeJavascript:[result toErrorCallbackString:callbackId]];
+    }
+}
+
 @end

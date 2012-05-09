@@ -22,6 +22,8 @@
 
 - (void)passCheckpoint:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
-- (void)openFeedbackView:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;;
+- (void)openFeedbackView:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+- (void)setDeviceIdentifier:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 @end

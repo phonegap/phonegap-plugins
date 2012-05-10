@@ -12,7 +12,7 @@ by `Olivier Louvignes`
 Using this plugin requires [Cordova iOS](https://github.com/apache/incubator-cordova-ios).
 
 1. Make sure your Xcode project has been [updated for Cordova](https://github.com/apache/incubator-cordova-ios/blob/master/guides/Cordova%20Upgrade%20Guide.md)
-2. Drag and drop the `ProgressHud` folder from Finder to your Plugins folder in XCode, using "Create groups for any added folders"
+2. Drag and drop the `PushNotification` folder from Finder to your Plugins folder in XCode, using "Create groups for any added folders"
 3. Add the .js files to your `www` folder on disk, and add reference(s) to the .js files using `<script>` tags in your html file(s)
 
 
@@ -112,7 +112,7 @@ In order to support launch notifications (app starting from a remote notificatio
     });
 
 
-`getPendingNotifications()` should be used when your application starts or become active (from the background) to retreive notifications that have been pushed while the application was inactive or offline. Returned params `applicationStateActive` & `applicationLaunchNotification` enables you to filter notifications by their type.
+`getPendingNotifications()` should be used when your application starts or become active (from the background) to retreive notifications that have been pushed while the application was inactive or offline. For now, it can only retreive the notification that the user has interacted with while entering the app. Returned params `applicationStateActive` & `applicationLaunchNotification` enables you to filter notifications by their type.
 
 
     pushNotification.getPendingNotifications(function(notifications) {
@@ -136,6 +136,21 @@ In order to support launch notifications (app starting from a remote notificatio
     pushNotification.setApplicationIconBadgeNumber(12, function(status) {
         console.warn('setApplicationIconBadgeNumber:%o', status);
         navigator.notification.alert(JSON.stringify(['setBadge', status]));
+    });
+
+`cancelAllLocalNotifications()` can be used to clear all notifications from the notification center.
+
+
+    pushNotification.cancelAllLocalNotifications(function() {
+        console.warn('cancelAllLocalNotifications');
+        navigator.notification.alert(JSON.stringify(['cancelAllLocalNotifications']));
+    });
+
+`getDeviceUniqueIdentifier()` can be used to retreive the original device unique id. (@warning As of today, usage is deprecated and requires explicit consent from the user)
+
+    pushNotification.getDeviceUniqueIdentifier(function(uuid) {
+        console.warn('getDeviceUniqueIdentifier:%s', uuid);
+        navigator.notification.alert(JSON.stringify(['getDeviceUniqueIdentifier', uuid]));
     });
 
 Finally, when a remote push notification is received while the application is active, an event will be triggered on the DOM `document`.

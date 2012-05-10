@@ -31,6 +31,17 @@
 		cordova.exec(callback, callback, "PushNotification", "setApplicationIconBadgeNumber", [{badge: badge}]);
 	};
 
+	// Call this to clear all notifications from the notification center
+	PushNotification.prototype.cancelAllLocalNotifications = function(callback) {
+		cordova.exec(callback, callback, "PushNotification", "cancelAllLocalNotifications", []);
+	};
+
+	// Call this to retreive the original device unique id
+	// @warning As of today, usage is deprecated and requires explicit consent from the user
+	PushNotification.prototype.getDeviceUniqueIdentifier = function(callback) {
+		cordova.exec(callback, callback, "PushNotification", "getDeviceUniqueIdentifier", []);
+	};
+
 	// Event spawned when a notification is received while the application is active
 	PushNotification.prototype.notificationCallback = function(notification) {
 		var ev = document.createEvent('HTMLEvents');

@@ -16,7 +16,7 @@
 
 @implementation PushNotification
 
-@synthesize callbackID;
+@synthesize callbackID = _callbackID;
 @synthesize pendingNotifications = _pendingNotifications;
 
 - (NSMutableArray*)pendingNotifications {
@@ -30,8 +30,6 @@
 	//NSLog(@"registerDevice:%@\n withDict:%@", arguments, options);
 
 	// The first argument in the arguments parameter is the callbackID.
-	// We use this to send data back to the successCallback or failureCallback
-	// through PluginResult.
 	self.callbackID = [arguments pop];
 
 	UIRemoteNotificationType notificationTypes = UIRemoteNotificationTypeNone;
@@ -88,8 +86,6 @@
 	//NSLog(@"getPendingNotifications:%@\n withDict:%@", arguments, options);
 
 	// The first argument in the arguments parameter is the callbackID.
-	// We use this to send data back to the successCallback or failureCallback
-	// through PluginResult.
 	self.callbackID = [arguments pop];
 
 	NSMutableDictionary *results = [NSMutableDictionary dictionary];
@@ -102,20 +98,20 @@
 }
 
 + (NSMutableDictionary*)getRemoteNotificationStatus {
-    
+
     NSMutableDictionary *results = [NSMutableDictionary dictionary];
-    
+
     NSUInteger type = 0;
     // Set the defaults to disabled unless we find otherwise...
     NSString *pushBadge = @"0";
     NSString *pushAlert = @"0";
     NSString *pushSound = @"0";
-    
+
 #if !TARGET_IPHONE_SIMULATOR
-    
+
     // Check what Notifications the user has turned on.  We registered for all three, but they may have manually disabled some or all of them.
     type = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
-    
+
     // Check what Registered Types are turned on. This is a bit tricky since if two are enabled, and one is off, it will return a number 2... not telling you which
     // one is actually disabled. So we are literally checking to see if rnTypes matches what is turned on, instead of by number. The "tricky" part is that the
     // single notification types will only match if they are the ONLY one enabled.  Likewise, when we are checking for a pair of notifications, it will only be
@@ -146,50 +142,70 @@
         pushAlert = @"1";
         pushSound = @"1";
     }
-    
+
 #endif
-    
+
     // Affect results
     [results setValue:[NSString stringWithFormat:@"%d", type] forKey:@"type"];
 	[results setValue:[NSString stringWithFormat:@"%d", type != UIRemoteNotificationTypeNone] forKey:@"enabled"];
     [results setValue:pushBadge forKey:@"pushBadge"];
     [results setValue:pushAlert forKey:@"pushAlert"];
     [results setValue:pushSound forKey:@"pushSound"];
-    
+
     return results;
-    
+
 }
 
 - (void)getRemoteNotificationStatus:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
 	//NSLog(@"getRemoteNotificationStatus:%@\n withDict:%@", arguments, options);
 
 	// The first argument in the arguments parameter is the callbackID.
-	// We use this to send data back to the successCallback or failureCallback
-	// through PluginResult.
 	self.callbackID = [arguments pop];
 
 	NSMutableDictionary *results = [PushNotification getRemoteNotificationStatus];
-	
+
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
 	[self writeJavascript:[pluginResult toSuccessCallbackString:self.callbackID]];
 }
 
 - (void)setApplicationIconBadgeNumber:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
 	//NSLog(@"setApplicationIconBadgeNumber:%@\n withDict:%@", arguments, options);
-    
+
 	// The first argument in the arguments parameter is the callbackID.
-	// We use this to send data back to the successCallback or failureCallback
-	// through PluginResult.
 	self.callbackID = [arguments pop];
-    
+
     int badge = [[options objectForKey:@"badge"] intValue] ?: 0;
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badge];
-    
+
     NSMutableDictionary *results = [NSMutableDictionary dictionary];
 	[results setValue:[NSNumber numberWithInt:badge] forKey:@"badge"];
     [results setValue:[NSNumber numberWithInt:1] forKey:@"success"];
-    
+
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
+	[self writeJavascript:[pluginResult toSuccessCallbackString:self.callbackID]];
+}
+
+- (void)cancelAllLocalNotifications:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
+	//NSLog(@"cancelAllLocalNotifications:%@\n withDict:%@", arguments, options);
+	
+	// The first argument in the arguments parameter is the callbackID.
+	self.callbackID = [arguments pop];
+	
+	[[UIApplication sharedApplication] cancelAllLocalNotifications];
+	
+	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+	[self writeJavascript:[pluginResult toSuccessCallbackString:self.callbackID]];
+}
+
+- (void)getDeviceUniqueIdentifier:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
+	//NSLog(@"getDeviceUniqueIdentifier:%@\n withDict:%@", arguments, options);
+
+	// The first argument in the arguments parameter is the callbackID.
+	self.callbackID = [arguments pop];
+
+	NSString* uuid = [[UIDevice currentDevice] uniqueIdentifier];
+
+	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:uuid];
 	[self writeJavascript:[pluginResult toSuccessCallbackString:self.callbackID]];
 }
 

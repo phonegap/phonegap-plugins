@@ -32,5 +32,7 @@
 + (NSMutableDictionary*)getRemoteNotificationStatus;
 - (void)getRemoteNotificationStatus:(NSMutableArray *)arguments withDict:(NSMutableDictionary*)options;
 - (void)setApplicationIconBadgeNumber:(NSMutableArray *)arguments withDict:(NSMutableDictionary*)options;
+- (void)cancelAllLocalNotifications:(NSMutableArray *)arguments withDict:(NSMutableDictionary*)options;
+- (void)getDeviceUniqueIdentifier:(NSMutableArray *)arguments withDict:(NSMutableDictionary*)options;
 
 @end

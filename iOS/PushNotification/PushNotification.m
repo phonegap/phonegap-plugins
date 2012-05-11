@@ -16,9 +16,15 @@
 
 @implementation PushNotification
 
-@synthesize callbackID = _callbackID;
+@synthesize callbackIds = _callbackIds;
 @synthesize pendingNotifications = _pendingNotifications;
 
+- (NSMutableDictionary*)callbackIds {
+	if(_callbackIds == nil) {
+		_callbackIds = [[NSMutableDictionary alloc] init];
+	}
+	return _callbackIds;
+}
 - (NSMutableArray*)pendingNotifications {
 	if(_pendingNotifications == nil) {
 		_pendingNotifications = [[NSMutableArray alloc] init];
@@ -27,10 +33,10 @@
 }
 
 - (void)registerDevice:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
-	//NSLog(@"registerDevice:%@\n withDict:%@", arguments, options);
+	DLog(@"registerDevice:%@\n withDict:%@", arguments, options);
 
 	// The first argument in the arguments parameter is the callbackID.
-	self.callbackID = [arguments pop];
+	[self.callbackIds setValue:[arguments pop] forKey:@"registerDevice"];
 
 	UIRemoteNotificationType notificationTypes = UIRemoteNotificationTypeNone;
 	if ([options objectForKey:@"badge"]) {
@@ -52,7 +58,7 @@
 }
 
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-	//NSLog(@"didRegisterForRemoteNotificationsWithDeviceToken:%@", deviceToken);
+	DLog(@"didRegisterForRemoteNotificationsWithDeviceToken:%@", deviceToken);
 
 	NSString *token = [[[[deviceToken description] stringByReplacingOccurrencesOfString:@"<"withString:@""]
 						stringByReplacingOccurrencesOfString:@">" withString:@""]
@@ -62,37 +68,37 @@
     [results setValue:token forKey:@"deviceToken"];
 
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
-	[self writeJavascript:[pluginResult toSuccessCallbackString:self.callbackID]];
+	[self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"registerDevice"]]];
 }
 
 - (void)didFailToRegisterForRemoteNotificationsWithError:(NSError*)error {
-	//NSLog(@"didFailToRegisterForRemoteNotificationsWithError:%@", error);
+	DLog(@"didFailToRegisterForRemoteNotificationsWithError:%@", error);
 
 	NSMutableDictionary *results = [NSMutableDictionary dictionary];
 	[results setValue:[NSString stringWithFormat:@"%@", error] forKey:@"error"];
 
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:results];
-	[self writeJavascript:[pluginResult toSuccessCallbackString:self.callbackID]];
+	[self writeJavascript:[pluginResult toErrorCallbackString:[self.callbackIds valueForKey:@"registerDevice"]]];
 }
 
 - (void)didReceiveRemoteNotification:(NSDictionary*)userInfo {
-	//NSLog(@"didReceiveRemoteNotification:%@", userInfo);
+	DLog(@"didReceiveRemoteNotification:%@", userInfo);
 
 	NSString *jsStatement = [NSString stringWithFormat:@"window.plugins.pushNotification.notificationCallback(%@);", [userInfo JSONString]];
 	[self writeJavascript:jsStatement];
 }
 
 - (void)getPendingNotifications:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
-	//NSLog(@"getPendingNotifications:%@\n withDict:%@", arguments, options);
+	DLog(@"getPendingNotifications:%@\n withDict:%@", arguments, options);
 
 	// The first argument in the arguments parameter is the callbackID.
-	self.callbackID = [arguments pop];
+	[self.callbackIds setValue:[arguments pop] forKey:@"getPendingNotifications"];
 
 	NSMutableDictionary *results = [NSMutableDictionary dictionary];
 	[results setValue:self.pendingNotifications forKey:@"notifications"];
 
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
-	[self writeJavascript:[pluginResult toSuccessCallbackString:self.callbackID]];
+	[self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"getPendingNotifications"]]];
 
 	[self.pendingNotifications removeAllObjects];
 }
@@ -157,22 +163,22 @@
 }
 
 - (void)getRemoteNotificationStatus:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
-	//NSLog(@"getRemoteNotificationStatus:%@\n withDict:%@", arguments, options);
+	DLog(@"getRemoteNotificationStatus:%@\n withDict:%@", arguments, options);
 
 	// The first argument in the arguments parameter is the callbackID.
-	self.callbackID = [arguments pop];
+	[self.callbackIds setValue:[arguments pop] forKey:@"getRemoteNotificationStatus"];
 
 	NSMutableDictionary *results = [PushNotification getRemoteNotificationStatus];
 
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
-	[self writeJavascript:[pluginResult toSuccessCallbackString:self.callbackID]];
+	[self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"getRemoteNotificationStatus"]]];
 }
 
 - (void)setApplicationIconBadgeNumber:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
-	//NSLog(@"setApplicationIconBadgeNumber:%@\n withDict:%@", arguments, options);
+	DLog(@"setApplicationIconBadgeNumber:%@\n withDict:%@", arguments, options);
 
 	// The first argument in the arguments parameter is the callbackID.
-	self.callbackID = [arguments pop];
+	[self.callbackIds setValue:[arguments pop] forKey:@"setApplicationIconBadgeNumber"];
 
     int badge = [[options objectForKey:@"badge"] intValue] ?: 0;
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badge];
@@ -182,34 +188,35 @@
     [results setValue:[NSNumber numberWithInt:1] forKey:@"success"];
 
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
-	[self writeJavascript:[pluginResult toSuccessCallbackString:self.callbackID]];
+	[self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"setApplicationIconBadgeNumber"]]];
 }
 
 - (void)cancelAllLocalNotifications:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
-	//NSLog(@"cancelAllLocalNotifications:%@\n withDict:%@", arguments, options);
+	DLog(@"cancelAllLocalNotifications:%@\n withDict:%@", arguments, options);
 	
 	// The first argument in the arguments parameter is the callbackID.
-	self.callbackID = [arguments pop];
+	[self.callbackIds setValue:[arguments pop] forKey:@"cancelAllLocalNotifications"];
 	
 	[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-	[self writeJavascript:[pluginResult toSuccessCallbackString:self.callbackID]];
+	[self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"cancelAllLocalNotifications"]]];
 }
 
 - (void)getDeviceUniqueIdentifier:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
-	//NSLog(@"getDeviceUniqueIdentifier:%@\n withDict:%@", arguments, options);
+	DLog(@"getDeviceUniqueIdentifier:%@\n withDict:%@", arguments, options);
 
 	// The first argument in the arguments parameter is the callbackID.
-	self.callbackID = [arguments pop];
+	[self.callbackIds setValue:[arguments pop] forKey:@"getDeviceUniqueIdentifier"];
 
 	NSString* uuid = [[UIDevice currentDevice] uniqueIdentifier];
 
 	CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:uuid];
-	[self writeJavascript:[pluginResult toSuccessCallbackString:self.callbackID]];
+	[self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"getDeviceUniqueIdentifier"]]];
 }
 
 - (void) dealloc {
+	[_callbackIds dealloc];
 	[_pendingNotifications dealloc];
 	[super dealloc];
 }

@@ -16,12 +16,12 @@
 
 @interface PushNotification : CDVPlugin {
 
-	NSString* callbackID;
+	NSMutableDictionary* callbackIds;
 	NSMutableArray* pendingNotifications;
 
 }
 
-@property (nonatomic, copy) NSString* callbackID;
+@property (nonatomic, retain) NSMutableDictionary* callbackIds;
 @property (nonatomic, retain) NSMutableArray* pendingNotifications;
 
 - (void)registerDevice:(NSMutableArray *)arguments withDict:(NSMutableDictionary*)options;
@@ -36,3 +36,10 @@
 - (void)getDeviceUniqueIdentifier:(NSMutableArray *)arguments withDict:(NSMutableDictionary*)options;
 
 @end
+
+#ifdef DEBUG
+#   define DLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#   define DLog(...)
+#endif
+#define ALog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);

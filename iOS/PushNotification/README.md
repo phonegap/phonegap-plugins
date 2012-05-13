@@ -103,7 +103,7 @@ In order to support launch notifications (app starting from a remote notificatio
     // After device ready, create a local alias
     var pushNotification = window.plugins.pushNotification;
 
-`registerDevice()` does perform registration on Apple Push Notification servers (via user interaction) & retreive the token that will be use to push remote notifications to this device.
+`registerDevice()` does perform registration on Apple Push Notification servers (via user interaction) & retrieve the token that will be used to push remote notifications to this device.
 
 
     pushNotification.registerDevice({alert:true, badge:true, sound:true}, function(status) {
@@ -112,7 +112,7 @@ In order to support launch notifications (app starting from a remote notificatio
     });
 
 
-`getPendingNotifications()` should be used when your application starts or become active (from the background) to retreive notifications that have been pushed while the application was inactive or offline. For now, it can only retreive the notification that the user has interacted with while entering the app. Returned params `applicationStateActive` & `applicationLaunchNotification` enables you to filter notifications by their type.
+`getPendingNotifications()` should be used when your application starts or become active (from the background) to retrieve notifications that have been pushed while the application was inactive or offline. For now, it can only retrieve the notification that the user has interacted with while entering the app. Returned params `applicationStateActive` & `applicationLaunchNotification` enables you to filter notifications by type.
 
 
     pushNotification.getPendingNotifications(function(notifications) {
@@ -146,7 +146,7 @@ In order to support launch notifications (app starting from a remote notificatio
         navigator.notification.alert(JSON.stringify(['cancelAllLocalNotifications']));
     });
 
-`getDeviceUniqueIdentifier()` can be used to retreive the original device unique id. (@warning As of today, usage is deprecated and requires explicit consent from the user)
+`getDeviceUniqueIdentifier()` can be used to retrieve the original device unique id. (@warning As of today, usage is deprecated and requires explicit consent from the user)
 
     pushNotification.getDeviceUniqueIdentifier(function(uuid) {
         console.warn('getDeviceUniqueIdentifier:%s', uuid);

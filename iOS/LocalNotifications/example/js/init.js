@@ -35,7 +35,7 @@ var notification = {
 	// This will fire after 60 seconds
 	local_min:function(){
 		var d = new Date();
-		d = d.getTime() + 3*1000; //60 seconds from now
+		d = d.getTime() + 60*1000; //60 seconds from now
 		d = new Date(d);
 		plugins.localNotification.add({
 			date: d,
@@ -43,10 +43,10 @@ var notification = {
 			message: 'This just fired after a minute!',
 			hasAction: true,
 			badge: 1,
-			id: '123',
+			id: '1',
 			sound:'horn.caf',
-			background:'app.background()',
-			foreground:'app.running()'
+			background:'app.background',
+			foreground:'app.running'
 		});
 	},
 	
@@ -74,10 +74,10 @@ var notification = {
 			message: 'This went off just as expected!',
 			hasAction: true,
 			badge: 1,
-			id: '123',
+			id: '2',
 			sound:'horn.caf',
-			background:'app.background()',
-			foreground:'app.running()'
+			background:'app.background',
+			foreground:'app.running'
 		});
 	},
 	clear:function(){
@@ -103,10 +103,10 @@ var notification = {
 			message: 'This went off just as expected!',
 			hasAction: true,
 			badge: 1,
-			id: '123',
+			id: '3',
 			sound:'horn.caf',
-			background:'app.background()',
-			foreground:'app.running()'
+			background:'app.background',
+			foreground:'app.running'
 		});
 	}
 	
@@ -123,10 +123,10 @@ var app = {
 	init:function(){
 		
 	},
-	background:function(){
-		console.log("I was in the background but i'm back now!");
+	background:function(id){
+		console.log("I was in the background but i'm back now! ID="+id);
 	},
-	running:function(){
-		console.log("I am currently running, what should I do?");
+	running:function(id){
+		console.log("I am currently running, what should I do? ID="+id);
 	}
 };

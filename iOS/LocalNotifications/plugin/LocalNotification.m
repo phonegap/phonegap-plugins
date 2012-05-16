@@ -47,7 +47,7 @@
     notif.userInfo = userDict;
 	
 	[[UIApplication sharedApplication] scheduleLocalNotification:notif];
-	NSLog(@"Notification Set: %@ (ID: %@, Badge: %i, sound: %@,callback: %@)", date, notificationId, badge, sound,bg);
+	NSLog(@"Notification Set: %@ (ID: %@, Badge: %i, sound: %@,background: %@, foreground: %@)", date, notificationId, badge, sound,bg,fg);
 	//[notif release];
 }
 

@@ -19,7 +19,7 @@ Of course this plugin requires [Android PhoneGap](http://github.com/phonegap/pho
   <head>
     <title>PhoneGap</title>
   <script type="text/javascript" charset="utf-8" src="phonegap.js"></script> 
-  <script type="text/javascript" charset="utf-8" src="speechrecognizer.js"></script>      
+  <script type="text/javascript" charset="utf-8" src="SpeechRecognizer.js"></script>      
   <script type="text/javascript" charset="utf-8">
      function onLoad(){
           document.addEventListener("deviceready", onDeviceReady, true);

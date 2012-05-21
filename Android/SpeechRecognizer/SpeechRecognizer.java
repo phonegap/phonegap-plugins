@@ -18,9 +18,9 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-import com.phonegap.api.PluginResult.Status;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.api.PluginResult.Status;
 
 import android.util.Log;
 import android.app.Activity;
@@ -143,7 +143,7 @@ public class SpeechRecognizer extends Plugin {
      * Checks if a recognizer is present on this device
      */
     private boolean isSpeechRecognizerPresent() {
-        PackageManager pm = ctx.getPackageManager();
+        PackageManager pm = ctx.getApplicationContext().getPackageManager();
         List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
         return !activities.isEmpty();
     }

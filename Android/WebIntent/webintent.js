@@ -54,6 +54,14 @@ WebIntent.prototype.onNewIntent = function(callback) {
     }, 'WebIntent', 'onNewIntent', []);
 };
 
+WebIntent.prototype.sendBroadcast = function(params, success, fail) {
+    return PhoneGap.exec(function(args) {
+        success(args);
+    }, function(args) {
+        fail(args);
+    }, 'WebIntent', 'sendBroadcast', [params]);
+};
+
 PhoneGap.addConstructor(function() {
 	PhoneGap.addPlugin('webintent', new WebIntent());
 });

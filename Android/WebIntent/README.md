@@ -63,14 +63,14 @@ Gets called when onNewIntent is called for the parent activity. Used in only cer
 ### sendBroadcast ###
 Sends a custom intent passing optional extras
 
-window.plugins.webintent.sendBroadcast({
+    window.plugins.webintent.sendBroadcast({
                 action: 'com.dummybroadcast.action.triggerthing',
                 extras: {
                     'option': true
                 }
             }, function() {
             }, function() {
-            });
+    });
 
 ## Licence ##
 

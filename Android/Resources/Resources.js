@@ -23,12 +23,12 @@ var Resources = function() {
  */
 Resources.prototype.getStringResources = function(params, successCallback,
         failureCallback) {
-    return PhoneGap.exec(successCallback, failureCallback, 'Resources',
+    return cordova.exec(successCallback, failureCallback, 'Resources',
             'getStringResources', [ params ], false);
 };
 
 
 
-PhoneGap.addConstructor(function() {
-    PhoneGap.addPlugin('resources', new Resources());
+cordova.addConstructor(function() {
+    cordova.addPlugin('resources', new Resources());
 });

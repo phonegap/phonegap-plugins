@@ -2,7 +2,7 @@
 By Olivier Brand
 
 ## Adding the Plugin to your project ##
-1. To install the plugin, move `Resources.js` to your project's www folder and include a reference to it 
+1. To install the plugin, move `RemoteSound.js` to your project's www folder and include a reference to it 
 in your html files. 
 
     &lt;script src="RemoteSound.js"&gt;&lt;/script&gt;
@@ -12,7 +12,7 @@ in your html files.
 
 <pre>
     mkdir -p <your_project>/src/com/phonegap/plugin/remotesound
-    cp ./ResourcesPlugin.java <your_project>/src/com/phonegap/plugin/remotesound
+    cp ./RemoteSoundPlugin.java <your_project>/src/com/phonegap/plugin/remotesound
 </pre>
     
 4. Add a plugin line to `res/xml/plugins.xml`

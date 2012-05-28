@@ -174,6 +174,12 @@
         [webView loadHTMLString:htmlText baseURL:[NSURL URLWithString:@""]];
 
     }
+	else if([url hasPrefix:@"file://"]) {
+        imageURL = @"";
+        isImage = NO;
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL fileURLWithPath:[url substringFromIndex:7]]];
+        [webView loadRequest:request];
+    }
     else
     {
         imageURL = @"";

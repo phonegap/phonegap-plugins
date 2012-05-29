@@ -26,6 +26,9 @@ window.plugins.share.show({
 
 ## Release notes
 
+### 5/29/2012
+* Updated for Cordova 1.6+ by @devgeeks
+
 ### 8/22/2011
 * Updated for PhoneGap 1.0
 

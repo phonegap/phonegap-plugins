@@ -10,12 +10,19 @@ in your html files.
 2. Create a folder called 'com/phonegap/plugin/macaddress' within your project's src folder.
 3. And copy the java file into that new folder.
 
+
 <pre>
     mkdir -p <your_project>/src/com/phonegap/plugin/macaddress
     cp ./ResourcesPlugin.java <your_project>/src/com/phonegap/plugin/macaddress
 </pre>
     
-4. Add a plugin line to `res/xml/plugins.xml`
+4. Set the permissions into the Android Manifest for accessing the mac address.
+
+<pre>
+	&lt;uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /&gt;
+</pre>
+    
+5. Add a plugin line to `res/xml/plugins.xml`
 
     &lt;plugin name="MacAddress" value="com.phonegap.plugin.macaddress.MacAddressPlugin" /&gt;
 

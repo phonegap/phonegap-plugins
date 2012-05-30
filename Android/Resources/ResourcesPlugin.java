@@ -41,7 +41,7 @@ public class ResourcesPlugin extends Plugin {
                 obj = args.getJSONObject(0);
                 if (obj != null) {
                     resourceNames = obj.has("resources") ? obj.getJSONArray("resources") : null;
-                    pkg = obj.has("package") ? obj.getString("package") : null;
+                    pkg = obj.has("package") ? obj.getString("package") : ctx.getPackageName();
                 }
 
                 if (resourceNames != null && resourceNames.length() > 0 && pkg != null) {

@@ -20,7 +20,7 @@ function SpeechRecognizer() {
  * @param errorCallback
  */
 SpeechRecognizer.prototype.init = function(successCallback, errorCallback) {
-     return PhoneGap.exec(successCallback, errorCallback, "SpeechRecognizer", "init", []);
+	return cordova.exec(successCallback, errorCallback, "SpeechRecognizer", "init", []);
 };
 
 /**
@@ -34,7 +34,7 @@ SpeechRecognizer.prototype.init = function(successCallback, errorCallback) {
  * @param language is an optional string to pass a language name in IETF BCP 47. If nothing is specified, the currrent phone language is used
  */
 SpeechRecognizer.prototype.startRecognize = function(successCallback, errorCallback, reqCode, maxMatches, promptString, language) {
-    return PhoneGap.exec(successCallback, errorCallback, "SpeechRecognizer", "startRecognize", [reqCode, maxMatches, promptString, language]);
+    return cordova.exec(successCallback, errorCallback, "SpeechRecognizer", "startRecognize", [reqCode, maxMatches, promptString, language]);
 };
 
 /**
@@ -46,14 +46,13 @@ SpeechRecognizer.prototype.startRecognize = function(successCallback, errorCallb
  * Returns an array of codes in the success callback
  */
 SpeechRecognizer.prototype.getSupportedLanguages = function(successCallback, errorCallback) {
-    return PhoneGap.exec(successCallback, errorCallback, "SpeechRecognizer", "getSupportedLanguages", []);
+    return cordova.exec(successCallback, errorCallback, "SpeechRecognizer", "getSupportedLanguages", []);
 };
 
 /**
  * Load 
  */ 
-PhoneGap.addConstructor(function() {
-    PhoneGap.addPlugin("speechrecognizer", new SpeechRecognizer());
+cordova.addConstructor(function() {
+	cordova.addPlugin("speechrecognizer", new SpeechRecognizer());
 });
-
 

@@ -3,12 +3,12 @@
 3. Copy the .java file into this package
 4. Update your res/xml/plugins.xml file with the following line:
 
-   <plugin name="DatePickerPlugin" value="com.phonegap.plugin.DatePickerPlugin"/>
+   `<plugin name="DatePickerPlugin" value="com.phonegap.plugin.DatePickerPlugin"/>`
 
 5. Add a class="nativedatepicker" to your <input> element for which you want the native datepicker
 6. Add the following jQuery fragment to handle the click on these input elements:
 
-
+```
 	$('.nativedatepicker').click(function(event) {
 		var currentField = $(this);
 		var myNewDate = Date.parse(currentField.val()) || new Date();
@@ -42,5 +42,6 @@
 			currentField.val(newDate.toString("HH:mm"));
 		});
 	});
+```
 
 7. It is recommended to prefil these input fields and make these fields read only with a standard date format, preferably with three letter month so it can always be parsed.

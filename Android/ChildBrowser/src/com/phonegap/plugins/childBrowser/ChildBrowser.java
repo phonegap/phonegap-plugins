@@ -362,6 +362,8 @@ public class ChildBrowser extends Plugin {
                 webview.getSettings().setUseWideViewPort(true);
                 webview.requestFocus();
                 webview.requestFocusFromTouch();   
+                webview.getSettings().setUseWideViewPort(true);
+                webview.getSettings().setLoadWithOverviewMode(true);
                 
                 // Add the back and forward buttons to our action button container layout
                 actionButtonContainer.addView(back);

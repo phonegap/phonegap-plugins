@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,12 +24,16 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -37,6 +42,7 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 public class ChildBrowser extends Plugin {
     
@@ -178,8 +184,8 @@ public class ChildBrowser extends Plugin {
         InputMethodManager imm = (InputMethodManager)this.ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(edittext.getWindowToken(), 0);
 
-        if (!url.startsWith("http") || !url.startsWith("file:")) {
-            this.webview.loadUrl("http://" + url);            
+        if (!url.startsWith("http") && !url.startsWith("file:")) {
+            this.webview.loadUrl("http://" + url);
         } else {
             this.webview.loadUrl(url);
         }
@@ -210,9 +216,24 @@ public class ChildBrowser extends Plugin {
         
         // Create dialog in new thread 
         Runnable runnable = new Runnable() {
+            /**
+             * Convert our DIP units to Pixels
+             * 
+             * @return int
+             */
+            private int dpToPixels(int dipValue) {
+                int value = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP,
+                											(float) dipValue,
+                											ctx.getContext().getResources().getDisplayMetrics()
+                );
+                
+                return value;
+            }
+            
             public void run() {
-                dialog = new Dialog(ctx.getContext(), android.R.style.Theme_Translucent_NoTitleBar);
-
+            	// Let's create the main dialog
+                dialog = new Dialog(ctx.getContext(), android.R.style.Theme_NoTitleBar);
+                dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setCancelable(true);
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -227,49 +248,73 @@ public class ChildBrowser extends Plugin {
                             }
                         }
                 });
-
-                LinearLayout.LayoutParams backParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-                LinearLayout.LayoutParams forwardParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-                LinearLayout.LayoutParams editParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT, 1.0f);
-                LinearLayout.LayoutParams closeParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-                LinearLayout.LayoutParams wvParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
                 
+                // Main container layout
                 LinearLayout main = new LinearLayout(ctx.getContext());
                 main.setOrientation(LinearLayout.VERTICAL);
                 
-                LinearLayout toolbar = new LinearLayout(ctx.getContext());
-                toolbar.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
-                toolbar.setOrientation(LinearLayout.HORIZONTAL);
+                // Toolbar layout
+                RelativeLayout toolbar = new RelativeLayout(ctx.getContext());
+                toolbar.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, this.dpToPixels(44)));
+                toolbar.setPadding(this.dpToPixels(2), this.dpToPixels(2), this.dpToPixels(2), this.dpToPixels(2));
+                toolbar.setHorizontalGravity(Gravity.LEFT);
+                toolbar.setVerticalGravity(Gravity.TOP);
                 
+                // Action Button Container layout
+                RelativeLayout actionButtonContainer = new RelativeLayout(ctx.getContext());
+                actionButtonContainer.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+                actionButtonContainer.setHorizontalGravity(Gravity.LEFT);
+                actionButtonContainer.setVerticalGravity(Gravity.CENTER_VERTICAL);
+                actionButtonContainer.setId(1);
+                
+                // Back button
                 ImageButton back = new ImageButton(ctx.getContext());
-                back.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        goBack();
-                    }
-                });
-                back.setId(1);
+                RelativeLayout.LayoutParams backLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT);
+                backLayoutParams.addRule(RelativeLayout.ALIGN_LEFT);
+                back.setLayoutParams(backLayoutParams);
+                back.setContentDescription("Back Button");
+                back.setId(2);
                 try {
                     back.setImageBitmap(loadDrawable("www/childbrowser/icon_arrow_left.png"));
                 } catch (IOException e) {
                     Log.e(LOG_TAG, e.getMessage(), e);
                 }
-                back.setLayoutParams(backParams);
+                back.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        goBack();
+                    }
+                });
 
+                // Forward button
                 ImageButton forward = new ImageButton(ctx.getContext());
+                RelativeLayout.LayoutParams forwardLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT);
+                forwardLayoutParams.addRule(RelativeLayout.RIGHT_OF, 2);
+                forward.setLayoutParams(forwardLayoutParams);
+                forward.setContentDescription("Forward Button");
+                forward.setId(3);
+                try {
+                    forward.setImageBitmap(loadDrawable("www/childbrowser/icon_arrow_right.png"));
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
+                }
                 forward.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         goForward();
                     }
                 });
-                forward.setId(2);
-                try {
-                    forward.setImageBitmap(loadDrawable("www/childbrowser/icon_arrow_right.png"));
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, e.getMessage(), e);
-                }               
-                forward.setLayoutParams(forwardParams);
                 
+                // Edit Text Box
                 edittext = new EditText(ctx.getContext());
+                RelativeLayout.LayoutParams textLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+                textLayoutParams.addRule(RelativeLayout.RIGHT_OF, 1);
+                textLayoutParams.addRule(RelativeLayout.LEFT_OF, 5);
+                edittext.setLayoutParams(textLayoutParams);
+                edittext.setId(4);
+                edittext.setSingleLine(true);
+                edittext.setText(url);
+                edittext.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+                edittext.setImeOptions(EditorInfo.IME_ACTION_GO);
+                edittext.setInputType(InputType.TYPE_NULL); // Will not except input... Makes the text NON-EDITABLE
                 edittext.setOnKeyListener(new View.OnKeyListener() {
                     public boolean onKey(View v, int keyCode, KeyEvent event) {
                         // If the event is a key-down event on the "enter" button
@@ -280,26 +325,28 @@ public class ChildBrowser extends Plugin {
                         return false;
                     }
                 });
-                edittext.setId(3);
-                edittext.setSingleLine(true);
-                edittext.setText(url);
-                edittext.setLayoutParams(editParams);
                 
-                ImageButton close = new ImageButton(ctx.getContext());                
+                // Close button
+                ImageButton close = new ImageButton(ctx.getContext());
+                RelativeLayout.LayoutParams closeLayoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT);
+                closeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                close.setLayoutParams(closeLayoutParams);
+                forward.setContentDescription("Close Button");
+                close.setId(5);
+                try {
+                    close.setImageBitmap(loadDrawable("www/childbrowser/icon_close.png"));
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
+                }   
                 close.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         closeDialog();
                     }
                 });
-                close.setId(4);
-                try {
-                    close.setImageBitmap(loadDrawable("www/childbrowser/icon_close.png"));
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, e.getMessage(), e);
-                }
-                close.setLayoutParams(closeParams);
-                                
+                   
+                // WebView
                 webview = new WebView(ctx.getContext());
+                webview.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
                 webview.setWebChromeClient(new WebChromeClient());
                 WebViewClient client = new ChildBrowserClient(edittext);
                 webview.setWebViewClient(client);
@@ -310,20 +357,28 @@ public class ChildBrowser extends Plugin {
                 settings.setPluginsEnabled(true);
                 settings.setDomStorageEnabled(true);
                 webview.loadUrl(url);
-                webview.setId(5);
-                webview.setInitialScale(0);
-                webview.setLayoutParams(wvParams);
+                webview.setId(6);
+                webview.getSettings().setLoadWithOverviewMode(true);
+                webview.getSettings().setUseWideViewPort(true);
                 webview.requestFocus();
                 webview.requestFocusFromTouch();   
                 
-                toolbar.addView(back);
-                toolbar.addView(forward);
+                // Add the back and forward buttons to our action button container layout
+                actionButtonContainer.addView(back);
+                actionButtonContainer.addView(forward);
+                
+                // Add the views to our toolbar
+                toolbar.addView(actionButtonContainer);
                 toolbar.addView(edittext);
                 toolbar.addView(close);
                 
+                // Don't add the toolbar if its been disabled
                 if (getShowLocationBar()) {
+                	// Add our toolbar to our main view/layout
                     main.addView(toolbar);
                 }
+                
+                // Add our webview to our main view/layout
                 main.addView(webview);
 
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -335,11 +390,11 @@ public class ChildBrowser extends Plugin {
                 dialog.show();
                 dialog.getWindow().setAttributes(lp);
             }
-            
-            private Bitmap loadDrawable(String filename) throws java.io.IOException {
-                InputStream input = ctx.getAssets().open(filename);    
-                return BitmapFactory.decodeStream(input);
-            }
+
+		  private Bitmap loadDrawable(String filename) throws java.io.IOException {
+			  InputStream input = ctx.getAssets().open(filename);    
+			  return BitmapFactory.decodeStream(input);
+		  }
         };
         this.ctx.runOnUiThread(runnable);
         return "";

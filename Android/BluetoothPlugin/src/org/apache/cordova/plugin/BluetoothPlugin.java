@@ -14,7 +14,12 @@
    limitations under the License.
 */
 
-package com.phonegap.plugin;
+package org.apache.cordova.plugin;
+
+import org.apache.cordova.api.CordovaInterface;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
+import org.json.JSONArray;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -22,7 +27,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,10 +39,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Parcelable;
 import android.util.Log;
-
-import com.phonegap.api.PhonegapActivity;
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
 
 public class BluetoothPlugin extends Plugin {
 	private static final String ACTION_ENABLE = "enable";
@@ -59,10 +59,12 @@ public class BluetoothPlugin extends Plugin {
 
 	private JSONArray m_discoveredDevices = null;
 	private JSONArray m_gotUUIDs = null;
-	private boolean m_enabled = false;
 	
 	private ArrayList<BluetoothSocket> m_bluetoothSockets = new ArrayList<BluetoothSocket>();
 
+	/**
+	 * Constructor for Bluetooth plugin
+	 */
 	public BluetoothPlugin() {
 		m_bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		m_bpBroadcastReceiver = new BPBroadcastReceiver();
@@ -79,11 +81,13 @@ public class BluetoothPlugin extends Plugin {
 		catch( Exception e ) {
 			Log.e("BluetoothPlugin", e.getMessage() );
 		}
-
 	}
-
+	
+	/**
+	 * Register receiver as soon as we have the context
+	 */
 	@Override
-	public void setContext(PhonegapActivity ctx) {
+	public void setContext(CordovaInterface ctx) {
 		super.setContext(ctx);
 
 		// Register for necessary bluetooth events
@@ -92,24 +96,28 @@ public class BluetoothPlugin extends Plugin {
 		ctx.registerReceiver(m_bpBroadcastReceiver, new IntentFilter(
 				BluetoothDevice.ACTION_FOUND));
 		ctx.registerReceiver(m_bpBroadcastReceiver, new IntentFilter(BluetoothPlugin.ACTION_UUID));
-		ctx.registerReceiver(m_bpBroadcastReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
-		
+		//ctx.registerReceiver(m_bpBroadcastReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
 	}
 
+	/**
+	 * Execute a bluetooth function
+	 */
 	@Override
-	public PluginResult execute(String action, JSONArray data, String callbackId) {
+	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		PluginResult pluginResult = null;
 		
 		Log.d("BluetoothPlugin", "Action: " + action);
 
-		// Want to enable bluetooth?
 		if (ACTION_ENABLE.equals(action)) {
-			m_stateChanging = true;
-			ctx.startActivity(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE));
-			while(m_stateChanging) {};
+			// Check if bluetooth isn't disabled already
+			if( !m_bluetoothAdapter.isEnabled() ) {
+				m_stateChanging = true;
+				ctx.startActivityForResult(this, new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
+				while(m_stateChanging) {};
+			}
 			
 			// Check if bluetooth is enabled now
-			if(m_enabled) {
+			if(m_bluetoothAdapter.isEnabled()) {
 				pluginResult = new PluginResult(PluginResult.Status.OK);
 			}
 			else {
@@ -118,20 +126,11 @@ public class BluetoothPlugin extends Plugin {
 		}
 		// Want to disable bluetooth?
 		else if (ACTION_DISABLE.equals(action)) {
-			m_stateChanging = true;
 			if( !m_bluetoothAdapter.disable() && m_bluetoothAdapter.isEnabled() ) {
 				pluginResult = new PluginResult(PluginResult.Status.ERROR);
 			}
 			else {
-				while(m_stateChanging) {};
-
-				// Check if bluetooth is disabled now
-				if(!m_enabled) {
-					pluginResult = new PluginResult(PluginResult.Status.OK);
-				}
-				else {
-					pluginResult = new PluginResult(PluginResult.Status.ERROR);
-				}
+				pluginResult = new PluginResult(PluginResult.Status.OK);
 			}
 			
 		}
@@ -156,7 +155,7 @@ public class BluetoothPlugin extends Plugin {
 		else if( ACTION_GETUUIDS.equals(action) ) {
 			
 			try {
-				String address = data.getString(0);
+				String address = args.getString(0);
 				Log.d("BluetoothPlugin", "Listing UUIDs for: " + address);
 				
 				// Fetch UUIDs from bluetooth device
@@ -181,8 +180,11 @@ public class BluetoothPlugin extends Plugin {
 		// Connect to a given device & uuid endpoint
 		else if( ACTION_CONNECT.equals(action) ) {
 			try {
-				String address = data.getString(0);
-				UUID uuid = UUID.fromString(data.getString(1));
+				String address = args.getString(0);
+				//UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+				UUID uuid = UUID.fromString(args.getString(1));
+				
+				Log.d( "BluetoothPlugin", "Connecting..." );
 
 				BluetoothDevice bluetoothDevice = m_bluetoothAdapter.getRemoteDevice(address);
 				BluetoothSocket bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
@@ -202,7 +204,7 @@ public class BluetoothPlugin extends Plugin {
 		}
 		else if( ACTION_READ.equals(action) ) {
 			try {
-				int socketId = data.getInt(0);
+				int socketId = args.getInt(0);
 				
 				BluetoothSocket bluetoothSocket = m_bluetoothSockets.get(socketId);
 				InputStream inputStream = bluetoothSocket.getInputStream();
@@ -212,7 +214,7 @@ public class BluetoothPlugin extends Plugin {
 					buffer[i] = (char) inputStream.read();
 				}
 				
-				Log.d( "BluetoothPlugin", "Buffer: " + String.valueOf(buffer) );
+				//Log.d( "BluetoothPlugin", "Buffer: " + String.valueOf(buffer) );
 				pluginResult = new PluginResult(PluginResult.Status.OK, String.valueOf(buffer));
 			}
 			catch( Exception e ) {
@@ -226,10 +228,25 @@ public class BluetoothPlugin extends Plugin {
 		return pluginResult;
 	}
 
+	/**
+	 * Receives activity results
+	 */
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		if( requestCode == 1 ) {
+			m_stateChanging = false;
+		}
+	}
+
+	/**
+	 * Helper class for handling all bluetooth based events
+	 */
 	private class BPBroadcastReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
+			
+			//Log.d( "BluetoothPlugin", "Action: " + action );
 
 			// Check if we found a new device
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
@@ -266,20 +283,6 @@ public class BluetoothPlugin extends Plugin {
 					m_gettingUuids = false;
 				}
 			}
-			else if(BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
-				int adapterState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-				Log.d("BluetoothPlugin", "State changed: " + adapterState);
-				
-				if(adapterState == BluetoothAdapter.STATE_ON) {
-					m_enabled = true;
-					m_stateChanging = false;
-				}
-				else if(adapterState == BluetoothAdapter.STATE_OFF) {
-					m_enabled = false;
-					m_stateChanging = false;
-				}
-			}
 		}
 	};
-
 }

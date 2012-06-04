@@ -1,6 +1,6 @@
 Bluetooth
 ===============
-Plugin for PhoneGap
+Plugin for Cordova 1.6+
 
 The Bluetooth plugin offers access to the devices bluetooth functionality.
 Useful for any application requiring interaction with the bluetooth stack.
@@ -16,8 +16,8 @@ Edit your *AndroidManifest.xml* and add the following permissions:
 `<uses-permission android:name="android.permission.BLUETOOTH" />`
 `<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />`
 
-In addition you have to edit your *res/xml/plugins.xml* file to let PhoneGap know about the plugin:
-`<plugin name="BluetoothPlugin" value="com.phonegap.plugin.BluetoothPlugin"/>`
+In addition you have to edit your *res/xml/plugins.xml* file to let Cordova know about the plugin:
+`<plugin name="BluetoothPlugin" value="org.apache.cordova.plugin.BluetoothPlugin"/>`
 
 
 License

@@ -14,13 +14,20 @@
    limitations under the License.
 */
 
-if( !PhoneGap.hasResource("BluetoothPlugin") ) {
-	PhoneGap.addResource("BluetoothPlugin");
-
+cordova.define("cordova/plugin/bluetooth", function(require, exports, module) {
+	var exec = require('cordova/exec');
+	
+	var Bluetooth = function() {};
+	
 	/**
-	 * @returns instance of powermanagement
+	 * Check if bluetooth API is supported on this platform
+	 * @returns true if bluetooth API is supported, false otherwise
 	 */
-	var Bluetooth = function() {	
+	Bluetooth.prototype.isSupported = function() {
+		// Currently only supported on android
+		if( device.platform.toLowerCase() == "android" ) return true;
+		
+		return false;
 	}
 	
 	/**
@@ -30,7 +37,7 @@ if( !PhoneGap.hasResource("BluetoothPlugin") ) {
 	 * @param errorCallback function to be called when enabling was not possible / did fail
 	 */
 	Bluetooth.prototype.enable = function(successCallback,failureCallback) {
-	    return PhoneGap.exec(successCallback, failureCallback, 'BluetoothPlugin', 'enable', []);
+	    return exec(successCallback, failureCallback, 'BluetoothPlugin', 'enable', []);
 	}
 	
 	/**
@@ -40,7 +47,7 @@ if( !PhoneGap.hasResource("BluetoothPlugin") ) {
 	 * @param errorCallback function to be called when disabling was not possible / did fail
 	 */
 	Bluetooth.prototype.disable = function(successCallback,failureCallback) {
-	    return PhoneGap.exec(successCallback, failureCallback, 'BluetoothPlugin', 'disable', []);
+	    return exec(successCallback, failureCallback, 'BluetoothPlugin', 'disable', []);
 	}
 	
 	/**
@@ -50,7 +57,7 @@ if( !PhoneGap.hasResource("BluetoothPlugin") ) {
 	 * @param errorCallback function to be called when there was a problem while discovering devices
 	 */
 	Bluetooth.prototype.discoverDevices = function(successCallback,failureCallback) {
-	    return PhoneGap.exec(successCallback, failureCallback, 'BluetoothPlugin', 'discoverDevices', []);
+	    return exec(successCallback, failureCallback, 'BluetoothPlugin', 'discoverDevices', []);
 	}
 	
 	/**
@@ -60,7 +67,7 @@ if( !PhoneGap.hasResource("BluetoothPlugin") ) {
 	 * @param errorCallback function to be called when there was a problem while listing UUIDs
 	 */
 	Bluetooth.prototype.getUUIDs = function(successCallback,failureCallback,address) {
-	    return PhoneGap.exec(successCallback, failureCallback, 'BluetoothPlugin', 'getUUIDs', [address]);
+	    return exec(successCallback, failureCallback, 'BluetoothPlugin', 'getUUIDs', [address]);
 	}
 	
 	/**
@@ -70,7 +77,7 @@ if( !PhoneGap.hasResource("BluetoothPlugin") ) {
 	 * @param errorCallback function to be called when there was a problem while opening the connection
 	 */
 	Bluetooth.prototype.connect = function(successCallback,failureCallback,address,uuid) {
-	    return PhoneGap.exec(successCallback, failureCallback, 'BluetoothPlugin', 'connect', [address, uuid]);
+	    return exec(successCallback, failureCallback, 'BluetoothPlugin', 'connect', [address, uuid]);
 	}
 	
 	/**
@@ -80,14 +87,9 @@ if( !PhoneGap.hasResource("BluetoothPlugin") ) {
 	 * @param errorCallback function to be called when there was a problem while reading
 	 */
 	Bluetooth.prototype.read = function(successCallback,failureCallback,socketid) {
-	    return PhoneGap.exec(successCallback, failureCallback, 'BluetoothPlugin', 'read', [socketid]);
+	    return exec(successCallback, failureCallback, 'BluetoothPlugin', 'read', [socketid]);
 	}
 	
-	/**
-	 * Register the plugin with PhoneGap
-	 */
-	PhoneGap.addConstructor(function() {
-		// Register the PowerManagement plugin with PhoneGap
-		PhoneGap.addPlugin('BluetoothPlugin', new Bluetooth());
-	});
-}
+	var bluetooth = new Bluetooth();
+	module.exports = bluetooth;
+});

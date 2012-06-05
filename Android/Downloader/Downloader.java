@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
+import android.os.Environment;
 
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;

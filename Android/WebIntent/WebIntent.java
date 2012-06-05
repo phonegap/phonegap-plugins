@@ -148,9 +148,15 @@ public class WebIntent extends Plugin {
 
     void startActivity(String action, Uri uri, String type, Map<String, String> extras) {
         Intent i = (uri != null ? new Intent(action, uri) : new Intent(action));
-        if (type != null) {
-            i.setType(type);
+        
+        if (type != null && uri != null) {
+            i.setDataAndType(type, uri); //Fix the crash problem with android 2.3.6
+        } else {
+            if (type != null) {
+                i.setType(type);
+            }
         }
+        
         for (String key : extras.keySet()) {
             String value = extras.get(key);
             // If type is text html, the extra text must sent as HTML

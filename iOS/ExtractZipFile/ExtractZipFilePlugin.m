@@ -24,7 +24,7 @@
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:[destination stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         [self writeJavascript:[result toSuccessCallbackString:callbackID]];
     } else {
-        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[@"Could not unzip archive" stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[@"Could not extract archive" stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         [self writeJavascript:[result toErrorCallbackString:callbackID]];        
     }
 }

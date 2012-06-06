@@ -9,9 +9,8 @@ var ExtractZipFilePlugin = function(){
 }
 
 cordova.addConstructor(function(){
-//    PhoneGap.addPlugin('ExtractZipFilePlugin', new ExtractZipFilePlugin());
     if(!window.plugins) window.plugins = {};
-    window.plugins.ExtractZipFilePlugin = new ExtractZipFilePlugin();                       
+    window.plugins.extractZipFile = new ExtractZipFilePlugin();
 });
 
 ExtractZipFilePlugin.prototype.extractFile = function(file, destination, successCallback, errorCallback) 

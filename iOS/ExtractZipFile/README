@@ -18,8 +18,7 @@ Using the plugin
 ================
 function extractFile(fileName)
 {
-	var ZipClient = new ExtractZipFilePlugin();
-	ZipClient.extractFile(fileName,destination,win,fail);
+	window.plugins.extractZipFile.extractFile(fileName,destination,win,fail);
 }
 
 function win(status) 

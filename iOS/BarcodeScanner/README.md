@@ -99,7 +99,7 @@ at the bare minumum a transparent view that is connected to the PGbcsViewControl
 * In the `Supporting Files` directory of your project, add a new plugin
 by editing the file `Cordova.plist` and in the `Plugins` dictionary adding
 the following key/value pair:
- * key: `org.apache.cordova.barcodeScanner`
+ * key: `com.cordova.barcodeScanner`
  * value: `CDVBarcodeScanner`
 * Add the following libraries to your Xcode project, if not already there:
  * AVFoundation.framework

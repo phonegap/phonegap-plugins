@@ -8,10 +8,6 @@
 
 ;(function(){
 
-if (Cordova.hasResource("barcodeScanner")) return
-
-Cordova.addResource("barcodeScanner")
-
 //-------------------------------------------------------------------
 var BarcodeScanner = function() {
 }
@@ -27,6 +23,17 @@ BarcodeScanner.Encode = {
 }
 
 //-------------------------------------------------------------------
+
+BarcodeScanner.prototype.isBarcodeScannerAvailable = function(response){
+    Cordova.exec(response, null, "BarcodeScannerPlugin", "isBarcodeScannerAvailable", []);
+};
+
+BarcodeScanner.prototype.isBarcodeScannerSetup = function(response){
+    Cordova.exec(response, null, "BarcodeScannerPlugin", "isBarcodeScannerSetup", []);
+};
+
+//-------------------------------------------------------------------
+
 BarcodeScanner.prototype.scan = function(success, fail, options) {
     function successWrapper(result) {
         result.cancelled = (result.cancelled == 1)
@@ -44,14 +51,15 @@ BarcodeScanner.prototype.scan = function(success, fail, options) {
         fail("success callback parameter must be a function")
         return
     }
-  
-    if ( null == options ) 
-      options = []
 
-    return Cordova.exec(successWrapper, fail, "org.apache.cordova.barcodeScanner", "scan", options)
+    if ( null == options )
+        options = []
+
+    return Cordova.exec(successWrapper, fail, "com.cordova.barcodeScanner", "scan", options)
 }
 
 //-------------------------------------------------------------------
+
 BarcodeScanner.prototype.encode = function(type, data, success, fail, options) {
     if (!fail) { fail = function() {}}
 
@@ -65,7 +73,7 @@ BarcodeScanner.prototype.encode = function(type, data, success, fail, options) {
         return
     }
 
-    return Cordova.exec(success, fail, "org.apache.cordova.barcodeScanner", "encode", [{type: type, data: data, options: options}])
+    return Cordova.exec(success, fail, "com.cordova.barcodeScanner", "encode", [{type: type, data: data, options: options}])
 }
 
 //-------------------------------------------------------------------

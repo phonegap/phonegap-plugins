@@ -26,6 +26,13 @@ Twitter.prototype.getTwitterUsername = function(response){
     cordova.exec(response, null, "TwitterPlugin", "getTwitterUsername", []);
 };
 
+Twitter.prototype.getTWRequest = function(url, params, success, failure, options){
+    options = options || {};
+    options.url = url;
+    options.params = params;
+    cordova.exec(success, failure, "TwitterPlugin", "getTWRequest", [options]);
+};
+
 cordova.addConstructor(function() {
 					   
 					   /* shim to work in 1.5 and 1.6  */

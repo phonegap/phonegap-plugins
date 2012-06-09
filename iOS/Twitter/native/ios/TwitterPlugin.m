@@ -214,6 +214,87 @@
     [accountStore release];
 }
 
+
+
+- (void) getTWRequest:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options{
+    NSString *callbackId = [arguments objectAtIndex:0];
+    NSString *urlSlug = [options objectForKey:@"url"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", TWITTER_URL, urlSlug];
+    
+    NSDictionary *params = [options objectForKey:@"params"] ?: nil;
+    // We might want to safety check here that params is indeed a dictionary.
+    
+    NSString *reqMethod = [options objectForKey:@"requestMethod"] ?: @"";
+    TWRequestMethod method;
+    if ([reqMethod isEqualToString:@"POST"]) {
+        method = TWRequestMethodPOST;
+        NSLog(@"POST");
+    }
+    else if ([reqMethod isEqualToString:@"DELETE"]) {
+        method = TWRequestMethodDELETE;
+        NSLog(@"DELETE");
+    }
+    else {
+        method = TWRequestMethodGET;
+        NSLog(@"GET");
+    }
+    
+    
+    // We should probably store the chosen account as an instance variable so as to not request it for every request.
+    
+    ACAccountStore *accountStore = [[ACAccountStore alloc] init];
+    ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    
+    [accountStore requestAccessToAccountsWithType:accountType withCompletionHandler:^(BOOL granted, NSError *error) {
+        if(granted) {
+            NSArray *accountsArray = [accountStore accountsWithAccountType:accountType];
+			// making assumption they only have one twitter account configured, should probably revist
+            if([accountsArray count] > 0) {
+                TWRequest *request = [[TWRequest alloc] initWithURL:[NSURL URLWithString:url] 
+                                                            parameters:params
+                                                            requestMethod:method];
+                
+                [request setAccount:[accountsArray objectAtIndex:0]];
+                [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+                    NSString *jsResponse;
+                    if([urlResponse statusCode] == 200) {
+                        NSString *dataString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+                        NSDictionary *dict = [dataString objectFromJSONString];
+                        jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dict] toSuccessCallbackString:callbackId];
+                        [dataString release];
+                    }
+                    else{
+                        jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR 
+                                                        messageAsString:[NSString stringWithFormat:@"HTTP Error: %i", [urlResponse statusCode]]] 
+                                      toErrorCallbackString:callbackId];
+                    }
+                    
+                    [self performCallbackOnMainThreadforJS:jsResponse];        
+                }];
+                [request release];
+            }
+            else{
+                NSString *jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR 
+                                                          messageAsString:@"No Twitter accounts available"] 
+                                        toErrorCallbackString:callbackId];
+                [self performCallbackOnMainThreadforJS:jsResponse];
+            }
+        }
+        else{
+            NSString *jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR 
+                                                      messageAsString:@"Access to Twitter accounts denied by user"] 
+                                    toErrorCallbackString:callbackId];
+            [self performCallbackOnMainThreadforJS:jsResponse];
+        }
+    }];
+    
+    [accountStore release];
+}
+
+
+
+
+
 // The JS must run on the main thread because you can't make a uikit call (uiwebview) from another thread (what twitter does for calls)
 - (void) performCallbackOnMainThreadforJS:(NSString*)javascript{
     [super performSelectorOnMainThread:@selector(writeJavascript:) 

@@ -29,6 +29,8 @@
 
 - (void) getMentions:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
+- (void) getTWRequest:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
 - (void) performCallbackOnMainThreadforJS:(NSString*)js;
 
 @end

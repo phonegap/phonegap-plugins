@@ -22,8 +22,8 @@ Twitter.prototype.getMentions = function(success, failure){
     cordova.exec(success, failure, "TwitterPlugin", "getMentions", []);
 };
 
-Twitter.prototype.getTwitterUsername = function(response){
-    cordova.exec(response, null, "TwitterPlugin", "getTwitterUsername", []);
+Twitter.prototype.getTwitterUsername = function(success, failure) {
+    cordova.exec(success, failure, "TwitterPlugin", "getTwitterUsername", []);
 };
 
 Twitter.prototype.getTWRequest = function(url, params, success, failure, options){

@@ -156,7 +156,11 @@
             NSArray *accountsArray = [accountStore accountsWithAccountType:accountType];
             ACAccount *twitterAccount = [accountsArray objectAtIndex:0];
             NSString *username = twitterAccount.username;
-            [super writeJavascript:[[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:username] toSuccessCallbackString:callbackId]];
+            
+            NSString *jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_OK 
+                                                      messageAsString:username] 
+                                    toSuccessCallbackString:callbackId];
+            [self performCallbackOnMainThreadforJS:jsResponse];
         }
     }];
     

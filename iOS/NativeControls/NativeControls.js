@@ -188,14 +188,7 @@ NativeControls.prototype.hideToolBar = function() {
 NativeControls.prototype.showToolBar = function() {
     cordova.exec("NativeControls.showToolBar");
 };
- 
-/**
- * Set the toolbar title
- * @param: title
- */
-NativeControls.prototype.setToolBarTitle = function(title) {
-    cordova.exec("NativeControls.setToolBarTitle" , title );
-};
+
  
  
 /**

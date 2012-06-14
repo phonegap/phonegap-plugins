@@ -12,6 +12,10 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.phonegap;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -67,12 +71,21 @@ public class PGLowLatencyAudio extends Plugin {
 			{
 				if ( !soundMap.containsKey(audioID) )
 				{
-					String assetPath =data.getString(1);
-					String fullPath = "www/".concat( assetPath );
-					
-					AssetManager am = ctx.getResources().getAssets(); 
-					AssetFileDescriptor afd = am.openFd(fullPath);
-					int assetIntID = soundPool.load(afd, 1);
+					String assetPath = data.getString(1);
+					int assetIntID;
+					if (assetPath.startsWith("/"))
+					{
+						File f = new File(assetPath);
+						FileInputStream fis = new FileInputStream(f);
+						assetIntID = soundPool.load(fis.getFD(), 0, f.length(), 1);
+					}
+					else {
+						String fullPath = "www/".concat( assetPath );
+						AssetManager am = ctx.getResources().getAssets();
+						AssetFileDescriptor afd = am.openFd(fullPath);
+						assetIntID = soundPool.load(afd, 1);
+					}
+
 					soundMap.put( audioID , assetIntID );
 				}
 				else 
@@ -94,13 +107,20 @@ public class PGLowLatencyAudio extends Plugin {
 					{
 						voices = data.getInt(2);
 					}
-					
-					String fullPath = "www/".concat( assetPath );
-					
-					AssetManager am = ctx.getResources().getAssets(); 
-					AssetFileDescriptor afd = am.openFd(fullPath);
-					
-					PGLowLatencyAudioAsset asset = new PGLowLatencyAudioAsset( afd, voices );
+
+					PGLowLatencyAudioAsset asset;
+					if (assetPath.startsWith("/"))
+					{
+						FileInputStream fis = new FileInputStream(assetPath);
+						asset = new PGLowLatencyAudioAsset( fis.getFD(), voices );
+					}
+					else
+					{
+						String fullPath = "www/".concat( assetPath );
+						AssetManager am = ctx.getResources().getAssets();
+						AssetFileDescriptor afd = am.openFd(fullPath);
+						PGLowLatencyAudioAsset asset = new PGLowLatencyAudioAsset( afd, voices );
+					}
 					assetMap.put( audioID , asset );
 				}
 				else 

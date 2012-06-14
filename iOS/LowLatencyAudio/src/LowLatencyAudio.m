@@ -51,10 +51,12 @@ NSString* RESTRICTED = @"ACTION RESTRICTED FOR FX AUDIO";
     NSNumber* existingReference = [audioMapping objectForKey: audioID];
     if (existingReference == nil)
     {
-        NSString* basePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"www"];
-        [basePath retain];
-        
-        NSString* path = [NSString stringWithFormat:@"%@/%@", basePath, assetPath];
+        NSString* path = assetPath;
+        // If path is relative, make it relative to basePath
+        if (![path hasPrefix:@"/"]) {
+            NSString* basePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"www"];
+            path = [NSString stringWithFormat:@"%@/%@", basePath, assetPath];
+        }
         [path retain];
         
         if ([[NSFileManager defaultManager] fileExistsAtPath : path])
@@ -73,7 +75,6 @@ NSString* RESTRICTED = @"ACTION RESTRICTED FOR FX AUDIO";
             [self writeJavascript: [pluginResult toErrorCallbackString:callbackID]];
         }
         
-        [basePath release];
         [path release];
     }
     else 

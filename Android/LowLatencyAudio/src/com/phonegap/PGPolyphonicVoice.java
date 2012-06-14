@@ -13,6 +13,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.phonegap;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
 
 import android.content.res.AssetFileDescriptor;
@@ -42,6 +43,15 @@ public class PGPolyphonicVoice implements OnPreparedListener, OnCompletionListen
 		mp.prepare();
 	}
 	
+	public PGPolyphonicVoice( FileDescriptor fd )  throws IOException
+	{
+		state = INVALID;
+		mp = new MediaPlayer();
+		mp.setDataSource( fd );
+		mp.setAudioStreamType( AudioManager.STREAM_MUSIC );
+		mp.prepare();
+	}
+
 	public void play() throws IOException
 	{
 		invokePlay( false );

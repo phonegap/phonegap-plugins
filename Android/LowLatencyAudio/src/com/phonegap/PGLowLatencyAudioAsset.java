@@ -13,6 +13,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.phonegap;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -26,13 +27,27 @@ public class PGLowLatencyAudioAsset {
 	public PGLowLatencyAudioAsset(AssetFileDescriptor afd, int numVoices) throws IOException
 	{
 		voices = new ArrayList<PGPolyphonicVoice>();
+
+		if ( numVoices < 0 )
+			numVoices = 0;
+
+		for ( int x=0; x<numVoices; x++)
+		{
+			PGPolyphonicVoice voice = new PGPolyphonicVoice(afd);
+			voices.add( voice );
+		}
+	}
+
+	public PGLowLatencyAudioAsset(FileDescriptor fd, int numVoices) throws IOException
+	{
+		voices = new ArrayList<PGPolyphonicVoice>();
 		
 		if ( numVoices < 0 )
 			numVoices = 0;
 		
 		for ( int x=0; x<numVoices; x++) 
 		{
-			PGPolyphonicVoice voice = new PGPolyphonicVoice(afd);
+			PGPolyphonicVoice voice = new PGPolyphonicVoice(fd);
 			voices.add( voice );
 		}
 	}

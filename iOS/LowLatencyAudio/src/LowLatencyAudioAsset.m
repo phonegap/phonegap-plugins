@@ -67,7 +67,6 @@
 
 - (void) loop
 {
-    [self stop];
     AVAudioPlayer * player = [voices objectAtIndex:playIndex];
     [player setCurrentTime:0.0];
     player.numberOfLoops = -1;

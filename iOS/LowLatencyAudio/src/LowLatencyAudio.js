@@ -8,6 +8,14 @@ preloadAudio: function ( id, assetPath, voices, success, fail) {
     return cordova.exec(success, fail, "LowLatencyAudio", "preloadAudio", [id, assetPath, voices]);
 },
     
+getVolume: function (id, success, fail) {
+    return cordova.exec(success, fail, "LowLatencyAudio", "getVolume", [id]);
+},
+
+setVolume: function (id, volume, success, fail) {
+    return cordova.exec(success, fail, "LowLatencyAudio", "setVolume", [id, volume]);
+},
+
 play: function (id, success, fail) {
     return cordova.exec(success, fail, "LowLatencyAudio", "play", [id]);
 },

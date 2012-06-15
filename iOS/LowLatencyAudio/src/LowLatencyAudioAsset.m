@@ -46,6 +46,26 @@
     return(self);
 }
 
+- (float) volume
+{
+    if ([voices count] > 0) {
+        // Volume is the same for all player, return the first's
+        AVAudioPlayer *player = [voices objectAtIndex:0];
+        return player.volume;
+    }
+    return 0.f;
+}
+
+- (void) setVolume:(float)volume
+{
+    volume = volume < .0f ? .0f : (volume > 1.f ? 1.f : volume);
+    for (int x = 0; x < [voices count]; ++x)
+    {
+        AVAudioPlayer *player = [voices objectAtIndex:x];
+        player.volume = volume;
+    }
+}
+
 - (void) play
 {
     AVAudioPlayer * player = [voices objectAtIndex:playIndex];

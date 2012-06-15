@@ -155,6 +155,71 @@ NSString* RESTRICTED = @"ACTION RESTRICTED FOR FX AUDIO";
     [voices release];
 }
 
+- (void) setVolume:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+    CDVPluginResult* pluginResult = nil;
+    NSString* callbackID = [arguments pop];
+    [callbackID retain];
+
+    NSString *audioID = [arguments objectAtIndex:0];
+    [audioID retain];
+
+    float volume = [[arguments objectAtIndex:1] floatValue];
+
+    // Only LowLatencyAudioAsset support volume setting
+    if ( audioMapping )
+    {
+        NSObject* asset = [audioMapping objectForKey: audioID];
+        if ([asset isKindOfClass:[LowLatencyAudioAsset class]])
+        {
+            LowLatencyAudioAsset *_asset = (LowLatencyAudioAsset*) asset;
+            _asset.volume = volume;
+
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        }
+    }
+
+    if (!pluginResult)
+    {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+    }
+
+    [self writeJavascript: [pluginResult toSuccessCallbackString:callbackID]];
+    [callbackID release];
+    [audioID release];
+}
+
+- (void) getVolume:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+    CDVPluginResult* pluginResult;
+    NSString* callbackID = [arguments pop];
+    [callbackID retain];
+
+    NSString *audioID = [arguments objectAtIndex:0];
+    [audioID retain];
+
+    // Only LowLatencyAudioAsset support volume setting
+    if ( audioMapping )
+    {
+        NSObject* asset = [audioMapping objectForKey: audioID];
+        if ([asset isKindOfClass:[LowLatencyAudioAsset class]])
+        {
+            LowLatencyAudioAsset *_asset = (LowLatencyAudioAsset*) asset;
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDouble:(double) _asset.volume];
+            [self writeJavascript: [pluginResult toSuccessCallbackString:callbackID]];
+            [callbackID release];
+            [audioID release];
+			return;
+        }
+    }
+
+    // Return 1.0 for FX
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDouble:1.0];
+    [self writeJavascript: [pluginResult toSuccessCallbackString:callbackID]];
+    [callbackID release];
+    [audioID release];
+}
+
 - (void) play:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
     CDVPluginResult* pluginResult;

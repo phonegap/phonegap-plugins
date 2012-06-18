@@ -7,8 +7,8 @@ import org.json.JSONObject;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 public class AccountList extends Plugin {
 
@@ -18,7 +18,7 @@ public class AccountList extends Plugin {
 		try {
 			JSONObject obj = args.getJSONObject(0);
 			
-			AccountManager am = AccountManager.get(this.ctx);
+			AccountManager am = AccountManager.get(this.ctx.getContext());
 			
 			Account[] accounts;
 			if (obj.has("type"))

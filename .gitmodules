@@ -1,0 +1,3 @@
+[submodule "iOS/FacebookConnect"]
+	path = iOS/FacebookConnect
+	url = https://github.com/mgcrea/cordova-facebook-connect

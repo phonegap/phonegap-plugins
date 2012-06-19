@@ -3,6 +3,8 @@
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  * 
  * Copyright (c) 2011, IBM Corporation
+ *
+ * Modified by Murray Macdonald (murray@workgroup.ca) on 2012/05/30 to add pitch(), speed(), stop(), and interrupt() methods.
  */
 
 /**
@@ -16,7 +18,7 @@ TTS.INITIALIZING = 1;
 TTS.STARTED = 2;
 
 /**
- * Play the passed in text as synthasized speech
+ * Play the passed in text as synthesized speech
  * 
  * @param {DOMString} text
  * @param {Object} successCallback
@@ -24,6 +26,28 @@ TTS.STARTED = 2;
  */
 TTS.prototype.speak = function(text, successCallback, errorCallback) {
      return PhoneGap.exec(successCallback, errorCallback, "TTS", "speak", [text]);
+};
+
+/**
+ * Interrupt any existing speech, then speak the passed in text as synthesized speech
+ * 
+ * @param {DOMString} text
+ * @param {Object} successCallback
+ * @param {Object} errorCallback
+ */
+TTS.prototype.interrupt = function(text, successCallback, errorCallback) {
+     return PhoneGap.exec(successCallback, errorCallback, "TTS", "interrupt", [text]);
+};
+
+/**
+ * Stop any queued synthesized speech
+ * 
+ * @param {DOMString} text
+ * @param {Object} successCallback
+ * @param {Object} errorCallback
+ */
+TTS.prototype.stop= function(successCallback, errorCallback) {
+     return PhoneGap.exec(successCallback, errorCallback, "TTS", "stop", []);
 };
 
 /** 
@@ -35,6 +59,28 @@ TTS.prototype.speak = function(text, successCallback, errorCallback) {
  */
 TTS.prototype.silence = function(duration, successCallback, errorCallback) {
      return PhoneGap.exec(successCallback, errorCallback, "TTS", "silence", [duration]);
+};
+
+/** 
+ * Set speed of speech.  Usable from 30 to 500.  Higher values make little difference.
+ * 
+ * @param {long} speed
+ * @param {Object} successCallback
+ * @param {Object} errorCallback
+ */
+TTS.prototype.speed = function(speed, successCallback, errorCallback) {
+     return PhoneGap.exec(successCallback, errorCallback, "TTS", "speed", [speed]);
+};
+
+/** 
+ * Set pitch of speech.  Useful values are approximately 30 - 300
+ * 
+ * @param {long} pitch
+ * @param {Object} successCallback
+ * @param {Object} errorCallback
+ */
+TTS.prototype.pitch = function(pitch, successCallback, errorCallback) {
+     return PhoneGap.exec(successCallback, errorCallback, "TTS", "pitch", [pitch]);
 };
 
 /**

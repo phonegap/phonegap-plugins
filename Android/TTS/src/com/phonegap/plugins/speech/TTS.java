@@ -3,6 +3,9 @@
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  * 
  * Copyright (c) 2011, IBM Corporation
+ * 
+ * Modified by Murray Macdonald (murray@workgroup.ca) on 2012/05/30 to add support for stop(), pitch(), speed() and interrupt();
+ * 
  */
 
 package com.phonegap.plugins.speech;
@@ -54,8 +57,33 @@ public class TTS extends Plugin implements OnInitListener, OnUtteranceCompletedL
                     error.put("code", TTS.INITIALIZING);
                     return new PluginResult(PluginResult.Status.ERROR, error);
                 }
-            }  
-            else if (action.equals("silence")) {
+            } else if (action.equals("interrupt")) {
+                String text = args.getString(0);
+                if (isReady()) {
+                    HashMap<String, String> map = null;
+                    map = new HashMap<String, String>();
+                    map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, callbackId);
+                    mTts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+                    PluginResult pr = new PluginResult(PluginResult.Status.NO_RESULT);
+                    pr.setKeepCallback(true);
+                    return pr;
+                } else {
+                    JSONObject error = new JSONObject();
+                    error.put("message","TTS service is still initialzing.");
+                    error.put("code", TTS.INITIALIZING);
+                    return new PluginResult(PluginResult.Status.ERROR, error);
+                }
+            } else if (action.equals("stop")) {
+                if (isReady()) {
+                    mTts.stop();
+                    return new PluginResult(status, result);
+                } else {
+                    JSONObject error = new JSONObject();
+                    error.put("message","TTS service is still initialzing.");
+                    error.put("code", TTS.INITIALIZING);
+                    return new PluginResult(PluginResult.Status.ERROR, error);
+                } 
+            } else if (action.equals("silence")) {
                 if (isReady()) {
                     mTts.playSilence(args.getLong(0), TextToSpeech.QUEUE_ADD, null);
                     return new PluginResult(status, result);
@@ -65,8 +93,29 @@ public class TTS extends Plugin implements OnInitListener, OnUtteranceCompletedL
                     error.put("code", TTS.INITIALIZING);
                     return new PluginResult(PluginResult.Status.ERROR, error);
                 }
-            }
-            else if (action.equals("startup")) {
+            } else if (action.equals("speed")) {
+                if (isReady()) {
+                	float speed= (float) (args.optLong(0, 100)) /(float) 100.0;
+                    mTts.setSpeechRate(speed);
+                    return new PluginResult(status, result);
+                } else {
+                    JSONObject error = new JSONObject();
+                    error.put("message","TTS service is still initialzing.");
+                    error.put("code", TTS.INITIALIZING);
+                    return new PluginResult(PluginResult.Status.ERROR, error);
+                }
+            } else if (action.equals("pitch")) {
+                if (isReady()) {
+                	float pitch= (float) (args.optLong(0, 100)) /(float) 100.0;
+                    mTts.setPitch(pitch);
+                    return new PluginResult(status, result);
+                } else {
+                    JSONObject error = new JSONObject();
+                    error.put("message","TTS service is still initialzing.");
+                    error.put("code", TTS.INITIALIZING);
+                    return new PluginResult(PluginResult.Status.ERROR, error);
+                }
+            } else if (action.equals("startup")) {
                 if (mTts == null) {
                     this.startupCallbackId = callbackId;
                     state = TTS.INITIALIZING;

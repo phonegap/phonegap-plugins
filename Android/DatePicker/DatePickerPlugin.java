@@ -18,9 +18,10 @@ import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
-import com.phonegap.api.PhonegapActivity;
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+
+import org.apache.cordova.DroidGap;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 /**
  * @author ng4e
@@ -55,7 +56,7 @@ public class DatePickerPlugin extends Plugin {
 
 	public synchronized void show(final JSONArray data, final String callBackId) {
 		final DatePickerPlugin datePickerPlugin = this;
-		final PhonegapActivity currentCtx = ctx;
+		final DroidGap currentCtx = (DroidGap) ctx.getContext();
 		final Calendar c = Calendar.getInstance();
 		final Runnable runnable;
 

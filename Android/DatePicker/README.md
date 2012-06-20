@@ -45,3 +45,10 @@
 ```
 
 7. It is recommended to prefil these input fields and make these fields read only with a standard date format, preferably with three letter month so it can always be parsed.
+
+8. You may need to convert the result of date.parse() back to an object to get the picker to work a second or third time around. If so, try inserting this code after the myNewDate declaration:
+
+``` 	if(typeof myNewDate === "number"){
+		myNewDate = new Date (myNewDate);
+	}
+	```

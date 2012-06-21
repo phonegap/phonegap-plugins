@@ -150,7 +150,7 @@ public class WebIntent extends Plugin {
         Intent i = (uri != null ? new Intent(action, uri) : new Intent(action));
         
         if (type != null && uri != null) {
-            i.setDataAndType(type, uri); //Fix the crash problem with android 2.3.6
+            i.setDataAndType(uri, type); //Fix the crash problem with android 2.3.6
         } else {
             if (type != null) {
                 i.setType(type);
@@ -184,6 +184,6 @@ public class WebIntent extends Plugin {
             intent.putExtra(key, value);
         }
 
-        ((DroidGap) this.ctx)).sendBroadcast(intent);
+        ((DroidGap) this.ctx).sendBroadcast(intent);
     }
 }

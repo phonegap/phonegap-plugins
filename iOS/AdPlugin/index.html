@@ -44,7 +44,6 @@
         {
             // listen for orientation changes
             window.addEventListener("orientationchange", window.plugins.iAdPlugin.orientationChanged, false);
-            window.plugins.iAdPlugin.orientationChanged(true);//trigger immediately so iAd knows its orientation on first load
             // listen for the "iAdBannerViewDidLoadAdEvent" that is sent by the iAdPlugin
             document.addEventListener("iAdBannerViewDidLoadAdEvent", iAdBannerViewDidLoadAdEventHandler, false);
             // listen for the "iAdBannerViewDidFailToReceiveAdWithErrorEvent" that is sent by the iAdPlugin
@@ -54,6 +53,7 @@
             setTimeout(function() {
                        window.plugins.iAdPlugin.prepare(adAtBottom); // by default, ad is at Top
                        }, 1000);
+                       window.plugins.iAdPlugin.orientationChanged(true);//trigger immediately so iAd knows its orientation on first load
         }
 		
         function iAdBannerViewDidFailToReceiveAdWithErrorEventHandler(evt)

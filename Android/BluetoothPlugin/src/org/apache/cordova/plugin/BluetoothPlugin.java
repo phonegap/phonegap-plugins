@@ -47,6 +47,7 @@ public class BluetoothPlugin extends Plugin {
 	private static final String ACTION_GETUUIDS = "getUUIDs";
 	private static final String ACTION_CONNECT = "connect";
 	private static final String ACTION_READ = "read";
+	private static final String ACTION_DISCONNECT = "disconnect";
 	
 	private static String ACTION_UUID = "";
 	private static String EXTRA_UUID = "";
@@ -181,7 +182,6 @@ public class BluetoothPlugin extends Plugin {
 		else if( ACTION_CONNECT.equals(action) ) {
 			try {
 				String address = args.getString(0);
-				//UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 				UUID uuid = UUID.fromString(args.getString(1));
 				
 				Log.d( "BluetoothPlugin", "Connecting..." );
@@ -223,8 +223,27 @@ public class BluetoothPlugin extends Plugin {
 				pluginResult = new PluginResult(PluginResult.Status.JSON_EXCEPTION, e.getMessage());
 			}
 		}
+		else if( ACTION_DISCONNECT.equals(action) ) {
+			try {
+				int socketId = args.getInt(0);
+				
+				// Fetch socket & close it
+				BluetoothSocket bluetoothSocket = m_bluetoothSockets.get(socketId);
+				bluetoothSocket.close();
+				
+				// Remove socket from internal list
+				m_bluetoothSockets.remove(socketId);
+				
+				// Everything went fine...
+				pluginResult = new PluginResult(PluginResult.Status.OK);
+			}
+			catch( Exception e ) {
+				Log.e("BluetoothPlugin", e.toString() + " / " + e.getMessage() );
+				
+				pluginResult = new PluginResult(PluginResult.Status.JSON_EXCEPTION, e.getMessage());
+			}
+		}
 
-		// TODO Auto-generated method stub
 		return pluginResult;
 	}
 

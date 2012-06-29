@@ -81,6 +81,16 @@ cordova.define("cordova/plugin/bluetooth", function(require, exports, module) {
 	}
 	
 	/**
+	 * Close a RFComm channel for a given socket-id
+	 * 
+	 * @param successCallback function to be called when the connection was closed successfully
+	 * @param errorCallback function to be called when there was a problem while closing the connection
+	 */
+	Bluetooth.prototype.disconnect = function(successCallback,failureCallback,socketid) {
+	    return exec(successCallback, failureCallback, 'BluetoothPlugin', 'disconnect', [socketid]);
+	}
+	
+	/**
 	 * Read from a connected socket
 	 * 
 	 * @param successCallback function to be called when reading was successfull. Passed parameter is a string containing the read content

@@ -1,10 +1,10 @@
 package com.zenexity.SoftKeyBoardPlugin;
 
-import com.phonegap.DroidGap;
+import org.json.JSONArray;
+
 import android.content.Context;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebView;
-import org.json.*;
+
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 
@@ -24,6 +24,12 @@ public class SoftKeyBoard extends Plugin {
         InputMethodManager mgr = (InputMethodManager) this.ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(webView.getWindowToken(), 0);
     }
+    
+    public boolean isKeyBoardShowing() {
+        
+    	int heightDiff = webView.getRootView().getHeight() - webView.getHeight();
+    	return (100 < heightDiff); // if more than 100 pixels, its probably a keyboard...
+    }
 
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		if (action.equals("show")) {
@@ -33,6 +39,10 @@ public class SoftKeyBoard extends Plugin {
         else if (action.equals("hide")) {
             this.hideKeyBoard();
             return new PluginResult(PluginResult.Status.OK);
+        }
+        else if (action.equals("isShowing")) {
+			
+            return new PluginResult(PluginResult.Status.OK, this.isKeyBoardShowing());
         }
 		else {
 			return new PluginResult(PluginResult.Status.INVALID_ACTION);

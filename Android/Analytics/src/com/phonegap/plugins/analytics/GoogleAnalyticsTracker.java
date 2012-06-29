@@ -10,11 +10,9 @@ package com.phonegap.plugins.analytics;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.util.Log;
-
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
-import com.phonegap.api.PluginResult.Status;
+import org.apache.cordova.api.PluginResult.Status;
 
 public class GoogleAnalyticsTracker extends Plugin {
 	public static final String START = "start";
@@ -66,7 +64,7 @@ public class GoogleAnalyticsTracker extends Plugin {
 	}
 	
 	private void start(String accountId) {
-		tracker.start(accountId, DISPATCH_INTERVAL, this.ctx);
+		tracker.start(accountId, DISPATCH_INTERVAL, this.ctx.getContext());
 	}
 	
 	private void trackPageView(String key) {

@@ -11,7 +11,7 @@ using System.Windows.Shapes;
 using System.Runtime.Serialization;
 using Microsoft.Phone.Tasks;
 
-namespace WP7GapClassLib.PhoneGap.Commands
+namespace WP7CordovaClassLib.Cordova.Commands
 {
 
     public class PGSocialShare : BaseCommand

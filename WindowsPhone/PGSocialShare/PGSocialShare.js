@@ -14,14 +14,14 @@
         }
     }
     
-    PhoneGap.addConstructor(function() {
+    Cordova.addConstructor(function() {
 
         navigator.plugins.pgSocialShare =
         {
             shareStatus:function(msg)
             {
                 var options = {"message":msg,"shareType":PGSocialShare.ShareType.status};
-                PhoneGap.exec(null,null,"PGSocialShare","share",options);
+                Cordova.exec(null,null,"PGSocialShare","share",options);
             },
 
             shareLink:function(title,url,msg)
@@ -31,7 +31,7 @@
                                "url":url,
                                "shareType":PGSocialShare.ShareType.link};
 
-                PhoneGap.exec(null,null,"PGSocialShare","share",options);
+                Cordova.exec(null,null,"PGSocialShare","share",options);
             }
         }
 

@@ -1,6 +1,6 @@
 //
 //  NativeControls.h
-//  
+//
 //
 //  Created by Jesse MacFadyen on 10-02-03.
 //  MIT Licensed
@@ -10,39 +10,109 @@
 //  Created by Michael Nachbaur on 13/04/09.
 //  Copyright 2009 Decaf Ninja Software. All rights reserved.
 
-#import "NativeControls.h"
+//  Navigation bar additions made by Hiedi Utley (https://github.com/hutley/HelloPhoneGap1.0/) and zSprawl
+//  (https://github.com/zSprawl/NativeControls/).
+//  Navigation bar API cleaned and improved by Andreas Sommer (AndiDog, https://github.com/AndiDog/phonegap-plugins).
 
+#import "NativeControls.h"
 #import <QuartzCore/QuartzCore.h>
+
+#ifdef CORDOVA_FRAMEWORK
+#import <Cordova/CDVDebug.h>
+#else
+#import "CDVDebug.h"
+#endif
 
 @implementation NativeControls
 #ifndef __IPHONE_3_0
 @synthesize webView;
 #endif
+@synthesize navBarController;
+
 
 -(CDVPlugin*) initWithWebView:(UIWebView*)theWebView
 {
     self = (NativeControls*)[super initWithWebView:theWebView];
-    if (self) 
+    if (self)
 	{
         tabBarItems = [[NSMutableDictionary alloc] initWithCapacity:5];
 		originalWebViewBounds = theWebView.bounds;
+        tabBarHeight = 49.0f;
+        navBarHeight = 44.0f;
     }
     return self;
 }
 
 - (void)dealloc
-{	
+{
     if (tabBar)
         [tabBar release];
-	
-	if (toolBar)
-	{
-		[toolBarTitle release];
-		[toolBarItems release];
-		[toolBar release];
-	}
-	
+
+    if (navBar)
+        [navBar release];
+
+    if (navBarController)
+        [navBarController release];
+
     [super dealloc];
+}
+
+-(void)correctWebViewBounds
+{
+    //always the same...
+    CGFloat originX = originalWebViewBounds.origin.x;
+    CGFloat width = originalWebViewBounds.size.width;
+
+    //changes based on controls visible
+    CGFloat originY = originalWebViewBounds.origin.y;
+    CGFloat height = originalWebViewBounds.size.height;
+
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    switch (orientation)
+    {
+        case UIDeviceOrientationPortrait:
+        case UIDeviceOrientationPortraitUpsideDown:
+            width = originalWebViewBounds.size.width;
+            height = originalWebViewBounds.size.height;
+            break;
+        case UIDeviceOrientationLandscapeLeft:
+        case UIDeviceOrientationLandscapeRight:
+            width = originalWebViewBounds.size.height + 20.0f;
+            height = originalWebViewBounds.size.width - 20.0f;
+            break;
+    }
+
+    if ( tabBar != nil && !tabBar.hidden && navBar != nil && !navBar.hidden)
+    {
+        originY = navBarHeight;
+        height = height - navBarHeight - tabBarHeight;
+        //DLog(@"Both");
+    }
+    else if ( (tabBar == nil || tabBar.hidden) && navBar != nil && !navBar.hidden)
+    {
+        originY = navBarHeight;
+        height = height - navBarHeight;
+        //DLog(@"Top");
+    }
+    else if ( !tabBar.hidden && (navBar == nil || navBar.hidden))
+    {
+        height = height - tabBarHeight;
+        //DLog(@"Bottom");
+    }
+    else
+    {
+        //DLog(@"None");
+    }
+
+    CGRect webViewBounds = CGRectMake(
+                                      originX,
+                                      originY,
+                                      width,
+                                      height
+                                      );
+
+    [self.webView setFrame:webViewBounds];
+
 }
 
 #pragma mark -
@@ -56,27 +126,18 @@
  */
 - (void)createTabBar:(NSArray*)arguments withDict:(NSDictionary*)options
 {
-	tabBar = [UITabBar new];
-	tabBar.autoresizingMask =  UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-	[tabBar sizeToFit];
-	tabBar.delegate = self;
-	tabBar.multipleTouchEnabled   = NO;
-	tabBar.autoresizesSubviews    = YES;
-	tabBar.hidden                 = YES;
-	tabBar.userInteractionEnabled = YES;
+    tabBar = [UITabBar new];
+    [tabBar sizeToFit];
+    tabBar.delegate = self;
+    tabBar.multipleTouchEnabled   = NO;
+    tabBar.autoresizesSubviews    = YES;
+    tabBar.hidden                 = YES;
+    tabBar.userInteractionEnabled = YES;
 	tabBar.opaque = YES;
+
 	self.webView.superview.autoresizesSubviews = YES;
-	
-	/* Styling hints REF UIInterface.h
-	 
-	 tabBar.alpha = 0.5;
-	 tabBar.tintColor = [UIColor colorWithRed:1.000 green:0.000 blue:0.000 alpha:1.000];
-	 
-	 */
-	
-	
-	
-	[self.webView.superview addSubview:tabBar];
+
+	[ self.webView.superview addSubview:tabBar];
 }
 
 /**
@@ -91,18 +152,17 @@
 {
     if (!tabBar)
         [self createTabBar:nil withDict:nil];
-	
+
 	// if we are calling this again when its shown, reset
-	if (!tabBar.hidden) {
+	if (!tabBar.hidden)
 		return;
-	}
-    
+
     CGFloat height = 0.0f;
     BOOL atBottom = YES;
-	
+
     //	CGRect offsetRect = [ [UIApplication sharedApplication] statusBarFrame];
-    
-    if (options) 
+
+    if (options)
 	{
         height   = [[options objectForKey:@"height"] floatValue];
         atBottom = [[options objectForKey:@"position"] isEqualToString:@"bottom"];
@@ -112,15 +172,14 @@
 		height = 49.0f;
 		atBottom = YES;
 	}
-	
     tabBar.hidden = NO;
     CGRect webViewBounds = originalWebViewBounds;
     CGRect tabBarBounds;
-	
+
 	NSNotification* notif = [NSNotification notificationWithName:@"CDVLayoutSubviewAdded" object:tabBar];
 	[[NSNotificationQueue defaultQueue] enqueueNotification:notif postingStyle: NSPostASAP];
-	
-    if (atBottom) 
+
+    if (atBottom)
     {
         tabBarBounds = CGRectMake(
                                   webViewBounds.origin.x,
@@ -134,8 +193,8 @@
                                    webViewBounds.size.width,
                                    webViewBounds.size.height - height
                                    );
-    } 
-    else 
+    }
+    else
     {
         tabBarBounds = CGRectMake(
                                   webViewBounds.origin.x,
@@ -150,11 +209,41 @@
                                    webViewBounds.size.height - height
                                    );
     }
-    
+
     [tabBar setFrame:tabBarBounds];
-	
-	
     [self.webView setFrame:webViewBounds];
+}
+
+/**
+ * Resize the tab bar (this should be called on orientation change)
+ * @brief resize the tab bar on rotation
+ * @param arguments unused
+ * @param options unused
+ */
+- (void)resizeTabBar:(NSArray*)arguments withDict:(NSDictionary*)options {
+
+    //DLog(@"TabBar Resizing");
+
+    CGFloat height   = 49.0f;
+    CGRect webViewBounds = self.webView.bounds;
+    webViewBounds.size.height += height;
+    CGFloat topBar = 44.0f;
+    CGRect tabBarBounds = CGRectMake(
+                              webViewBounds.origin.x,
+                              webViewBounds.origin.y + webViewBounds.size.height - height + topBar,
+                              webViewBounds.size.width,
+                              height
+                              );
+    webViewBounds = CGRectMake(
+                               webViewBounds.origin.x,
+                               webViewBounds.origin.y + topBar,
+                               webViewBounds.size.width,
+                               webViewBounds.size.height - height
+                               );
+
+    [tabBar setFrame:tabBarBounds];
+    [self.webView setFrame:webViewBounds];
+
 }
 
 /**
@@ -167,13 +256,39 @@
 {
     if (!tabBar)
         [self createTabBar:nil withDict:nil];
-	tabBar.hidden = YES;
+    tabBar.hidden = YES;
 
-	NSNotification* notif = [NSNotification notificationWithName:@"CDVLayoutSubviewRemoved" object:tabBar];
+    NSNotification* notif = [NSNotification notificationWithName:@"CDVLayoutSubviewRemoved" object:tabBar];
 	[[NSNotificationQueue defaultQueue] enqueueNotification:notif postingStyle: NSPostASAP];
-	
-	
-	[self.webView setFrame:originalWebViewBounds];
+
+    CGRect webViewBounds = originalWebViewBounds;
+
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    switch (orientation) {
+        case UIDeviceOrientationPortrait:
+        case UIDeviceOrientationPortraitUpsideDown:
+            webViewBounds = CGRectMake(
+                                       webViewBounds.origin.x,
+                                       webViewBounds.origin.y,
+                                       webViewBounds.size.width,
+                                       webViewBounds.size.height
+                                       );
+
+            break;
+        case UIDeviceOrientationLandscapeLeft:
+        case UIDeviceOrientationLandscapeRight:
+            webViewBounds = CGRectMake(
+                                       webViewBounds.origin.x,
+                                       webViewBounds.origin.y,
+                                       webViewBounds.size.height + 20.0f,
+                                       webViewBounds.size.width - 20.0f
+                                       );
+
+            break;
+    }
+
+    [self.webView setFrame:webViewBounds];
+//	[self.webView setFrame:originalWebViewBounds];
 }
 
 /**
@@ -207,13 +322,13 @@
 {
     if (!tabBar)
         [self createTabBar:nil withDict:nil];
-    
+
     NSString  *name      = [arguments objectAtIndex:0];
     NSString  *title     = [arguments objectAtIndex:1];
     NSString  *imageName = [arguments objectAtIndex:2];
     int tag              = [[arguments objectAtIndex:3] intValue];
-    
-    UITabBarItem *item = nil;    
+
+    UITabBarItem *item = nil;
     if ([imageName length] > 0) {
         UITabBarSystemItem systemItem = -1;
         if ([imageName isEqualToString:@"tabButton:More"])       systemItem = UITabBarSystemItemMore;
@@ -231,14 +346,14 @@
         if (systemItem != -1)
             item = [[UITabBarItem alloc] initWithTabBarSystemItem:systemItem tag:tag];
     }
-    
+
     if (item == nil) {
         item = [[UITabBarItem alloc] initWithTitle:title image:[UIImage imageNamed:imageName] tag:tag];
     }
-    
+
     if ([options objectForKey:@"badge"])
         item.badgeValue = [options objectForKey:@"badge"];
-    
+
     [tabBarItems setObject:item forKey:name];
 	[item release];
 }
@@ -256,7 +371,7 @@
 {
     if (!tabBar)
         [self createTabBar:nil withDict:nil];
-    
+
     NSString  *name = [arguments objectAtIndex:0];
     UITabBarItem *item = [tabBarItems objectForKey:name];
     if (item)
@@ -277,7 +392,7 @@
 {
     if (!tabBar)
         [self createTabBar:nil withDict:nil];
-    
+
     int i, count = [arguments count];
     NSMutableArray *items = [[NSMutableArray alloc] initWithCapacity:count];
     for (i = 0; i < count; i++) {
@@ -286,12 +401,13 @@
         if (item)
             [items addObject:item];
     }
-    
+
     BOOL animateItems = NO;
     if ([options objectForKey:@"animate"])
         animateItems = [(NSString*)[options objectForKey:@"animate"] boolValue];
     [tabBar setItems:items animated:animateItems];
 	[items release];
+
 }
 
 /**
@@ -305,7 +421,7 @@
 {
     if (!tabBar)
         [self createTabBar:nil withDict:nil];
-    
+
     NSString *itemName = [arguments objectAtIndex:0];
     UITabBarItem *item = [tabBarItems objectForKey:itemName];
     if (item)
@@ -317,386 +433,266 @@
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
-    NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.nativeControls.tabBarItemSelected(%d);", item.tag];    
+    NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.nativeControls.tabBarItemSelected(%d);", item.tag];
     [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
 }
 
 #pragma mark -
-#pragma mark ToolBar
+#pragma mark navBar
+
+
 
 
 /*********************************************************************************/
-- (void)createToolBar:(NSArray*)arguments withDict:(NSDictionary*)options
-{
-    CGFloat height   = 45.0f;
-    BOOL atTop       = YES;
-	UIBarStyle style = UIBarStyleBlack;
-	//UIBarStyle style = UIBarStyleDefault;
 
-    NSDictionary* toolBarSettings = options;//[settings objectForKey:@"ToolBarSettings"];
-    if (toolBarSettings) 
-	{
-        if ([toolBarSettings objectForKey:@"height"])
-            height = [[toolBarSettings objectForKey:@"height"] floatValue];
-		
-        if ([toolBarSettings objectForKey:@"position"])
-            atTop  = [[toolBarSettings objectForKey:@"position"] isEqualToString:@"top"];
+-(void) createNavBar:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+{
+    if (!navBar)
+    {
+        navBarController = [[CDVNavigationBarController alloc] init];
+        navBar = [navBarController view];
+        [navBarController setDelegate:self];
+
+        NSLog(@"navBar width: %f",[navBar frame].size.width);
+        [[navBarController view] setFrame:CGRectMake(0, 0, originalWebViewBounds.size.width , navBarHeight)];
+        [[[self webView] superview] addSubview:[navBarController view]];
+        [navBar setHidden:YES];
+
+    }
+
+}
+
++ (UIBarButtonSystemItem)getUIBarButtonSystemItemForString:(NSString*)imageName
+{
+    UIBarButtonSystemItem systemItem = -1;
+    
+         if([imageName isEqualToString:@"barButton:Action"])        systemItem = UIBarButtonSystemItemAction;
+    else if([imageName isEqualToString:@"barButton:Add"])           systemItem = UIBarButtonSystemItemAdd;
+    else if([imageName isEqualToString:@"barButton:Bookmarks"])     systemItem = UIBarButtonSystemItemBookmarks;
+    else if([imageName isEqualToString:@"barButton:Camera"])        systemItem = UIBarButtonSystemItemCamera;
+    else if([imageName isEqualToString:@"barButton:Cancel"])        systemItem = UIBarButtonSystemItemCancel;
+    else if([imageName isEqualToString:@"barButton:Compose"])       systemItem = UIBarButtonSystemItemCompose;
+    else if([imageName isEqualToString:@"barButton:Done"])          systemItem = UIBarButtonSystemItemDone;
+    else if([imageName isEqualToString:@"barButton:Edit"])          systemItem = UIBarButtonSystemItemEdit;
+    else if([imageName isEqualToString:@"barButton:FastForward"])   systemItem = UIBarButtonSystemItemFastForward;
+    else if([imageName isEqualToString:@"barButton:FixedSpace"])    systemItem = UIBarButtonSystemItemFixedSpace;
+    else if([imageName isEqualToString:@"barButton:FlexibleSpace"]) systemItem = UIBarButtonSystemItemFlexibleSpace;
+    else if([imageName isEqualToString:@"barButton:Organize"])      systemItem = UIBarButtonSystemItemOrganize;
+    else if([imageName isEqualToString:@"barButton:PageCurl"])      systemItem = UIBarButtonSystemItemPageCurl;
+    else if([imageName isEqualToString:@"barButton:Pause"])         systemItem = UIBarButtonSystemItemPause;
+    else if([imageName isEqualToString:@"barButton:Play"])          systemItem = UIBarButtonSystemItemPlay;
+    else if([imageName isEqualToString:@"barButton:Redo"])          systemItem = UIBarButtonSystemItemRedo;
+    else if([imageName isEqualToString:@"barButton:Refresh"])       systemItem = UIBarButtonSystemItemRefresh;
+    else if([imageName isEqualToString:@"barButton:Reply"])         systemItem = UIBarButtonSystemItemReply;
+    else if([imageName isEqualToString:@"barButton:Rewind"])        systemItem = UIBarButtonSystemItemRewind;
+    else if([imageName isEqualToString:@"barButton:Save"])          systemItem = UIBarButtonSystemItemSave;
+    else if([imageName isEqualToString:@"barButton:Search"])        systemItem = UIBarButtonSystemItemSearch;
+    else if([imageName isEqualToString:@"barButton:Stop"])          systemItem = UIBarButtonSystemItemStop;
+    else if([imageName isEqualToString:@"barButton:Trash"])         systemItem = UIBarButtonSystemItemTrash;
+    else if([imageName isEqualToString:@"barButton:Undo"])          systemItem = UIBarButtonSystemItemUndo;
+    
+    return systemItem;
+}
+
+- (void)setupLeftNavButton:(NSArray*)arguments withDict:(NSDictionary*)options
+{
+    NSString * title = [arguments objectAtIndex:0];
+    NSString * imageName = [arguments objectAtIndex:1];
+
+    if (title && [title length] > 0)
+    {
+        [[navBarController leftButton] setTitle:title];
+        [[navBarController leftButton] setImage:nil];
+    }
+    else if (imageName && [imageName length] > 0)
+    {
+        UIBarButtonSystemItem systemItem = [NativeControls getUIBarButtonSystemItemForString:imageName];
         
-#pragma unused(atTop)
-		
-        NSString *styleStr = [toolBarSettings objectForKey:@"style"];
-        if ([styleStr isEqualToString:@"Default"])
-            style = UIBarStyleDefault;
-        else if ([styleStr isEqualToString:@"BlackOpaque"])
-            style = UIBarStyleBlackOpaque;//deprecated
-        else if ([styleStr isEqualToString:@"BlackTranslucent"])
-            style = UIBarStyleBlackTranslucent;//deprecated
-    }
-    
-    CGRect webViewBounds = self.webView.bounds;
-    CGRect toolBarBounds = CGRectMake(
-                                      webViewBounds.origin.x,
-                                      webViewBounds.origin.y - 1.0f,
-                                      webViewBounds.size.width,
-                                      height
-                                      );
-    webViewBounds = CGRectMake(
-                               webViewBounds.origin.x,
-                               webViewBounds.origin.y + height,
-                               webViewBounds.size.width,
-                               webViewBounds.size.height - height
-                               );
-    toolBar = [[UIToolbar alloc] initWithFrame:toolBarBounds];
-    
-	[toolBar sizeToFit];
-	toolBar.autoresizingMask =  UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-	toolBar.hidden                 = NO;
-	toolBar.multipleTouchEnabled   = NO;
-	toolBar.autoresizesSubviews    = YES;
-	toolBar.userInteractionEnabled = YES;
-	toolBar.barStyle               = style; //set in line: 324 above 	UIBarStyle style = UIBarStyleBlack;
-
-	/* Styling hints REF UIInterface.h
-	 
-	 toolBar.alpha = 0.5;
-	 toolBar.tintColor = [UIColor colorWithRed:1.000 green:0.000 blue:0.000 alpha:1.000];
-
-	 */
-	
-    
-    [toolBar setFrame:toolBarBounds];
-    [self.webView setFrame:webViewBounds];
-    
-    [self.webView.superview addSubview:toolBar];
-}
-
-- (void)resetToolBar:(NSArray*)arguments withDict:(NSDictionary*)options
-{
-	NSLog(@"about to reset toolBarItems");
-	toolBarItems = nil;
-	/*
-     if (toolBarItems)
-     {
-     [toolBarItems release];
-     }
-	 */
-}
-
-/**
- * Hide the tool bar
- * @brief hide the tool bar
- * @param arguments unused
- * @param options unused
- */
-- (void)hideToolBar:(NSArray*)arguments withDict:(NSDictionary*)options
-{
-    if (!toolBar)
-        [self createToolBar:nil withDict:nil];
-    toolBar.hidden = YES;
-	
-	NSNotification* notif = [NSNotification notificationWithName:@"CDVLayoutSubviewRemoved" object:toolBar];
-	[[NSNotificationQueue defaultQueue] enqueueNotification:notif postingStyle: NSPostASAP];
-	
-	
-	[self.webView setFrame:originalWebViewBounds];
-}
-
-
-- (void)setToolBarTitle:(NSArray*)arguments withDict:(NSDictionary*)options
-{
-    if (!toolBar)
-        [self createToolBar:nil withDict:nil];
-    
-    NSString *title = [arguments objectAtIndex:0];
-    
-       
-    if (!toolBarTitle) {
-         NSLog(@"not : %@", title);
-        toolBarTitle = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(toolBarTitleClicked)];
-    } else {
-         NSLog(@"is: %@", title);
-        toolBarTitle.title = title;
-    }
-}
-
-/**
- * Create a new tool bar button item for use on a previously created tool bar.  Use ::showToolBar to show the new item on the tool bar.
- *
- * If the supplied image name is one of the labels listed below, then this method will construct a button
- * using the standard system buttons.  Note that if you use one of the system images, that the title you supply will be ignored.
- *
- * <b>Tool Bar Buttons</b>
- * UIBarButtonSystemItemDone
- * UIBarButtonSystemItemCancel
- * UIBarButtonSystemItemEdit
- * UIBarButtonSystemItemSave
- * UIBarButtonSystemItemAdd
- * UIBarButtonSystemItemFlexibleSpace
- * UIBarButtonSystemItemFixedSpace
- * UIBarButtonSystemItemCompose
- * UIBarButtonSystemItemReply
- * UIBarButtonSystemItemAction
- * UIBarButtonSystemItemOrganize
- * UIBarButtonSystemItemBookmarks
- * UIBarButtonSystemItemSearch
- * UIBarButtonSystemItemRefresh
- * UIBarButtonSystemItemStop
- * UIBarButtonSystemItemCamera
- * UIBarButtonSystemItemTrash
- * UIBarButtonSystemItemPlay
- * UIBarButtonSystemItemPause
- * UIBarButtonSystemItemRewind
- * UIBarButtonSystemItemFastForward
- * UIBarButtonSystemItemUndo,        // iOS 3.0 and later
- * UIBarButtonSystemItemRedo,        // iOS 3.0 and later
- * UIBarButtonSystemItemPageCurl,    // iOS 4.0 and later 
- * @param {String} name internal name to refer to this tab by
- * @param {String} [title] title text to show on the button, or null if no text should be shown
- * @param {String} [image] image filename or internal identifier to show, or null if now image should be shown
- * @param {Object} [options] Options for customizing the individual tab item [no option available at this time - this is for future proofing]
- *  
- */
-- (void)createToolBarItem:(NSArray*)arguments withDict:(NSDictionary*)options
-{
-    if (!toolBar)
-	{
-        [self createToolBar:nil withDict:nil];
-	}
-	
-	if (!toolBarItems)
-	{
-		toolBarItems = [[NSMutableArray alloc] initWithCapacity:1];
-	}
-
-  NSString  *tagId      = [arguments objectAtIndex:0];
-  NSString  *title     = [arguments objectAtIndex:1];
-	NSString  *imageName = nil;
-
-	if (arguments.count > 2)
-	{
-		imageName = [arguments objectAtIndex:2];
-	}
-	
-	NSString  *style;
-	
-	if (arguments.count >= 4)
-	{
-		style	 = [arguments objectAtIndex:3];
-	}
-	else 
-	{
-		style = @"UIBarButtonItemStylePlain";
-	}
-    
-	
-	UIBarButtonItemStyle useStyle;
-	
-	if ([style isEqualToString:@"UIBarButtonItemStyleBordered"])
-	{
-		useStyle = UIBarButtonItemStyleBordered;
-	}
-	else if ([style isEqualToString:@"UIBarButtonItemStyleDone"])
-	{
-		useStyle = UIBarButtonItemStyleDone;
-	}
-	else 
-	{
-		useStyle = UIBarButtonItemStylePlain;
-	}
-    
-    UIBarButtonItem *item = nil;    
-    if (imageName && [imageName length] > 0) 
-	{
-        UIBarButtonSystemItem systemItem = -1;
-        if ([imageName isEqualToString:@"UIBarButtonSystemItemDone"])
-		{
-			systemItem = UIBarButtonSystemItemDone;
-		}
-        else if ([imageName isEqualToString:@"UIBarButtonSystemItemCancel"])
-		{
-			systemItem = UIBarButtonSystemItemCancel;
-		}
-        else if ([imageName isEqualToString:@"UIBarButtonSystemItemEdit"])
-		{
-			systemItem = UIBarButtonSystemItemEdit;
-		}
-        else if ([imageName isEqualToString:@"UIBarButtonSystemItemSave"])
-		{
-			systemItem = UIBarButtonSystemItemSave;
-		}
-        else if ([imageName isEqualToString:@"UIBarButtonSystemItemAdd"])
-		{
-			systemItem = UIBarButtonSystemItemAdd;
-		}
-        else if ([imageName isEqualToString:@"UIBarButtonSystemItemFlexibleSpace"])
-		{
-			systemItem = UIBarButtonSystemItemFlexibleSpace;
-		}
-        else if ([imageName isEqualToString:@"UIBarButtonSystemItemFixedSpace"])
-		{
-			systemItem = UIBarButtonSystemItemFixedSpace;
-		}
-        else if ([imageName isEqualToString:@"UIBarButtonSystemItemCompose"])
-		{
-			systemItem = UIBarButtonSystemItemCompose;
-		}
-        else if ([imageName isEqualToString:@"UIBarButtonSystemItemReply"])
-		{
-			systemItem = UIBarButtonSystemItemReply;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemAction"])
-		{
-			systemItem = UIBarButtonSystemItemAction;
-		}
-        else if ([imageName isEqualToString:@"UIBarButtonSystemItemOrganize"])
-		{
-			systemItem = UIBarButtonSystemItemOrganize;
-		}
-        else if ([imageName isEqualToString:@"UIBarButtonSystemItemBookmarks"])
-		{
-			systemItem = UIBarButtonSystemItemBookmarks;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemSearch"])
-		{
-			systemItem = UIBarButtonSystemItemSearch;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemRefresh"])
-		{
-			systemItem = UIBarButtonSystemItemRefresh;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemStop"])
-		{
-			systemItem = UIBarButtonSystemItemStop;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemCamera"])
-		{
-			systemItem = UIBarButtonSystemItemCamera;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemTrash"])
-		{
-			systemItem = UIBarButtonSystemItemTrash;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemPlay"])
-		{
-			systemItem = UIBarButtonSystemItemPlay;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemPause"])
-		{
-			systemItem = UIBarButtonSystemItemPause;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemRewind"])
-		{
-			systemItem = UIBarButtonSystemItemRewind;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemFastForward"])
-		{
-			systemItem = UIBarButtonSystemItemFastForward;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemUndo"])
-		{
-			systemItem = UIBarButtonSystemItemUndo;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemRedo"])
-		{
-			systemItem = UIBarButtonSystemItemRedo;
-		}
-		else if ([imageName isEqualToString:@"UIBarButtonSystemItemPageCurl"])
-		{
-			systemItem = UIBarButtonSystemItemPageCurl;
-		}
+        if (systemItem != -1)
+        {
+            UIBarButtonItem *newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:systemItem target:self action:@selector(leftNavButtonTapped)];
+            navBarController.navItem.leftBarButtonItem = newButton;
+            [newButton release];
+            return;
+        }
+        else
+            [[navBarController leftButton] setImage:[UIImage imageNamed:imageName]];
         
-		if (systemItem)
-		{
-			item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:systemItem target:self action:@selector(toolBarButtonTapped:)];
-			if ([imageName isEqualToString:@"UIBarButtonSystemItemFixedSpace"])
-			{
-				item.width = 14;
-			}
-		}
-		else
-		{
-			item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName] style:useStyle target:self action:@selector(toolBarButtonTapped:)];
-		}
+        [[navBarController leftButton] setTitle:nil];
     }
-	else 
-	{
-		item = [[UIBarButtonItem alloc] initWithTitle:title style:useStyle target:self action:@selector(toolBarButtonTapped:)];
-	}
-    
-	
-    [toolBarItems insertObject:item atIndex:[tagId intValue]];
-	[item release];
+    else
+    {
+        [[navBarController leftButton] setImage:nil];
+        [[navBarController leftButton] setTitle:nil];
+    }
 }
 
-- (void)showToolBar:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)setupRightNavButton:(NSArray*)arguments withDict:(NSDictionary*)options
 {
-    if (!toolBar)
-	{
-        [self createToolBar:nil withDict:nil];
-	}	
-	
-	[toolBar setItems:toolBarItems animated:NO];
+    NSString * title = [arguments objectAtIndex:0];
+    NSString * imageName = [arguments objectAtIndex:1];
+    
+    if (title && [title length] > 0)
+    {
+        [[navBarController rightButton] setTitle:title];
+        [[navBarController rightButton] setImage:nil];
+    }
+    else if (imageName && [imageName length] > 0)
+    {
+        UIBarButtonSystemItem systemItem = [NativeControls getUIBarButtonSystemItemForString:imageName];
+        
+        if (systemItem != -1)
+        {
+            UIBarButtonItem *newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:systemItem target:self action:@selector(rightNavButtonTapped)];
+            navBarController.navItem.rightBarButtonItem = newButton;
+            [newButton release];
+            return;
+        }
+        else
+            [[navBarController rightButton] setImage:[UIImage imageNamed:imageName]];
+        
+        [[navBarController rightButton] setTitle:nil];
+    }
+    else
+    {
+        [[navBarController rightButton] setImage:nil];
+        [[navBarController rightButton] setTitle:nil];
+    }
 }
 
-- (void) toolBarButtonTapped:(UIBarButtonItem *)button
+- (void)hideLeftNavButton:(NSArray*)arguments withDict:(NSDictionary*)options
 {
-	int count = 0;
-    
-	for (UIBarButtonItem* currentButton in toolBarItems)
-	{
-		if (currentButton == button) {
-			NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.nativeControls.toolBarButtonTapped(%d);", count];    
-			[self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
-			return;
-		}
-		
-		count++;
-	}
+    [[navBarController navItem] setLeftBarButtonItem:nil];
 }
+
+- (void)showLeftNavButton:(NSArray*)arguments withDict:(NSDictionary*)options
+{
+    [[navBarController navItem] setLeftBarButtonItem:[navBarController leftButton]];
+}
+
+- (void)hideRightNavButton:(NSArray*)arguments withDict:(NSDictionary*)options
+{
+    [[navBarController navItem] setRightBarButtonItem:nil];
+}
+
+- (void)showRightNavButton:(NSArray*)arguments withDict:(NSDictionary*)options
+{
+    [[navBarController navItem] setRightBarButtonItem:[navBarController rightButton]];
+}
+
+-(void) leftNavButtonTapped
+{
+    NSString * jsCallBack = @"window.plugins.nativeControls.leftNavButtonTapped();";
+    [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+}
+
+-(void) rightNavButtonTapped
+{
+    NSString * jsCallBack = @"window.plugins.nativeControls.rightNavButtonTapped();";
+    [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+}
+
+-(void) showNavBar:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+{
+    if (!navBar)
+        [self createNavBar:nil withDict:nil];
+
+    if ([navBar isHidden])
+    {
+        [navBar setHidden:NO];
+        [self correctWebViewBounds];
+    }
+}
+
+
+-(void) hideNavBar:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+{
+    if (navBar && ![navBar isHidden])
+    {
+        [navBar setHidden:YES];
+        [self correctWebViewBounds];
+    }
+
+}
+
+-(void) setNavBarTitle:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+{
+    if (navBar)
+    {
+        NSString  *name = [arguments objectAtIndex:0];
+        [navBarController navItem].title = name;
+
+        // Reset otherwise overriding logo reference
+        [navBarController navItem].titleView = NULL;
+    }
+}
+
+-(void) setNavBarLogo:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+{
+
+    NSString * logoURL = [arguments objectAtIndex:0];
+    UIImage * image = nil;
+
+    if (logoURL && logoURL != @"")
+    {
+        if ([logoURL hasPrefix:@"http://"] || [logoURL hasPrefix:@"https://"])
+        {
+            NSData * data = [NSData dataWithContentsOfURL:[NSURL URLWithString:logoURL]];
+            image = [UIImage imageWithData:data];
+        }
+        else
+        {
+ /*           NSString * path = [HelloPhoneGapAppDelegate pathForResource:logoURL];
+            if (!path)
+            {
+                NSMutableArray *dirs = [NSMutableArray arrayWithArray:[logoURL componentsSeparatedByString:@"/"]];
+                NSString *filename = [dirs lastObject];
+                NSArray *nameParts = [filename componentsSeparatedByString:@"."];
+                path = [[NSBundle mainBundle] pathForResource:[nameParts objectAtIndex:0] ofType:[nameParts lastObject]];
+
+            }
+            if (path)
+            {
+                image = [UIImage imageWithContentsOfFile:path];
+            } */
+        }
+
+
+        if (image)
+        {
+            UIImageView * view = [[[UIImageView alloc] initWithImage:image] autorelease];
+            [view setContentMode:UIViewContentModeScaleAspectFit];
+            [view setBounds: CGRectMake(0, 0, 100, 30)];
+            [[navBarController navItem] setTitleView:view];
+        }
+    }
+
+}
+
 
 #pragma mark -
 #pragma mark ActionSheet
 
 - (void)createActionSheet:(NSArray*)arguments withDict:(NSDictionary*)options
 {
-    
+
 	NSString* title = [options objectForKey:@"title"];
-    
-	
-	UIActionSheet* actionSheet = [ [UIActionSheet alloc ] 
-                                  initWithTitle:title 
-                                  delegate:self 
-                                  cancelButtonTitle:nil 
+
+
+	UIActionSheet* actionSheet = [ [UIActionSheet alloc ]
+                                  initWithTitle:title
+                                  delegate:self
+                                  cancelButtonTitle:nil
                                   destructiveButtonTitle:nil
                                   otherButtonTitles:nil
                                   ];
-	
+
 	int count = [arguments count];
 	for(int n = 0; n < count; n++)
 	{
 		[ actionSheet addButtonWithTitle:[arguments objectAtIndex:n]];
 	}
-	
+
 	if([options objectForKey:@"cancelButtonIndex"])
 	{
 		actionSheet.cancelButtonIndex = [[options objectForKey:@"cancelButtonIndex"] intValue];
@@ -705,20 +701,17 @@
 	{
 		actionSheet.destructiveButtonIndex = [[options objectForKey:@"destructiveButtonIndex"] intValue];
 	}
-	
+
 	actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;//UIActionSheetStyleBlackOpaque;
     [actionSheet showInView:self.webView.superview];
     [actionSheet release];
-	
-}
 
+}
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-	NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.nativeControls._onActionSheetDismissed(%d);", buttonIndex];    
+	NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.nativeControls._onActionSheetDismissed(%d);", buttonIndex];
     [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
 }
-
-
 
 @end

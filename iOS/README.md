@@ -16,6 +16,7 @@ The present https://github.com/phonegap/phonegap-plugins/tree/master/iPhone shou
 * Added a NativeControls (iOS) plugin with Cordova support.
 * Added a PayPalPlugin (iOS) plugin with Cordova support.
 * Added a PrintPlugin (iOS) plugin with Cordova support.
+* Added a Screenshot (iOS) plugin with Cordova support.
 * Added a SMSComposer (iOS) plugin with Cordova support.
 * Added a Twitter (iOS) plugin with Cordova support.
 * Added a VolumeSlider (iOS) plugin with Cordova support.

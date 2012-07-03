@@ -34,7 +34,7 @@ public class Share extends Plugin {
 		sendIntent.setType("text/plain");
 		sendIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 		sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
-		this.ctx.startActivity(sendIntent);
+		this.cordova.startActivityForResult(this, sendIntent, 0);
 	}
 
 }

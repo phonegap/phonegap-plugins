@@ -7,6 +7,20 @@ Location:
 - assets\www\localizable.js
 - src\dell\phoneGap\localization\Localizable.java
 
+Preparation:
+------------
+1. Add the following reference to your html file:
+<script type="text/javascript" src="localizable.js"></script>
+
+2. Create different resource files for each locale as you normally do it in Android:
+http://developer.android.com/guide/topics/resources/localization.html
+
+3. Add localizable.js to the following folder in your project:
+<project>/assets/www/localizable.js
+
+4. Add localizable.java to the following folder in your project:
+<project>/src/<namespace>/localizable.js
+ 
 Usage:
 ------
 

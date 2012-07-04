@@ -66,19 +66,16 @@ public final class SearchBookContentsActivity extends Activity {
   private TextView headerView;
 
   private final Handler handler = new Handler() {
-    @Override
-    public void handleMessage(Message message) {
-      switch (message.what) {
-        case R.id.search_book_contents_succeeded:
-          handleSearchResults((JSONObject) message.obj);
-          resetForNewQuery();
-          break;
-        case R.id.search_book_contents_failed:
-          resetForNewQuery();
-          headerView.setText(R.string.msg_sbc_failed);
-          break;
-      }
-    }
+	  @Override
+	  public void handleMessage(Message message) {
+		  if (message.what == R.id.search_book_contents_succeeded) {
+			  handleSearchResults((JSONObject) message.obj);
+			  resetForNewQuery();
+		  } else if (message.what == R.id.search_book_contents_failed) {
+			  resetForNewQuery();
+			  headerView.setText(R.string.msg_sbc_failed);
+		  }
+	  }
   };
 
   private final Button.OnClickListener buttonListener = new Button.OnClickListener() {

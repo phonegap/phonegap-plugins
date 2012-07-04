@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (C) 2010 ZXing authors
+ Copyright (C) 2012 ZXing authors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@
   <string name="button_ok">OK</string>
   <string name="button_open_browser">Apri browser</string>
   <string name="button_product_search">Cerca prodotto</string>
-  <string name="button_read_book">Sfoglia libro</string>
   <string name="button_search_book_contents">Cerca contenuti</string>
   <string name="button_share_app">Applicazione</string>
   <string name="button_share_bookmark">Segnalibro</string>
@@ -52,33 +51,35 @@
   <string name="contents_phone">Numero di telefono</string>
   <string name="contents_sms">Numero SMS</string>
   <string name="contents_text">Testo puro</string>
+  <string name="history_clear_one_history_text">Cancella</string>
   <string name="history_clear_text">Cancella cronologia</string>
   <string name="history_email_title">Cronologia scansioni codici a barre</string>
+  <string name="history_empty">Vuoto</string>
+  <string name="history_empty_detail">Nessun scansioni di codici a barre sono stati registrati</string>
   <string name="history_send">Invia cronologia</string>
   <string name="history_title">Cronologia</string>
   <string name="menu_about">Info</string>
+  <string name="menu_encode_mecard">Usa MECARD</string>
+  <string name="menu_encode_vcard">Usa vCard</string>
   <string name="menu_help">Aiuto</string>
   <string name="menu_history">Cronologia</string>
   <string name="menu_settings">Impostazioni</string>
   <string name="menu_share">Condividi</string>
   <string name="msg_about">Basato sulla libreria di software libero ZXing Barcode</string>
-  <string name="msg_buggy">Questo dispositivo ha un bug noto che causa problemi con la scansione dei codici a barre. Per ulteriori informazioni, visita http://code.google.com/p/zxing/wiki/FrequentlyAskedQuestions</string>
   <string name="msg_bulk_mode_scanned">Modalità di gruppo: codici a barre scansionati e salvati</string>
   <string name="msg_camera_framework_bug">Spiacenti, la fotocamera Android ha riscontrato un problema. Potrebbe essere necessario riavviare il dispositivo.</string>
-  <string name="msg_default_contents">Contenuti</string>
   <string name="msg_default_format">Formato</string>
   <string name="msg_default_meta">Metadati</string>
   <string name="msg_default_mms_subject">Ciao</string>
   <string name="msg_default_status">Posiziona un codice a barre dentro il mirino rettangolare per la scansione.</string>
   <string name="msg_default_time">Tempo</string>
   <string name="msg_default_type">Tipo</string>
-  <string name="msg_encode_barcode_failed">Impossibile generare il codice a barre richiesto.</string>
   <string name="msg_encode_contents_failed">Impossibile codificare un codice a barre dai dati forniti.</string>
+  <string name="msg_google_books">Google Libri</string>
+  <string name="msg_google_product">Google Shopping</string>
   <string name="msg_google_shopper_missing">Google Shopper non è installato</string>
   <string name="msg_install_google_shopper">Google Shopper combina la scansione dei codici a barre con prezzi locali e online, recensioni e altro senza dover aprire il browser. Vuoi provare?</string>
   <string name="msg_intent_failed">Spiacenti, l\'applicazione richiesta non può essere avviata. Il contenuto del codice a barre può essere non valido.</string>
-  <string name="msg_loading_apps">Caricamento lista applicazioni\u2026</string>
-  <string name="msg_not_our_results">Stai uscendo da questo programma. I risultati della ricerca che vedrai non sono collegati a questa applicazione.</string>
   <string name="msg_redirect">Inoltra</string>
   <string name="msg_sbc_book_not_searchable">Spiacenti, questo libro non è ricercabile.</string>
   <string name="msg_sbc_failed">Spiacenti, la ricerca ha avuto un problema.</string>
@@ -90,11 +91,14 @@
   <string name="msg_share_explanation">Puoi condividere i dati mostrando un codice a barre sullo schermo e facendo la scansione con un altro telefono.</string>
   <string name="msg_share_subject_line">Questo è il contenuto di un codice a barre di prova</string>
   <string name="msg_share_text">O digitare un testo</string>
+  <string name="msg_sure">Sei sicuro?</string>
   <string name="msg_unmount_usb">Spiacenti, la scheda SD non è accessibile.</string>
   <string name="preferences_actions_title">Quando viene trovato un codice a barre\u2026</string>
+  <string name="preferences_auto_focus_title">Utilizzare messa a fuoco automatica</string>
   <string name="preferences_bulk_mode_summary">Scansiona e salva diversi codici a barre in sequenza</string>
   <string name="preferences_bulk_mode_title">Modalità scansione di gruppo</string>
   <string name="preferences_copy_to_clipboard_title">Copia negli appunti</string>
+  <string name="preferences_custom_product_search_summary" formatted="false">Sostituzioni: %s = contenuti, %f = formato, %t = tipo</string>
   <string name="preferences_custom_product_search_title">URL ricerca personalizzata</string>
   <string name="preferences_decode_1D_title">Codice a barre 1D</string>
   <string name="preferences_decode_Data_Matrix_title">Matrice dati</string>
@@ -107,9 +111,8 @@
   <string name="preferences_remember_duplicates_summary">Mantieni scansioni multiple del codice a barre nella stessa Cronologia</string>
   <string name="preferences_remember_duplicates_title">Ricorda duplicati</string>
   <string name="preferences_result_title">Impostazioni risultato</string>
-  <string name="preferences_reverse_image_summary">Attiva solo su dispositivi con fotocamera frontale</string>
-  <string name="preferences_reverse_image_title">Immagine fotocamera invertita</string>
   <string name="preferences_scanning_title">Durante la scansione di codici a barre, decodifica\u2026</string>
+  <string name="preferences_search_country">Cerca paese</string>
   <string name="preferences_supplemental_summary">Prova a cercare ulteriori informazioni sul contenuto del codice a barre</string>
   <string name="preferences_supplemental_title">Recupera altre informazioni</string>
   <string name="preferences_vibrate_title">Vibra</string>
@@ -127,15 +130,8 @@
   <string name="sbc_name">Ricerca Google Book</string>
   <string name="share_name">Condividi tramite codice a barre</string>
   <string name="title_about">Scansione codice a barre v</string>
-  <string name="wa_name">Configurazione WLAN</string>
-  <string name="wifi_changing_network">Cambio rete</string>
-  <string name="wifi_connect_failed">Connessione di rete fallita</string>
-  <string name="wifi_connected">Connesso</string>
-  <string name="wifi_creating_network">Creazione rete</string>
-  <string name="wifi_modifying_network">Modifica rete</string>
+  <string name="wifi_changing_network">Richiesta di connessione alla rete\u2026</string>
   <string name="wifi_ssid_label">Nome rete</string>
-  <string name="wifi_ssid_missing">Nome di rete mancante</string>
-  <string name="wifi_type_incorrect">Tipo di rete non corretto</string>
   <string name="wifi_type_label">Tipo</string>
   <string name="zxing_url">http://code.google.com/p/zxing</string>
 </resources>

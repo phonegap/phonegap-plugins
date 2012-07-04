@@ -16,22 +16,18 @@
 
 package com.google.zxing.client.android.history;
 
+import android.database.sqlite.SQLiteException;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
-import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.Intents;
 import com.google.zxing.client.android.PreferencesActivity;
-import com.google.zxing.client.android.R;
 import com.google.zxing.client.android.result.ResultHandler;
 
-import android.app.AlertDialog;
+import android.app.Activity;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Environment;
@@ -54,70 +50,104 @@ import java.util.List;
  * @author Sean Owen
  */
 public final class HistoryManager {
+
   private static final String TAG = HistoryManager.class.getSimpleName();
 
   private static final int MAX_ITEMS = 500;
 
-  private static final String[] GET_ITEM_COL_PROJECTION = {
+  private static final String[] COLUMNS = {
       DBHelper.TEXT_COL,
       DBHelper.DISPLAY_COL,
       DBHelper.FORMAT_COL,
       DBHelper.TIMESTAMP_COL,
+      DBHelper.DETAILS_COL,
   };
-  private static final String[] EXPORT_COL_PROJECTION = {
-      DBHelper.TEXT_COL,
-      DBHelper.DISPLAY_COL,
-      DBHelper.FORMAT_COL,
-      DBHelper.TIMESTAMP_COL,
-  };
+
+  private static final String[] COUNT_COLUMN = { "COUNT(1)" };
+
   private static final String[] ID_COL_PROJECTION = { DBHelper.ID_COL };
-  private static final DateFormat EXPORT_DATE_TIME_FORMAT = DateFormat.getDateTimeInstance();
+  private static final String[] ID_DETAIL_COL_PROJECTION = { DBHelper.ID_COL, DBHelper.DETAILS_COL };
+  private static final DateFormat EXPORT_DATE_TIME_FORMAT =
+      DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
-  private final CaptureActivity activity;
+  private final Activity activity;
 
-  public HistoryManager(CaptureActivity activity) {
+  public HistoryManager(Activity activity) {
     this.activity = activity;
   }
 
-  public AlertDialog buildAlert() {
+  public boolean hasHistoryItems() {
     SQLiteOpenHelper helper = new DBHelper(activity);
-    List<Result> items = new ArrayList<Result>();
-    List<String> dialogItems = new ArrayList<String>();
     SQLiteDatabase db = null;
     Cursor cursor = null;
     try {
-      db = helper.getWritableDatabase();
-      cursor = db.query(DBHelper.TABLE_NAME, GET_ITEM_COL_PROJECTION, null, null, null, null,
-          DBHelper.TIMESTAMP_COL + " DESC");
-      while (cursor.moveToNext()) {
-        Result result = new Result(cursor.getString(0), null, null,
-            BarcodeFormat.valueOf(cursor.getString(2)), cursor.getLong(3));
-        items.add(result);
-        String display = cursor.getString(1);
-        if (display == null || display.length() == 0) {
-          display = result.getText();
-        }
-        dialogItems.add(display);
-      }
-    } catch (SQLiteException sqle) {
-      Log.w(TAG, "Error while opening database", sqle);
+      db = helper.getReadableDatabase();
+      cursor = db.query(DBHelper.TABLE_NAME, COUNT_COLUMN, null, null, null, null, null);
+      cursor.moveToFirst();
+      return cursor.getInt(0) > 0;
     } finally {
-      if (cursor != null) {
-        cursor.close();
-      }
-      if (db != null) {
-        db.close();
-      }
+      close(cursor, db);
     }
+  }
 
-    Resources res = activity.getResources();
-    dialogItems.add(res.getString(R.string.history_send));
-    dialogItems.add(res.getString(R.string.history_clear_text));
-    DialogInterface.OnClickListener clickListener = new HistoryClickListener(this, activity, items);
-    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-    builder.setTitle(R.string.history_title);
-    builder.setItems(dialogItems.toArray(new String[dialogItems.size()]), clickListener);
-    return builder.create();
+  public List<HistoryItem> buildHistoryItems() {
+    SQLiteOpenHelper helper = new DBHelper(activity);
+    List<HistoryItem> items = new ArrayList<HistoryItem>();
+    SQLiteDatabase db = null;
+    Cursor cursor = null;
+    try {
+      db = helper.getReadableDatabase();
+      cursor = db.query(DBHelper.TABLE_NAME, COLUMNS, null, null, null, null, DBHelper.TIMESTAMP_COL + " DESC");
+      while (cursor.moveToNext()) {
+        String text = cursor.getString(0);
+        String display = cursor.getString(1);
+        String format = cursor.getString(2);
+        long timestamp = cursor.getLong(3);
+        String details = cursor.getString(4);
+        Result result = new Result(text, null, null, BarcodeFormat.valueOf(format), timestamp);
+        items.add(new HistoryItem(result, display, details));
+      }
+    } finally {
+      close(cursor, db);
+    }
+    return items;
+  }
+
+  public HistoryItem buildHistoryItem(int number) {
+    SQLiteOpenHelper helper = new DBHelper(activity);
+    SQLiteDatabase db = null;
+    Cursor cursor = null;
+    try {
+      db = helper.getReadableDatabase();
+      cursor = db.query(DBHelper.TABLE_NAME, COLUMNS, null, null, null, null, DBHelper.TIMESTAMP_COL + " DESC");
+      cursor.move(number + 1);
+      String text = cursor.getString(0);
+      String display = cursor.getString(1);
+      String format = cursor.getString(2);
+      long timestamp = cursor.getLong(3);
+      String details = cursor.getString(4);
+      Result result = new Result(text, null, null, BarcodeFormat.valueOf(format), timestamp);
+      return new HistoryItem(result, display, details);
+    } finally {
+      close(cursor, db);
+    }
+  }
+  
+  public void deleteHistoryItem(int number) {
+    SQLiteOpenHelper helper = new DBHelper(activity);
+    SQLiteDatabase db = null;
+    Cursor cursor = null;
+    try {
+      db = helper.getWritableDatabase();      
+      cursor = db.query(DBHelper.TABLE_NAME,
+                        ID_COL_PROJECTION,
+                        null, null, null, null,
+                        DBHelper.TIMESTAMP_COL + " DESC");
+      cursor.move(number + 1);
+      db.delete(DBHelper.TABLE_NAME, DBHelper.ID_COL + '=' + cursor.getString(0), null);
+    } finally {
+      close(cursor, db);
+    }
   }
 
   public void addHistoryItem(Result result, ResultHandler handler) {
@@ -133,70 +163,90 @@ public final class HistoryManager {
       deletePrevious(result.getText());
     }
 
+    ContentValues values = new ContentValues();
+    values.put(DBHelper.TEXT_COL, result.getText());
+    values.put(DBHelper.FORMAT_COL, result.getBarcodeFormat().toString());
+    values.put(DBHelper.DISPLAY_COL, handler.getDisplayContents().toString());
+    values.put(DBHelper.TIMESTAMP_COL, System.currentTimeMillis());
+
     SQLiteOpenHelper helper = new DBHelper(activity);
-    SQLiteDatabase db;
+    SQLiteDatabase db = null;
     try {
-      db = helper.getWritableDatabase();
-    } catch (SQLiteException sqle) {
-      Log.w(TAG, "Error while opening database", sqle);
-      return;
-    }
-    try {
+      db = helper.getWritableDatabase();      
       // Insert the new entry into the DB.
-      ContentValues values = new ContentValues();
-      values.put(DBHelper.TEXT_COL, result.getText());
-      values.put(DBHelper.FORMAT_COL, result.getBarcodeFormat().toString());
-      values.put(DBHelper.DISPLAY_COL, handler.getDisplayContents().toString());
-      values.put(DBHelper.TIMESTAMP_COL, System.currentTimeMillis());
       db.insert(DBHelper.TABLE_NAME, DBHelper.TIMESTAMP_COL, values);
     } finally {
-      db.close();
+      close(null, db);
+    }
+  }
+
+  public void addHistoryItemDetails(String itemID, String itemDetails) {
+    // As we're going to do an update only we don't need need to worry
+    // about the preferences; if the item wasn't saved it won't be udpated
+    SQLiteOpenHelper helper = new DBHelper(activity);
+    SQLiteDatabase db = null;    
+    Cursor cursor = null;
+    try {
+      db = helper.getWritableDatabase();
+      cursor = db.query(DBHelper.TABLE_NAME,
+                        ID_DETAIL_COL_PROJECTION,
+                        DBHelper.TEXT_COL + "=?",
+                        new String[] { itemID },
+                        null,
+                        null,
+                        DBHelper.TIMESTAMP_COL + " DESC",
+                        "1");
+      String oldID = null;
+      String oldDetails = null;
+      if (cursor.moveToNext()) {
+        oldID = cursor.getString(0);
+        oldDetails = cursor.getString(1);
+      }
+
+      String newDetails = oldDetails == null ? itemDetails : oldDetails + " : " + itemDetails;
+      ContentValues values = new ContentValues();
+      values.put(DBHelper.DETAILS_COL, newDetails);
+
+      db.update(DBHelper.TABLE_NAME, values, DBHelper.ID_COL + "=?", new String[] { oldID });
+
+    } finally {
+      close(cursor, db);
     }
   }
 
   private void deletePrevious(String text) {
     SQLiteOpenHelper helper = new DBHelper(activity);
-    SQLiteDatabase db;
+    SQLiteDatabase db = null;
     try {
-      db = helper.getWritableDatabase();
-    } catch (SQLiteException sqle) {
-      Log.w(TAG, "Error while opening database", sqle);
-      return;
-    }
-    try {
+      db = helper.getWritableDatabase();      
       db.delete(DBHelper.TABLE_NAME, DBHelper.TEXT_COL + "=?", new String[] { text });
     } finally {
-      db.close();
+      close(null, db);
     }
   }
 
   public void trimHistory() {
     SQLiteOpenHelper helper = new DBHelper(activity);
-    SQLiteDatabase db;
-    try {
-      db = helper.getWritableDatabase();
-    } catch (SQLiteException sqle) {
-      Log.w(TAG, "Error while opening database", sqle);
-      return;
-    }
+    SQLiteDatabase db = null;
     Cursor cursor = null;
     try {
+      db = helper.getWritableDatabase();      
       cursor = db.query(DBHelper.TABLE_NAME,
                         ID_COL_PROJECTION,
                         null, null, null, null,
                         DBHelper.TIMESTAMP_COL + " DESC");
-      int count = 0;
-      while (count < MAX_ITEMS && cursor.moveToNext()) {
-        count++;
-      }
+      cursor.move(MAX_ITEMS);
       while (cursor.moveToNext()) {
         db.delete(DBHelper.TABLE_NAME, DBHelper.ID_COL + '=' + cursor.getString(0), null);
       }
+    } catch (SQLiteException sqle) {
+      // We're seeing an error here when called in CaptureActivity.onCreate() in rare cases
+      // and don't understand it. First theory is that it's transient so can be safely ignored.
+      // TODO revisit this after live in a future version to see if it 'worked'
+      Log.w(TAG, sqle);
+      // continue
     } finally {
-      if (cursor != null) {
-        cursor.close();
-      }
-      db.close();
+      close(cursor, db);
     }
   }
 
@@ -217,35 +267,46 @@ public final class HistoryManager {
   CharSequence buildHistory() {
     StringBuilder historyText = new StringBuilder(1000);
     SQLiteOpenHelper helper = new DBHelper(activity);
-    SQLiteDatabase db;
-    try {
-      db = helper.getWritableDatabase();
-    } catch (SQLiteException sqle) {
-      Log.w(TAG, "Error while opening database", sqle);
-      return "";
-    }
+    SQLiteDatabase db = null;
     Cursor cursor = null;
     try {
+      db = helper.getWritableDatabase();
       cursor = db.query(DBHelper.TABLE_NAME,
-                        EXPORT_COL_PROJECTION,
+                        COLUMNS,
                         null, null, null, null,
                         DBHelper.TIMESTAMP_COL + " DESC");
+
       while (cursor.moveToNext()) {
-        for (int col = 0; col < EXPORT_COL_PROJECTION.length; col++) {
-          historyText.append('"').append(massageHistoryField(cursor.getString(col))).append("\",");
-        }
+
+        historyText.append('"').append(massageHistoryField(cursor.getString(0))).append("\",");
+        historyText.append('"').append(massageHistoryField(cursor.getString(1))).append("\",");
+        historyText.append('"').append(massageHistoryField(cursor.getString(2))).append("\",");
+        historyText.append('"').append(massageHistoryField(cursor.getString(3))).append("\",");
+
         // Add timestamp again, formatted
-        long timestamp = cursor.getLong(EXPORT_COL_PROJECTION.length - 1);
+        long timestamp = cursor.getLong(3);
         historyText.append('"').append(massageHistoryField(
-            EXPORT_DATE_TIME_FORMAT.format(new Date(timestamp)))).append("\"\r\n");
+            EXPORT_DATE_TIME_FORMAT.format(new Date(timestamp)))).append("\",");
+
+        // Above we're preserving the old ordering of columns which had formatted data in position 5
+
+        historyText.append('"').append(massageHistoryField(cursor.getString(4))).append("\"\r\n");
       }
+      return historyText;
     } finally {
-      if (cursor != null) {
-        cursor.close();
-      }
-      db.close();
+      close(cursor, db);
     }
-    return historyText;
+  }
+  
+  void clearHistory() {
+    SQLiteOpenHelper helper = new DBHelper(activity);
+    SQLiteDatabase db = null;
+    try {
+      db = helper.getWritableDatabase();      
+      db.delete(DBHelper.TABLE_NAME, null, null);
+    } finally {
+      close(null, db);
+    }
   }
 
   static Uri saveHistory(String history) {
@@ -276,22 +337,15 @@ public final class HistoryManager {
   }
 
   private static String massageHistoryField(String value) {
-    return value.replace("\"","\"\"");
+    return value == null ? "" : value.replace("\"","\"\"");
   }
-
-  void clearHistory() {
-    SQLiteOpenHelper helper = new DBHelper(activity);
-    SQLiteDatabase db;
-    try {
-      db = helper.getWritableDatabase();
-    } catch (SQLiteException sqle) {
-      Log.w(TAG, "Error while opening database", sqle);
-      return;
+  
+  private static void close(Cursor cursor, SQLiteDatabase database) {
+    if (cursor != null) {
+      cursor.close();
     }
-    try {
-      db.delete(DBHelper.TABLE_NAME, null, null);
-    } finally {
-      db.close();
+    if (database != null) {
+      database.close();
     }
   }
 

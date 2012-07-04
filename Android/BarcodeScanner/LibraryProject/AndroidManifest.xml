@@ -57,10 +57,6 @@
               android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
               android:windowSoftInputMode="stateAlwaysHidden">
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-      </intent-filter>
-      <intent-filter>
         <action android:name="com.google.zxing.client.android.SCAN"/>
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>

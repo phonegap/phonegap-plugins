@@ -13,6 +13,7 @@
 
 	CGRect	originalWebViewBounds;
     CGFloat navBarHeight;
+    CGFloat tabBarHeight;
 
     CDVNavigationBarController * navBarController;
 }
@@ -24,6 +25,7 @@
 - (void)setLogo:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options;
 - (void)show:(NSArray*)arguments withDict:(NSDictionary*)options;
 - (void)hide:(NSArray*)arguments withDict:(NSDictionary*)options;
+- (void)init:(NSArray*)arguments withDict:(NSDictionary*)options;
 - (void)setupLeftButton:(NSArray*)arguments withDict:(NSDictionary*)options;
 - (void)setupRightButton:(NSArray*)arguments withDict:(NSDictionary*)options;
 - (void)leftButtonTapped;

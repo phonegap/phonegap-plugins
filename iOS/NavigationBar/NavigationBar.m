@@ -9,6 +9,7 @@
  */
 
 #import "NavigationBar.h"
+#import <UIKit/UITabBar.h>
 #import <QuartzCore/QuartzCore.h>
 
 #ifdef CORDOVA_FRAMEWORK
@@ -28,8 +29,13 @@
     self = (NavigationBar*)[super initWithWebView:theWebView];
     if (self)
 	{
-		originalWebViewBounds = theWebView.bounds;
+		// The original web view bounds must be retrieved here. On iPhone, it would be 0,0,320,460 for example. Since
+        // Cordova seems to initialize plugins on the first call, there is a plugin method init() that has to be called
+        // in order to make Cordova call *this* method. If someone forgets the init() call and uses the navigation bar
+        // and tab bar plugins together, these values won't be the original web view bounds and layout will be wrong.
+        originalWebViewBounds = theWebView.bounds;
         navBarHeight = 44.0f;
+        tabBarHeight = 49.0f;
     }
     return self;
 }
@@ -47,10 +53,27 @@
 
 -(void)correctWebViewBounds
 {
-    // This plugin has to play nice with the tab bar plugin, so let's only change the top bound, not the one at the
-    // bottom. Of course this assumes that the tab bar plugin does not relayout in parallel (can that happen?).
+    if(!navBar)
+        return;
 
-    // TODO: does this still work if the application was started in landscape mode and thus originalWebViewBounds are switched?
+    const bool navBarShown = !navBar.hidden;
+    bool tabBarShown = false;
+
+    UIView *parent = [navBar superview];
+    for(UIView *view in parent.subviews)
+        if([view isMemberOfClass:[UITabBar class]])
+        {
+            tabBarShown = !view.hidden;
+
+            // Tab bar height is customizable
+            if(tabBarShown)
+                tabBarHeight = view.bounds.size.height;
+
+            break;
+        }
+
+    // IMPORTANT: Below code is the same in both the navigation and tab bar plugins!
+
     CGFloat left = originalWebViewBounds.origin.x;
     CGFloat right = left + originalWebViewBounds.size.width;
     CGFloat top = originalWebViewBounds.origin.y;
@@ -59,19 +82,25 @@
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     switch (orientation)
     {
-        case UIDeviceOrientationPortrait:
-        case UIDeviceOrientationPortraitUpsideDown:
+        case UIInterfaceOrientationPortrait:
+        case UIInterfaceOrientationPortraitUpsideDown:
             // No need to change width/height from original bounds
             break;
-        case UIDeviceOrientationLandscapeLeft:
-        case UIDeviceOrientationLandscapeRight:
-            right = left + (bottom - top) + 20.0f;
-            bottom = top + (right - left) - 20.0f;
+        case UIInterfaceOrientationLandscapeLeft:
+        case UIInterfaceOrientationLandscapeRight:
+            right = left + originalWebViewBounds.size.height + 20.0f;
+            bottom = top + originalWebViewBounds.size.width - 20.0f;
+            break;
+        default:
+            NSLog(@"Unknown orientation: %d", orientation);
             break;
     }
 
-    if(navBar != nil && !navBar.hidden)
+    if(navBarShown)
         top += navBarHeight;
+
+    if(tabBarShown)
+        bottom -= tabBarHeight;
 
     CGRect webViewBounds = CGRectMake(left, top, right - left, bottom - top);
 
@@ -135,6 +164,11 @@
     else if([imageName isEqualToString:@"barButton:Undo"])          systemItem = UIBarButtonSystemItemUndo;
 
     return systemItem;
+}
+
+-(void) init:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+{
+    // Dummy function, see initWithWebView
 }
 
 - (void)setupLeftButton:(NSArray*)arguments withDict:(NSDictionary*)options

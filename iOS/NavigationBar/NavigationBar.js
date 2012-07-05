@@ -14,6 +14,14 @@ NavigationBar.prototype.create = function(style)
 };
 
 /**
+ * Must be called before any other method in order to initialize the plugin.
+ */
+NavigationBar.prototype.init = function()
+{
+    Cordova.exec("NavigationBar.init");
+};
+
+/**
  * Assign either title or image to the left navigation bar button, and assign the tap callback
 */
 NavigationBar.prototype.setupLeftButton = function(title, image, onselect)

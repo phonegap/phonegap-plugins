@@ -1,7 +1,7 @@
-Navigation bar for Cordova on iOS
-=================================
+Tab bar for Cordova on iOS
+==========================
 
-This plugin lets you create and control a native navigation bar and its buttons.
+This plugin lets you create and control a native tab bar.
 
 License
 -------
@@ -11,14 +11,23 @@ License
 Contributors
 ------------
 
-This plugin was put together from the incomplete NativeControls plugin and other sources. See NavigationBar.m for the history.
+See TabBar.m for the history.
 
 Installing the plugin
 ---------------------
 
 - Copy *.xib, *.m and *.h files to your project's "Plugins" folder (should already exist and contain a README file if you used the Cordova project template)
 - They have to be added to the project as well, so drag them from the "Plugins" folder (in Finder) to the same folder (in Xcode) and select to create references
-- Open "Supporting Files/Cordova.plist" and under "Plugins", add a key with the plugin name "NavigationBar" and a string value of "NavigationBar" (I guess it's the plugin's main class name)
+- Open "Supporting Files/Cordova.plist" and under "Plugins", add a key with the plugin name "TabBar" and a string value of "TabBar"
+
+Note regarding the tab bar
+--------------------------
+
+Don't forget to add an event handler for orientation changes as follows:
+
+    window.addEventListener("resize", function() {
+        plugins.tabBar.resizeTabBar();
+    ), false);
 
 Using the tab bar and navigation bar plugin together
 ----------------------------------------------------
@@ -41,38 +50,28 @@ This is because both plugins are aware of each other and resize Cordova's web vi
 Example
 -------
 
-This example shows how to use the navigation bar:
+This example shows how to use the tab bar:
 
     document.addEventListener("deviceready", function() {
-        console.log("Cordova ready")
+        console.log("PhoneGap ready")
 
-        plugins.navigationBar.init()
+        plugins.tabBar.init()
 
-        plugins.navigationBar.create() // or .create("BlackOpaque") to apply a certain style
-        plugins.navigationBar.hideLeftButton()
-        plugins.navigationBar.hideRightButton()
+        plugins.tabBar.create()
+        plugins.createItem("contacts", "Unused, iOS replaces this text by Contacts", "tabButton:Contacts")
+        plugins.createItem("recents", "Unused, iOS replaces this text by Recents", "tabButton:Recents")
 
-        plugins.navigationBar.setTitle("My heading")
-
-        plugins.navigationBar.showLeftButton()
-        plugins.navigationBar.showRightButton()
-
-        // Create left navigation button with a title (you can either have a title or an image, not both!)
-        plugins.navigationBar.setupLeftButton("Text", null, function() {
-            alert("left nav button tapped")
+        // Example with selection callback
+        plugins.createItem("another", "Some text", "/www/your-own-image.png", {
+            onSelect: function() {
+                alert("another tab selected")
+            }
         })
 
-        // Create right navigation button from a system-predefined button (see the full list in NativeControls.m)
-        // or from an image
-        plugins.navigationBar.setupRightButton(
-            null,
-            "barButton:Bookmarks", // or your own file like "/www/stylesheets/images/ajax-loader.png",
-            function() {
-                alert("right nav button tapped")
-            }
-        )
+        plugins.show()
+        plugins.showItems("contacts", "recents", "another")
 
-        plugins.navigationBar.show()
+        window.addEventListener("resize", function() { plugins.tabBar.resize() }, false)
     }, false)
 
 Reporting issues or requests for improvement

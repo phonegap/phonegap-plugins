@@ -8,10 +8,6 @@
 
 ;(function(){
 
-if (Cordova.hasResource("barcodeScanner")) return
-
-Cordova.addResource("barcodeScanner")
-
 //-------------------------------------------------------------------
 var BarcodeScanner = function() {
 }

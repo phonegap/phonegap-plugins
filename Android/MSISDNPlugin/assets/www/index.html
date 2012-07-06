@@ -13,7 +13,7 @@
 	        	console.log("loaded");
 	            document.addEventListener("deviceready", function() {
 	            	console.log("device ready");
-	                window.plugins.navigator.msisdn.getSimNumber(function(msisdn) {
+	                window.plugins.msisdn.getSimNumber(function(msisdn) {
 	                    console.log("number");
 	                    document.getElementById('output').innerHTML = msisdn;
 	                }, function() {

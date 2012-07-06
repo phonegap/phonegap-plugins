@@ -45,9 +45,6 @@ public abstract class GridSampler {
    * @param newGridSampler The platform-specific object to install.
    */
   public static void setGridSampler(GridSampler newGridSampler) {
-    if (newGridSampler == null) {
-      throw new IllegalArgumentException();
-    }
     gridSampler = newGridSampler;
   }
 
@@ -100,7 +97,8 @@ public abstract class GridSampler {
    * @param points actual points in x1,y1,...,xn,yn form
    * @throws NotFoundException if an endpoint is lies outside the image boundaries
    */
-  protected static void checkAndNudgePoints(BitMatrix image, float[] points) throws NotFoundException {
+  protected static void checkAndNudgePoints(BitMatrix image,
+                                            float[] points) throws NotFoundException {
     int width = image.getWidth();
     int height = image.getHeight();
     // Check and nudge points from start until we see some that are OK:

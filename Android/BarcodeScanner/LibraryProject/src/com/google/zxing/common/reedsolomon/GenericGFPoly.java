@@ -40,7 +40,7 @@ final class GenericGFPoly {
    * constant polynomial (that is, it is not the monomial "0")
    */
   GenericGFPoly(GenericGF field, int[] coefficients) {
-    if (coefficients == null || coefficients.length == 0) {
+    if (coefficients.length == 0) {
       throw new IllegalArgumentException();
     }
     this.field = field;
@@ -103,8 +103,8 @@ final class GenericGFPoly {
     if (a == 1) {
       // Just the sum of the coefficients
       int result = 0;
-      for (int i = 0; i < size; i++) {
-        result = GenericGF.addOrSubtract(result, coefficients[i]);
+      for (int coefficient : coefficients) {
+        result = GenericGF.addOrSubtract(result, coefficient);
       }
       return result;
     }
@@ -223,8 +223,9 @@ final class GenericGFPoly {
     return new GenericGFPoly[] { quotient, remainder };
   }
 
+  @Override
   public String toString() {
-    StringBuffer result = new StringBuffer(8 * getDegree());
+    StringBuilder result = new StringBuilder(8 * getDegree());
     for (int degree = getDegree(); degree >= 0; degree--) {
       int coefficient = getCoefficient(degree);
       if (coefficient != 0) {

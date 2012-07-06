@@ -83,7 +83,7 @@ public final class WhiteRectangleDetector {
    * region until it finds a white rectangular region.
    * </p>
    *
-   * @return {@link ResultPoint[]} describing the corners of the rectangular
+   * @return {@link ResultPoint}[] describing the corners of the rectangular
    *         region. The first and last points are opposed on the diagonal, as
    *         are the second and third. The first point will be the topmost
    *         point and the last, the bottommost. The second point will be
@@ -240,33 +240,19 @@ public final class WhiteRectangleDetector {
     }
   }
 
-  /**
-   * Ends up being a bit faster than Math.round(). This merely rounds its
-   * argument to the nearest int, where x.5 rounds up.
-   */
-  private static int round(float d) {
-    return (int) (d + 0.5f);
-  }
-
   private ResultPoint getBlackPointOnSegment(float aX, float aY, float bX, float bY) {
-    int dist = distanceL2(aX, aY, bX, bY);
+    int dist = MathUtils.round(MathUtils.distance(aX, aY, bX, bY));
     float xStep = (bX - aX) / dist;
     float yStep = (bY - aY) / dist;
 
     for (int i = 0; i < dist; i++) {
-      int x = round(aX + i * xStep);
-      int y = round(aY + i * yStep);
+      int x = MathUtils.round(aX + i * xStep);
+      int y = MathUtils.round(aY + i * yStep);
       if (image.get(x, y)) {
         return new ResultPoint(x, y);
       }
     }
     return null;
-  }
-
-  private static int distanceL2(float aX, float aY, float bX, float bY) {
-    float xDiff = aX - bX;
-    float yDiff = aY - bY;
-    return round((float) Math.sqrt(xDiff * xDiff + yDiff * yDiff));
   }
 
   /**

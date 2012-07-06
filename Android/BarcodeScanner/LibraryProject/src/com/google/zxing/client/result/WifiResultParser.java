@@ -27,23 +27,25 @@ import com.google.zxing.Result;
  *
  * @author Vikram Aggarwal
  */
-final class WifiResultParser extends ResultParser {
+public final class WifiResultParser extends ResultParser {
 
-  private WifiResultParser() {
-  }
-
-  public static WifiParsedResult parse(Result result) {
-    String rawText = result.getText();
-
-    if (rawText == null || !rawText.startsWith("WIFI:")) {
+  @Override
+  public WifiParsedResult parse(Result result) {
+    String rawText = getMassagedText(result);
+    if (!rawText.startsWith("WIFI:")) {
       return null;
     }
-
     // Don't remove leading or trailing whitespace
     boolean trim = false;
     String ssid = matchSinglePrefixedField("S:", rawText, ';', trim);
+    if (ssid == null || ssid.length() == 0) {
+      return null;
+    }
     String pass = matchSinglePrefixedField("P:", rawText, ';', trim);
     String type = matchSinglePrefixedField("T:", rawText, ';', trim);
+    if (type == null) {
+      type = "nopass";
+    }
 
     return new WifiParsedResult(type, ssid, pass);
   }

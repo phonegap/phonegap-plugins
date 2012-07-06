@@ -18,12 +18,14 @@ package com.google.zxing;
 
 import com.google.zxing.aztec.AztecReader;
 import com.google.zxing.datamatrix.DataMatrixReader;
+import com.google.zxing.maxicode.MaxiCodeReader;
 import com.google.zxing.oned.MultiFormatOneDReader;
 import com.google.zxing.pdf417.PDF417Reader;
 import com.google.zxing.qrcode.QRCodeReader;
 
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * MultiFormatReader is a convenience class and the main entry point into the library for most uses.
@@ -35,8 +37,8 @@ import java.util.Vector;
  */
 public final class MultiFormatReader implements Reader {
 
-  private Hashtable hints;
-  private Vector readers;
+  private Map<DecodeHintType,?> hints;
+  private Reader[] readers;
 
   /**
    * This version of decode honors the intent of Reader.decode(BinaryBitmap) in that it
@@ -47,6 +49,7 @@ public final class MultiFormatReader implements Reader {
    * @return The contents of the image
    * @throws NotFoundException Any errors which occurred
    */
+  @Override
   public Result decode(BinaryBitmap image) throws NotFoundException {
     setHints(null);
     return decodeInternal(image);
@@ -60,7 +63,8 @@ public final class MultiFormatReader implements Reader {
    * @return The contents of the image
    * @throws NotFoundException Any errors which occurred
    */
-  public Result decode(BinaryBitmap image, Hashtable hints) throws NotFoundException {
+  @Override
+  public Result decode(BinaryBitmap image, Map<DecodeHintType,?> hints) throws NotFoundException {
     setHints(hints);
     return decodeInternal(image);
   }
@@ -88,81 +92,87 @@ public final class MultiFormatReader implements Reader {
    *
    * @param hints The set of hints to use for subsequent calls to decode(image)
    */
-  public void setHints(Hashtable hints) {
+  public void setHints(Map<DecodeHintType,?> hints) {
     this.hints = hints;
 
     boolean tryHarder = hints != null && hints.containsKey(DecodeHintType.TRY_HARDER);
-    Vector formats = hints == null ? null : (Vector) hints.get(DecodeHintType.POSSIBLE_FORMATS);
-    readers = new Vector();
+    Collection<BarcodeFormat> formats =
+        hints == null ? null : (Collection<BarcodeFormat>) hints.get(DecodeHintType.POSSIBLE_FORMATS);
+    Collection<Reader> readers = new ArrayList<Reader>();
     if (formats != null) {
       boolean addOneDReader =
           formats.contains(BarcodeFormat.UPC_A) ||
-              formats.contains(BarcodeFormat.UPC_E) ||
-              formats.contains(BarcodeFormat.EAN_13) ||
-              formats.contains(BarcodeFormat.EAN_8) ||
-              //formats.contains(BarcodeFormat.CODABAR) ||
-              formats.contains(BarcodeFormat.CODE_39) ||
-              formats.contains(BarcodeFormat.CODE_93) ||
-              formats.contains(BarcodeFormat.CODE_128) ||
-              formats.contains(BarcodeFormat.ITF) ||
-              formats.contains(BarcodeFormat.RSS_14) ||
-              formats.contains(BarcodeFormat.RSS_EXPANDED);
+          formats.contains(BarcodeFormat.UPC_E) ||
+          formats.contains(BarcodeFormat.EAN_13) ||
+          formats.contains(BarcodeFormat.EAN_8) ||
+          formats.contains(BarcodeFormat.CODABAR) ||
+          formats.contains(BarcodeFormat.CODE_39) ||
+          formats.contains(BarcodeFormat.CODE_93) ||
+          formats.contains(BarcodeFormat.CODE_128) ||
+          formats.contains(BarcodeFormat.ITF) ||
+          formats.contains(BarcodeFormat.RSS_14) ||
+          formats.contains(BarcodeFormat.RSS_EXPANDED);
       // Put 1D readers upfront in "normal" mode
       if (addOneDReader && !tryHarder) {
-        readers.addElement(new MultiFormatOneDReader(hints));
+        readers.add(new MultiFormatOneDReader(hints));
       }
       if (formats.contains(BarcodeFormat.QR_CODE)) {
-        readers.addElement(new QRCodeReader());
+        readers.add(new QRCodeReader());
       }
       if (formats.contains(BarcodeFormat.DATA_MATRIX)) {
-        readers.addElement(new DataMatrixReader());
+        readers.add(new DataMatrixReader());
       }
       if (formats.contains(BarcodeFormat.AZTEC)) {
-        readers.addElement(new AztecReader());
+        readers.add(new AztecReader());
       }
       if (formats.contains(BarcodeFormat.PDF_417)) {
-         readers.addElement(new PDF417Reader());
-       }
+         readers.add(new PDF417Reader());
+      }
+      if (formats.contains(BarcodeFormat.MAXICODE)) {
+         readers.add(new MaxiCodeReader());
+      }
       // At end in "try harder" mode
       if (addOneDReader && tryHarder) {
-        readers.addElement(new MultiFormatOneDReader(hints));
+        readers.add(new MultiFormatOneDReader(hints));
       }
     }
     if (readers.isEmpty()) {
       if (!tryHarder) {
-        readers.addElement(new MultiFormatOneDReader(hints));
+        readers.add(new MultiFormatOneDReader(hints));
       }
 
-      readers.addElement(new QRCodeReader());
-      readers.addElement(new DataMatrixReader());
-      readers.addElement(new AztecReader());
-      readers.addElement(new PDF417Reader());
+      readers.add(new QRCodeReader());
+      readers.add(new DataMatrixReader());
+      readers.add(new AztecReader());
+      readers.add(new PDF417Reader());
+      readers.add(new MaxiCodeReader());
 
       if (tryHarder) {
-        readers.addElement(new MultiFormatOneDReader(hints));
+        readers.add(new MultiFormatOneDReader(hints));
       }
     }
+    this.readers = readers.toArray(new Reader[readers.size()]);
   }
 
+  @Override
   public void reset() {
-    int size = readers.size();
-    for (int i = 0; i < size; i++) {
-      Reader reader = (Reader) readers.elementAt(i);
-      reader.reset();
+    if (readers != null) {
+      for (Reader reader : readers) {
+        reader.reset();
+      }
     }
   }
 
   private Result decodeInternal(BinaryBitmap image) throws NotFoundException {
-    int size = readers.size();
-    for (int i = 0; i < size; i++) {
-      Reader reader = (Reader) readers.elementAt(i);
-      try {
-        return reader.decode(image, hints);
-      } catch (ReaderException re) {
-        // continue
+    if (readers != null) {
+      for (Reader reader : readers) {
+        try {
+          return reader.decode(image, hints);
+        } catch (ReaderException re) {
+          // continue
+        }
       }
     }
-
     throw NotFoundException.getNotFoundInstance();
   }
 

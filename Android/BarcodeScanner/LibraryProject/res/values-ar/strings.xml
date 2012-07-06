@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (C) 2010 ZXing authors
+ Copyright (C) 2012 ZXing authors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@
   <string name="button_ok">موافق</string>
   <string name="button_open_browser">فتح المتصفح</string>
   <string name="button_product_search">بحث عن منتجات</string>
-  <string name="button_read_book">تصفح الكتاب</string>
   <string name="button_search_book_contents">بحث في المحتويات</string>
   <string name="button_share_app">التطبيق</string>
   <string name="button_share_bookmark">إشارة مرجعية</string>
@@ -52,33 +51,35 @@
   <string name="contents_phone">رقم الهاتف</string>
   <string name="contents_sms">عنوان SMS</string>
   <string name="contents_text">نص عادي</string>
+  <string name="history_clear_one_history_text">حذف</string>
   <string name="history_clear_text">مسح السجل</string>
   <string name="history_email_title">سجل ماسح الرموز الشريطية</string>
+  <string name="history_empty">فارغ</string>
+  <string name="history_empty_detail">لم تسجل حتى الآن بمسح الباركود</string>
   <string name="history_send">إرسال السجل</string>
   <string name="history_title">سجل</string>
   <string name="menu_about">حول</string>
+  <string name="menu_encode_mecard">استخدام MECARD</string>
+  <string name="menu_encode_vcard">استخدام vCard</string>
   <string name="menu_help">تعليمات</string>
   <string name="menu_history">سجل</string>
   <string name="menu_settings">إعدادات</string>
   <string name="menu_share">مشاركة</string>
   <string name="msg_about">حسب مكتبة الرمز الشريطي ZXing مفتوحة المصادر</string>
-  <string name="msg_buggy">يوجد بالهاتف أخطاء معروفة تتسبب في حدوث مشكلات في مسح الرمز الشريطي. لمزيد من المعلومات، قم بزيارة http://code.google.com/p/zxing/wiki/FrequentlyAskedQuestions</string>
   <string name="msg_bulk_mode_scanned">معظم الدراسي : الباركود الممسوحة ضوئيا وحفظها</string>
   <string name="msg_camera_framework_bug">عفوا، حدثت مشكلة في كاميرا جهاز Android. قد تحتاج إلى إعادة تشغيل الجهاز.</string>
-  <string name="msg_default_contents">المحتويات</string>
   <string name="msg_default_format">التنسيق</string>
   <string name="msg_default_meta">البيانات الوصفية</string>
   <string name="msg_default_mms_subject">أهلا</string>
   <string name="msg_default_status">قم بوضع الرمز الشريطي داخل حدود صورة الكاميرا ليتم مسحه.</string>
   <string name="msg_default_time">الوقت</string>
   <string name="msg_default_type">النوع</string>
-  <string name="msg_encode_barcode_failed">تعذر إنشاء الرمز الشريطي المطلوب.</string>
   <string name="msg_encode_contents_failed">تعذر ترميز رمز شريطي من البيانات المتوفرة.</string>
+  <string name="msg_google_books">كتب جوجل</string>
+  <string name="msg_google_product">بحث جوجل</string>
   <string name="msg_google_shopper_missing">لم يتم تثبيت Google Shopper</string>
   <string name="msg_install_google_shopper">يجمع Google Shopper بين مسح الرمز الشريطي مع الأسعار والتعليقات وغيرها بدون فتح المتصفح. هل تريد استخدامه؟</string>
   <string name="msg_intent_failed">عفوا، تعذر تشغيل التطبيق المطلوب. قد تكون محتويات الرمز الشريطي غير صحيحة.</string>
-  <string name="msg_loading_apps">تحميل قائمة التطبيقات</string>
-  <string name="msg_not_our_results">تقوم الآن بالخروج من التطبيق. نتائج البحث التي ستظهر لك غير مرتبطة بهذا التطبيق.</string>
   <string name="msg_redirect">إعادة توجيه</string>
   <string name="msg_sbc_book_not_searchable">عفوا، لا يمكن البحث في هذا الكتاب.</string>
   <string name="msg_sbc_failed">عفوا، حدثت مشكلة في عملية البحث.</string>
@@ -90,11 +91,14 @@
   <string name="msg_share_explanation">يمكنك مشاركة البيانات عن طريق عرض رمز شريطي على الشاشة ومسحه من خلال هاتف آخر.</string>
   <string name="msg_share_subject_line">توجد هنا محتويات الرمز الشريطي الذي قمت بمسحه</string>
   <string name="msg_share_text">أو اكتب بعض النص</string>
+  <string name="msg_sure">هل أنت متأكد؟</string>
   <string name="msg_unmount_usb">رجاء إيقاف التخزين على USB للمتابعة.</string>
   <string name="preferences_actions_title">عند العثور على رمز شريطي</string>
+  <string name="preferences_auto_focus_title">استخدام التركيز التلقائي</string>
   <string name="preferences_bulk_mode_summary">المسح الضوئي وحفظها بشكل مستمر العديد من الرموز الشريطية</string>
   <string name="preferences_bulk_mode_title">جل وضع المسح الضوئي</string>
   <string name="preferences_copy_to_clipboard_title">نسخ إلى الحافظة</string>
+  <string name="preferences_custom_product_search_summary" formatted="false">التبديلات : s٪ = المحتويات ،  f٪ = الشكل ، اكتب t٪ =</string>
   <string name="preferences_custom_product_search_title">عنوان بحث مخصص</string>
   <string name="preferences_decode_1D_title">فك الرموز الشريطية 1D</string>
   <string name="preferences_decode_Data_Matrix_title">فك رموز البيانات ماتريكس</string>
@@ -107,9 +111,8 @@
   <string name="preferences_remember_duplicates_summary">بفحص مخزن متعددة من نفس الباركود في التاريخ</string>
   <string name="preferences_remember_duplicates_title">تذكر التكرارات</string>
   <string name="preferences_result_title">إعدادات النتائج</string>
-  <string name="preferences_reverse_image_summary">تمكين على الأجهزة مع كاميرا أمامية فقط</string>
-  <string name="preferences_reverse_image_title">عكس الكاميرا صورة</string>
   <string name="preferences_scanning_title">عندما لمسح الباركود</string>
+  <string name="preferences_search_country">ابحث عن بلد</string>
   <string name="preferences_supplemental_summary">محاولة لاسترداد مزيد من المعلومات حول محتويات الباركود</string>
   <string name="preferences_supplemental_title">استرداد مزيد من المعلومات</string>
   <string name="preferences_vibrate_title">اهتزاز</string>
@@ -127,15 +130,8 @@
   <string name="sbc_name">البحث في Google Book</string>
   <string name="share_name">مشاركة عبر الرمز الشريطي</string>
   <string name="title_about">إصدار ماسح الرمز الشريطي</string>
-  <string name="wa_name">التكوين اللاسلك</string>
-  <string name="wifi_changing_network">تغيير الشبكة</string>
-  <string name="wifi_connect_failed">فشل شبكة الاتصال</string>
-  <string name="wifi_connected">متصل</string>
-  <string name="wifi_creating_network">إنشاء شبكة</string>
-  <string name="wifi_modifying_network">تعديل شبكة</string>
+  <string name="wifi_changing_network">طلب الاتصال بالشبكة\u2026</string>
   <string name="wifi_ssid_label">اسم الشبكة</string>
-  <string name="wifi_ssid_missing">اسم الشبكة مفقود</string>
-  <string name="wifi_type_incorrect">شبكة نوع غير صحيح</string>
   <string name="wifi_type_label">نوع</string>
   <string name="zxing_url">http://code.google.com/p/zxing</string>
 </resources>

@@ -1,0 +1,9 @@
+This Android Library Project was created by following these steps:
+
+* Checked out zxing-android from SVN (http://zxing.googlecode.com/svn/trunk/ r2338)
+* Overlayed the source from zxing-core
+* Set to library project and refactored switch statements to if-else
+* Changed intent names to avoid conflict with ZXing app
+* Removed two lines from AndroidManifest.xml to avoid shortcuts being created
+* Commented out call to showHelpOnFirstLaunch
+

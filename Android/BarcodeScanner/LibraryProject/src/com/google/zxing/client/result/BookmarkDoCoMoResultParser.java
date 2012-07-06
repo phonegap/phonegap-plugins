@@ -21,14 +21,12 @@ import com.google.zxing.Result;
 /**
  * @author Sean Owen
  */
-final class BookmarkDoCoMoResultParser extends AbstractDoCoMoResultParser {
+public final class BookmarkDoCoMoResultParser extends AbstractDoCoMoResultParser {
 
-  private BookmarkDoCoMoResultParser() {
-  }
-
-  public static URIParsedResult parse(Result result) {
+  @Override
+  public URIParsedResult parse(Result result) {
     String rawText = result.getText();
-    if (rawText == null || !rawText.startsWith("MEBKM:")) {
+    if (!rawText.startsWith("MEBKM:")) {
       return null;
     }
     String title = matchSingleDoCoMoPrefixedField("TITLE:", rawText, true);
@@ -37,10 +35,7 @@ final class BookmarkDoCoMoResultParser extends AbstractDoCoMoResultParser {
       return null;
     }
     String uri = rawUri[0];
-    if (!URIResultParser.isBasicallyValidURI(uri)) {
-      return null;
-    }
-    return new URIParsedResult(uri, title);
+    return URIResultParser.isBasicallyValidURI(uri) ? new URIParsedResult(uri, title) : null;
   }
 
 }

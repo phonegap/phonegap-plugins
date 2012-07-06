@@ -1,10 +1,15 @@
 # Barcode Scanner plugin for Phonegap #
+
+This plugins gives your Phonegap-app the ability to scan and decode barcodes with the camera and to encode and send your own barcodes.
+
+Based on zxing-core and zxing-android from the ZXing project (http://code.google.com/p/zxing/).
+
 Originally by Matt Kane
 Updates by Simon MacDonald
 
 ## Adding the Plugin to your project ##
 
-1. Add the 'LibraryProject' into Eclipse. File -> New Android Project -> create project from existing source.
+1. Add the 'LibraryProject' into Eclipse. File &rarr; New Android Project &rarr; create project from existing source.
 2. In the new project you've just added to Eclipse go to the project properties. Select the Android section and at the bottom of the dialog check the "Is Library" checkbox.
 3. In your application go into the project properties. In the Android section under library click the Add button and select the library you created in step 2.
 4. To install the plugin, move barcodescanner.js to your project's www folder and include a reference to it in your html files.
@@ -19,25 +24,59 @@ Updates by Simon MacDonald
 
     `<plugin name="BarcodeScanner" value="com.phonegap.plugins.barcodescanner.BarcodeScanner"/>`
 
-8. Add the following activity to your AndroidManifest.xml file. It should be added inside the &lt;application/&gt; tag.
+8. Add the following activities to your AndroidManifest.xml file. It should be added inside the &lt;application/&gt; tag.
 
-    `<!-- ZXing activities -->
-    <activity android:name="com.google.zxing.client.android.CaptureActivity"
-              android:screenOrientation="landscape"
-              android:configChanges="orientation|keyboardHidden"
-              android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-              android:windowSoftInputMode="stateAlwaysHidden">
-      <intent-filter>
-        <action android:name="com.phonegap.plugins.barcodescanner.SCAN"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-      </intent-filter>
-    </activity>
-    <activity android:name="com.google.zxing.client.android.encode.EncodeActivity" android:label="@string/share_name">
-      <intent-filter>
-        <action android:name="com.phonegap.plugins.barcodescanner.ENCODE"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-      </intent-filter>
-    </activity>`
+```xml
+<!-- ZXing activities (BarcodeScanner) -->
+
+<!-- ZXing Capture Activity -->
+<activity
+    android:name="com.google.zxing.client.android.CaptureActivity"
+    android:configChanges="orientation|keyboardHidden"
+    android:exported="false"
+    android:screenOrientation="landscape"
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+    android:windowSoftInputMode="stateAlwaysHidden" >
+    <intent-filter>
+        <action android:name="com.phonegap.plugins.barcodescanner.SCAN" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+    </intent-filter>
+</activity>
+
+<!-- ZXing Preferences (Settings) Activity -->
+<activity
+    android:name="com.google.zxing.client.android.PreferencesActivity"
+    android:exported="false" >
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+    </intent-filter>
+</activity>
+
+<!-- ZXing Sharing Activity -->
+<activity
+    android:name="com.google.zxing.client.android.share.ShareActivity"
+    android:exported="false" >
+    <intent-filter>
+        <action android:name="com.google.zxing.client.android.SHARE" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+    </intent-filter>
+</activity>
+
+<!-- ZXing Help Activity -->
+<activity
+    android:name="com.google.zxing.client.android.HelpActivity"
+    android:exported="false" >
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+    </intent-filter>
+</activity>
+```
     
 9. And make sure you have the following permission in your AndroidManifest.xml file:
 

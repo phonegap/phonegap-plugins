@@ -53,8 +53,7 @@ public final class Version {
     int total = 0;
     int ecCodewords = ecBlocks.getECCodewords();
     ECB[] ecbArray = ecBlocks.getECBlocks();
-    for (int i = 0; i < ecbArray.length; i++) {
-      ECB ecBlock = ecbArray[i];
+    for (ECB ecBlock : ecbArray) {
       total += ecBlock.getCount() * (ecBlock.getDataCodewords() + ecCodewords);
     }
     this.totalCodewords = total;
@@ -100,13 +99,8 @@ public final class Version {
     if ((numRows & 0x01) != 0 || (numColumns & 0x01) != 0) {
       throw FormatException.getFormatInstance();
     }
-    
-    // TODO(bbrown): This is doing a linear search through the array of versions.
-    // If we interleave the rectangular versions with the square versions we could
-    // do a binary search.
-    int numVersions = VERSIONS.length;
-    for (int i = 0; i < numVersions; ++i){
-      Version version = VERSIONS[i];
+
+    for (Version version : VERSIONS) {
       if (version.symbolSizeRows == numRows && version.symbolSizeColumns == numColumns) {
         return version;
       }
@@ -167,6 +161,7 @@ public final class Version {
     }
   }
 
+  @Override
   public String toString() {
     return String.valueOf(versionNumber);
   }

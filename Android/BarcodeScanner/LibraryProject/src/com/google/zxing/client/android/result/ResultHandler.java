@@ -16,7 +16,6 @@
 
 package com.google.zxing.client.android.result;
 
-import android.util.Log;
 import com.google.zxing.Result;
 import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.Intents;
@@ -24,10 +23,9 @@ import com.google.zxing.client.android.LocaleManager;
 import com.google.zxing.client.android.PreferencesActivity;
 import com.google.zxing.client.android.R;
 import com.google.zxing.client.android.book.SearchBookContentsActivity;
-import com.google.zxing.client.android.wifi.WifiActivity;
 import com.google.zxing.client.result.ParsedResult;
 import com.google.zxing.client.result.ParsedResultType;
-import com.google.zxing.client.result.WifiParsedResult;
+import com.google.zxing.client.result.ResultParser;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -39,16 +37,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.provider.Contacts;
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 
-import java.text.DateFormat;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.util.Collection;
+import java.util.Locale;
 
 /**
  * A base class for the Android-specific barcode handlers. These allow the app to polymorphically
@@ -59,27 +53,40 @@ import java.util.TimeZone;
  * instance is needed to launch an intent.
  *
  * @author dswitkin@google.com (Daniel Switkin)
+ * @author Sean Owen
  */
 public abstract class ResultHandler {
 
   private static final String TAG = ResultHandler.class.getSimpleName();
 
-  private static final DateFormat DATE_FORMAT;
-  static {
-    DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-    // For dates without a time, for purposes of interacting with Android, the resulting timestamp
-    // needs to be midnight of that day in GMT. See:
-    // http://code.google.com/p/android/issues/detail?id=8330
-    DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
-  }
-  private static final DateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-
   private static final String GOOGLE_SHOPPER_PACKAGE = "com.google.android.apps.shopper";
   private static final String GOOGLE_SHOPPER_ACTIVITY = GOOGLE_SHOPPER_PACKAGE +
       ".results.SearchResultsActivity";
-  private static final String MARKET_URI_PREFIX = "market://search?q=pname:";
+  private static final String MARKET_URI_PREFIX = "market://details?id=";
   private static final String MARKET_REFERRER_SUFFIX =
       "&referrer=utm_source%3Dbarcodescanner%26utm_medium%3Dapps%26utm_campaign%3Dscan";
+
+  private static final String[] EMAIL_TYPE_STRINGS = {"home", "work", "mobile"};
+  private static final String[] PHONE_TYPE_STRINGS = {"home", "work", "mobile", "fax", "pager", "main"};
+  private static final String[] ADDRESS_TYPE_STRINGS = {"home", "work"};
+  private static final int[] EMAIL_TYPE_VALUES = {
+      ContactsContract.CommonDataKinds.Email.TYPE_HOME,
+      ContactsContract.CommonDataKinds.Email.TYPE_WORK,
+      ContactsContract.CommonDataKinds.Email.TYPE_MOBILE,
+  };
+  private static final int[] PHONE_TYPE_VALUES = {
+      ContactsContract.CommonDataKinds.Phone.TYPE_HOME,
+      ContactsContract.CommonDataKinds.Phone.TYPE_WORK,
+      ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE,
+      ContactsContract.CommonDataKinds.Phone.TYPE_FAX_WORK,
+      ContactsContract.CommonDataKinds.Phone.TYPE_PAGER,
+      ContactsContract.CommonDataKinds.Phone.TYPE_MAIN,
+  };
+  private static final int[] ADDRESS_TYPE_VALUES = {
+      ContactsContract.CommonDataKinds.StructuredPostal.TYPE_HOME,
+      ContactsContract.CommonDataKinds.StructuredPostal.TYPE_WORK,
+  };
+  private static final int NO_TYPE = -1;
 
   public static final int MAX_BUTTON_COUNT = 4;
 
@@ -90,6 +97,7 @@ public abstract class ResultHandler {
 
   private final DialogInterface.OnClickListener shopperMarketListener =
       new DialogInterface.OnClickListener() {
+    @Override
     public void onClick(DialogInterface dialogInterface, int which) {
       launchIntent(new Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URI_PREFIX +
           GOOGLE_SHOPPER_PACKAGE + MARKET_REFERRER_SUFFIX)));
@@ -118,6 +126,10 @@ public abstract class ResultHandler {
 
   boolean hasCustomProductSearch() {
     return customProductSearch != null;
+  }
+
+  Activity getActivity() {
+    return activity;
   }
 
   /**
@@ -158,7 +170,7 @@ public abstract class ResultHandler {
    *
    * @param listener The on click listener to install for this button.
    */
-  protected void showGoogleShopperButton(View.OnClickListener listener) {
+  void showGoogleShopperButton(View.OnClickListener listener) {
     View shopperButton = activity.findViewById(R.id.shopper_button);
     shopperButton.setVisibility(View.VISIBLE);
     shopperButton.setOnClickListener(listener);
@@ -190,89 +202,108 @@ public abstract class ResultHandler {
     return result.getType();
   }
 
-  /**
-   * Sends an intent to create a new calendar event by prepopulating the Add Event UI. Older
-   * versions of the system have a bug where the event title will not be filled out.
-   *
-   * @param summary A description of the event
-   * @param start   The start time as yyyyMMdd or yyyyMMdd'T'HHmmss or yyyyMMdd'T'HHmmss'Z'
-   * @param end     The end time as yyyyMMdd or yyyyMMdd'T'HHmmss or yyyyMMdd'T'HHmmss'Z'
-   * @param location a text description of the event location
-   * @param description a text description of the event itself
-   */
-  final void addCalendarEvent(String summary,
-                              String start,
-                              String end,
-                              String location,
-                              String description) {
-    Intent intent = new Intent(Intent.ACTION_EDIT);
-    intent.setType("vnd.android.cursor.item/event");
-    intent.putExtra("beginTime", calculateMilliseconds(start));
-    boolean allDay = start.length() == 8;
-    if (allDay) {
-      intent.putExtra("allDay", true);
-    } else {
-      if (end == null) {
-        end = start;
-      }
-      long endMilliseconds = calculateMilliseconds(end);
-      intent.putExtra("endTime", endMilliseconds);
-    }
-    intent.putExtra("title", summary);
-    intent.putExtra("eventLocation", location);
-    intent.putExtra("description", description);
-    launchIntent(intent);
+  final void addPhoneOnlyContact(String[] phoneNumbers,String[] phoneTypes) {
+    addContact(null, null, phoneNumbers, phoneTypes, null, null, null, null, null, null, null, null, null, null);
   }
 
-  private static long calculateMilliseconds(String when) {
-    if (when.length() == 8) {
-      // Only contains year/month/day
-      Date date;
-      synchronized (DATE_FORMAT) {
-        date = DATE_FORMAT.parse(when, new ParsePosition(0));
-      }
-      // Note this will be relative to GMT, not the local time zone
-      return date.getTime();
-    } else {
-      // The when string can be local time, or UTC if it ends with a Z
-      Date date;
-      synchronized (DATE_TIME_FORMAT) {
-       date = DATE_TIME_FORMAT.parse(when.substring(0, 15), new ParsePosition(0));
-      }
-      long milliseconds = date.getTime();
-      if (when.length() == 16 && when.charAt(15) == 'Z') {
-        Calendar calendar = new GregorianCalendar();
-        int offset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
-        milliseconds += offset;
-      }
-      return milliseconds;
-    }
+  final void addEmailOnlyContact(String[] emails, String[] emailTypes) {
+    addContact(null, null, null, null, emails, emailTypes, null, null, null, null, null, null, null, null);
   }
 
-  final void addContact(String[] names, String[] phoneNumbers, String[] emails, String note,
-                         String address, String org, String title) {
+  final void addContact(String[] names,
+                        String pronunciation,
+                        String[] phoneNumbers,
+                        String[] phoneTypes,
+                        String[] emails,
+                        String[] emailTypes,
+                        String note,
+                        String instantMessenger,
+                        String address,
+                        String addressType,
+                        String org,
+                        String title,
+                        String url,
+                        String birthday) {
 
     // Only use the first name in the array, if present.
-    Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT, Contacts.CONTENT_URI);
-    intent.setType(Contacts.People.CONTENT_ITEM_TYPE);
-    putExtra(intent, Contacts.Intents.Insert.NAME, names != null ? names[0] : null);
+    Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT, ContactsContract.Contacts.CONTENT_URI);
+    intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
+    putExtra(intent, ContactsContract.Intents.Insert.NAME, names != null ? names[0] : null);
 
-    int phoneCount = Math.min(phoneNumbers != null ? phoneNumbers.length : 0,
-        Contents.PHONE_KEYS.length);
+    putExtra(intent, ContactsContract.Intents.Insert.PHONETIC_NAME, pronunciation);
+
+    int phoneCount = Math.min(phoneNumbers != null ? phoneNumbers.length : 0, Contents.PHONE_KEYS.length);
     for (int x = 0; x < phoneCount; x++) {
       putExtra(intent, Contents.PHONE_KEYS[x], phoneNumbers[x]);
+      if (phoneTypes != null && x < phoneTypes.length) {
+        int type = toPhoneContractType(phoneTypes[x]);
+        if (type >= 0) {
+          intent.putExtra(Contents.PHONE_TYPE_KEYS[x], type);
+        }
+      }
     }
 
     int emailCount = Math.min(emails != null ? emails.length : 0, Contents.EMAIL_KEYS.length);
     for (int x = 0; x < emailCount; x++) {
       putExtra(intent, Contents.EMAIL_KEYS[x], emails[x]);
+      if (emailTypes != null && x < emailTypes.length) {
+        int type = toEmailContractType(emailTypes[x]);
+        if (type >= 0) {
+          intent.putExtra(Contents.EMAIL_TYPE_KEYS[x], type);
+        }
+      }
     }
 
-    putExtra(intent, Contacts.Intents.Insert.NOTES, note);
-    putExtra(intent, Contacts.Intents.Insert.POSTAL, address);
-    putExtra(intent, Contacts.Intents.Insert.COMPANY, org);
-    putExtra(intent, Contacts.Intents.Insert.JOB_TITLE, title);
+    // No field for URL, birthday; use notes
+    StringBuilder aggregatedNotes = new StringBuilder();
+    for (String aNote : new String[] { url, birthday, note }) {
+      if (aNote != null) {
+        if (aggregatedNotes.length() > 0) {
+          aggregatedNotes.append('\n');
+        }
+        aggregatedNotes.append(aNote);
+      }
+    }
+    if (aggregatedNotes.length() > 0) {
+      putExtra(intent, ContactsContract.Intents.Insert.NOTES, aggregatedNotes.toString());
+    }
+    
+    putExtra(intent, ContactsContract.Intents.Insert.IM_HANDLE, instantMessenger);
+    putExtra(intent, ContactsContract.Intents.Insert.POSTAL, address);
+    if (addressType != null) {
+      int type = toAddressContractType(addressType);
+      if (type >= 0) {
+        intent.putExtra(ContactsContract.Intents.Insert.POSTAL_TYPE, type);
+      }
+    }
+    putExtra(intent, ContactsContract.Intents.Insert.COMPANY, org);
+    putExtra(intent, ContactsContract.Intents.Insert.JOB_TITLE, title);
     launchIntent(intent);
+  }
+
+  private static int toEmailContractType(String typeString) {
+    return doToContractType(typeString, EMAIL_TYPE_STRINGS, EMAIL_TYPE_VALUES);
+  }
+
+  private static int toPhoneContractType(String typeString) {
+    return doToContractType(typeString, PHONE_TYPE_STRINGS, PHONE_TYPE_VALUES);
+  }
+
+  private static int toAddressContractType(String typeString) {
+    return doToContractType(typeString, ADDRESS_TYPE_STRINGS, ADDRESS_TYPE_VALUES);
+  }
+
+  private static int doToContractType(String typeString, String[] types, int[] values) {
+    if (typeString == null) {
+      return NO_TYPE;
+    }
+    for (int i = 0; i < types.length; i++) {
+      String type = types[i];
+      if (typeString.startsWith(type) || typeString.startsWith(type.toUpperCase(Locale.ENGLISH))) {
+        return values[i];
+      }
+    }
+    return NO_TYPE;
   }
 
   final void shareByEmail(String contents) {
@@ -348,28 +379,28 @@ public abstract class ResultHandler {
    * @param address The address to find
    * @param title An optional title, e.g. the name of the business at this address
    */
-  final void searchMap(String address, String title) {
+  final void searchMap(String address, CharSequence title) {
     String query = address;
     if (title != null && title.length() > 0) {
-      query = query + " (" + title + ')';
+      query += " (" + title + ')';
     }
     launchIntent(new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(query))));
   }
 
   final void getDirections(double latitude, double longitude) {
     launchIntent(new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google." +
-        LocaleManager.getCountryTLD() + "/maps?f=d&daddr=" + latitude + ',' + longitude)));
+        LocaleManager.getCountryTLD(activity) + "/maps?f=d&daddr=" + latitude + ',' + longitude)));
   }
 
   // Uses the mobile-specific version of Product Search, which is formatted for small screens.
   final void openProductSearch(String upc) {
-    Uri uri = Uri.parse("http://www.google." + LocaleManager.getProductSearchCountryTLD() +
+    Uri uri = Uri.parse("http://www.google." + LocaleManager.getProductSearchCountryTLD(activity) +
         "/m/products?q=" + upc + "&source=zxing");
     launchIntent(new Intent(Intent.ACTION_VIEW, uri));
   }
 
   final void openBookSearch(String isbn) {
-    Uri uri = Uri.parse("http://books.google." + LocaleManager.getBookSearchCountryTLD() +
+    Uri uri = Uri.parse("http://books.google." + LocaleManager.getBookSearchCountryTLD(activity) +
         "/books?vid=isbn" + isbn);
     launchIntent(new Intent(Intent.ACTION_VIEW, uri));
   }
@@ -381,17 +412,13 @@ public abstract class ResultHandler {
     launchIntent(intent);
   }
 
-  final void wifiConnect(WifiParsedResult wifiResult) {
-    Intent intent = new Intent(Intents.WifiConnect.ACTION);
-    intent.setClassName(activity, WifiActivity.class.getName());
-    putExtra(intent, Intents.WifiConnect.SSID, wifiResult.getSsid());
-    putExtra(intent, Intents.WifiConnect.TYPE, wifiResult.getNetworkEncryption());
-    putExtra(intent, Intents.WifiConnect.PASSWORD, wifiResult.getPassword());
-    launchIntent(intent);
-  }
-
   final void openURL(String url) {
-    launchIntent(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+    try {
+      launchIntent(intent);
+    } catch (ActivityNotFoundException anfe) {
+      Log.w(TAG, "Nothing available to handle " + intent);
+    }
   }
 
   final void webSearch(String query) {
@@ -401,14 +428,20 @@ public abstract class ResultHandler {
   }
 
   final void openGoogleShopper(String query) {
-    try {
-      activity.getPackageManager().getPackageInfo(GOOGLE_SHOPPER_PACKAGE, 0);
-      // If we didn't throw, Shopper is installed, so launch it.
-      Intent intent = new Intent(Intent.ACTION_SEARCH);
-      intent.setClassName(GOOGLE_SHOPPER_PACKAGE, GOOGLE_SHOPPER_ACTIVITY);
-      intent.putExtra(SearchManager.QUERY, query);
+
+    // Construct Intent to launch Shopper
+    Intent intent = new Intent(Intent.ACTION_SEARCH);
+    intent.setClassName(GOOGLE_SHOPPER_PACKAGE, GOOGLE_SHOPPER_ACTIVITY);
+    intent.putExtra(SearchManager.QUERY, query);
+
+    // Is it available?
+    PackageManager pm = activity.getPackageManager();
+    Collection<?> availableApps = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+    if (availableApps != null && !availableApps.isEmpty()) {
+      // If something can handle it, start it
       activity.startActivity(intent);
-    } catch (PackageManager.NameNotFoundException e) {
+    } else {
       // Otherwise offer to install it from Market.
       AlertDialog.Builder builder = new AlertDialog.Builder(activity);
       builder.setTitle(R.string.msg_google_shopper_missing);
@@ -442,21 +475,6 @@ public abstract class ResultHandler {
     }
   }
 
-  protected void showNotOurResults(int index, AlertDialog.OnClickListener proceedListener) {
-    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-    if (prefs.getBoolean(PreferencesActivity.KEY_NOT_OUR_RESULTS_SHOWN, false)) {
-      // already seen it, just proceed
-      proceedListener.onClick(null, index);
-    } else {
-      // note the user has seen it
-      prefs.edit().putBoolean(PreferencesActivity.KEY_NOT_OUR_RESULTS_SHOWN, true).commit();
-      AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-      builder.setMessage(R.string.msg_not_our_results);
-      builder.setPositiveButton(R.string.button_ok, proceedListener);
-      builder.show();
-    }
-  }
-
   private String parseCustomSearchURL() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
     String customProductSearch = prefs.getString(PreferencesActivity.KEY_CUSTOM_PRODUCT_SEARCH,
@@ -468,9 +486,16 @@ public abstract class ResultHandler {
   }
 
   String fillInCustomSearchURL(String text) {
+    if (customProductSearch == null) {
+      return text; // ?
+    }
     String url = customProductSearch.replace("%s", text);
     if (rawResult != null) {
       url = url.replace("%f", rawResult.getBarcodeFormat().toString());
+      if (url.contains("%t")) {
+        ParsedResult parsedResultAgain = ResultParser.parseResult(rawResult);
+        url = url.replace("%t", parsedResultAgain.getType().toString());
+      }
     }
     return url;
   }

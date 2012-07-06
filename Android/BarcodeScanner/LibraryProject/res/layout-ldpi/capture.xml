@@ -20,8 +20,7 @@
 
   <SurfaceView android:id="@+id/preview_view"
                android:layout_width="fill_parent"
-               android:layout_height="fill_parent"
-               android:layout_centerInParent="true"/>
+               android:layout_height="fill_parent"/>
 
   <com.google.zxing.client.android.ViewfinderView
       android:id="@+id/viewfinder_view"
@@ -35,7 +34,8 @@
                 android:layout_height="fill_parent"
                 android:background="@color/result_view"
                 android:visibility="gone"
-                android:padding="4dip">
+                android:padding="4dip"
+                android:baselineAligned="false">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -65,8 +65,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content">
 
-          <TextView android:id="@+id/format_text_view_label"
-                    android:layout_width="wrap_content"
+          <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/msg_default_format"
                     android:textColor="@color/result_minor_text"
@@ -87,8 +86,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content">
 
-          <TextView android:id="@+id/type_text_view_label"
-                    android:layout_width="wrap_content"
+          <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/msg_default_type"
                     android:textColor="@color/result_minor_text"
@@ -109,8 +107,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content">
 
-          <TextView android:id="@+id/time_text_view_label"
-                    android:layout_width="wrap_content"
+          <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/msg_default_time"
                     android:textColor="@color/result_minor_text"

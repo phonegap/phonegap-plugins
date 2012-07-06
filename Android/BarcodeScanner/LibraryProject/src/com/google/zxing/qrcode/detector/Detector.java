@@ -25,9 +25,10 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.DetectorResult;
 import com.google.zxing.common.GridSampler;
 import com.google.zxing.common.PerspectiveTransform;
+import com.google.zxing.common.detector.MathUtils;
 import com.google.zxing.qrcode.decoder.Version;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * <p>Encapsulates logic that can detect a QR Code in an image, even if the QR Code
@@ -70,7 +71,7 @@ public class Detector {
    * @throws NotFoundException if QR Code cannot be found
    * @throws FormatException if a QR Code cannot be decoded
    */
-  public DetectorResult detect(Hashtable hints) throws NotFoundException, FormatException {
+  public DetectorResult detect(Map<DecodeHintType,?> hints) throws NotFoundException, FormatException {
 
     resultPointCallback = hints == null ? null :
         (ResultPointCallback) hints.get(DecodeHintType.NEED_RESULT_POINT_CALLBACK);
@@ -152,12 +153,14 @@ public class Detector {
     if (alignmentPattern != null) {
       bottomRightX = alignmentPattern.getX();
       bottomRightY = alignmentPattern.getY();
-      sourceBottomRightX = sourceBottomRightY = dimMinusThree - 3.0f;
+      sourceBottomRightX = dimMinusThree - 3.0f;
+      sourceBottomRightY = sourceBottomRightX;
     } else {
       // Don't have an alignment pattern, just make up the bottom-right point
       bottomRightX = (topRight.getX() - topLeft.getX()) + bottomLeft.getX();
       bottomRightY = (topRight.getY() - topLeft.getY()) + bottomLeft.getY();
-      sourceBottomRightX = sourceBottomRightY = dimMinusThree;
+      sourceBottomRightX = dimMinusThree;
+      sourceBottomRightY = dimMinusThree;
     }
 
     return PerspectiveTransform.quadrilateralToQuadrilateral(
@@ -194,9 +197,9 @@ public class Detector {
   protected static int computeDimension(ResultPoint topLeft,
                                         ResultPoint topRight,
                                         ResultPoint bottomLeft,
-                                      float moduleSize) throws NotFoundException {
-    int tltrCentersDimension = round(ResultPoint.distance(topLeft, topRight) / moduleSize);
-    int tlblCentersDimension = round(ResultPoint.distance(topLeft, bottomLeft) / moduleSize);
+                                        float moduleSize) throws NotFoundException {
+    int tltrCentersDimension = MathUtils.round(ResultPoint.distance(topLeft, topRight) / moduleSize);
+    int tlblCentersDimension = MathUtils.round(ResultPoint.distance(topLeft, bottomLeft) / moduleSize);
     int dimension = ((tltrCentersDimension + tlblCentersDimension) >> 1) + 7;
     switch (dimension & 0x03) { // mod 4
       case 0:
@@ -256,33 +259,35 @@ public class Detector {
    */
   private float sizeOfBlackWhiteBlackRunBothWays(int fromX, int fromY, int toX, int toY) {
 
-   float result = sizeOfBlackWhiteBlackRun(fromX, fromY, toX, toY);
+    float result = sizeOfBlackWhiteBlackRun(fromX, fromY, toX, toY);
 
-   // Now count other way -- don't run off image though of course
-   float scale = 1.0f;
-   int otherToX = fromX - (toX - fromX);
-   if (otherToX < 0) {
-     scale = (float) fromX / (float) (fromX - otherToX);
-     otherToX = 0;
-   } else if (otherToX > image.getWidth()) {
-     scale = (float) (image.getWidth() - fromX) / (float) (otherToX - fromX);
-     otherToX = image.getWidth();
-   }
-   int otherToY = (int) (fromY - (toY - fromY) * scale);
+    // Now count other way -- don't run off image though of course
+    float scale = 1.0f;
+    int otherToX = fromX - (toX - fromX);
+    if (otherToX < 0) {
+      scale = (float) fromX / (float) (fromX - otherToX);
+      otherToX = 0;
+    } else if (otherToX >= image.getWidth()) {
+      scale = (float) (image.getWidth() - 1 - fromX) / (float) (otherToX - fromX);
+      otherToX = image.getWidth() - 1;
+    }
+    int otherToY = (int) (fromY - (toY - fromY) * scale);
 
-   scale = 1.0f;
-   if (otherToY < 0) {
-     scale = (float) fromY / (float) (fromY - otherToY);
-     otherToY = 0;
-   } else if (otherToY > image.getHeight()) {
-     scale = (float) (image.getHeight() - fromY) / (float) (otherToY - fromY);
-     otherToY = image.getHeight();
-   }
-   otherToX = (int) (fromX + (otherToX - fromX) * scale);
+    scale = 1.0f;
+    if (otherToY < 0) {
+      scale = (float) fromY / (float) (fromY - otherToY);
+      otherToY = 0;
+    } else if (otherToY >= image.getHeight()) {
+      scale = (float) (image.getHeight() - 1 - fromY) / (float) (otherToY - fromY);
+      otherToY = image.getHeight() - 1;
+    }
+    otherToX = (int) (fromX + (otherToX - fromX) * scale);
 
-   result += sizeOfBlackWhiteBlackRun(fromX, fromY, otherToX, otherToY);
-   return result;
- }
+    result += sizeOfBlackWhiteBlackRun(fromX, fromY, otherToX, otherToY);
+
+    // Middle pixel is double-counted this way; subtract 1
+    return result - 1.0f;
+  }
 
   /**
    * <p>This method traces a line from a point in the image, in the direction towards another point.
@@ -313,32 +318,22 @@ public class Detector {
 
     // In black pixels, looking for white, first or second time.
     int state = 0;
-    for (int x = fromX, y = fromY; x != toX; x += xstep) {
+    // Loop up until x == toX, but not beyond
+    int xLimit = toX + xstep;
+    for (int x = fromX, y = fromY; x != xLimit; x += xstep) {
       int realX = steep ? y : x;
       int realY = steep ? x : y;
 
-      // In white pixels, looking for black.
-      // FIXME(dswitkin): This method seems to assume square images, which can cause these calls to
-      // BitMatrix.get() to throw ArrayIndexOutOfBoundsException.
-      if (state == 1) {
-        if (image.get(realX, realY)) {
-          state++;
+      // Does current pixel mean we have moved white to black or vice versa?
+      // Scanning black in state 0,2 and white in state 1, so if we find the wrong
+      // color, advance to next state or end if we are in state 2 already
+      if ((state == 1) == image.get(realX, realY)) {
+        if (state == 2) {
+          return MathUtils.distance(x, y, fromX, fromY);
         }
-      } else {
-        if (!image.get(realX, realY)) {
-          state++;
-        }
+        state++;
       }
 
-      // Found black, white, black, and stumbled back onto white, so we're done.
-      if (state == 3) {
-        int diffX = x - fromX;
-        int diffY = y - fromY;
-        if (xstep < 0) {
-            diffX++;
-        }
-        return (float) Math.sqrt((double) (diffX * diffX + diffY * diffY));
-      }
       error += dy;
       if (error > 0) {
         if (y == toY) {
@@ -348,9 +343,14 @@ public class Detector {
         error -= dx;
       }
     }
-    int diffX = toX - fromX;
-    int diffY = toY - fromY;
-    return (float) Math.sqrt((double) (diffX * diffX + diffY * diffY));
+    // Found black-white-black; give the benefit of the doubt that the next pixel outside the image
+    // is "white" so this last point at (toX+xStep,toY) is the right ending. This is really a
+    // small approximation; (toX+xStep,toY+yStep) might be really correct. Ignore this.
+    if (state == 2) {
+      return MathUtils.distance(toX + xstep, toY, fromX, fromY);
+    }
+    // else we didn't find even black-white-black; no estimate is really possible
+    return Float.NaN;
   }
 
   /**
@@ -396,11 +396,4 @@ public class Detector {
     return alignmentFinder.find();
   }
 
-  /**
-   * Ends up being a bit faster than Math.round(). This merely rounds its argument to the nearest int,
-   * where x.5 rounds up.
-   */
-  private static int round(float d) {
-    return (int) (d + 0.5f);
-  }
 }

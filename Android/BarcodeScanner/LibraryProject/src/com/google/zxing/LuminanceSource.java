@@ -91,7 +91,7 @@ public abstract class LuminanceSource {
    * @return A cropped version of this object.
    */
   public LuminanceSource crop(int left, int top, int width, int height) {
-    throw new RuntimeException("This luminance source does not support cropping.");
+    throw new UnsupportedOperationException("This luminance source does not support cropping.");
   }
 
   /**
@@ -102,12 +102,48 @@ public abstract class LuminanceSource {
   }
 
   /**
-   * Returns a new object with rotated image data. Only callable if isRotateSupported() is true.
+   * Returns a new object with rotated image data by 90 degrees counterclockwise.
+   * Only callable if {@link #isRotateSupported()} is true.
    *
    * @return A rotated version of this object.
    */
   public LuminanceSource rotateCounterClockwise() {
-    throw new RuntimeException("This luminance source does not support rotation.");
+    throw new UnsupportedOperationException("This luminance source does not support rotation by 90 degrees.");
+  }
+
+  /**
+   * Returns a new object with rotated image data by 45 degrees counterclockwise.
+   * Only callable if {@link #isRotateSupported()} is true.
+   *
+   * @return A rotated version of this object.
+   */
+  public LuminanceSource rotateCounterClockwise45() {
+    throw new UnsupportedOperationException("This luminance source does not support rotation by 45 degrees.");
+  }
+
+  @Override
+  public String toString() {
+    byte[] row = new byte[width];
+    StringBuilder result = new StringBuilder(height * (width + 1));
+    for (int y = 0; y < height; y++) {
+      row = getRow(y, row);
+      for (int x = 0; x < width; x++) {
+        int luminance = row[x] & 0xFF;
+        char c;
+        if (luminance < 0x40) {
+          c = '#';
+        } else if (luminance < 0x80) {
+          c = '+';
+        } else if (luminance < 0xC0) {
+          c = '.';
+        } else {
+          c = ' ';
+        }
+        result.append(c);
+      }
+      result.append('\n');
+    }
+    return result.toString();
   }
 
 }

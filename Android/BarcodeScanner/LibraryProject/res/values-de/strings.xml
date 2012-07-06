@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (C) 2010 ZXing authors
+ Copyright (C) 2012 ZXing authors
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@
   <string name="button_ok">OK</string>
   <string name="button_open_browser">Browser öffnen</string>
   <string name="button_product_search">Produktsuche</string>
-  <string name="button_read_book">Buch anzeigen</string>
   <string name="button_search_book_contents">Buchinhalt durchsuchen</string>
   <string name="button_share_app">Anwendung</string>
   <string name="button_share_bookmark">Lesezeichen</string>
@@ -52,33 +51,35 @@
   <string name="contents_phone">Telefonnummer</string>
   <string name="contents_sms">SMS Adresse</string>
   <string name="contents_text">Text</string>
+  <string name="history_clear_one_history_text">Löschen</string>
   <string name="history_clear_text">Historie löschen</string>
   <string name="history_email_title">Barcode Scanner Historie</string>
+  <string name="history_empty">Leer</string>
+  <string name="history_empty_detail">Kein Barcode-Scans wurden aufgezeichnet</string>
   <string name="history_send">Historie senden</string>
   <string name="history_title">Historie</string>
   <string name="menu_about">Info</string>
+  <string name="menu_encode_mecard">Verwenden Sie MECARD</string>
+  <string name="menu_encode_vcard">Verwenden Sie vCard</string>
   <string name="menu_help">Hilfe</string>
   <string name="menu_history">Historie</string>
   <string name="menu_settings">Einstellungen</string>
   <string name="menu_share">Senden</string>
   <string name="msg_about">Basiert auf der Open Source ZXing Barcode Bibliothek </string>
-  <string name="msg_buggy">Bei diesem Gerät sind Fehler bekannt, die beim Barcode-Scanning Probleme bereiten. Weitere Informationen auf http://code.google.com/p/zxing/wiki/FrequentlyAskedQuestions</string>
   <string name="msg_bulk_mode_scanned">Bulk-Modus: Barcode gescannt und gespeichert</string>
   <string name="msg_camera_framework_bug">Bei der Android-Kamera ist leider ein Fehler aufgetreten. Es könnte sein, dass Sie das Gerät neu starten müssen.</string>
-  <string name="msg_default_contents">Inhalt</string>
   <string name="msg_default_format">Format</string>
   <string name="msg_default_meta">Metadata</string>
   <string name="msg_default_mms_subject">Hi</string>
   <string name="msg_default_status">Positionieren Sie den Barcode innerhalb des Rechteckes.</string>
   <string name="msg_default_time">Zeit</string>
   <string name="msg_default_type">Typ</string>
-  <string name="msg_encode_barcode_failed">Der gewünschte Barcode kann nicht erzeugt werden.</string>
   <string name="msg_encode_contents_failed">Aus den Daten kann kein Barcode erzeugt werden.</string>
+  <string name="msg_google_books">Google Bücher</string>
+  <string name="msg_google_product">Google Shopping</string>
   <string name="msg_google_shopper_missing">Google Shopper ist nicht installiert</string>
   <string name="msg_install_google_shopper">Google Shopper verbindet ohne Öffnen des Browsers Barcode-Scannen mit Preisen, Testberichten und mehr. Möchten Sie es ausprobieren?</string>
   <string name="msg_intent_failed">Die gewünschte Applikation kann nicht geöffnet werden. Der Barcode könnte ungültig sein.</string>
-  <string name="msg_loading_apps">Anwendungs-Liste wird geladen\u2026</string>
-  <string name="msg_not_our_results">Sie verlassen diese Anwendung. Die Suchergebnisse, die Sie gleich sehen, stehen nicht in Verbindung mit dieser Anwendung.</string>
   <string name="msg_redirect">Umleiten</string>
   <string name="msg_sbc_book_not_searchable">Dieses Buch kann nicht durchsucht werden.</string>
   <string name="msg_sbc_failed">Bei der Suche ist ein Fehler aufgetreten.</string>
@@ -90,11 +91,14 @@
   <string name="msg_share_explanation">Sie können Daten weitergeben, indem Sie einen Barcode auf Ihrem Bilschirm anzeigen und mit einem anderen Telefon einscannen.</string>
   <string name="msg_share_subject_line">Hier ist der gescannte Barcode-Inhalt</string>
   <string name="msg_share_text">Oder geben Sie einen Text</string>
+  <string name="msg_sure">Sind Sie sicher?</string>
   <string name="msg_unmount_usb">Leider kann nicht auf die SD-Karte zugegriffen werden.</string>
   <string name="preferences_actions_title">Wenn ein Barcode erkannt wurde\u2026</string>
+  <string name="preferences_auto_focus_title">Verwenden Sie Autofokus</string>
   <string name="preferences_bulk_mode_summary">Scannt und speichert mehrere Barcodes nacheinander</string>
   <string name="preferences_bulk_mode_title">Bulk-Scan-Modus</string>
   <string name="preferences_copy_to_clipboard_title">In Zwischenablage kopieren</string>
+  <string name="preferences_custom_product_search_summary" formatted="false">Auswechslungen: %s = Inhalt, %f = Format,% t = Typ</string>
   <string name="preferences_custom_product_search_title">Eigene Such-URL</string>
   <string name="preferences_decode_1D_title">1D Barcodes</string>
   <string name="preferences_decode_Data_Matrix_title">Data Matrix</string>
@@ -107,9 +111,8 @@
   <string name="preferences_remember_duplicates_summary">Speichern mehrerer Scans des gleichen Barcodes in der Historie</string>
   <string name="preferences_remember_duplicates_title">Duplikate speichern</string>
   <string name="preferences_result_title">Ergebnis-Einstellungen</string>
-  <string name="preferences_reverse_image_summary">Bei Geräten nur mit Frontkamera aktivieren</string>
-  <string name="preferences_reverse_image_title">Umgekehrtes Kamerabild</string>
   <string name="preferences_scanning_title">Beim Scannen von Barcodes, dekodieren\u2026</string>
+  <string name="preferences_search_country">Suche Land</string>
   <string name="preferences_supplemental_summary">Versuchen, weitere Informationen über Barcode-Inhalte abzurufen</string>
   <string name="preferences_supplemental_title">Weitere Informationen abrufen</string>
   <string name="preferences_vibrate_title">Vibrieren</string>
@@ -127,15 +130,8 @@
   <string name="sbc_name">Google Book Search</string>
   <string name="share_name">Weitergabe mittels Barcode</string>
   <string name="title_about">Barcode Scanner v</string>
-  <string name="wa_name">WLAN-Konfiguration</string>
-  <string name="wifi_changing_network">Ändern der Netzwerkeinstellungen</string>
-  <string name="wifi_connect_failed">Verbinden mit Netzwerk fehlgeschlagen</string>
-  <string name="wifi_connected">Verbunden</string>
-  <string name="wifi_creating_network">Erstelle Netzwerk</string>
-  <string name="wifi_modifying_network">Verändere Netzwerk</string>
+  <string name="wifi_changing_network">Anfordern Verbindung zum Netzwerk\u2026</string>
   <string name="wifi_ssid_label">Netzwerk-Name</string>
-  <string name="wifi_ssid_missing">Netzwerk-Name fehlt</string>
-  <string name="wifi_type_incorrect">Falscher Netzwerk-Typ</string>
   <string name="wifi_type_label">Typ</string>
   <string name="zxing_url">http://code.google.com/p/zxing</string>
 </resources>

@@ -16,6 +16,8 @@
 
 package com.google.zxing;
 
+import com.google.zxing.common.detector.MathUtils;
+
 /**
  * <p>Encapsulates a point of interest in an image containing a barcode. Typically, this
  * would be the location of a finder pattern or the corner of the barcode, for example.</p>
@@ -40,6 +42,7 @@ public class ResultPoint {
     return y;
   }
 
+  @Override
   public boolean equals(Object other) {
     if (other instanceof ResultPoint) {
       ResultPoint otherPoint = (ResultPoint) other;
@@ -48,12 +51,14 @@ public class ResultPoint {
     return false;
   }
 
+  @Override
   public int hashCode() {
     return 31 * Float.floatToIntBits(x) + Float.floatToIntBits(y);
   }
 
+  @Override
   public String toString() {
-    StringBuffer result = new StringBuffer(25);
+    StringBuilder result = new StringBuilder(25);
     result.append('(');
     result.append(x);
     result.append(',');
@@ -111,15 +116,15 @@ public class ResultPoint {
    * @return distance between two points
    */
   public static float distance(ResultPoint pattern1, ResultPoint pattern2) {
-    float xDiff = pattern1.getX() - pattern2.getX();
-    float yDiff = pattern1.getY() - pattern2.getY();
-    return (float) Math.sqrt((double) (xDiff * xDiff + yDiff * yDiff));
+    return MathUtils.distance(pattern1.x, pattern1.y, pattern2.x, pattern2.y);
   }
 
   /**
    * Returns the z component of the cross product between vectors BC and BA.
    */
-  private static float crossProductZ(ResultPoint pointA, ResultPoint pointB, ResultPoint pointC) {
+  private static float crossProductZ(ResultPoint pointA,
+                                     ResultPoint pointB,
+                                     ResultPoint pointC) {
     float bX = pointB.x;
     float bY = pointB.y;
     return ((pointC.x - bX) * (pointA.y - bY)) - ((pointC.y - bY) * (pointA.x - bX));

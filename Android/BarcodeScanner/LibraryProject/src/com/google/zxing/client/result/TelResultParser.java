@@ -23,14 +23,12 @@ import com.google.zxing.Result;
  *
  * @author Sean Owen
  */
-final class TelResultParser extends ResultParser {
+public final class TelResultParser extends ResultParser {
 
-  private TelResultParser() {
-  }
-
-  public static TelParsedResult parse(Result result) {
-    String rawText = result.getText();
-    if (rawText == null || (!rawText.startsWith("tel:") && !rawText.startsWith("TEL:"))) {
+  @Override
+  public TelParsedResult parse(Result result) {
+    String rawText = getMassagedText(result);
+    if (!rawText.startsWith("tel:") && !rawText.startsWith("TEL:")) {
       return null;
     }
     // Normalize "TEL:" to "tel:"

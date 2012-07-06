@@ -33,11 +33,12 @@ import com.google.zxing.Result;
  *
  * @author Sean Owen
  */
-final class AddressBookDoCoMoResultParser extends AbstractDoCoMoResultParser {
+public final class AddressBookDoCoMoResultParser extends AbstractDoCoMoResultParser {
 
-  public static AddressBookParsedResult parse(Result result) {
-    String rawText = result.getText();
-    if (rawText == null || !rawText.startsWith("MECARD:")) {
+  @Override
+  public AddressBookParsedResult parse(Result result) {
+    String rawText = getMassagedText(result);
+    if (!rawText.startsWith("MECARD:")) {
       return null;
     }
     String[] rawName = matchDoCoMoPrefixedField("N:", rawText, true);
@@ -64,9 +65,13 @@ final class AddressBookDoCoMoResultParser extends AbstractDoCoMoResultParser {
     return new AddressBookParsedResult(maybeWrap(name),
                                        pronunciation,
                                        phoneNumbers,
+                                       null,
                                        emails,
+                                       null,
+                                       null,
                                        note,
                                        addresses,
+                                       null,
                                        org,
                                        birthday,
                                        null,

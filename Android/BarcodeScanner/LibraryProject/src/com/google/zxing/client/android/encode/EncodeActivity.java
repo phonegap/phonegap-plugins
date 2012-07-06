@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 /**
  * This class encodes data from an Intent into a QR code, and then displays it full screen so that
@@ -51,46 +52,80 @@ public final class EncodeActivity extends Activity {
 
   private static final String TAG = EncodeActivity.class.getSimpleName();
 
+  private static final int SHARE_MENU = Menu.FIRST;
+  private static final int ENCODE_FORMAT_MENU = Menu.FIRST + 1;
   private static final int MAX_BARCODE_FILENAME_LENGTH = 24;
+  private static final Pattern NOT_ALPHANUMERIC = Pattern.compile("[^A-Za-z0-9]");
+  private static final String USE_VCARD_KEY = "USE_VCARD";
 
   private QRCodeEncoder qrCodeEncoder;
 
   @Override
   public void onCreate(Bundle icicle) {
     super.onCreate(icicle);
-
     Intent intent = getIntent();
-    if (intent != null) {
+    if (intent == null) {
+      finish();
+    } else {
       String action = intent.getAction();
-      if (action.equals(Intents.Encode.ACTION) || action.equals(Intent.ACTION_SEND)) {
+      if (Intents.Encode.ACTION.equals(action) || Intent.ACTION_SEND.equals(action)) {
         setContentView(R.layout.encode);
-        return;
+      } else {
+        finish();
       }
     }
-    finish();
   }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
-    menu.add(0, Menu.FIRST, 0, R.string.menu_share).setIcon(android.R.drawable.ic_menu_share);
+    menu.add(Menu.NONE, SHARE_MENU, Menu.NONE, R.string.menu_share).setIcon(android.R.drawable.ic_menu_share);
+    boolean useVcard = qrCodeEncoder != null && qrCodeEncoder.isUseVCard();
+    int encodeNameResource = useVcard ? R.string.menu_encode_mecard : R.string.menu_encode_vcard;
+    menu.add(Menu.NONE, ENCODE_FORMAT_MENU, Menu.NONE, encodeNameResource)
+        .setIcon(android.R.drawable.ic_menu_sort_alphabetically);
     return true;
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    if (qrCodeEncoder == null) { // Odd
+    switch (item.getItemId()) {
+      case SHARE_MENU:
+        share();
+        return true;
+      case ENCODE_FORMAT_MENU:
+        Intent intent = getIntent();
+        intent.putExtra(USE_VCARD_KEY, !qrCodeEncoder.isUseVCard());
+        startActivity(getIntent());
+        finish();
+        return true;
+      default:
+        return false;
+    }
+  }
+  
+  private void share() {
+    QRCodeEncoder encoder = qrCodeEncoder;
+    if (encoder == null) { // Odd
       Log.w(TAG, "No existing barcode to send?");
-      return true;
+      return;
     }
 
-    String contents = qrCodeEncoder.getContents();
+    String contents = encoder.getContents();
+    if (contents == null) {
+      Log.w(TAG, "No existing barcode to send?");
+      return;
+    }
+
     Bitmap bitmap;
     try {
-      bitmap = qrCodeEncoder.encodeAsBitmap();
+      bitmap = encoder.encodeAsBitmap();
     } catch (WriterException we) {
       Log.w(TAG, we);
-      return true;
+      return;
+    }
+    if (bitmap == null) {
+      return;
     }
 
     File bsRoot = new File(Environment.getExternalStorageDirectory(), "BarcodeScanner");
@@ -98,7 +133,7 @@ public final class EncodeActivity extends Activity {
     if (!barcodesRoot.exists() && !barcodesRoot.mkdirs()) {
       Log.w(TAG, "Couldn't make dir " + barcodesRoot);
       showErrorMessage(R.string.msg_unmount_usb);
-      return true;
+      return;
     }
     File barcodeFile = new File(barcodesRoot, makeBarcodeFileName(contents) + ".png");
     barcodeFile.delete();
@@ -109,7 +144,7 @@ public final class EncodeActivity extends Activity {
     } catch (FileNotFoundException fnfe) {
       Log.w(TAG, "Couldn't access file " + barcodeFile + " due to " + fnfe);
       showErrorMessage(R.string.msg_unmount_usb);
-      return true;
+      return;
     } finally {
       if (fos != null) {
         try {
@@ -121,26 +156,18 @@ public final class EncodeActivity extends Activity {
     }
 
     Intent intent = new Intent(Intent.ACTION_SEND, Uri.parse("mailto:"));
-    intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " - " +
-        qrCodeEncoder.getTitle());
-    intent.putExtra(Intent.EXTRA_TEXT, qrCodeEncoder.getContents());
+    intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " - " + encoder.getTitle());
+    intent.putExtra(Intent.EXTRA_TEXT, contents);
     intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + barcodeFile.getAbsolutePath()));
     intent.setType("image/png");
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
     startActivity(Intent.createChooser(intent, null));
-    return true;
   }
 
   private static CharSequence makeBarcodeFileName(CharSequence contents) {
-    int fileNameLength = Math.min(MAX_BARCODE_FILENAME_LENGTH, contents.length());
-    StringBuilder fileName = new StringBuilder(fileNameLength);
-    for (int i = 0; i < fileNameLength; i++) {
-      char c = contents.charAt(i);
-      if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
-        fileName.append(c);
-      } else {
-        fileName.append('_');
-      }
+    String fileName = NOT_ALPHANUMERIC.matcher(contents).replaceAll("_");
+    if (fileName.length() > MAX_BARCODE_FILENAME_LENGTH) {
+      fileName = fileName.substring(0, MAX_BARCODE_FILENAME_LENGTH);
     }
     return fileName;
   }
@@ -157,20 +184,34 @@ public final class EncodeActivity extends Activity {
     smallerDimension = smallerDimension * 7 / 8;
 
     Intent intent = getIntent();
+    if (intent == null) {
+      return;
+    }
+
     try {
-      qrCodeEncoder = new QRCodeEncoder(this, intent, smallerDimension);
-      setTitle(getString(R.string.app_name) + " - " + qrCodeEncoder.getTitle());
+      boolean useVCard = intent.getBooleanExtra(USE_VCARD_KEY, false);
+      qrCodeEncoder = new QRCodeEncoder(this, intent, smallerDimension, useVCard);
       Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
+      if (bitmap == null) {
+        Log.w(TAG, "Could not encode barcode");
+        showErrorMessage(R.string.msg_encode_contents_failed);
+        qrCodeEncoder = null;
+        return;
+      }
+
       ImageView view = (ImageView) findViewById(R.id.image_view);
       view.setImageBitmap(bitmap);
+
       TextView contents = (TextView) findViewById(R.id.contents_text_view);
-      contents.setText(qrCodeEncoder.getDisplayContents());
+      if (intent.getBooleanExtra(Intents.Encode.SHOW_CONTENTS, true)) {
+        contents.setText(qrCodeEncoder.getDisplayContents());
+        setTitle(getString(R.string.app_name) + " - " + qrCodeEncoder.getTitle());
+      } else {
+        contents.setText("");
+        setTitle(getString(R.string.app_name));
+      }
     } catch (WriterException e) {
-      Log.e(TAG, "Could not encode barcode", e);
-      showErrorMessage(R.string.msg_encode_contents_failed);
-      qrCodeEncoder = null;
-    } catch (IllegalArgumentException e) {
-      Log.e(TAG, "Could not encode barcode", e);
+      Log.w(TAG, "Could not encode barcode", e);
       showErrorMessage(R.string.msg_encode_contents_failed);
       qrCodeEncoder = null;
     }

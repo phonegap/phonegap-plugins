@@ -25,7 +25,15 @@ package com.google.zxing.common;
  */
 public final class PerspectiveTransform {
 
-  private final float a11, a12, a13, a21, a22, a23, a31, a32, a33;
+  private final float a11;
+  private final float a12;
+  private final float a13;
+  private final float a21;
+  private final float a22;
+  private final float a23;
+  private final float a31;
+  private final float a32;
+  private final float a33;
 
   private PerspectiveTransform(float a11, float a21, float a31,
                                float a12, float a22, float a32,
@@ -91,23 +99,24 @@ public final class PerspectiveTransform {
                                                            float x1, float y1,
                                                            float x2, float y2,
                                                            float x3, float y3) {
-    float dy2 = y3 - y2;
+    float dx3 = x0 - x1 + x2 - x3;
     float dy3 = y0 - y1 + y2 - y3;
-    if (dy2 == 0.0f && dy3 == 0.0f) {
+    if (dx3 == 0.0f && dy3 == 0.0f) {
+      // Affine
       return new PerspectiveTransform(x1 - x0, x2 - x1, x0,
-          y1 - y0, y2 - y1, y0,
-          0.0f, 0.0f, 1.0f);
+                                      y1 - y0, y2 - y1, y0,
+                                      0.0f,    0.0f,    1.0f);
     } else {
       float dx1 = x1 - x2;
       float dx2 = x3 - x2;
-      float dx3 = x0 - x1 + x2 - x3;
       float dy1 = y1 - y2;
+      float dy2 = y3 - y2;
       float denominator = dx1 * dy2 - dx2 * dy1;
       float a13 = (dx3 * dy2 - dx2 * dy3) / denominator;
       float a23 = (dx1 * dy3 - dx3 * dy1) / denominator;
       return new PerspectiveTransform(x1 - x0 + a13 * x1, x3 - x0 + a23 * x3, x0,
-          y1 - y0 + a13 * y1, y3 - y0 + a23 * y3, y0,
-          a13, a23, 1.0f);
+                                      y1 - y0 + a13 * y1, y3 - y0 + a23 * y3, y0,
+                                      a13,                a23,                1.0f);
     }
   }
 

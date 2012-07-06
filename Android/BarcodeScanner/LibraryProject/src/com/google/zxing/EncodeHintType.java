@@ -21,19 +21,35 @@ package com.google.zxing;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-public final class EncodeHintType {
+public enum EncodeHintType {
 
   /**
-   * Specifies what degree of error correction to use, for example in QR Codes (type Integer).
+   * Specifies what degree of error correction to use, for example in QR Codes.
+   * Type depends on the encoder. For example for QR codes it's type
+   * {@link com.google.zxing.qrcode.decoder.ErrorCorrectionLevel ErrorCorrectionLevel}.
    */
-  public static final EncodeHintType ERROR_CORRECTION = new EncodeHintType();
+  ERROR_CORRECTION,
 
   /**
-   * Specifies what character encoding to use where applicable (type String)
+   * Specifies what character encoding to use where applicable (type {@link String})
    */
-  public static final EncodeHintType CHARACTER_SET = new EncodeHintType();
+  CHARACTER_SET,
 
-  private EncodeHintType() {
-  }
+  /**
+   * Specifies whether to use compact mode for PDF417 (type {@link Boolean}).
+   */
+  PDF417_COMPACT,
+
+  /**
+   * Specifies what compaction mode to use for PDF417 (type
+   * {@link com.google.zxing.pdf417.encoder.Compaction Compaction}).
+   */
+  PDF417_COMPACTION,
+
+  /**
+   * Specifies the minimum and maximum number of rows and columns for PDF417 (type
+   * {@link com.google.zxing.pdf417.encoder.Dimensions Dimensions}).
+   */
+  PDF417_DIMENSIONS,
 
 }

@@ -26,7 +26,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.google.zxing.qrcode.encoder.Encoder;
 import com.google.zxing.qrcode.encoder.QRCode;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * This object renders a QR Code as a BitMatrix 2D array of greyscale values.
@@ -37,16 +37,21 @@ public final class QRCodeWriter implements Writer {
 
   private static final int QUIET_ZONE_SIZE = 4;
 
+  @Override
   public BitMatrix encode(String contents, BarcodeFormat format, int width, int height)
       throws WriterException {
 
     return encode(contents, format, width, height, null);
   }
 
-  public BitMatrix encode(String contents, BarcodeFormat format, int width, int height,
-      Hashtable hints) throws WriterException {
+  @Override
+  public BitMatrix encode(String contents,
+                          BarcodeFormat format,
+                          int width,
+                          int height,
+                          Map<EncodeHintType,?> hints) throws WriterException {
 
-    if (contents == null || contents.length() == 0) {
+    if (contents.length() == 0) {
       throw new IllegalArgumentException("Found empty contents");
     }
 
@@ -76,6 +81,9 @@ public final class QRCodeWriter implements Writer {
   // 0 == black, 255 == white (i.e. an 8 bit greyscale bitmap).
   private static BitMatrix renderResult(QRCode code, int width, int height) {
     ByteMatrix input = code.getMatrix();
+    if (input == null) {
+      throw new IllegalStateException();
+    }
     int inputWidth = input.getWidth();
     int inputHeight = input.getHeight();
     int qrWidth = inputWidth + (QUIET_ZONE_SIZE << 1);

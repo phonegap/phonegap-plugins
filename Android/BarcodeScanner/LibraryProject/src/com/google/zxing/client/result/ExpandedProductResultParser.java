@@ -26,7 +26,8 @@
 
 package com.google.zxing.client.result;
 
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -37,46 +38,42 @@ import com.google.zxing.Result;
  * @author Antonio Manuel Benjumea Conde, Servinform, S.A.
  * @author Agustín Delgado, Servinform, S.A.
  */
-final class ExpandedProductResultParser extends ResultParser {
+public final class ExpandedProductResultParser extends ResultParser {
 
-  private ExpandedProductResultParser() {
-  }
-
-  // Treat all RSS EXPANDED, in the sense that they are all
-  // product barcodes with complementary data.
-  public static ExpandedProductParsedResult parse(Result result) {
+  @Override
+  public ExpandedProductParsedResult parse(Result result) {
     BarcodeFormat format = result.getBarcodeFormat();
-    if (!BarcodeFormat.RSS_EXPANDED.equals(format)) {
+    if (format != BarcodeFormat.RSS_EXPANDED) {
       // ExtendedProductParsedResult NOT created. Not a RSS Expanded barcode
       return null;
     }
     // Really neither of these should happen:
-    String rawText = result.getText();
+    String rawText = getMassagedText(result);
     if (rawText == null) {
       // ExtendedProductParsedResult NOT created. Input text is NULL
       return null;
     }
 
-    String productID = "-";
-    String sscc = "-";
-    String lotNumber = "-";
-    String productionDate = "-";
-    String packagingDate = "-";
-    String bestBeforeDate = "-";
-    String expirationDate = "-";
-    String weight = "-";
-    String weightType = "-";
-    String weightIncrement = "-";
-    String price = "-";
-    String priceIncrement = "-";
-    String priceCurrency = "-";
-    Hashtable uncommonAIs = new Hashtable();
+    String productID = null;
+    String sscc = null;
+    String lotNumber = null;
+    String productionDate = null;
+    String packagingDate = null;
+    String bestBeforeDate = null;
+    String expirationDate = null;
+    String weight = null;
+    String weightType = null;
+    String weightIncrement = null;
+    String price = null;
+    String priceIncrement = null;
+    String priceCurrency = null;
+    Map<String,String> uncommonAIs = new HashMap<String,String>();
 
     int i = 0;
 
     while (i < rawText.length()) {
       String ai = findAIvalue(i, rawText);
-      if ("ERROR".equals(ai)) {
+      if (ai == null) {
         // Error. Code doesn't match with RSS expanded pattern
         // ExtendedProductParsedResult NOT created. Not match with RSS Expanded pattern
         return null;
@@ -136,48 +133,47 @@ final class ExpandedProductResultParser extends ResultParser {
       }
     }
 
-    return new ExpandedProductParsedResult(productID, sscc, lotNumber,
-        productionDate, packagingDate, bestBeforeDate, expirationDate,
-        weight, weightType, weightIncrement, price, priceIncrement,
-        priceCurrency, uncommonAIs);
+    return new ExpandedProductParsedResult(productID,
+                                           sscc,
+                                           lotNumber,
+                                           productionDate,
+                                           packagingDate,
+                                           bestBeforeDate,
+                                           expirationDate,
+                                           weight,
+                                           weightType,
+                                           weightIncrement,
+                                           price,
+                                           priceIncrement,
+                                           priceCurrency,
+                                           uncommonAIs);
   }
 
   private static String findAIvalue(int i, String rawText) {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     char c = rawText.charAt(i);
     // First character must be a open parenthesis.If not, ERROR
     if (c != '(') {
-      return "ERROR";
+      return null;
     }
 
     String rawTextAux = rawText.substring(i + 1);
 
     for (int index = 0; index < rawTextAux.length(); index++) {
       char currentChar = rawTextAux.charAt(index);
-      switch (currentChar){
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-          buf.append(currentChar);
-          break;
-        case ')':
-          return buf.toString();
-        default:
-          return "ERROR";
+      if (currentChar == ')') {
+        return buf.toString();
+      } else if (currentChar >= '0' && currentChar <= '9') {
+        buf.append(currentChar);
+      } else {
+        return null;
       }
     }
     return buf.toString();
   }
 
   private static String findValue(int i, String rawText) {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     String rawTextAux = rawText.substring(i);
 
     for (int index = 0; index < rawTextAux.length(); index++) {
@@ -185,7 +181,7 @@ final class ExpandedProductResultParser extends ResultParser {
       if (c == '(') {
         // We look for a new AI. If it doesn't exist (ERROR), we coninue
         // with the iteration
-        if ("ERROR".equals(findAIvalue(index, rawTextAux))) {
+        if (findAIvalue(index, rawTextAux) == null) {
           buf.append('(');
         } else {
           break;

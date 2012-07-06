@@ -32,9 +32,6 @@ public abstract class Binarizer {
   private final LuminanceSource source;
 
   protected Binarizer(LuminanceSource source) {
-    if (source == null) {
-      throw new IllegalArgumentException("Source must be non-null.");
-    }
     this.source = source;
   }
 
@@ -76,5 +73,13 @@ public abstract class Binarizer {
    * @return A new concrete Binarizer implementation object.
    */
   public abstract Binarizer createBinarizer(LuminanceSource source);
+
+  public int getWidth() {
+    return source.getWidth();
+  }
+
+  public int getHeight() {
+    return source.getHeight();
+  }
 
 }

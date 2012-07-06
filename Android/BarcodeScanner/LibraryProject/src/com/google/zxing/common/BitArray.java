@@ -22,12 +22,9 @@ package com.google.zxing.common;
  * @author Sean Owen
  */
 public final class BitArray {
-  // I have changed these members to be public so ProGuard can inline get() and set(). Ideally
-  // they'd be private and we'd use the -allowaccessmodification flag, but Dalvik rejects the
-  // resulting binary at runtime on Android. If we find a solution to this, these should be changed
-  // back to private.
-  public int[] bits;
-  public int size;
+
+  private int[] bits;
+  private int size;
 
   public BitArray() {
     this.size = 0;
@@ -82,6 +79,51 @@ public final class BitArray {
   }
 
   /**
+   * @param from first bit to check
+   * @return index of first bit that is set, starting from the given index, or size if none are set
+   *  at or beyond this given index
+   * @see #getNextUnset(int)
+   */
+  public int getNextSet(int from) {
+    if (from >= size) {
+      return size;
+    }
+    int bitsOffset = from >> 5;
+    int currentBits = bits[bitsOffset];
+    // mask off lesser bits first
+    currentBits &= ~((1 << (from & 0x1F)) - 1);
+    while (currentBits == 0) {
+      if (++bitsOffset == bits.length) {
+        return size;
+      }
+      currentBits = bits[bitsOffset];
+    }
+    int result = (bitsOffset << 5) + Integer.numberOfTrailingZeros(currentBits);
+    return result > size ? size : result;
+  }
+
+  /**
+   * @see #getNextSet(int)
+   */
+  public int getNextUnset(int from) {
+    if (from >= size) {
+      return size;
+    }
+    int bitsOffset = from >> 5;
+    int currentBits = ~bits[bitsOffset];
+    // mask off lesser bits first
+    currentBits &= ~((1 << (from & 0x1F)) - 1);
+    while (currentBits == 0) {
+      if (++bitsOffset == bits.length) {
+        return size;
+      }
+      currentBits = ~bits[bitsOffset];
+    }
+    int result = (bitsOffset << 5) + Integer.numberOfTrailingZeros(currentBits);
+    return result > size ? size : result;
+  }
+
+  /**
    * Sets a block of 32 bits, starting at bit i.
    *
    * @param i first bit to set
@@ -90,6 +132,38 @@ public final class BitArray {
    */
   public void setBulk(int i, int newBits) {
     bits[i >> 5] = newBits;
+  }
+
+  /**
+   * Sets a range of bits.
+   *
+   * @param start start of range, inclusive.
+   * @param end end of range, exclusive
+   */
+  public void setRange(int start, int end) {
+    if (end < start) {
+      throw new IllegalArgumentException();
+    }
+    if (end == start) {
+      return;
+    }
+    end--; // will be easier to treat this as the last actually set bit -- inclusive
+    int firstInt = start >> 5;
+    int lastInt = end >> 5;
+    for (int i = firstInt; i <= lastInt; i++) {
+      int firstBit = i > firstInt ? 0 : start & 0x1F;
+      int lastBit = i < lastInt ? 31 : end & 0x1F;
+      int mask;
+      if (firstBit == 0 && lastBit == 31) {
+        mask = -1;
+      } else {
+        mask = 0;
+        for (int j = firstBit; j <= lastBit; j++) {
+          mask |= 1 << j;
+        }
+      }
+      bits[i] |= mask;
+    }
   }
 
   /**
@@ -146,7 +220,7 @@ public final class BitArray {
   public void appendBit(boolean bit) {
     ensureCapacity(size + 1);
     if (bit) {
-      bits[size >> 5] |= (1 << (size & 0x1F));
+      bits[size >> 5] |= 1 << (size & 0x1F);
     }
     size++;
   }
@@ -167,7 +241,7 @@ public final class BitArray {
   }
 
   public void appendBitArray(BitArray other) {
-    int otherSize = other.getSize();
+    int otherSize = other.size;
     ensureCapacity(size + otherSize);
     for (int i = 0; i < otherSize; i++) {
       appendBit(other.get(i));
@@ -232,8 +306,9 @@ public final class BitArray {
     return new int[(size + 31) >> 5];
   }
 
+  @Override
   public String toString() {
-    StringBuffer result = new StringBuffer(size);
+    StringBuilder result = new StringBuilder(size);
     for (int i = 0; i < size; i++) {
       if ((i & 0x07) == 0) {
         result.append(' ');

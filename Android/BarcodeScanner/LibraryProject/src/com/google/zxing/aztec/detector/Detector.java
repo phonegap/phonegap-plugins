@@ -21,6 +21,7 @@ import com.google.zxing.ResultPoint;
 import com.google.zxing.aztec.AztecDetectorResult;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.GridSampler;
+import com.google.zxing.common.detector.MathUtils;
 import com.google.zxing.common.detector.WhiteRectangleDetector;
 import com.google.zxing.common.reedsolomon.GenericGF;
 import com.google.zxing.common.reedsolomon.ReedSolomonDecoder;
@@ -168,21 +169,21 @@ public final class Detector {
     int dy = bullEyeCornerPoints[0].y-bullEyeCornerPoints[2].y;
     dy+=dy>0?1:-1;
     
-    int targetcx = round(bullEyeCornerPoints[2].x-ratio*dx);
-    int targetcy = round(bullEyeCornerPoints[2].y-ratio*dy);
+    int targetcx = MathUtils.round(bullEyeCornerPoints[2].x - ratio * dx);
+    int targetcy = MathUtils.round(bullEyeCornerPoints[2].y - ratio * dy);
     
-    int targetax = round(bullEyeCornerPoints[0].x+ratio*dx);
-    int targetay = round(bullEyeCornerPoints[0].y+ratio*dy);
+    int targetax = MathUtils.round(bullEyeCornerPoints[0].x + ratio * dx);
+    int targetay = MathUtils.round(bullEyeCornerPoints[0].y + ratio * dy);
     
     dx = bullEyeCornerPoints[1].x-bullEyeCornerPoints[3].x;
     dx+=dx>0?1:-1;
     dy = bullEyeCornerPoints[1].y-bullEyeCornerPoints[3].y;
     dy+=dy>0?1:-1;
     
-    int targetdx = round(bullEyeCornerPoints[3].x-ratio*dx);
-    int targetdy = round(bullEyeCornerPoints[3].y-ratio*dy);
-    int targetbx = round(bullEyeCornerPoints[1].x+ratio*dx);
-    int targetby = round(bullEyeCornerPoints[1].y+ratio*dy);
+    int targetdx = MathUtils.round(bullEyeCornerPoints[3].x - ratio * dx);
+    int targetdy = MathUtils.round(bullEyeCornerPoints[3].y - ratio * dy);
+    int targetbx = MathUtils.round(bullEyeCornerPoints[1].x + ratio * dx);
+    int targetby = MathUtils.round(bullEyeCornerPoints[1].y+ratio*dy);
     
     if (!isValid(targetax, targetay) || !isValid(targetbx, targetby) || !isValid(targetcx, targetcy) || !isValid(targetdx, targetdy)) {
       throw NotFoundException.getNotFoundInstance();
@@ -294,18 +295,18 @@ public final class Detector {
     
     int dx = pina.x-pinc.x;
     int dy = pina.y-pinc.y;
-    int targetcx = round(pinc.x-ratio*dx);
-    int targetcy = round(pinc.y-ratio*dy);
-    int targetax = round(pina.x+ratio*dx);
-    int targetay = round(pina.y+ratio*dy);
+    int targetcx = MathUtils.round(pinc.x-ratio*dx);
+    int targetcy = MathUtils.round(pinc.y-ratio*dy);
+    int targetax = MathUtils.round(pina.x+ratio*dx);
+    int targetay = MathUtils.round(pina.y+ratio*dy);
     
     dx = pinb.x-pind.x;
     dy = pinb.y-pind.y;
     
-    int targetdx = round(pind.x-ratio*dx);
-    int targetdy = round(pind.y-ratio*dy);
-    int targetbx = round(pinb.x+ratio*dx);
-    int targetby = round(pinb.y+ratio*dy);
+    int targetdx = MathUtils.round(pind.x-ratio*dx);
+    int targetdy = MathUtils.round(pind.y-ratio*dy);
+    int targetbx = MathUtils.round(pinb.x+ratio*dx);
+    int targetby = MathUtils.round(pinb.y+ratio*dy);
     
     if (!isValid(targetax, targetay) || !isValid(targetbx, targetby)
         || !isValid(targetcx, targetcy) || !isValid(targetdx, targetdy)) {
@@ -346,8 +347,8 @@ public final class Detector {
 
       // This exception can be in case the initial rectangle is white
       // In that case, surely in the bull's eye, we try to expand the rectangle.
-      int cx = image.width/2;
-      int cy = image.height/2;
+      int cx = image.getWidth()/2;
+      int cy = image.getHeight()/2;
       pointA = getFirstDifferent(new Point(cx+15/2, cy-15/2), false, 1, -1).toResultPoint();
       pointB = getFirstDifferent(new Point(cx+15/2, cy+15/2), false, 1, 1).toResultPoint();
       pointC = getFirstDifferent(new Point(cx-15/2, cy+15/2), false, -1, 1).toResultPoint();
@@ -356,8 +357,8 @@ public final class Detector {
     }
     
     //Compute the center of the rectangle
-    int cx = round((pointA.getX() + pointD.getX() + pointB.getX() + pointC.getX())/4);
-    int cy = round((pointA.getY() + pointD.getY() + pointB.getY() + pointC.getY())/4);
+    int cx = MathUtils.round((pointA.getX() + pointD.getX() + pointB.getX() + pointC.getX())/4);
+    int cy = MathUtils.round((pointA.getY() + pointD.getY() + pointB.getY() + pointC.getY())/4);
 
     // Redetermine the white rectangle starting from previously computed center.
     // This will ensure that we end up with a white rectangle in center bull's eye
@@ -380,8 +381,8 @@ public final class Detector {
     }
     
     // Recompute the center of the rectangle
-    cx = round((pointA.getX() + pointD.getX() + pointB.getX() + pointC.getX())/4);
-    cy = round((pointA.getY() + pointD.getY() + pointB.getY() + pointC.getY())/4);
+    cx = MathUtils.round((pointA.getX() + pointD.getX() + pointB.getX() + pointC.getX())/4);
+    cy = MathUtils.round((pointA.getY() + pointD.getY() + pointB.getY() + pointC.getY())/4);
 
     return new Point(cx, cy);
   }
@@ -390,10 +391,10 @@ public final class Detector {
    * Samples an Aztec matrix from an image
    */
   private BitMatrix sampleGrid(BitMatrix image,
-          ResultPoint topLeft,
-          ResultPoint bottomLeft,
-          ResultPoint bottomRight,
-          ResultPoint topRight) throws NotFoundException {
+                               ResultPoint topLeft,
+                               ResultPoint bottomLeft,
+                               ResultPoint bottomRight,
+                               ResultPoint topRight) throws NotFoundException {
 
     int dimension;
     if (compact) {
@@ -473,7 +474,7 @@ public final class Detector {
    * @param size number of bits
    * @return the array of bits
    */
-  private boolean[] sampleLine(Point p1, Point p2,int size) {
+  private boolean[] sampleLine(Point p1, Point p2, int size) {
 
     boolean[] res = new boolean[size];
     float d = distance(p1,p2);
@@ -485,7 +486,7 @@ public final class Detector {
     float py = p1.y;
 
     for (int i = 0; i < size; i++) {
-      res[i] = image.get(round(px), round(py));
+      res[i] = image.get(MathUtils.round(px), MathUtils.round(py));
       px+=dx;
       py+=dy;
     }
@@ -497,7 +498,10 @@ public final class Detector {
    * @return true if the border of the rectangle passed in parameter is compound of white points only
    * or black points only
    */
-  private boolean isWhiteOrBlackRectangle(Point p1, Point p2, Point p3, Point p4) {
+  private boolean isWhiteOrBlackRectangle(Point p1,
+                                          Point p2,
+                                          Point p3,
+                                          Point p4) {
 
     int corr = 3;
 
@@ -514,19 +518,19 @@ public final class Detector {
 
     int c = getColor(p1, p2);
 
-    if (c!=cInit || c == 0) {
+    if (c != cInit) {
       return false;
     }
 
     c = getColor(p2, p3);
 
-    if (c!=cInit || c == 0) {
+    if (c != cInit) {
       return false;
     }
 
     c = getColor(p3, p4);
 
-    return c == cInit && c != 0;
+    return c == cInit;
 
   }
 
@@ -549,7 +553,7 @@ public final class Detector {
     for (int i = 0; i < d; i++) {
       px+=dx;
       py+=dy;
-      if (image.get(round(px), round(py)) != colorModel) {
+      if (image.get(MathUtils.round(px), MathUtils.round(py)) != colorModel) {
         error++;
       }
     }
@@ -595,7 +599,7 @@ public final class Detector {
     return new Point(x,y);
   }
   
-  private static class Point {
+  private static final class Point {
     public final int x;
     public final int y;
 
@@ -610,22 +614,11 @@ public final class Detector {
   }
 
   private boolean isValid(int x, int y) {
-    return x >= 0 && x < image.width && y > 0 && y < image.height;
+    return x >= 0 && x < image.getWidth() && y > 0 && y < image.getHeight();
   }
 
-  /**
-   * Ends up being a bit faster than Math.round(). This merely rounds its
-   * argument to the nearest int, where x.5 rounds up.
-   */
-  private static int round(float d) {
-    return (int) (d + 0.5f);
-  }
-
-  // L2 distance
   private static float distance(Point a, Point b) {
-    return (float) Math.sqrt((a.x - b.x)
-        * (a.x - b.x) + (a.y - b.y)
-        * (a.y - b.y));
+    return MathUtils.distance(a.x, a.y, b.x, b.y);
   }
 
 }

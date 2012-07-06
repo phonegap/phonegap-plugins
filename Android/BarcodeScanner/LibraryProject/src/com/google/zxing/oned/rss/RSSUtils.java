@@ -26,7 +26,7 @@ public final class RSSUtils {
     int bar;
     int narrowMask = 0;
     for (bar = 0; bar < elements - 1; bar++) {
-      narrowMask |= (1 << bar);
+      narrowMask |= 1 << bar;
       int elmWidth = 1;
       int subVal;
       while (true) {
@@ -64,14 +64,14 @@ public final class RSSUtils {
   public static int getRSSvalue(int[] widths, int maxWidth, boolean noNarrow) {
     int elements = widths.length;
     int n = 0;
-    for (int i = 0; i < elements; i++) {
-      n += widths[i];
+    for (int width : widths) {
+      n += width;
     }
     int val = 0;
     int narrowMask = 0;
     for (int bar = 0; bar < elements - 1; bar++) {
       int elmWidth;
-      for (elmWidth = 1, narrowMask |= (1 << bar);
+      for (elmWidth = 1, narrowMask |= 1 << bar;
            elmWidth < widths[bar];
            elmWidth++, narrowMask &= ~(1 << bar)) {
         int subVal = combins(n - elmWidth - 1, elements - bar - 2);
@@ -98,7 +98,7 @@ public final class RSSUtils {
     return val;
   }
 
-  static int combins(int n, int r) {
+  private static int combins(int n, int r) {
     int maxDenom;
     int minDenom;
     if (n - r > r) {

@@ -18,13 +18,16 @@ package com.google.zxing.oned;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.ChecksumException;
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.FormatException;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.common.BitArray;
 
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Decodes Code 128 barcodes.</p>
@@ -165,13 +168,7 @@ public final class Code128Reader extends OneDReader {
 
   private static int[] findStartPattern(BitArray row) throws NotFoundException {
     int width = row.getSize();
-    int rowOffset = 0;
-    while (rowOffset < width) {
-      if (row.get(rowOffset)) {
-        break;
-      }
-      rowOffset++;
-    }
+    int rowOffset = row.getNextSet(0);
 
     int counterPosition = 0;
     int[] counters = new int[6];
@@ -180,8 +177,7 @@ public final class Code128Reader extends OneDReader {
     int patternLength = counters.length;
 
     for (int i = rowOffset; i < width; i++) {
-      boolean pixel = row.get(i);
-      if (pixel ^ isWhite) {
+      if (row.get(i) ^ isWhite) {
         counters[counterPosition]++;
       } else {
         if (counterPosition == patternLength - 1) {
@@ -195,17 +191,13 @@ public final class Code128Reader extends OneDReader {
               bestMatch = startCode;
             }
           }
-          if (bestMatch >= 0) {
-            // Look for whitespace before start pattern, >= 50% of width of start pattern
-            if (row.isRange(Math.max(0, patternStart - (i - patternStart) / 2), patternStart,
-                false)) {
-              return new int[]{patternStart, i, bestMatch};
-            }
+          // Look for whitespace before start pattern, >= 50% of width of start pattern
+          if (bestMatch >= 0 &&
+              row.isRange(Math.max(0, patternStart - (i - patternStart) / 2), patternStart, false)) {
+            return new int[]{patternStart, i, bestMatch};
           }
           patternStart += counters[0] + counters[1];
-          for (int y = 2; y < patternLength; y++) {
-            counters[y - 2] = counters[y];
-          }
+          System.arraycopy(counters, 2, counters, 0, patternLength - 2);
           counters[patternLength - 2] = 0;
           counters[patternLength - 1] = 0;
           counterPosition--;
@@ -219,7 +211,8 @@ public final class Code128Reader extends OneDReader {
     throw NotFoundException.getNotFoundInstance();
   }
 
-  private static int decodeCode(BitArray row, int[] counters, int rowOffset) throws NotFoundException {
+  private static int decodeCode(BitArray row, int[] counters, int rowOffset)
+      throws NotFoundException {
     recordPattern(row, rowOffset, counters);
     int bestVariance = MAX_AVG_VARIANCE; // worst variance we'll accept
     int bestMatch = -1;
@@ -239,7 +232,8 @@ public final class Code128Reader extends OneDReader {
     }
   }
 
-  public Result decodeRow(int rowNumber, BitArray row, Hashtable hints)
+  @Override
+  public Result decodeRow(int rowNumber, BitArray row, Map<DecodeHintType,?> hints)
       throws NotFoundException, FormatException, ChecksumException {
 
     int[] startPatternInfo = findStartPattern(row);
@@ -262,7 +256,9 @@ public final class Code128Reader extends OneDReader {
     boolean done = false;
     boolean isNextShifted = false;
 
-    StringBuffer result = new StringBuffer(20);
+    StringBuilder result = new StringBuilder(20);
+    List<Byte> rawCodes = new ArrayList<Byte>(20);
+
     int lastStart = startPatternInfo[0];
     int nextStart = startPatternInfo[1];
     int[] counters = new int[6];
@@ -284,6 +280,8 @@ public final class Code128Reader extends OneDReader {
       // Decode another code from image
       code = decodeCode(row, counters, nextStart);
 
+      rawCodes.add((byte) code);
+
       // Remember whether the last code was printable or not (excluding CODE_STOP)
       if (code != CODE_STOP) {
         lastCharacterWasPrintable = true;
@@ -297,8 +295,8 @@ public final class Code128Reader extends OneDReader {
 
       // Advance to where the next code will to start
       lastStart = nextStart;
-      for (int i = 0; i < counters.length; i++) {
-        nextStart += counters[i];
+      for (int counter : counters) {
+        nextStart += counter;
       }
 
       // Take care of illegal start codes
@@ -413,12 +411,10 @@ public final class Code128Reader extends OneDReader {
     // Check for ample whitespace following pattern, but, to do this we first need to remember that
     // we fudged decoding CODE_STOP since it actually has 7 bars, not 6. There is a black bar left
     // to read off. Would be slightly better to properly read. Here we just skip it:
-    int width = row.getSize();
-    while (nextStart < width && row.get(nextStart)) {
-      nextStart++;
-    }
-    if (!row.isRange(nextStart, Math.min(width, nextStart + (nextStart - lastStart) / 2),
-        false)) {
+    nextStart = row.getNextUnset(nextStart);
+    if (!row.isRange(nextStart,
+                     Math.min(row.getSize(), nextStart + (nextStart - lastStart) / 2),
+                     false)) {
       throw NotFoundException.getNotFoundInstance();
     }
 
@@ -431,6 +427,11 @@ public final class Code128Reader extends OneDReader {
 
     // Need to pull out the check digits from string
     int resultLength = result.length();
+    if (resultLength == 0) {
+      // false positive
+      throw NotFoundException.getNotFoundInstance();
+    }
+
     // Only bother if the result had at least one character, and if the checksum digit happened to
     // be a printable character. If it was just interpreted as a control code, nothing to remove.
     if (resultLength > 0 && lastCharacterWasPrintable) {
@@ -441,18 +442,18 @@ public final class Code128Reader extends OneDReader {
       }
     }
 
-    String resultString = result.toString();
-
-    if (resultString.length() == 0) {
-      // Almost surely a false positive
-      throw FormatException.getFormatInstance();
-    }
-
     float left = (float) (startPatternInfo[1] + startPatternInfo[0]) / 2.0f;
     float right = (float) (nextStart + lastStart) / 2.0f;
+
+    int rawCodesSize = rawCodes.size();
+    byte[] rawBytes = new byte[rawCodesSize];
+    for (int i = 0; i < rawCodesSize; i++) {
+      rawBytes[i] = rawCodes.get(i);
+    }
+
     return new Result(
-        resultString,
-        null,
+        result.toString(),
+        rawBytes,
         new ResultPoint[]{
             new ResultPoint(left, (float) rowNumber),
             new ResultPoint(right, (float) rowNumber)},

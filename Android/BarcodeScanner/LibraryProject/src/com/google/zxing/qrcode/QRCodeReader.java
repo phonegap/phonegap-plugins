@@ -32,7 +32,8 @@ import com.google.zxing.common.DetectorResult;
 import com.google.zxing.qrcode.decoder.Decoder;
 import com.google.zxing.qrcode.detector.Detector;
 
-import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This implementation can detect and decode QR Codes in an image.
@@ -57,11 +58,13 @@ public class QRCodeReader implements Reader {
    * @throws FormatException if a QR code cannot be decoded
    * @throws ChecksumException if error correction fails
    */
+  @Override
   public Result decode(BinaryBitmap image) throws NotFoundException, ChecksumException, FormatException {
     return decode(image, null);
   }
 
-  public Result decode(BinaryBitmap image, Hashtable hints)
+  @Override
+  public Result decode(BinaryBitmap image, Map<DecodeHintType,?> hints)
       throws NotFoundException, ChecksumException, FormatException {
     DecoderResult decoderResult;
     ResultPoint[] points;
@@ -76,15 +79,18 @@ public class QRCodeReader implements Reader {
     }
 
     Result result = new Result(decoderResult.getText(), decoderResult.getRawBytes(), points, BarcodeFormat.QR_CODE);
-    if (decoderResult.getByteSegments() != null) {
-      result.putMetadata(ResultMetadataType.BYTE_SEGMENTS, decoderResult.getByteSegments());
+    List<byte[]> byteSegments = decoderResult.getByteSegments();
+    if (byteSegments != null) {
+      result.putMetadata(ResultMetadataType.BYTE_SEGMENTS, byteSegments);
     }
-    if (decoderResult.getECLevel() != null) {
-      result.putMetadata(ResultMetadataType.ERROR_CORRECTION_LEVEL, decoderResult.getECLevel().toString());
+    String ecLevel = decoderResult.getECLevel();
+    if (ecLevel != null) {
+      result.putMetadata(ResultMetadataType.ERROR_CORRECTION_LEVEL, ecLevel);
     }
     return result;
   }
 
+  @Override
   public void reset() {
     // do nothing
   }
@@ -106,16 +112,22 @@ public class QRCodeReader implements Reader {
       throw NotFoundException.getNotFoundInstance();
     }
 
-    int moduleSize = moduleSize(leftTopBlack, image);
+    float moduleSize = moduleSize(leftTopBlack, image);
 
     int top = leftTopBlack[1];
     int bottom = rightBottomBlack[1];
     int left = leftTopBlack[0];
     int right = rightBottomBlack[0];
 
-    int matrixWidth = (right - left + 1) / moduleSize;
-    int matrixHeight = (bottom - top + 1) / moduleSize;
-    if (matrixWidth == 0 || matrixHeight == 0) {
+    if (bottom - top != right - left) {
+      // Special case, where bottom-right module wasn't black so we found something else in the last row
+      // Assume it's a square, so use height as the width
+      right = left + (bottom - top);
+    }
+
+    int matrixWidth = Math.round((right - left + 1) / moduleSize);
+    int matrixHeight = Math.round((bottom - top + 1) / moduleSize);
+    if (matrixWidth <= 0 || matrixHeight <= 0) {
       throw NotFoundException.getNotFoundInstance();
     }
     if (matrixHeight != matrixWidth) {
@@ -126,16 +138,16 @@ public class QRCodeReader implements Reader {
     // Push in the "border" by half the module width so that we start
     // sampling in the middle of the module. Just in case the image is a
     // little off, this will help recover.
-    int nudge = moduleSize >> 1;
+    int nudge = (int) (moduleSize / 2.0f);
     top += nudge;
     left += nudge;
 
     // Now just read off the bits
     BitMatrix bits = new BitMatrix(matrixWidth, matrixHeight);
     for (int y = 0; y < matrixHeight; y++) {
-      int iOffset = top + y * moduleSize;
+      int iOffset = top + (int) (y * moduleSize);
       for (int x = 0; x < matrixWidth; x++) {
-        if (image.get(left + x * moduleSize, iOffset)) {
+        if (image.get(left + (int) (x * moduleSize), iOffset)) {
           bits.set(x, y);
         }
       }
@@ -143,24 +155,27 @@ public class QRCodeReader implements Reader {
     return bits;
   }
 
-  private static int moduleSize(int[] leftTopBlack, BitMatrix image) throws NotFoundException {
+  private static float moduleSize(int[] leftTopBlack, BitMatrix image) throws NotFoundException {
     int height = image.getHeight();
     int width = image.getWidth();
     int x = leftTopBlack[0];
     int y = leftTopBlack[1];
-    while (x < width && y < height && image.get(x, y)) {
+    boolean inBlack = true;
+    int transitions = 0;
+    while (x < width && y < height) {
+      if (inBlack != image.get(x, y)) {
+        if (++transitions == 5) {
+          break;
+        }
+        inBlack = !inBlack;
+      }
       x++;
       y++;
     }
     if (x == width || y == height) {
       throw NotFoundException.getNotFoundInstance();
     }
-
-    int moduleSize = x - leftTopBlack[0];
-    if (moduleSize == 0) {
-      throw NotFoundException.getNotFoundInstance();
-    }
-    return moduleSize;
+    return (x - leftTopBlack[0]) / 7.0f;
   }
 
 }

@@ -20,7 +20,7 @@ package com.google.zxing.common.reedsolomon;
  * <p>This class contains utility methods for performing mathematical operations over
  * the Galois Fields. Operations use a given primitive polynomial in calculations.</p>
  *
- * <p>Throughout this package, elements of the GF are represented as an <code>int</code>
+ * <p>Throughout this package, elements of the GF are represented as an {@code int}
  * for convenience and speed (but at the cost of memory).
  * </p>
  *
@@ -36,6 +36,7 @@ public final class GenericGF {
   public static final GenericGF QR_CODE_FIELD_256 = new GenericGF(0x011D, 256); // x^8 + x^4 + x^3 + x^2 + 1
   public static final GenericGF DATA_MATRIX_FIELD_256 = new GenericGF(0x012D, 256); // x^8 + x^5 + x^3 + x^2 + 1
   public static final GenericGF AZTEC_DATA_8 = DATA_MATRIX_FIELD_256;
+  public static final GenericGF MAXICODE_FIELD_64 = AZTEC_DATA_6;
 
   private static final int INITIALIZATION_THRESHOLD = 0;
 
@@ -162,26 +163,18 @@ public final class GenericGF {
   }
 
   /**
-   * @param a
-   * @param b
    * @return product of a and b in GF(size)
    */
   int multiply(int a, int b) {
   	checkInit();
-  	
+
     if (a == 0 || b == 0) {
       return 0;
     }
-    
-    if (a<0 || b <0 || a>=size || b >=size){
-    	a++;
-    }
-    
-    int logSum = logTable[a] + logTable[b];
-    return expTable[(logSum % size) + logSum / size];
+    return expTable[(logTable[a] + logTable[b]) % (size - 1)];
   }
 
-  public int getSize(){
+  public int getSize() {
   	return size;
   }
   

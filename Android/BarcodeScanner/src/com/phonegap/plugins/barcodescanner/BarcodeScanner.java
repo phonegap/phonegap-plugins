@@ -8,16 +8,14 @@
 
 package com.phonegap.plugins.barcodescanner;
 
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
-
-import org.apache.cordova.api.Plugin;
-import org.apache.cordova.api.PluginResult;
 
 /**
  * This calls out to the ZXing barcode reader and returns the result.
@@ -136,6 +134,7 @@ public class BarcodeScanner extends Plugin {
         intentEncode.putExtra("ENCODE_TYPE", type);
         intentEncode.putExtra("ENCODE_DATA", data);
         
-        this.ctx.startActivity(intentEncode);
+        ((Activity) this.ctx).startActivity(intentEncode);
     }
 }
+

@@ -58,19 +58,19 @@ This example shows how to use the tab bar:
         plugins.tabBar.init()
 
         plugins.tabBar.create()
-        plugins.createItem("contacts", "Unused, iOS replaces this text by Contacts", "tabButton:Contacts")
-        plugins.createItem("recents", "Unused, iOS replaces this text by Recents", "tabButton:Recents")
+        plugins.tabBar.createItem("contacts", "Unused, iOS replaces this text by Contacts", "tabButton:Contacts")
+        plugins.tabBar.createItem("recents", "Unused, iOS replaces this text by Recents", "tabButton:Recents")
 
         // Example with selection callback
-        plugins.createItem("another", "Some text", "/www/your-own-image.png", {
+        plugins.tabBar.createItem("another", "Some text", "/www/your-own-image.png", {
             onSelect: function() {
                 alert("another tab selected")
             }
         })
 
-        plugins.show()
-        // Or with custom style (defaults to 49px height, positioned at bottom): plugins.show({height: 80, position: 'top'})
-        plugins.showItems("contacts", "recents", "another")
+        plugins.tabBar.show()
+        // Or with custom style (defaults to 49px height, positioned at bottom): plugins.tabBar.show({height: 80, position: 'top'})
+        plugins.tabBar.showItems("contacts", "recents", "another")
 
         window.addEventListener("resize", function() { plugins.tabBar.resize() }, false)
     }, false)

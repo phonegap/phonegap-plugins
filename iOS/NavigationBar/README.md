@@ -20,6 +20,15 @@ Installing the plugin
 - They have to be added to the project as well, so drag them from the "Plugins" folder (in Finder) to the same folder (in Xcode) and select to create references
 - Open "Supporting Files/Cordova.plist" and under "Plugins", add a key with the plugin name "NavigationBar" and a string value of "NavigationBar" (I guess it's the plugin's main class name)
 
+Note regarding orientation changes and the tab bar plugin
+---------------------------------------------------------
+
+If the tab bar plugin is used together with this plugin and the tab bar is positioned on top (defaults to bottom), it's necessary to resize the navigation bar automatically:
+
+    window.addEventListener("resize", function() {
+        plugins.navigationBar.resize();
+    ), false);
+
 Using the tab bar and navigation bar plugin together
 ----------------------------------------------------
 

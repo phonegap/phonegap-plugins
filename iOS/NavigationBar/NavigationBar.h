@@ -37,3 +37,7 @@
 - (void)showRightButton:(NSArray*)arguments withDict:(NSDictionary*)options;
 
 @end
+
+@interface UITabBar (NavBarCompat)
+@property (nonatomic) bool tabBarAtBottom;
+@end

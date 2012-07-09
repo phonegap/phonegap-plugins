@@ -26,7 +26,7 @@ Note regarding the tab bar
 Don't forget to add an event handler for orientation changes as follows:
 
     window.addEventListener("resize", function() {
-        plugins.tabBar.resizeTabBar();
+        plugins.tabBar.resize();
     ), false);
 
 Using the tab bar and navigation bar plugin together
@@ -69,6 +69,7 @@ This example shows how to use the tab bar:
         })
 
         plugins.show()
+        // Or with custom style (defaults to 49px height, positioned at bottom): plugins.show({height: 80, position: 'top'})
         plugins.showItems("contacts", "recents", "another")
 
         window.addEventListener("resize", function() { plugins.tabBar.resize() }, false)

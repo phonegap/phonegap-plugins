@@ -58,6 +58,7 @@
 
     const bool navBarShown = !navBar.hidden;
     bool tabBarShown = false;
+    bool tabBarAtBottom = true;
 
     UIView *parent = [navBar superview];
     for(UIView *view in parent.subviews)
@@ -67,7 +68,15 @@
 
             // Tab bar height is customizable
             if(tabBarShown)
+            {
                 tabBarHeight = view.bounds.size.height;
+
+                // Since the navigation bar plugin plays together with the tab bar plugin, and the tab bar can as well
+                // be positioned at the top, here's some magic to find out where it's positioned:
+                tabBarAtBottom = true;
+                if([view respondsToSelector:@selector(tabBarAtBottom)])
+                    tabBarAtBottom = [view tabBarAtBottom];
+            }
 
             break;
         }
@@ -100,11 +109,26 @@
         top += navBarHeight;
 
     if(tabBarShown)
-        bottom -= tabBarHeight;
+    {
+        if(tabBarAtBottom)
+            bottom -= tabBarHeight;
+        else
+            top += tabBarHeight;
+    }
 
     CGRect webViewBounds = CGRectMake(left, top, right - left, bottom - top);
 
     [self.webView setFrame:webViewBounds];
+
+    // NOTE: Following part again for navigation bar plugin only
+
+    if(navBarShown)
+    {
+        if(tabBarAtBottom)
+            [navBar setFrame:CGRectMake(left, originalWebViewBounds.origin.y, right - left, navBarHeight)];
+        else
+            [navBar setFrame:CGRectMake(left, originalWebViewBounds.origin.y + tabBarHeight, right - left, navBarHeight)];
+    }
 }
 
 /*********************************************************************************/
@@ -291,7 +315,19 @@
         [navBar setHidden:YES];
         [self correctWebViewBounds];
     }
+}
 
+/**
+ * Resize the navigation bar (this should be called on orientation change)
+ * This is important in playing together with the tab bar plugin, especially because the tab bar can be placed on top
+ * or at the bottom, so the navigation bar bounds also need to be changed.
+ *
+ * @param arguments unused
+ * @param options unused
+ */
+- (void)resize:(NSArray*)arguments withDict:(NSDictionary*)options
+{
+    [self correctWebViewBounds];
 }
 
 -(void) setTitle:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options

@@ -21,6 +21,10 @@ NavigationBar.prototype.init = function()
     Cordova.exec("NavigationBar.init");
 };
 
+NavigationBar.prototype.resize = function() {
+    Cordova.exec("NavigationBar.resize");
+};
+
 /**
  * Assign either title or image to the left navigation bar button, and assign the tap callback
 */

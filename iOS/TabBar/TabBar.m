@@ -12,6 +12,7 @@
  API cleaned up and improved by Andreas Sommer (https://github.com/AndiDog/phonegap-plugins).
  */
 
+#import <objc/runtime.h>
 #import "TabBar.h"
 #import <UIKit/UINavigationBar.h>
 #import <QuartzCore/QuartzCore.h>
@@ -97,18 +98,25 @@
         top += navBarHeight;
 
     if(tabBarShown)
-        bottom -= tabBarHeight;
+    {
+        if(tabBarAtBottom)
+            bottom -= tabBarHeight;
+        else
+            top += tabBarHeight;
+    }
 
     CGRect webViewBounds = CGRectMake(left, top, right - left, bottom - top);
 
     [self.webView setFrame:webViewBounds];
 
-    // NOTE: Following part again for tab bar pluginonly
+    // NOTE: Following part again for tab bar plugin only
 
     if(tabBarShown)
     {
-        CGRect tabBarBounds = CGRectMake(left, bottom, right - left, tabBarHeight);
-        [tabBar setFrame:tabBarBounds];
+        if(tabBarAtBottom)
+            [tabBar setFrame:CGRectMake(left, bottom, right - left, tabBarHeight)];
+        else
+            [tabBar setFrame:CGRectMake(left, originalWebViewBounds.origin.y, right - left, tabBarHeight)];
     }
 }
 
@@ -163,6 +171,8 @@
         tabBarHeight = [[options objectForKey:@"height"] floatValue];
         tabBarAtBottom = [[options objectForKey:@"position"] isEqualToString:@"bottom"];
     }
+
+    tabBar.tabBarAtBottom = tabBarAtBottom;
 
 	if(tabBarHeight == 0)
         tabBarHeight = 49.0f;
@@ -341,6 +351,21 @@
 {
     NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.tabBar.onItemSelected(%d);", item.tag];
     [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+}
+
+@end
+
+
+@implementation UIView (NavBarCompat)
+
+- (void)setTabBarAtBottom:(bool)tabBarAtBottom
+{
+	objc_setAssociatedObject(self, @"NavBarCompat_tabBarAtBottom", [NSNumber numberWithBool:tabBarAtBottom], OBJC_ASSOCIATION_COPY);
+}
+
+- (bool)tabBarAtBottom
+{
+	return [(objc_getAssociatedObject(self, @"NavBarCompat_tabBarAtBottom")) boolValue];
 }
 
 @end

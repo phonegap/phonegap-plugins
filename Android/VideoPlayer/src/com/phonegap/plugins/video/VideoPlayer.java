@@ -81,12 +81,12 @@ public class VideoPlayer extends Plugin {
             intent.setDataAndType(uri, "video/*");
         }
         
-        this.ctx.startActivity(intent);
+        this.ctx.getActivity().startActivity(intent);
     }
 
     private void copy(String fileFrom, String fileTo) throws IOException {
         // get file to be copied from assets
-        InputStream in = this.ctx.getAssets().open(fileFrom);
+        InputStream in = this.ctx.getActivity().getAssets().open(fileFrom);
         // get file where copied too, in internal storage. 
         // must be MODE_WORLD_READABLE or Android can't play it
         FileOutputStream out = this.ctx.getContext().openFileOutput(fileTo, Context.MODE_WORLD_READABLE);

@@ -28,10 +28,10 @@ NavigationBar.prototype.resize = function() {
 /**
  * Assign either title or image to the left navigation bar button, and assign the tap callback
 */
-NavigationBar.prototype.setupLeftButton = function(title, image, onselect)
+NavigationBar.prototype.setupLeftButton = function(title, image, onselect, options)
 {
     this.leftButtonCallback = onselect;
-    Cordova.exec("NavigationBar.setupLeftButton", title || "", image || "");
+    Cordova.exec("NavigationBar.setupLeftButton", title || "", image || "", options || {});
 };
 
 NavigationBar.prototype.hideLeftButton = function()
@@ -56,10 +56,10 @@ NavigationBar.prototype.leftButtonTapped = function()
 /**
  * Assign either title or image to the right navigation bar button, and assign the tap callback
 */
-NavigationBar.prototype.setupRightButton = function(title, image, onselect)
+NavigationBar.prototype.setupRightButton = function(title, image, onselect, options)
 {
     this.rightButtonCallback = onselect;
-    Cordova.exec("NavigationBar.setupRightButton", title || "", image || "", onselect);
+    Cordova.exec("NavigationBar.setupRightButton", title || "", image || "", onselect, options || {});
 };
 
 

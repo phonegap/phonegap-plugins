@@ -84,6 +84,45 @@ This example shows how to use the navigation bar:
         plugins.navigationBar.show()
     }, false)
 
+How to create a custom button (such as an arrow-shaped back button)
+-------------------------------------------------------------------
+
+There are [several ways](http://stackoverflow.com/questions/227078/creating-a-left-arrow-button-like-uinavigationbars-back-style-on-a-uitoolba) to create a back button at runtime without having to use `UINavigationController`, but only one of them seems to be okay if you want your app to be approved: A custom button background image.
+
+![Screenshot](http://i.imgur.com/naC96.png)
+
+The above screenshot has a navigation bar with two such custom buttons. The left one actually has a background image very similar to the black iOS navigation bar. A stretchable picture (such as [this](http://imgur.com/yibWD) or [that one](http://imgur.com/K2LUS) which were used above) should be used because the plugin automatically sets the button size according to the text size (but not smaller than the original picture). You can define left/right margins which shall not be stretched if the button width changes.
+
+Note: Vertical margins are supported by iOS but not implemented in the plugin – tell me if you would like that feature. I think you should keep navigation bar buttons at a fixed height (30px on normal 320x480 iPhone display).
+
+Put the button image in the "Resources" folder of your project. Here's some example code on how to use it:
+
+    plugins.navigationBar.setupLeftButton(
+        "Baaack",
+        "blackbutton.png",
+        function() {
+          alert('leftnavbutton tapped')
+        },
+        {
+          useImageAsBackground: true
+          fixedMarginLeft: 13 // 13 pixels on the left side are not stretched (the left-arrow shape)
+          fixedMarginRight: 5 // and 5 pixels on the right side (all room between these margins is used for the text label)
+        }
+    )
+
+    plugins.navigationBar.setupRightButton(
+        null, // with a custom background image, it's possible to set no title at all
+        "greenbutton.png",
+        function() {
+          alert('rightnavbutton tapped')
+        },
+        {
+          useImageAsBackground: true
+          fixedMarginLeft: 5
+          fixedMarginRight: 13
+        }
+    )
+
 Reporting issues or requests for improvement
 --------------------------------------------
 

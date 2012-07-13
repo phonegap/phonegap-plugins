@@ -27,9 +27,9 @@
 -(CDVPlugin*) initWithWebView:(UIWebView*)theWebView
 {
     self = (NavigationBar*)[super initWithWebView:theWebView];
-    if (self)
-	{
-		// The original web view bounds must be retrieved here. On iPhone, it would be 0,0,320,460 for example. Since
+    if(self)
+    {
+        // The original web view bounds must be retrieved here. On iPhone, it would be 0,0,320,460 for example. Since
         // Cordova seems to initialize plugins on the first call, there is a plugin method init() that has to be called
         // in order to make Cordova call *this* method. If someone forgets the init() call and uses the navigation bar
         // and tab bar plugins together, these values won't be the original web view bounds and layout will be wrong.
@@ -49,6 +49,39 @@
         [navBarController release];
 
     [super dealloc];
+}
+
+-(UIBarButtonItem*)backgroundButtonFromImage:(NSString*)imageName title:(NSString*)title fixedMarginLeft:(float)fixedMarginLeft fixedMarginRight:(float)fixedMarginRight target:(id)target action:(SEL)action
+{
+    UIButton *backButton = [[UIButton alloc] init];
+    UIImage *imgNormal = [[UIImage imageNamed:imageName] resizableImageWithCapInsets:UIEdgeInsetsMake(0, fixedMarginLeft, 0, fixedMarginRight)];
+
+    [backButton setBackgroundImage:imgNormal forState:UIControlStateNormal];
+
+    backButton.titleLabel.textColor = [UIColor whiteColor];
+    backButton.titleLabel.font = [UIFont boldSystemFontOfSize:12.0f];
+    backButton.titleLabel.textAlignment = UITextAlignmentCenter;
+
+    CGSize textSize = [title sizeWithFont:backButton.titleLabel.font];
+
+    float buttonWidth = MAX(imgNormal.size.width, textSize.width + fixedMarginLeft + fixedMarginRight);//imgNormal.size.width > (textSize.width + fixedMarginLeft + fixedMarginRight)
+                        //? imgNormal.size.width : (textSize.width + fixedMarginLeft + fixedMarginRight);
+    backButton.frame = CGRectMake(0, 0, buttonWidth, imgNormal.size.height);
+
+    CGFloat marginTopBottom = (backButton.frame.size.height - textSize.height) / 2;
+    [backButton setTitleEdgeInsets:UIEdgeInsetsMake(marginTopBottom, fixedMarginLeft, marginTopBottom, fixedMarginRight)];
+
+    [backButton setTitle:title forState:UIControlStateNormal];
+    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [backButton.titleLabel setFont:[UIFont boldSystemFontOfSize:12.0f]];
+
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+    [backButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
+
+    [backButton release];
+    [imgNormal release];
+
+    return backButtonItem;
 }
 
 -(void)correctWebViewBounds
@@ -75,7 +108,7 @@
                 // be positioned at the top, here's some magic to find out where it's positioned:
                 tabBarAtBottom = true;
                 if([view respondsToSelector:@selector(tabBarAtBottom)])
-                    tabBarAtBottom = [view tabBarAtBottom];
+                    tabBarAtBottom = [view performSelector:@selector(tabBarAtBottom)];
             }
 
             break;
@@ -199,11 +232,27 @@
 {
     NSString * title = [arguments objectAtIndex:0];
     NSString * imageName = [arguments objectAtIndex:1];
+    NSNumber *useImageAsBackgroundOpt = [options objectForKey:@"useImageAsBackground"];
+    float fixedMarginLeft = [[options objectForKey:@"fixedMarginLeft"] floatValue] ?: 13;
+    float fixedMarginRight = [[options objectForKey:@"fixedMarginRight"] floatValue] ?: 13;
+    bool useImageAsBackground = useImageAsBackgroundOpt ? [useImageAsBackgroundOpt boolValue] : false;
 
-    if (title && [title length] > 0)
+    if((title && [title length] > 0) || useImageAsBackground)
     {
-        [[navBarController leftButton] setTitle:title];
-        [[navBarController leftButton] setImage:nil];
+        if(useImageAsBackground && imageName && [imageName length] > 0)
+        {
+            UIBarButtonItem *newButton = [self backgroundButtonFromImage:imageName title:title
+                                               fixedMarginLeft:fixedMarginLeft fixedMarginRight:fixedMarginRight
+                                               target:self action:@selector(leftButtonTapped)];
+            navBarController.navItem.leftBarButtonItem = newButton;
+            navBarController.leftButton = newButton;
+            [newButton release];
+        }
+        else
+        {
+            [[navBarController leftButton] setTitle:title];
+            [[navBarController leftButton] setImage:nil];
+        }
     }
     else if (imageName && [imageName length] > 0)
     {
@@ -218,14 +267,15 @@
             return;
         }
         else
-            [[navBarController leftButton] setImage:[UIImage imageNamed:imageName]];
-
-        [[navBarController leftButton] setTitle:nil];
+        {
+            [navBarController.leftButton setImage:[UIImage imageNamed:imageName]];
+            [navBarController.leftButton setTitle:nil];
+        }
     }
     else
     {
-        [[navBarController leftButton] setImage:nil];
-        [[navBarController leftButton] setTitle:nil];
+        [navBarController.leftButton setImage:nil];
+        [navBarController.leftButton setTitle:nil];
     }
 }
 
@@ -233,11 +283,27 @@
 {
     NSString * title = [arguments objectAtIndex:0];
     NSString * imageName = [arguments objectAtIndex:1];
+    NSNumber *useImageAsBackgroundOpt = [options objectForKey:@"useImageAsBackground"];
+    float fixedMarginLeft = [[options objectForKey:@"fixedMarginLeft"] floatValue] ?: 13;
+    float fixedMarginRight = [[options objectForKey:@"fixedMarginRight"] floatValue] ?: 13;
+    bool useImageAsBackground = useImageAsBackgroundOpt ? [useImageAsBackgroundOpt boolValue] : false;
 
-    if (title && [title length] > 0)
+    if((title && [title length] > 0) || useImageAsBackground)
     {
-        [[navBarController rightButton] setTitle:title];
-        [[navBarController rightButton] setImage:nil];
+        if(useImageAsBackground && imageName && [imageName length] > 0)
+        {
+            UIBarButtonItem *newButton = [self backgroundButtonFromImage:imageName title:title
+                                               fixedMarginLeft:fixedMarginLeft fixedMarginRight:fixedMarginRight
+                                               target:self action:@selector(rightButtonTapped)];
+            navBarController.navItem.rightBarButtonItem = newButton;
+            navBarController.rightButton = newButton;
+            [newButton release];
+        }
+        else
+        {
+            [[navBarController rightButton] setTitle:title];
+            [[navBarController rightButton] setImage:nil];
+        }
     }
     else if (imageName && [imageName length] > 0)
     {

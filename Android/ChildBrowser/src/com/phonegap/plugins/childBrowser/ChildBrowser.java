@@ -448,7 +448,11 @@ public class ChildBrowser extends Plugin {
             if (!newloc.equals(edittext.getText().toString())) {           
                 edittext.setText(newloc);
             }
-            
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
             try {
                 JSONObject obj = new JSONObject();
                 obj.put("type", LOCATION_CHANGED_EVENT);

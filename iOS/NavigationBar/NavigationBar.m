@@ -51,6 +51,7 @@
     [super dealloc];
 }
 
+// NOTE: Returned object is owned
 -(UIBarButtonItem*)backgroundButtonFromImage:(NSString*)imageName title:(NSString*)title fixedMarginLeft:(float)fixedMarginLeft fixedMarginRight:(float)fixedMarginRight target:(id)target action:(SEL)action
 {
     UIButton *backButton = [[UIButton alloc] init];
@@ -79,7 +80,7 @@
     [backButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 
     [backButton release];
-    [imgNormal release];
+    // imgNormal is autoreleased
 
     return backButtonItem;
 }
@@ -228,10 +229,9 @@
     // Dummy function, see initWithWebView
 }
 
-- (void)setupLeftButton:(NSArray*)arguments withDict:(NSDictionary*)options
+// NOTE: Returned object is owned
+- (UIBarButtonItem*)makeButtonWithOptions:(NSDictionary*)options title:(NSString*)title imageName:(NSString*)imageName actionOnSelf:(SEL)actionOnSelf
 {
-    NSString * title = [arguments objectAtIndex:0];
-    NSString * imageName = [arguments objectAtIndex:1];
     NSNumber *useImageAsBackgroundOpt = [options objectForKey:@"useImageAsBackground"];
     float fixedMarginLeft = [[options objectForKey:@"fixedMarginLeft"] floatValue] ?: 13;
     float fixedMarginRight = [[options objectForKey:@"fixedMarginRight"] floatValue] ?: 13;
@@ -241,92 +241,52 @@
     {
         if(useImageAsBackground && imageName && [imageName length] > 0)
         {
-            UIBarButtonItem *newButton = [self backgroundButtonFromImage:imageName title:title
-                                               fixedMarginLeft:fixedMarginLeft fixedMarginRight:fixedMarginRight
-                                               target:self action:@selector(leftButtonTapped)];
-            navBarController.navItem.leftBarButtonItem = newButton;
-            navBarController.leftButton = newButton;
-            [newButton release];
+            return [self backgroundButtonFromImage:imageName title:title
+                                             fixedMarginLeft:fixedMarginLeft fixedMarginRight:fixedMarginRight
+                                             target:self action:actionOnSelf];
         }
         else
         {
-            [[navBarController leftButton] setTitle:title];
-            [[navBarController leftButton] setImage:nil];
+            return [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:actionOnSelf];
         }
     }
     else if (imageName && [imageName length] > 0)
     {
         UIBarButtonSystemItem systemItem = [NavigationBar getUIBarButtonSystemItemForString:imageName];
 
-        if (systemItem != -1)
-        {
-            UIBarButtonItem *newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:systemItem target:self action:@selector(leftButtonTapped)];
-            navBarController.navItem.leftBarButtonItem = newButton;
-            navBarController.leftButton = newButton;
-            [newButton release];
-            return;
-        }
+        if(systemItem != -1)
+            return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:systemItem target:self action:actionOnSelf];
         else
-        {
-            [navBarController.leftButton setImage:[UIImage imageNamed:imageName]];
-            [navBarController.leftButton setTitle:nil];
-        }
+            return [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName] style:UIBarButtonItemStylePlain target:self action:actionOnSelf];
     }
     else
     {
-        [navBarController.leftButton setImage:nil];
-        [navBarController.leftButton setTitle:nil];
+        // Fail silently
+        NSLog(@"Invalid setup{Left/Right}Button parameters\n");
+        return nil;
     }
+}
+
+- (void)setupLeftButton:(NSArray*)arguments withDict:(NSDictionary*)options
+{
+    NSString * title = [arguments objectAtIndex:0];
+    NSString * imageName = [arguments objectAtIndex:1];
+
+    UIBarButtonItem *newButton = [self makeButtonWithOptions:options title:title imageName:imageName actionOnSelf:@selector(leftButtonTapped)];
+    navBarController.navItem.leftBarButtonItem = newButton;
+    navBarController.leftButton = newButton;
+    [newButton release];
 }
 
 - (void)setupRightButton:(NSArray*)arguments withDict:(NSDictionary*)options
 {
     NSString * title = [arguments objectAtIndex:0];
     NSString * imageName = [arguments objectAtIndex:1];
-    NSNumber *useImageAsBackgroundOpt = [options objectForKey:@"useImageAsBackground"];
-    float fixedMarginLeft = [[options objectForKey:@"fixedMarginLeft"] floatValue] ?: 13;
-    float fixedMarginRight = [[options objectForKey:@"fixedMarginRight"] floatValue] ?: 13;
-    bool useImageAsBackground = useImageAsBackgroundOpt ? [useImageAsBackgroundOpt boolValue] : false;
 
-    if((title && [title length] > 0) || useImageAsBackground)
-    {
-        if(useImageAsBackground && imageName && [imageName length] > 0)
-        {
-            UIBarButtonItem *newButton = [self backgroundButtonFromImage:imageName title:title
-                                               fixedMarginLeft:fixedMarginLeft fixedMarginRight:fixedMarginRight
-                                               target:self action:@selector(rightButtonTapped)];
-            navBarController.navItem.rightBarButtonItem = newButton;
-            navBarController.rightButton = newButton;
-            [newButton release];
-        }
-        else
-        {
-            [[navBarController rightButton] setTitle:title];
-            [[navBarController rightButton] setImage:nil];
-        }
-    }
-    else if (imageName && [imageName length] > 0)
-    {
-        UIBarButtonSystemItem systemItem = [NavigationBar getUIBarButtonSystemItemForString:imageName];
-
-        if (systemItem != -1)
-        {
-            UIBarButtonItem *newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:systemItem target:self action:@selector(rightButtonTapped)];
-            navBarController.navItem.rightBarButtonItem = newButton;
-            navBarController.rightButton = newButton;
-            [newButton release];
-            return;
-        }
-        else
-            [[navBarController rightButton] setImage:[UIImage imageNamed:imageName]];
-
-        [[navBarController rightButton] setTitle:nil];
-    }
-    else
-    {
-        [[navBarController rightButton] setImage:nil];
-        [[navBarController rightButton] setTitle:nil];
-    }
+    UIBarButtonItem *newButton = [self makeButtonWithOptions:options title:title imageName:imageName actionOnSelf:@selector(rightButtonTapped)];
+    navBarController.navItem.rightBarButtonItem = newButton;
+    navBarController.rightButton = newButton;
+    [newButton release];
 }
 
 - (void)hideLeftButton:(NSArray*)arguments withDict:(NSDictionary*)options

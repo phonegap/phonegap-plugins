@@ -17,14 +17,14 @@ import org.openintents.intents.WikitudePOI;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
-import com.phonegap.api.PhonegapActivity;
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 /**
  * This calls out to the Wikitude SDK and returns the result.
@@ -34,7 +34,7 @@ public class WikitudeCamera extends Plugin {
 	public static final String ACTION = "show";
 	public static final int REQUEST_CODE = 0x0ba7c0de;
 	public String callback;
-	
+
 	public static final String defaultInstallTitle = "Install Wikitude Browser?";
 	public static final String defaultInstallMessage = "This requires the free Wikitude Browser app. Would you like to install it now?";
 	public static final String defaultYesString = "Yes";
@@ -82,7 +82,7 @@ public class WikitudeCamera extends Plugin {
 
 			// add POIs to AR intent
 			WikitudeARIntent intent = new WikitudeARIntent(
-					this.ctx.getApplication(), null, null);
+                this.ctx.getActivity().getApplication(), null, null);
 			intent.addPOIs(pois);
 			intent.addTitleText(extract(options, "title"));
 
@@ -138,9 +138,10 @@ public class WikitudeCamera extends Plugin {
 			}
 		}
 	}
-	
+
 	private void showDownloadDialog(final String title, final String message, final String yesString, final String noString) {
-		final PhonegapActivity context = this.ctx;
+		final Context context = this.ctx.getContext();
+        final Activity activity = this.ctx.getActivity();
 		Runnable runnable = new Runnable() {
 			public void run() {
 
@@ -154,7 +155,7 @@ public class WikitudeCamera extends Plugin {
 												   Uri.parse("market://search?q=pname:com.wikitude")
 												   );
 						try {
-							context.startActivity(intent);
+                            activity.startActivity(intent);
 						} catch (ActivityNotFoundException e) {
 							// We don't have the market app installed.
 							e.printStackTrace();
@@ -171,7 +172,7 @@ public class WikitudeCamera extends Plugin {
 				dialog.show();
 			}
 		};
-		context.runOnUiThread(runnable);
+        activity.runOnUiThread(runnable);
 	}
 
 }

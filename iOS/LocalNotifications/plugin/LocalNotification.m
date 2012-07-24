@@ -42,7 +42,7 @@
     notif.soundName = sound;
     notif.applicationIconBadgeNumber = badge;
 	
-	NSDictionary *userDict = [NSDictionary dictionaryWithObjectsAndKeys:notificationId,@"notificationId",bg,@"background",fg,@"forground",nil];
+	NSDictionary *userDict = [NSDictionary dictionaryWithObjectsAndKeys:notificationId,@"notificationId",bg,@"background",fg,@"foreground",nil];
     
     notif.userInfo = userDict;
 	

@@ -1,5 +1,5 @@
 # Torch plugin for Phonegap (Android) #
-By Arne de Bree
+By Arne de Bree edited by Sebastian Greco (BothMedia SRL)
 
 ## Adding the Plugin to your project ##
 1. To install the plugin, move `Torch.js` to your project's www folder and include a reference to it 
@@ -54,6 +54,20 @@ exposes the following functions:
         function() { console.log( "turnOff" ) }                         // success
     ,   function() { console.log( "error" ) }                           // error
     );
+    
+    window.plugins.Torch.release( 
+	function() { console.log( "turnOff" ) }                         // success
+    ,   function() { console.log( "error" ) }                           // error
+    );
+		
+    //Correct ussage of	release method
+    document.addEventListener("pause", onPause, false);
+    function onPause() {
+    	window.plugins.Torch.release( 
+			function() { console.log( "released" ) }
+			,function() {console.log( "error" ) }
+	);
+    }
 </pre>
  
 	

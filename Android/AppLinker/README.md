@@ -2,8 +2,11 @@
 
 By Ulf Hartelius, Nindev AB
 
+## About the plugin ##
 This app simply either launches Google Play and goes to the selected app OR, if the selected app is already installed, launches the app.
 Good for promoting other apps or for easy connection between your apps.
+
+Tested on the following OS version: 2.2.1, 2.3.5, 4.0.3
 
 ## Adding the plugin to your project ##
 1. Move applinker.js to your project's www folder and reference it in your html file(s).

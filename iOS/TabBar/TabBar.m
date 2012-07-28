@@ -17,11 +17,8 @@
 #import <UIKit/UINavigationBar.h>
 #import <QuartzCore/QuartzCore.h>
 
-#ifdef CORDOVA_FRAMEWORK
+// For older versions of Cordova, you may have to use: #import "CDVDebug.h"
 #import <Cordova/CDVDebug.h>
-#else
-#import "CDVDebug.h"
-#endif
 
 @implementation TabBar
 #ifndef __IPHONE_3_0

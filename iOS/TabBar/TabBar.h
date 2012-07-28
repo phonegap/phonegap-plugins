@@ -14,11 +14,9 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <UIKit/UITabBar.h>
-#ifdef CORDOVA_FRAMEWORK
+
+// For older versions of Cordova, you may have to use: #import "CDVPlugin.h"
 #import <Cordova/CDVPlugin.h>
-#else
-#import "CDVPlugin.h"
-#endif
 
 @interface TabBar : CDVPlugin <UITabBarDelegate> {
 	UITabBar* tabBar;

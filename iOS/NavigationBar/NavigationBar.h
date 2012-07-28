@@ -1,11 +1,10 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <UIKit/UINavigationBar.h>
-#ifdef CORDOVA_FRAMEWORK
+
+// For older versions of Cordova, you may have to use: #import "CDVPlugin.h"
 #import <Cordova/CDVPlugin.h>
-#else
-#import "CDVPlugin.h"
-#endif
+
 #import "CDVNavigationBarController.h"
 
 @interface NavigationBar : CDVPlugin <CDVNavigationBarDelegate> {

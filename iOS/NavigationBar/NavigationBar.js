@@ -10,7 +10,7 @@ function NavigationBar() {
  */
 NavigationBar.prototype.create = function(style)
 {
-    Cordova.exec("NavigationBar.create", style || "Default");
+    cordova.exec("NavigationBar.create", style || "Default");
 };
 
 /**
@@ -18,11 +18,11 @@ NavigationBar.prototype.create = function(style)
  */
 NavigationBar.prototype.init = function()
 {
-    Cordova.exec("NavigationBar.init");
+    cordova.exec("NavigationBar.init");
 };
 
 NavigationBar.prototype.resize = function() {
-    Cordova.exec("NavigationBar.resize");
+    cordova.exec("NavigationBar.resize");
 };
 
 /**
@@ -31,17 +31,17 @@ NavigationBar.prototype.resize = function() {
 NavigationBar.prototype.setupLeftButton = function(title, image, onselect, options)
 {
     this.leftButtonCallback = onselect;
-    Cordova.exec("NavigationBar.setupLeftButton", title || "", image || "", options || {});
+    cordova.exec("NavigationBar.setupLeftButton", title || "", image || "", options || {});
 };
 
 NavigationBar.prototype.hideLeftButton = function()
 {
-    Cordova.exec("NavigationBar.hideLeftButton");
+    cordova.exec("NavigationBar.hideLeftButton");
 };
 
 NavigationBar.prototype.showLeftButton = function()
 {
-    Cordova.exec("NavigationBar.showLeftButton");
+    cordova.exec("NavigationBar.showLeftButton");
 };
 
 /**
@@ -59,18 +59,18 @@ NavigationBar.prototype.leftButtonTapped = function()
 NavigationBar.prototype.setupRightButton = function(title, image, onselect, options)
 {
     this.rightButtonCallback = onselect;
-    Cordova.exec("NavigationBar.setupRightButton", title || "", image || "", onselect, options || {});
+    cordova.exec("NavigationBar.setupRightButton", title || "", image || "", onselect, options || {});
 };
 
 
 NavigationBar.prototype.hideRightButton = function()
 {
-    Cordova.exec("NavigationBar.hideRightButton");
+    cordova.exec("NavigationBar.hideRightButton");
 };
 
 NavigationBar.prototype.showRightButton = function()
 {
-    Cordova.exec("NavigationBar.showRightButton");
+    cordova.exec("NavigationBar.showRightButton");
 };
 
 /**
@@ -84,19 +84,19 @@ NavigationBar.prototype.rightButtonTapped = function()
 
 NavigationBar.prototype.setTitle = function(title)
 {
-    Cordova.exec("NavigationBar.setTitle", title);
+    cordova.exec("NavigationBar.setTitle", title);
 };
 
 NavigationBar.prototype.setLogo = function(imageURL)
 {
-    Cordova.exec("NavigationBar.setLogo", imageURL);
+    cordova.exec("NavigationBar.setLogo", imageURL);
 };
 
 /**
  * Shows the navigation bar. Make sure you called create() first.
  */
 NavigationBar.prototype.show = function() {
-    Cordova.exec("NavigationBar.show");
+    cordova.exec("NavigationBar.show");
 };
 
 /**
@@ -104,15 +104,14 @@ NavigationBar.prototype.show = function() {
  */
 NavigationBar.prototype.hide = function() {
 
-    Cordova.exec("NavigationBar.hide");
+    cordova.exec("NavigationBar.hide");
 };
 
-Cordova.addConstructor(function()
+cordova.addConstructor(function()
 {
 	if(!window.plugins)
 	{
 		window.plugins = {};
 	}
     window.plugins.navigationBar = new NavigationBar();
-
 });

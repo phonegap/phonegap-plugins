@@ -1,6 +1,8 @@
 VolumeSlider
 ============
 
+*Updated for Cordova 2.0*
+
 Installation
 ------------
 

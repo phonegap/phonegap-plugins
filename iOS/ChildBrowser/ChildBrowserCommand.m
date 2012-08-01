@@ -3,7 +3,7 @@
 //  Copyright 2012, Randy McMillan
 
 #import "ChildBrowserCommand.h"
-#import "CDVViewController.h"
+#import <Cordova/CDVViewController.h>
 
 
 

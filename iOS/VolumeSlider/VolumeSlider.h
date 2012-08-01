@@ -7,11 +7,7 @@
 //      MIT Licensed
 //
 
-#ifdef CORDOVA_FRAMEWORK
 #import <Cordova/CDVPlugin.h>
-#else
-#import "CDVPlugin.h"
-#endif
 #import <MediaPlayer/MediaPlayer.h>
 
 

@@ -5,14 +5,9 @@
 //  Created by Antonelli Brian on 10/13/11.
 //
 
-#import "TwitterPlugin.h"
-#ifdef CORDOVA_FRAMEWORK
+    #import "TwitterPlugin.h"
     #import <Cordova/JSONKit.h>
 	#import <Cordova/CDVAvailability.h>
-#else
-    #import "JSONKit.h"
-	#import "CDVAvailability.h"
-#endif
 
 #define TWITTER_URL @"http://api.twitter.com/1/"
 
@@ -92,7 +87,7 @@
     else{
         
 #if TARGET_IPHONE_SIMULATOR
-        NSString *simWarning = @"Test TwitterPlugin on Real Hardware. Tested on Cordova 1.7.0";
+        NSString *simWarning = @"Test TwitterPlugin on Real Hardware. Tested on Cordova 2.0.0";
         //EXC_BAD_ACCESS occurs on simulator unable to reproduce on real device
         //running iOS 5.1 and Cordova 1.6.1
         NSLog(@"%@",simWarning);

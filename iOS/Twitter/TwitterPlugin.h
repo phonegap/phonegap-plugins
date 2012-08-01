@@ -5,14 +5,10 @@
 //  Created by Antonelli Brian on 10/13/11.
 //
 
-#import <Foundation/Foundation.h>
-#import <Twitter/Twitter.h>
-#import <Accounts/Accounts.h>
-#ifdef CORDOVA_FRAMEWORK
+    #import <Foundation/Foundation.h>
+    #import <Twitter/Twitter.h>
+    #import <Accounts/Accounts.h>
     #import <Cordova/CDVPlugin.h>
-#else
-    #import "CDVPlugin.h"
-#endif
 
 @interface TwitterPlugin : CDVPlugin{
 }

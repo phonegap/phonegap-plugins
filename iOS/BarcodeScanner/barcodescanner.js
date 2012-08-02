@@ -65,15 +65,12 @@ BarcodeScanner.prototype.encode = function(type, data, success, fail, options) {
 }
 
 //-------------------------------------------------------------------
-Cordova.addConstructor(function() {
-    if (!window.plugins) window.plugins = {}
 
-    if (!window.plugins.barcodeScanner) {
-        window.plugins.barcodeScanner = new BarcodeScanner()
-    }
-    else {
-        console.log("Not installing barcodeScanner: window.plugins.barcodeScanner already exists")
-    }
-})
+// remove Cordova.addConstructor since it was not supported on PhoneGap 2.0
+if (!window.plugins) window.plugins = {}
+
+if (!window.plugins.barcodeScanner) {
+    window.plugins.barcodeScanner = new BarcodeScanner()
+}
 
 })();

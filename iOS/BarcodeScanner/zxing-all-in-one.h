@@ -1,3 +1,4 @@
+#include <map>
 #include <exception>
 #include <algorithm>
 #include <typeinfo>
@@ -13,6 +14,7 @@
 #include <memory>
 #include <cstdlib>
 #include <iostream>
+#include <stdlib.h>
 #include <iconv.h>
 
 // file: zxing/Exception.h
@@ -49,6 +51,7 @@ private:
   std::string message;
 
 public:
+  Exception();
   Exception(const char *msg);
   virtual const char* what() const throw();
   virtual ~Exception() throw();
@@ -95,13 +98,11 @@ public:
 
 // file: zxing/common/Counted.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __COUNTED_H__
 // #define __COUNTED_H__
 
 /*
- *  Counted.h
- *  zxing
- *
  *  Copyright 2010 ZXing authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -118,7 +119,6 @@ public:
  */
 
 //#define DEBUG_COUNTING
-//using namespace std;
 
 // #include <iostream>
 
@@ -142,7 +142,7 @@ public:
   }
   virtual ~Counted() {
   }
-  virtual Counted *retain() {
+  Counted *retain() {
 #ifdef DEBUG_COUNTING
     cout << "retaining " << typeid(*this).name() << " " << this <<
          " @ " << count_;
@@ -153,7 +153,7 @@ public:
 #endif
     return this;
   }
-  virtual void release() {
+  void release() {
 #ifdef DEBUG_COUNTING
     cout << "releasing " << typeid(*this).name() << " " << this <<
          " @ " << count_;
@@ -275,8 +275,8 @@ public:
     return object_;
   }
 
-  bool operator==(const int x) {
-    return x == 0 ? object_ == 0 : false;
+  bool operator==(const T* that) {
+    return object_ == that;
   }
   bool operator==(const Ref &other) const {
     return object_ == other.object_ || *object_ == *(other.object_);
@@ -286,8 +286,8 @@ public:
     return object_ == other.object_ || *object_ == *(other.object_);
   }
 
-  bool operator!=(const int x) {
-    return x == 0 ? object_ != 0 : true;
+  bool operator!=(const T* that) {
+    return !(*this == that);
   }
 
   bool empty() const {
@@ -303,13 +303,11 @@ public:
 
 // file: zxing/common/BitArray.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __BIT_ARRAY_H__
 // #define __BIT_ARRAY_H__
 
 /*
- *  BitArray.h
- *  zxing
- *
  *  Copyright 2010 ZXing authors. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -328,17 +326,26 @@ public:
 // #include <zxing/common/Counted.h>
 // #include <zxing/common/IllegalArgumentException.h>
 // #include <vector>
-// #include <iostream>
+// #include <limits>
 
 namespace zxing {
+
+#define ZX_LOG_DIGITS(digits) \
+    ((digits == 8) ? 3 : \
+     ((digits == 16) ? 4 : \
+      ((digits == 32) ? 5 : \
+       ((digits == 64) ? 6 : \
+        ((digits == 128) ? 7 : \
+         (-1))))))
 
 class BitArray : public Counted {
 private:
   size_t size_;
   std::vector<unsigned int> bits_;
-  static const unsigned int bitsPerWord_;
-  static const unsigned int logBits_;
-  static const unsigned int bitsMask_;
+  static const unsigned int bitsPerWord_ =
+    std::numeric_limits<unsigned int>::digits;
+  static const unsigned int logBits_ = ZX_LOG_DIGITS(bitsPerWord_);
+  static const unsigned int bitsMask_ = (1 << logBits_) - 1;
   static size_t wordsForBits(size_t bits);
   explicit BitArray();
 
@@ -346,9 +353,17 @@ public:
   BitArray(size_t size);
   ~BitArray();
   size_t getSize();
-  bool get(size_t i);
-  void set(size_t i);
+
+  bool get(size_t i) {
+    return (bits_[i >> logBits_] & (1 << (i & bitsMask_))) != 0;
+  }
+
+  void set(size_t i) {
+    bits_[i >> logBits_] |= 1 << (i & bitsMask_);
+  }
+
   void setBulk(size_t i, unsigned int newBits);
+  void setRange(int start, int end);
   void clear();
   bool isRange(size_t start, size_t end, bool value);
   std::vector<unsigned int>& getBitArray();
@@ -361,6 +376,7 @@ public:
 
 // file: zxing/common/BitMatrix.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __BIT_MATRIX_H__
 // #define __BIT_MATRIX_H__
 
@@ -396,14 +412,35 @@ private:
   size_t words_;
   unsigned int* bits_;
 
+#define ZX_LOG_DIGITS(digits) \
+    ((digits == 8) ? 3 : \
+     ((digits == 16) ? 4 : \
+      ((digits == 32) ? 5 : \
+       ((digits == 64) ? 6 : \
+        ((digits == 128) ? 7 : \
+         (-1))))))
+
+  static const unsigned int bitsPerWord =
+    std::numeric_limits<unsigned int>::digits;
+  static const unsigned int logBits = ZX_LOG_DIGITS(bitsPerWord);
+  static const unsigned int bitsMask = (1 << logBits) - 1;
+
 public:
   BitMatrix(size_t dimension);
   BitMatrix(size_t width, size_t height);
 
   ~BitMatrix();
-  // Inlining this does not really improve performance.
-  bool get(size_t x, size_t y) const;
-  void set(size_t x, size_t y);
+
+  bool get(size_t x, size_t y) const {
+    size_t offset = x + width_ * y;
+    return ((bits_[offset >> logBits] >> (offset & bitsMask)) & 0x01) != 0;
+  }
+
+  void set(size_t x, size_t y) {
+    size_t offset = x + width_ * y;
+    bits_[offset >> logBits] |= 1 << (offset & bitsMask);
+  }
+
   void flip(size_t x, size_t y);
   void clear();
   void setRegion(size_t left, size_t top, size_t width, size_t height);
@@ -429,6 +466,7 @@ private:
 
 // file: zxing/common/Array.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __ARRAY_H__
 // #define __ARRAY_H__
 
@@ -524,7 +562,7 @@ public:
   }
 };
 
-template<typename T> class ArrayRef {
+template<typename T> class ArrayRef : public Counted {
 private:
 public:
   Array<T> *array_;
@@ -563,7 +601,7 @@ public:
     reset(const_cast<Array<T> *>(&a));
   }
   ArrayRef(const ArrayRef &other) :
-      array_(0) {
+      Counted(), array_(0) {
 #ifdef DEBUG_COUNTING
     cout << "instantiating ArrayRef " << this << " from ArrayRef " << &other << ":\n";
 #endif
@@ -731,6 +769,9 @@ public:
       bytes_(bytes), byteOffset_(0), bitOffset_(0) {
   }
 
+  int getByteOffset() {
+    return byteOffset_;
+  }
 
   /**
    * @param numBits number of bits to read
@@ -785,9 +826,17 @@ class DecoderResult : public Counted {
 private:
   ArrayRef<unsigned char> rawBytes_;
   Ref<String> text_;
+  ArrayRef< ArrayRef<unsigned char> > byteSegments_;
+  std::string ecLevel_;
 
 public:
+  DecoderResult(ArrayRef<unsigned char> rawBytes,
+                Ref<String> text,
+                ArrayRef< ArrayRef<unsigned char> >& byteSegments,
+                std::string const& ecLevel);
+
   DecoderResult(ArrayRef<unsigned char> rawBytes, Ref<String> text);
+
   ArrayRef<unsigned char> getRawBytes();
   Ref<String> getText();
 };
@@ -850,6 +899,7 @@ public:
 
 // file: zxing/ResultPoint.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __RESULT_POINT_H__
 // #define __RESULT_POINT_H__
 
@@ -873,17 +923,31 @@ public:
  */
 
 // #include <zxing/common/Counted.h>
+// #include <vector>
 
 namespace zxing {
 
 class ResultPoint : public Counted {
 protected:
-  ResultPoint() {}
+  float posX_;
+  float posY_;
+
 public:
+  ResultPoint();
+  ResultPoint(float x, float y);
   virtual ~ResultPoint();
 
-  virtual float getX() const = 0;
-  virtual float getY() const = 0;
+  virtual float getX() const;
+  virtual float getY() const;
+
+  bool equals(Ref<ResultPoint> other);
+
+  static void orderBestPatterns(std::vector<Ref<ResultPoint> > &patterns);
+  static float distance(Ref<ResultPoint> point1, Ref<ResultPoint> point2);
+  static float distance(float x1, float x2, float y1, float y2);
+
+private:
+  static float crossProductZ(Ref<ResultPoint> pointA, Ref<ResultPoint> pointB, Ref<ResultPoint> pointC);
 };
 
 }
@@ -1032,6 +1096,7 @@ Point intersection(Line a, Line b);
 
 // file: zxing/LuminanceSource.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __LUMINANCESOURCE_H__
 // #define __LUMINANCESOURCE_H__
 /*
@@ -1076,6 +1141,8 @@ public:
   virtual bool isRotateSupported() const;
   virtual Ref<LuminanceSource> rotateCounterClockwise();
 
+  operator std::string (); // should be const but don't want to make sure a
+                           // large breaking change right now
 };
 
 }
@@ -1345,6 +1412,8 @@ private:
 
 public:
   Ref<BitMatrix> sampleGrid(Ref<BitMatrix> image, int dimension, Ref<PerspectiveTransform> transform);
+  Ref<BitMatrix> sampleGrid(Ref<BitMatrix> image, int dimensionX, int dimensionY, Ref<PerspectiveTransform> transform);
+
   Ref<BitMatrix> sampleGrid(Ref<BitMatrix> image, int dimension, float p1ToX, float p1ToY, float p2ToX, float p2ToY,
                             float p3ToX, float p3ToY, float p4ToX, float p4ToY, float p1FromX, float p1FromY, float p2FromX,
                             float p2FromY, float p3FromX, float p3FromY, float p4FromX, float p4FromY);
@@ -1357,6 +1426,7 @@ public:
 
 // file: zxing/common/HybridBinarizer.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __HYBRIDBINARIZER_H__
 // #define __HYBRIDBINARIZER_H__
 /*
@@ -1388,7 +1458,7 @@ namespace zxing {
 
 	class HybridBinarizer : public GlobalHistogramBinarizer {
 	 private:
-    Ref<BitMatrix> cached_matrix_;
+    Ref<BitMatrix> matrix_;
 	  Ref<BitArray> cached_row_;
 	  int cached_row_num_;
 
@@ -1399,19 +1469,31 @@ namespace zxing {
 		virtual Ref<BitMatrix> getBlackMatrix();
 		Ref<Binarizer> createBinarizer(Ref<LuminanceSource> source);
   private:
-    void binarizeEntireImage();
-    // We'll be using one-D arrays because C++ can't dynamically allocate 2D arrays
-    int* calculateBlackPoints(unsigned char* luminances, int subWidth, int subHeight,
-      int width, int height);
-    void calculateThresholdForBlock(unsigned char* luminances, int subWidth, int subHeight,
-      int width, int height, int blackPoints[], Ref<BitMatrix> matrix);
-    void threshold8x8Block(unsigned char* luminances, int xoffset, int yoffset, int threshold,
-      int stride, Ref<BitMatrix> matrix);
+    // We'll be using one-D arrays because C++ can't dynamically allocate 2D
+    // arrays
+    int* calculateBlackPoints(unsigned char* luminances,
+                              int subWidth,
+                              int subHeight,
+                              int width,
+                              int height);
+    void calculateThresholdForBlock(unsigned char* luminances,
+                                    int subWidth,
+                                    int subHeight,
+                                    int width,
+                                    int height,
+                                    int blackPoints[],
+                                    Ref<BitMatrix> const& matrix);
+    void threshold8x8Block(unsigned char* luminances,
+                           int xoffset,
+                           int yoffset,
+                           int threshold,
+                           int stride,
+                           Ref<BitMatrix> const& matrix);
 	};
 
 }
 
-#endif /* GLOBALHISTOGRAMBINARIZER_H_ */
+#endif
 
 // file: zxing/common/reedsolomon/GF256.h
 
@@ -1583,7 +1665,7 @@ public:
 private:
   std::vector<Ref<GF256Poly> > runEuclideanAlgorithm(Ref<GF256Poly> a, Ref<GF256Poly> b, int R);
   ArrayRef<int> findErrorLocations(Ref<GF256Poly> errorLocator);
-  ArrayRef<int> findErrorMagnitudes(Ref<GF256Poly> errorEvaluator, ArrayRef<int> errorLocations);
+  ArrayRef<int> findErrorMagnitudes(Ref<GF256Poly> errorEvaluator, ArrayRef<int> errorLocations, bool dataMatrix);
 };
 }
 
@@ -1806,6 +1888,12 @@ class DecodeHints {
 
  private:
 
+  DecodeHintType hints;
+
+  Ref<ResultPointCallback> callback;
+
+ public:
+
   static const DecodeHintType BARCODEFORMAT_QR_CODE_HINT = 1 << BarcodeFormat_QR_CODE;
   static const DecodeHintType BARCODEFORMAT_DATA_MATRIX_HINT = 1 << BarcodeFormat_DATA_MATRIX;
   static const DecodeHintType BARCODEFORMAT_UPC_E_HINT = 1 << BarcodeFormat_UPC_E;
@@ -1815,13 +1903,8 @@ class DecodeHints {
   static const DecodeHintType BARCODEFORMAT_CODE_128_HINT = 1 << BarcodeFormat_CODE_128;
   static const DecodeHintType BARCODEFORMAT_CODE_39_HINT = 1 << BarcodeFormat_CODE_39;
   static const DecodeHintType BARCODEFORMAT_ITF_HINT = 1 << BarcodeFormat_ITF;
+  static const DecodeHintType CHARACTER_SET = 1 << 30;
   static const DecodeHintType TRYHARDER_HINT = 1 << 31;
-
-  DecodeHintType hints;
-
-  Ref<ResultPointCallback> callback;
-
- public:
 
   static const DecodeHints PRODUCT_HINT;
   static const DecodeHints ONED_HINT;
@@ -1892,6 +1975,7 @@ public:
   Ref<String> getText();
   ArrayRef<unsigned char> getRawBytes();
   const std::vector<Ref<ResultPoint> >& getResultPoints() const;
+  std::vector<Ref<ResultPoint> >& getResultPoints();
   BarcodeFormat getBarcodeFormat() const;
 
   friend std::ostream& operator<<(std::ostream &out, Result& result);
@@ -2025,6 +2109,7 @@ namespace zxing {
 
 class ReaderException : public Exception {
 public:
+  ReaderException();
   ReaderException(const char *msg);
   ~ReaderException() throw();
 };
@@ -2364,9 +2449,10 @@ public:
 
 // #include <string>
 // #include <sstream>
+// #include <zxing/common/Array.h>
 // #include <zxing/common/BitSource.h>
 // #include <zxing/common/Counted.h>
-// #include <zxing/common/Array.h>
+// #include <zxing/common/DecoderResult.h>
 
 
 namespace zxing {
@@ -2419,7 +2505,7 @@ private:
   /**
    * See ISO 16022:2006, 5.2.9 and Annex B, B.2
    */
-  void decodeBase256Segment(Ref<BitSource> bits, std::ostringstream &result);//,std::vector<unsigned char> byteSegments);
+  void decodeBase256Segment(Ref<BitSource> bits, std::ostringstream &result, std::vector<unsigned char> byteSegments);
 
   void parseTwoBytes(int firstByte, int secondByte, int*& result);
   /**
@@ -2435,7 +2521,7 @@ private:
 
 public:
   DecodedBitStreamParser() { };
-  std::string decode(ArrayRef<unsigned char> bytes);
+  Ref<DecoderResult> decode(ArrayRef<unsigned char> bytes);
 };
 
 }
@@ -2476,14 +2562,10 @@ namespace zxing {
 
 		class CornerPoint : public ResultPoint {
 		private:
-			float posX_;
-			float posY_;
 			int counter_;
 
 		public:
 			CornerPoint(float posX, float posY);
-			float getX() const;
-			float getY() const;
 			int getCount() const;
 			void incrementCount();
 			bool equals(Ref<CornerPoint> other) const;
@@ -2559,6 +2641,7 @@ private:
 
 // file: zxing/datamatrix/detector/Detector.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __DETECTOR_H__
 // #define __DETECTOR_H__
 
@@ -2582,56 +2665,70 @@ private:
  * limitations under the License.
  */
 
-
 // #include <zxing/common/Counted.h>
 // #include <zxing/common/DetectorResult.h>
 // #include <zxing/common/BitMatrix.h>
 // #include <zxing/common/PerspectiveTransform.h>
-// #include <zxing/datamatrix/detector/MonochromeRectangleDetector.h>
-
+// #include <zxing/common/detector/WhiteRectangleDetector.h>
 
 namespace zxing {
 namespace datamatrix {
 
-class ResultPointsAndTransitions : public Counted {
-private:
-  Ref<CornerPoint> to_;
-  Ref<CornerPoint> from_;
-  int transitions_;
+class ResultPointsAndTransitions: public Counted {
+  private:
+    Ref<ResultPoint> to_;
+    Ref<ResultPoint> from_;
+    int transitions_;
 
-public:
-  ResultPointsAndTransitions();
-  ResultPointsAndTransitions(Ref<CornerPoint> from, Ref<CornerPoint> to, int transitions);
-  Ref<CornerPoint> getFrom();
-  Ref<CornerPoint> getTo();
-  int getTransitions();
+  public:
+    ResultPointsAndTransitions();
+    ResultPointsAndTransitions(Ref<ResultPoint> from, Ref<ResultPoint> to, int transitions);
+    Ref<ResultPoint> getFrom();
+    Ref<ResultPoint> getTo();
+    int getTransitions();
 };
 
-class Detector : public Counted {
-private:
-  Ref<BitMatrix> image_;
+class Detector: public Counted {
+  private:
+    Ref<BitMatrix> image_;
 
-protected:
-  Ref<BitMatrix> sampleGrid(Ref<BitMatrix> image, int dimension, Ref<PerspectiveTransform> transform);
+  protected:
+    Ref<BitMatrix> sampleGrid(Ref<BitMatrix> image, int dimensionX, int dimensionY,
+        Ref<PerspectiveTransform> transform);
 
-  void insertionSort(std::vector<Ref<ResultPointsAndTransitions> >& vector);
+    void insertionSort(std::vector<Ref<ResultPointsAndTransitions> >& vector);
 
-  Ref<ResultPointsAndTransitions> transitionsBetween(Ref<CornerPoint> from, Ref<CornerPoint> to);
-  int min(int a, int b) { return a > b ? b : a; };
+    Ref<ResultPoint> correctTopRightRectangular(Ref<ResultPoint> bottomLeft,
+        Ref<ResultPoint> bottomRight, Ref<ResultPoint> topLeft, Ref<ResultPoint> topRight,
+        int dimensionTop, int dimensionRight);
+    Ref<ResultPoint> correctTopRight(Ref<ResultPoint> bottomLeft, Ref<ResultPoint> bottomRight,
+        Ref<ResultPoint> topLeft, Ref<ResultPoint> topRight, int dimension);
+    bool isValid(Ref<ResultPoint> p);
+    int distance(Ref<ResultPoint> a, Ref<ResultPoint> b);
+    Ref<ResultPointsAndTransitions> transitionsBetween(Ref<ResultPoint> from, Ref<ResultPoint> to);
+    int min(int a, int b) {
+      return a > b ? b : a;
+    }
+    /**
+     * Ends up being a bit faster than round(). This merely rounds its
+     * argument to the nearest int, where x.5 rounds up.
+     */
+    int round(float d) {
+      return (int) (d + 0.5f);
+    }
 
-public:
-  Ref<BitMatrix> getImage();
-  Detector(Ref<BitMatrix> image);
+  public:
+    Ref<BitMatrix> getImage();
+    Detector(Ref<BitMatrix> image);
 
-  virtual Ref<PerspectiveTransform> createTransform(Ref<ResultPoint> topLeft, Ref<ResultPoint> topRight, Ref <
-      ResultPoint > bottomLeft, Ref<ResultPoint> bottomRight, int dimension);
+    virtual Ref<PerspectiveTransform> createTransform(Ref<ResultPoint> topLeft,
+        Ref<ResultPoint> topRight, Ref<ResultPoint> bottomLeft, Ref<ResultPoint> bottomRight,
+        int dimensionX, int dimensionY);
 
-  Ref<DetectorResult> detect();
-  void orderBestPatterns(std::vector<Ref<CornerPoint> > &patterns);
-  float distance(float x1, float x2, float y1, float y2);
-private:
-  int compare(Ref<ResultPointsAndTransitions> a, Ref<ResultPointsAndTransitions> b);
-  float crossProductZ(Ref<ResultPoint> pointA, Ref<ResultPoint> pointB, Ref<ResultPoint> pointC);
+    Ref<DetectorResult> detect();
+
+  private:
+    int compare(Ref<ResultPointsAndTransitions> a, Ref<ResultPointsAndTransitions> b);
 };
 
 }
@@ -2694,12 +2791,10 @@ namespace zxing {
 
 // file: zxing/oned/Code128Reader.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __CODE_128_READER_H__
 // #define __CODE_128_READER_H__
 /*
- *  Code128Reader.h
- *  ZXing
- *
  *  Copyright 2010 ZXing authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -2724,10 +2819,8 @@ namespace zxing {
 		class Code128Reader : public OneDReader {
 
 		private:
-			//static const unsigned int MAX_AVG_VARIANCE = (unsigned int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.25f);
-      enum {MAX_AVG_VARIANCE = (unsigned int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.25f)};
-			//static const int MAX_INDIVIDUAL_VARIANCE = (int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.7f);
-      enum {MAX_INDIVIDUAL_VARIANCE = (int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.7f)};
+      enum {MAX_AVG_VARIANCE = (unsigned int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 250/1000)};
+      enum {MAX_INDIVIDUAL_VARIANCE = (int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 700/1000)};
 			static const int CODE_SHIFT = 98;
 
 			static const int CODE_CODE_C = 99;
@@ -2822,13 +2915,11 @@ namespace zxing {
 
 // file: zxing/oned/UPCEANReader.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __UPC_EAN_READER_H__
 // #define __UPC_EAN_READER_H__
 
 /*
- *  UPCEANReader.h
- *  ZXing
- *
  *  Copyright 2010 ZXing authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -2858,10 +2949,8 @@ namespace zxing {
 		class UPCEANReader : public OneDReader {
 
 		private:
-			//static const unsigned int MAX_AVG_VARIANCE = (unsigned int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.42f);
-      enum {MAX_AVG_VARIANCE = (unsigned int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.42f)};
-			//static const int MAX_INDIVIDUAL_VARIANCE = (int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.7f);
-      enum {MAX_INDIVIDUAL_VARIANCE = (int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.7f)};
+      enum {MAX_AVG_VARIANCE = (unsigned int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 420/1000)};
+      enum {MAX_INDIVIDUAL_VARIANCE = (int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 700/1000)};
 
 			static bool findStartGuardPattern(Ref<BitArray> row, int* rangeStart, int* rangeEnd);
 
@@ -2995,13 +3084,11 @@ namespace zxing {
 
 // file: zxing/oned/ITFReader.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __ITF_READER_H__
 // #define __ITF_READER_H__
 
 /*
- *  ITFReader.h
- *  ZXing
- *
  *  Copyright 2010 ZXing authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -3026,10 +3113,8 @@ namespace zxing {
 		class ITFReader : public OneDReader {
 
 		private:
-			//static const unsigned int MAX_AVG_VARIANCE = (unsigned int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.42f);
-      enum {MAX_AVG_VARIANCE = (unsigned int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.42f)};
-			//static const int MAX_INDIVIDUAL_VARIANCE = (int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.8f);
-			enum {MAX_INDIVIDUAL_VARIANCE = (int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.8f)};
+      enum {MAX_AVG_VARIANCE = (unsigned int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 420/1000)};
+			enum {MAX_INDIVIDUAL_VARIANCE = (int) (PATTERN_MATCH_RESULT_SCALE_FACTOR * 800/1000)};
 			// Stores the actual narrow line width of the image being decoded.
 			int narrowLineWidth;
 
@@ -3164,14 +3249,9 @@ namespace zxing {
 	namespace oned {
 
 		class OneDResultPoint : public ResultPoint {
-		private:
-			float posX_;
-			float posY_;
 
 		public:
 			OneDResultPoint(float posX, float posY);
-			float getX() const;
-			float getY() const;
 		};
 	}
 }
@@ -3236,9 +3316,6 @@ namespace zxing {
 // #define __UPC_E_READER_H__
 
 /*
- *  UPCEReader.h
- *  ZXing
- *
  *  Copyright 2010 ZXing authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -3312,7 +3389,9 @@ namespace qrcode {
 class ErrorCorrectionLevel {
 private:
   int ordinal_;
-  ErrorCorrectionLevel(int inOrdinal);
+  int bits_;
+  std::string name_;
+  ErrorCorrectionLevel(int inOrdinal, int bits, char const* name);
   static ErrorCorrectionLevel *FOR_BITS[];
   static int N_LEVELS;
 public:
@@ -3321,7 +3400,11 @@ public:
   static ErrorCorrectionLevel Q;
   static ErrorCorrectionLevel H;
 
-  int ordinal();
+  int ordinal() const;
+  int bits() const;
+  std::string const& name() const;
+  operator std::string const& () const;
+
   static ErrorCorrectionLevel& forBits(int bits);
 };
 }
@@ -3438,6 +3521,7 @@ public:
 
 // file: zxing/qrcode/QRCodeReader.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __QR_CODE_READER_H__
 // #define __QR_CODE_READER_H__
 
@@ -3470,6 +3554,9 @@ namespace zxing {
 		class QRCodeReader : public Reader {
 		private:
 			Decoder decoder_;
+
+    protected:
+      Decoder& getDecoder();
 
 		public:
 			QRCodeReader();
@@ -3737,6 +3824,7 @@ public:
 
 // file: zxing/qrcode/decoder/Mode.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __MODE_H__
 // #define __MODE_H__
 
@@ -3770,15 +3858,22 @@ private:
   int characterCountBitsForVersions0To9_;
   int characterCountBitsForVersions10To26_;
   int characterCountBitsForVersions27AndHigher_;
+  int bits_;
+  std::string name_;
 
-  Mode(int cbv0_9, int cbv10_26, int cbv27);
+  Mode(int cbv0_9, int cbv10_26, int cbv27, int bits, char const* name);
 
 public:
   static Mode TERMINATOR;
   static Mode NUMERIC;
   static Mode ALPHANUMERIC;
+  static Mode STRUCTURED_APPEND;
   static Mode BYTE;
+  static Mode ECI;
   static Mode KANJI;
+  static Mode FNC1_FIRST_POSITION;
+  static Mode FNC1_SECOND_POSITION;
+  static Mode HANZI;
 
   static Mode& forBits(int bits);
   int getCharacterCountBits(Version *version);
@@ -3788,7 +3883,108 @@ public:
 
 #endif // __MODE_H__
 
+// file: zxing/common/ECI.h
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+
+#ifndef __ECI__
+#define __ECI__
+
+/*
+ * Copyright 2008-2011 ZXing authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+namespace zxing {
+  namespace common {
+    class ECI;
+  }
+}
+class zxing::common::ECI {
+private:
+  const int value;
+
+protected:
+  ECI(int value);
+
+public:
+  int getValue() const;
+
+  static ECI* getECIByValue(int value);
+};
+
+#endif
+
+// file: zxing/common/CharacterSetECI.h
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+
+#ifndef __CHARACTERSET_ECI__
+#define __CHARACTERSET_ECI__
+
+/*
+ * Copyright 2008-2011 ZXing authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <map>
+// #include <zxing/common/ECI.h>
+// #include <zxing/DecodeHints.h>
+
+namespace zxing {
+  namespace common {
+    class CharacterSetECI;
+  }
+}
+
+class zxing::common::CharacterSetECI : public ECI {
+private:
+  static std::map<int, CharacterSetECI*> VALUE_TO_ECI;
+  static std::map<std::string, CharacterSetECI*> NAME_TO_ECI;
+  static const bool inited;
+  static bool init_tables();
+
+  char const* const encodingName;
+
+  CharacterSetECI(int value, char const* encodingName);
+
+  static void addCharacterSet(int value, char const* encodingName);
+  static void addCharacterSet(int value, char const* const* encodingNames);
+
+public:
+  char const* getEncodingName();
+
+  static CharacterSetECI* getCharacterSetECIByValue(int value);
+  static CharacterSetECI* getCharacterSetECIByName(std::string const& name);
+};
+
+#endif
+
 // file: zxing/qrcode/decoder/DecodedBitStreamParser.h
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 
 #ifndef __DECODED_BIT_STREAM_PARSER_H__
 // #define __DECODED_BIT_STREAM_PARSER_H__
@@ -3814,35 +4010,46 @@ public:
 
 // #include <string>
 // #include <sstream>
+// #include <map>
 // #include <zxing/qrcode/decoder/Mode.h>
 // #include <zxing/common/BitSource.h>
 // #include <zxing/common/Counted.h>
 // #include <zxing/common/Array.h>
-
-
+// #include <zxing/common/DecoderResult.h>
+// #include <zxing/common/CharacterSetECI.h>
+// #include <zxing/DecodeHints.h>
 
 namespace zxing {
 namespace qrcode {
 
 class DecodedBitStreamParser {
+public:
+  typedef std::map<DecodeHintType, std::string> Hashtable;
+
 private:
-  static const char ALPHANUMERIC_CHARS[];
+  static char const ALPHANUMERIC_CHARS[];
+  static char toAlphaNumericChar(size_t value);
 
-  static const char *ASCII;
-  static const char *ISO88591;
-  static const char *UTF8;
-  static const char *SHIFT_JIS;
-  static const char *EUC_JP;
-
+  static void decodeHanziSegment(Ref<BitSource> bits, std::string &result, int count);
   static void decodeKanjiSegment(Ref<BitSource> bits, std::string &result, int count);
   static void decodeByteSegment(Ref<BitSource> bits, std::string &result, int count);
-  static void decodeAlphanumericSegment(Ref<BitSource> bits, std::string &result, int count);
+  static void decodeByteSegment(Ref<BitSource> bits_,
+                                std::string& result,
+                                int count,
+                                zxing::common::CharacterSetECI* currentCharacterSetECI,
+                                ArrayRef< ArrayRef<unsigned char> >& byteSegments,
+                                Hashtable const& hints);
+  static void decodeAlphanumericSegment(Ref<BitSource> bits, std::string &result, int count, bool fc1InEffect);
   static void decodeNumericSegment(Ref<BitSource> bits, std::string &result, int count);
-  static const char *guessEncoding(unsigned char *bytes, int length);
+
   static void append(std::string &ost, const unsigned char *bufIn, size_t nIn, const char *src);
+  static void append(std::string &ost, std::string const& in, const char *src);
 
 public:
-  static std::string decode(ArrayRef<unsigned char> bytes, Version *version);
+  static Ref<DecoderResult> decode(ArrayRef<unsigned char> bytes,
+                                   Version *version,
+                                   ErrorCorrectionLevel const& ecLevel,
+                                   Hashtable const& hints);
 };
 
 }
@@ -3851,6 +4058,8 @@ public:
 #endif // __DECODED_BIT_STREAM_PARSER_H__
 
 // file: zxing/qrcode/detector/AlignmentPattern.h
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 
 #ifndef __ALIGNMENT_PATTERN_H__
 // #define __ALIGNMENT_PATTERN_H__
@@ -3882,15 +4091,13 @@ namespace zxing {
 
 		class AlignmentPattern : public ResultPoint {
 		private:
-			float posX_;
-			float posY_;
 			float estimatedModuleSize_;
 
 		public:
 			AlignmentPattern(float posX, float posY, float estimatedModuleSize);
-			float getX() const;
-			float getY() const;
 			bool aboutEquals(float moduleSize, float i, float j) const;
+      Ref<AlignmentPattern> combineEstimate(float i, float j,
+                                            float newModuleSize) const;
 		};
 
 	}
@@ -3969,75 +4176,9 @@ private:
 
 #endif // __ALIGNMENT_PATTERN_FINDER_H__
 
-// file: zxing/qrcode/detector/Detector.h
-
-#ifndef __DETECTOR_H__
-// #define __DETECTOR_H__
-
-/*
- *  Detector.h
- *  zxing
- *
- *  Copyright 2010 ZXing authors All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-// #include <zxing/common/Counted.h>
-// #include <zxing/common/DetectorResult.h>
-// #include <zxing/common/BitMatrix.h>
-// #include <zxing/qrcode/detector/AlignmentPattern.h>
-// #include <zxing/common/PerspectiveTransform.h>
-// #include <zxing/ResultPointCallback.h>
-
-namespace zxing {
-
-class DecodeHints;
-
-namespace qrcode {
-
-class Detector : public Counted {
-private:
-  Ref<BitMatrix> image_;
-  Ref<ResultPointCallback> callback_;
-
-protected:
-  Ref<BitMatrix> getImage();
-
-  static Ref<BitMatrix> sampleGrid(Ref<BitMatrix> image, int dimension, Ref<PerspectiveTransform>);
-  static int computeDimension(Ref<ResultPoint> topLeft, Ref<ResultPoint> topRight, Ref<ResultPoint> bottomLeft,
-                              float moduleSize);
-  float calculateModuleSize(Ref<ResultPoint> topLeft, Ref<ResultPoint> topRight, Ref<ResultPoint> bottomLeft);
-  float calculateModuleSizeOneWay(Ref<ResultPoint> pattern, Ref<ResultPoint> otherPattern);
-  float sizeOfBlackWhiteBlackRunBothWays(int fromX, int fromY, int toX, int toY);
-  float sizeOfBlackWhiteBlackRun(int fromX, int fromY, int toX, int toY);
-  Ref<AlignmentPattern> findAlignmentInRegion(float overallEstModuleSize, int estAlignmentX, int estAlignmentY,
-      float allowanceFactor);
-public:
-
-  virtual Ref<PerspectiveTransform> createTransform(Ref<ResultPoint> topLeft, Ref<ResultPoint> topRight, Ref <
-      ResultPoint > bottomLeft, Ref<ResultPoint> alignmentPattern, int dimension);
-
-  Detector(Ref<BitMatrix> image);
-  Ref<DetectorResult> detect(DecodeHints const& hints);
-};
-}
-}
-
-#endif // __DETECTOR_H__
-
 // file: zxing/qrcode/detector/FinderPattern.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __FINDER_PATTERN_H__
 // #define __FINDER_PATTERN_H__
 
@@ -4068,19 +4209,17 @@ namespace zxing {
 
 		class FinderPattern : public ResultPoint {
 		private:
-			float posX_;
-			float posY_;
 			float estimatedModuleSize_;
-			int counter_;
+			int count_;
 
 		public:
 			FinderPattern(float posX, float posY, float estimatedModuleSize);
-			float getX() const;
-			float getY() const;
+			FinderPattern(float posX, float posY, float estimatedModuleSize, int count);
 			int getCount() const;
 			float getEstimatedModuleSize() const;
 			void incrementCount();
 			bool aboutEquals(float moduleSize, float i, float j) const;
+			Ref<FinderPattern> combineEstimate(float i, float j, float newModuleSize) const;
 		};
 	}
 }
@@ -4137,6 +4276,75 @@ public:
 
 #endif // __FINDER_PATTERN_INFO_H__
 
+// file: zxing/qrcode/detector/Detector.h
+
+#ifndef __DETECTOR_H__
+// #define __DETECTOR_H__
+
+/*
+ *  Detector.h
+ *  zxing
+ *
+ *  Copyright 2010 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/common/Counted.h>
+// #include <zxing/common/DetectorResult.h>
+// #include <zxing/common/BitMatrix.h>
+// #include <zxing/qrcode/detector/AlignmentPattern.h>
+// #include <zxing/common/PerspectiveTransform.h>
+// #include <zxing/ResultPointCallback.h>
+// #include <zxing/qrcode/detector/FinderPatternInfo.h>
+
+namespace zxing {
+
+class DecodeHints;
+
+namespace qrcode {
+
+class Detector : public Counted {
+private:
+  Ref<BitMatrix> image_;
+  Ref<ResultPointCallback> callback_;
+
+protected:
+  Ref<BitMatrix> getImage();
+
+  static Ref<BitMatrix> sampleGrid(Ref<BitMatrix> image, int dimension, Ref<PerspectiveTransform>);
+  static int computeDimension(Ref<ResultPoint> topLeft, Ref<ResultPoint> topRight, Ref<ResultPoint> bottomLeft,
+                              float moduleSize);
+  float calculateModuleSize(Ref<ResultPoint> topLeft, Ref<ResultPoint> topRight, Ref<ResultPoint> bottomLeft);
+  float calculateModuleSizeOneWay(Ref<ResultPoint> pattern, Ref<ResultPoint> otherPattern);
+  float sizeOfBlackWhiteBlackRunBothWays(int fromX, int fromY, int toX, int toY);
+  float sizeOfBlackWhiteBlackRun(int fromX, int fromY, int toX, int toY);
+  Ref<AlignmentPattern> findAlignmentInRegion(float overallEstModuleSize, int estAlignmentX, int estAlignmentY,
+      float allowanceFactor);
+  Ref<DetectorResult> processFinderPatternInfo(Ref<FinderPatternInfo> info);
+public:
+
+  virtual Ref<PerspectiveTransform> createTransform(Ref<ResultPoint> topLeft, Ref<ResultPoint> topRight, Ref <
+      ResultPoint > bottomLeft, Ref<ResultPoint> alignmentPattern, int dimension);
+
+  Detector(Ref<BitMatrix> image);
+  Ref<DetectorResult> detect(DecodeHints const& hints);
+};
+}
+}
+
+#endif // __DETECTOR_H__
+
 // file: zxing/qrcode/detector/FinderPatternFinder.h
 
 #ifndef __FINDER_PATTERN_FINDER_H__
@@ -4177,6 +4385,8 @@ namespace qrcode {
 class FinderPatternFinder {
 private:
   static int CENTER_QUORUM;
+
+protected:
   static int MIN_SKIP;
   static int MAX_MODULES;
 
@@ -4259,4 +4469,539 @@ private:
 }
 }
 #endif // QREDGEDETECTOR_H_
+
+// file: zxing/FormatException.h
+
+#ifndef __FORMAT_EXCEPTION_H__
+// #define __FORMAT_EXCEPTION_H__
+
+/*
+ *  FormatException.h
+ *  zxing
+ *
+ *  Copyright 2010 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/ReaderException.h>
+
+namespace zxing {
+
+class FormatException : public ReaderException {
+public:
+  FormatException();
+  FormatException(const char *msg);
+  ~FormatException() throw();
+};
+
+}
+#endif // __FORMAT_EXCEPTION_H__
+
+// file: zxing/NotFoundException.h
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+
+#ifndef __NOT_FOUND_EXCEPTION_H__
+// #define __NOT_FOUND_EXCEPTION_H__
+
+/*
+ * Copyright 20011 ZXing authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/ReaderException.h>
+
+namespace zxing {
+
+  class NotFoundException : public ReaderException {
+  public:
+    NotFoundException(const char *msg);
+    ~NotFoundException() throw();
+  };
+
+}
+#endif // __NOT_FOUND_EXCEPTION_H__
+
+// file: zxing/common/StringUtils.h
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+
+#ifndef __STRING_UTILS__
+#define __STRING_UTILS__
+
+/*
+ * Copyright (C) 2010-2011 ZXing authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <string>
+// #include <map>
+// #include <zxing/DecodeHints.h>
+
+namespace zxing {
+  namespace common {
+    class StringUtils;
+  }
+}
+
+class zxing::common::StringUtils {
+private:
+  static char const* const PLATFORM_DEFAULT_ENCODING;
+
+  StringUtils() {}
+
+public:
+  static char const* const ASCII;
+  static char const* const SHIFT_JIS;
+  static char const* const GB2312;
+  static char const* const EUC_JP;
+  static char const* const UTF8;
+  static char const* const ISO88591;
+  static const bool ASSUME_SHIFT_JIS;
+
+  typedef std::map<DecodeHintType, std::string> Hashtable;
+
+  static std::string guessEncoding(unsigned char* bytes, int length, Hashtable const& hints);
+};
+
+#endif
+
+// file: zxing/common/detector/MonochromeRectangleDetector.h
+
+#ifndef __MONOCHROMERECTANGLEDETECTOR_H__
+// #define __MONOCHROMERECTANGLEDETECTOR_H__
+
+/*
+ *  MonochromeRectangleDetector.h
+ *  y_wmk
+ *
+ *  Created by Luiz Silva on 09/02/2010.
+ *  Copyright 2010 y_wmk authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <vector>
+// #include <zxing/NotFoundException.h>
+// #include <zxing/ResultPoint.h>
+// #include <zxing/common/BitMatrix.h>
+// #include <zxing/common/Counted.h>
+// #include <zxing/ResultPoint.h>
+
+
+namespace zxing {
+
+struct TwoInts: public Counted {
+	int start;
+	int end;
+};
+
+class MonochromeRectangleDetector : public Counted {
+private:
+  static const int MAX_MODULES = 32;
+  Ref<BitMatrix> image_;
+
+public:
+  MonochromeRectangleDetector(Ref<BitMatrix> image) : image_(image) {  };
+
+  std::vector<Ref<ResultPoint> > detect();
+
+private:
+  Ref<ResultPoint> findCornerFromCenter(int centerX, int deltaX, int left, int right,
+      int centerY, int deltaY, int top, int bottom, int maxWhiteRun);
+
+  Ref<TwoInts> blackWhiteRange(int fixedDimension, int maxWhiteRun, int minDim, int maxDim,
+      bool horizontal);
+
+  int max(int a, float b) { return (float) a > b ? a : (int) b;};
+};
+}
+
+#endif // __MONOCHROMERECTANGLEDETECTOR_H__
+
+// file: zxing/common/detector/WhiteRectangleDetector.h
+
+#ifndef __WHITERECTANGLEDETECTOR_H__
+// #define __WHITERECTANGLEDETECTOR_H__
+
+/*
+ *  WhiteRectangleDetector.h
+ *
+ *
+ *  Created by Luiz Silva on 09/02/2010.
+ *  Copyright 2010  authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <vector>
+// #include <zxing/ReaderException.h>
+// #include <zxing/ResultPoint.h>
+// #include <zxing/common/BitMatrix.h>
+// #include <zxing/common/Counted.h>
+// #include <zxing/ResultPoint.h>
+
+
+namespace zxing {
+
+class WhiteRectangleDetector : public Counted {
+  private:
+    static int INIT_SIZE;
+    static int CORR;
+    Ref<BitMatrix> image_;
+    int width_;
+    int height_;
+
+  public:
+    WhiteRectangleDetector(Ref<BitMatrix> image);
+    std::vector<Ref<ResultPoint> > detect();
+
+  private:
+    int round(float a);
+    Ref<ResultPoint> getBlackPointOnSegment(float aX, float aY, float bX, float bY);
+    int distanceL2(float aX, float aY, float bX, float bY);
+    std::vector<Ref<ResultPoint> > centerEdges(Ref<ResultPoint> y, Ref<ResultPoint> z,
+                                    Ref<ResultPoint> x, Ref<ResultPoint> t);
+    bool containsBlackPoint(int a, int b, int fixed, bool horizontal);
+};
+}
+
+#endif
+
+// file: zxing/datamatrix/detector/DetectorException.h
+
+/*
+ * DetectorException.h
+ *
+ *  Created on: Aug 26, 2011
+ *      Author: luiz
+ */
+
+#ifndef DETECTOREXCEPTION_H_
+#define DETECTOREXCEPTION_H_
+
+// #include <zxing/Exception.h>
+
+namespace zxing {
+namespace datamatrix {
+
+class DetectorException : public Exception {
+  public:
+    DetectorException(const char *msg);
+    virtual ~DetectorException() throw();
+};
+} /* namespace nexxera */
+} /* namespace zxing */
+#endif /* DETECTOREXCEPTION_H_ */
+
+// file: zxing/multi/ByQuadrantReader.h
+
+#ifndef __BY_QUADRANT_READER_H__
+// #define __BY_QUADRANT_READER_H__
+
+/*
+ *  Copyright 2011 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/Reader.h>
+// #include <zxing/BinaryBitmap.h>
+// #include <zxing/Result.h>
+// #include <zxing/DecodeHints.h>
+
+namespace zxing {
+namespace multi {
+class ByQuadrantReader : public Reader {
+  private:
+    Reader& delegate_;
+
+  public:
+    ByQuadrantReader(Reader& delegate);
+    virtual ~ByQuadrantReader();
+    virtual Ref<Result> decode(Ref<BinaryBitmap> image);
+    virtual Ref<Result> decode(Ref<BinaryBitmap> image, DecodeHints hints);
+};
+} // End zxing::multi namespace
+} // End zxing namespace
+
+#endif // __BY_QUADRANT_READER_H__
+
+// file: zxing/multi/MultipleBarcodeReader.h
+
+#ifndef __MULTIPLE_BARCODE_READER_H__
+// #define __MULTIPLE_BARCODE_READER_H__
+
+/*
+ *  Copyright 2011 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/common/Counted.h>
+// #include <zxing/Result.h>
+// #include <zxing/BinaryBitmap.h>
+// #include <zxing/DecodeHints.h>
+// #include <vector>
+
+namespace zxing {
+namespace multi {
+class MultipleBarcodeReader : public Counted {
+  protected:
+    MultipleBarcodeReader() {}
+  public:
+    virtual std::vector<Ref<Result> > decodeMultiple(Ref<BinaryBitmap> image);
+    virtual std::vector<Ref<Result> > decodeMultiple(Ref<BinaryBitmap> image, DecodeHints hints) = 0;
+    virtual ~MultipleBarcodeReader();
+};
+} // End zxing::multi namespace
+} // End zxing namespace
+
+#endif // __MULTIPLE_BARCODE_READER_H__
+
+// file: zxing/multi/GenericMultipleBarcodeReader.h
+
+#ifndef __GENERIC_MULTIPLE_BARCODE_READER_H__
+// #define __GENERIC_MULTIPLE_BARCODE_READER_H__
+
+/*
+ *  Copyright 2011 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/multi/MultipleBarcodeReader.h>
+// #include <zxing/Reader.h>
+
+namespace zxing {
+namespace multi {
+class GenericMultipleBarcodeReader : public MultipleBarcodeReader {
+  private:
+    static Ref<Result> translateResultPoints(Ref<Result> result,
+                                             int xOffset,
+                                             int yOffset);
+    void doDecodeMultiple(Ref<BinaryBitmap> image,
+                          DecodeHints hints,
+                          std::vector<Ref<Result> >& results,
+                          int xOffset,
+                          int yOffset);
+    Reader& delegate_;
+    static const int MIN_DIMENSION_TO_RECUR = 100;
+
+  public:
+    GenericMultipleBarcodeReader(Reader& delegate);
+    virtual ~GenericMultipleBarcodeReader();
+    virtual std::vector<Ref<Result> > decodeMultiple(Ref<BinaryBitmap> image,
+                                                     DecodeHints hints);
+};
+} // End zxing::multi namespace
+} // End zxing namespace
+
+#endif // __GENERIC_MULTIPLE_BARCODE_READER_H__
+
+// file: zxing/multi/qrcode/QRCodeMultiReader.h
+
+#ifndef __QRCODE_MULTI_READER_H__
+// #define __QRCODE_MULTI_READER_H__
+
+/*
+ *  Copyright 2011 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/multi/MultipleBarcodeReader.h>
+// #include <zxing/qrcode/QRCodeReader.h>
+
+namespace zxing {
+namespace multi {
+class QRCodeMultiReader: public zxing::qrcode::QRCodeReader, public MultipleBarcodeReader {
+  public:
+    QRCodeMultiReader();
+    virtual ~QRCodeMultiReader();
+    virtual std::vector<Ref<Result> > decodeMultiple(Ref<BinaryBitmap> image, DecodeHints hints);
+};
+} // End zxing::multi namespace
+} // End zxing namespace
+
+#endif // __QRCODE_MULTI_READER_H__
+
+// file: zxing/multi/qrcode/detector/MultiDetector.h
+
+#ifndef __MULTI_DETECTOR_H__
+// #define __MULTI_DETECTOR_H__
+
+/*
+ *  Copyright 2011 ZXing authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/qrcode/detector/Detector.h>
+// #include <zxing/common/DetectorResult.h>
+// #include <zxing/DecodeHints.h>
+
+namespace zxing {
+namespace multi {
+class MultiDetector : public zxing::qrcode::Detector {
+  public:
+    MultiDetector(Ref<BitMatrix> image);
+    virtual ~MultiDetector();
+    virtual std::vector<Ref<DetectorResult> > detectMulti(DecodeHints hints);
+};
+} // End zxing::multi namespace
+} // End zxing namespace
+
+#endif // __MULTI_DETECTOR_H__
+
+// file: zxing/multi/qrcode/detector/MultiFinderPatternFinder.h
+
+#ifndef __MULTI_FINDER_PATTERN_FINDER_H__
+// #define __MULTI_FINDER_PATTERN_FINDER_H__
+
+/*
+ *  Copyright 2011 ZXing authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/qrcode/detector/FinderPattern.h>
+// #include <zxing/qrcode/detector/FinderPatternFinder.h>
+// #include <zxing/qrcode/detector/FinderPatternInfo.h>
+
+namespace zxing {
+namespace multi {
+class MultiFinderPatternFinder : zxing::qrcode::FinderPatternFinder {
+  private:
+    std::vector<std::vector<Ref<zxing::qrcode::FinderPattern> > > selectBestPatterns();
+
+    static const float MAX_MODULE_COUNT_PER_EDGE;
+    static const float MIN_MODULE_COUNT_PER_EDGE;
+    static const float DIFF_MODSIZE_CUTOFF_PERCENT;
+    static const float DIFF_MODSIZE_CUTOFF;
+
+  public:
+    MultiFinderPatternFinder(Ref<BitMatrix> image, Ref<ResultPointCallback> resultPointCallback);
+    virtual ~MultiFinderPatternFinder();
+    virtual std::vector<Ref<zxing::qrcode::FinderPatternInfo> > findMulti(DecodeHints const& hints);
+
+
+};
+}
+}
+
+#endif // __MULTI_FINDER_PATTERN_FINDER_H__
 

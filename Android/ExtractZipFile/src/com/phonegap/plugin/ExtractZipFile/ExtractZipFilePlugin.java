@@ -2,7 +2,7 @@
  	Author: Vishal Rajpal
  	Filename: ExtractZipFilePlugin.java
  	Created Date: 21-02-2012
- 	Modified Date: 04-04-2012
+ 	Modified Date: 06-08-2012
 */
 
 package com.phonegap.plugin.ExtractZipFile;
@@ -49,7 +49,7 @@ public class ExtractZipFilePlugin extends Plugin {
 				while (e.hasMoreElements()) 
 				  {
 					  entry = (ZipEntry) e.nextElement();
-					  is = new BufferedInputStream(zipfile.getInputStream(entry));
+					  is=new BufferedInputStream(zipfile.getInputStream(entry), 8192);
 					  int count;
 					  byte data[] = new byte[102222];
 					  String fileName = dirToInsert + entry.getName();

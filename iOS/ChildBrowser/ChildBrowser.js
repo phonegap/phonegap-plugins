@@ -49,6 +49,12 @@ ChildBrowser.prototype.showWebPage = function(loc)
     cordovaRef.exec("ChildBrowserCommand.showWebPage", loc);
 };
 
+// Show a new page in an existing child browser
+ChildBrowser.prototype.getPage = function(loc)
+{
+    cordovaRef.exec("ChildBrowserCommand.getPage", loc);
+};
+
 // close the browser, will NOT result in close callback
 ChildBrowser.prototype.close = function()
 {

@@ -31,7 +31,8 @@ If you are using PhoneGap 1.5.0 to 1.8.1 please use the 1.8.1 directory. If you 
               android:screenOrientation="landscape"
               android:configChanges="orientation|keyboardHidden"
               android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-              android:windowSoftInputMode="stateAlwaysHidden">
+              android:windowSoftInputMode="stateAlwaysHidden"
+              android:exported="false">
       <intent-filter>
         <action android:name="com.phonegap.plugins.barcodescanner.SCAN"/>
         <category android:name="android.intent.category.DEFAULT"/>

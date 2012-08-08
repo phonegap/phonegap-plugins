@@ -87,6 +87,24 @@ public class ChildBrowser extends Plugin {
                     pluginResult.setKeepCallback(true);
                     return pluginResult;
                 }
+            } else if (action.equals("getPage")) {
+                this.browserCallbackId = callbackId;
+
+                // If the ChildBrowser isnt already open then throw an error
+                if (dialog == null || !dialog.isShowing()) {
+                    return new PluginResult(PluginResult.Status.ERROR, "ChildBrowser isn't open yet.");
+                }
+
+                result = this.getPage(args.getString(0), args.optJSONObject(1));
+
+                if (result.length() > 0) {
+                    status = PluginResult.Status.ERROR;
+                    return new PluginResult(status, result);
+                } else {
+                    PluginResult pluginResult = new PluginResult(status, result);
+                    pluginResult.setKeepCallback(true);
+                    return pluginResult;
+                }
             }
             else if (action.equals("close")) {
                 closeDialog();
@@ -199,6 +217,11 @@ public class ChildBrowser extends Plugin {
      */
     private boolean getShowLocationBar() {
         return this.showLocationBar;
+    }
+
+    public String getPage(final String url, JSONObject options) {
+        webview.loadUrl(url);
+        return "";
     }
 
     /**

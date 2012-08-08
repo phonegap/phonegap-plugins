@@ -32,6 +32,15 @@ ChildBrowser.prototype.showWebPage = function(url, options) {
 };
 
 /**
+ * Display a new url in the existing browser.
+ *
+ * @param url           The url to load
+ */
+ChildBrowser.prototype.getPage = function(url, options) {
+    cordova.exec(this._onEvent, this._onError, "ChildBrowser", "getPage", [url ]);
+};
+
+/**
  * Close the browser opened by showWebPage.
  */
 ChildBrowser.prototype.close = function() {

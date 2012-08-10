@@ -506,10 +506,16 @@ Globalization.prototype.getCurrencyPattern = function(currencyCode, successCB, f
 		console.log("Globalization.getCurrencyPattern Error: currencyCode is not a currency code");
 	}
 };
-cordova.addConstructor(function()
-{
-	cordova.addPlugin('globalization', new Globalization());
-});
+
+if( cordova.addConstructor && cordova.addPlugin ){
+	cordova.addConstructor( function(){
+		cordova.addPlugin('globalization', new Globalization());
+	});
+}
+else{
+	window.plugins = window.plugins || {};
+	window.plugins.globalization = window.plugins.globalization || new Globalization();
+}
 
 GlobalizationError = function() {
 	this.code = null;

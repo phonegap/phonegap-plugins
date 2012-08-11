@@ -21,7 +21,7 @@ Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonega
 
 3. Create a directory within your project called "src/com/phonegap/plugins/childBrowser" and move ChildBrowser.java into it.
 
-4. In your res/xml/plugins.xml file add the following line:
+4. In your res/xml/config.xml file add the following line:
 
     &lt;plugin name="ChildBrowser" value="com.phonegap.plugins.childBrowser.ChildBrowser"/&gt;
 

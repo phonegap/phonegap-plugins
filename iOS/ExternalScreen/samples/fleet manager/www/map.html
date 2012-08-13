@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <style type="text/css">
+            html { height: 100% }
+            body { height: 100%; margin: 0; padding: 0 }
+            #map_canvas { height: 100% }
+            </style>
+        <link rel="stylesheet" href="js/leaflet/leaflet.css" />
+        <script src="js/leaflet/leaflet-src.js"></script>        <script type="text/javascript">
+            var map;
+            
+            function initialize() {
+                
+                map = new L.Map('map', {zoomControl:false, attributionControl:false});
+                
+                var tileURL = 'http://oatile1.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png',
+                attribution = 'Map data &copy; 2011 OpenStreetMap',
+                tileLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
+                
+                map.addLayer(tileLayer);
+                resetMap();
+                
+                //addImageMarker( 0,0, "foo", 30 );
+            }
+            
+            function resetMap() {
+                
+                map.setView( new L.LatLng(0,0), 2 );
+            }
+            
+            function addImageMarker( lat, lon, name, direction ) {
+                try {
+                    var image = getRotatedIcon( direction );
+                    var icon = L.icon({
+                            iconUrl: image,
+                            iconSize:     [25,25]
+                           });
+                      
+                    var latLng = new L.LatLng(lat, lon);
+                    var marker = new L.Marker(latLng, {icon: icon} );
+                    map.addLayer( marker );
+                }catch(e){
+                    alert( e );
+                }
+            }
+            
+            function gotoLocation( lat, lon ) {
+                
+                map.setView( new L.LatLng( lat,lon ), 5 );
+            }
+            
+            function getRotatedIcon( direction ) {
+                var markerDefault = document.getElementById( "markerDefault" );
+                var canvas = document.getElementById( "canvas" );
+                var context = canvas.getContext("2d");
+                
+                context.setTransform(1, 0, 0, 1, 0, 0);
+                context.clearRect( 0,0,32,32 );
+                context.translate(16,16);
+                context.rotate(direction * Math.PI / 180);                
+                context.translate(-16,-16);
+                context.drawImage(markerDefault, 0, 0);
+                
+                return canvas.toDataURL();
+            }
+        </script>
+    </head>
+    <body onload="initialize()">
+        <img src="assets/airplane.png" id="markerDefault" style="display:none;" />
+        <canvas id="canvas" style="display:none;" width="32" height="32"></canvas>
+        <div id="map" style="width:100%; height:100%"></div>
+    </body>
+</html>

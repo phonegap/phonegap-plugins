@@ -13,8 +13,8 @@ import android.net.Uri;
 import android.util.Log;
 import android.text.Html;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 /**
  * WebIntent is a PhoneGap plugin that bridges Android intents and web
@@ -73,7 +73,7 @@ public class WebIntent extends Plugin {
                 if (args.length() != 1) {
                     return new PluginResult(PluginResult.Status.INVALID_ACTION);
                 }
-                Intent i = ((DroidGap) this.ctx).getIntent();
+                Intent i = ((DroidGap)this.cordova.getContext()).getIntent();
                 String extraName = args.getString(0);
                 return new PluginResult(PluginResult.Status.OK, i.hasExtra(extraName));
 
@@ -81,7 +81,7 @@ public class WebIntent extends Plugin {
                 if (args.length() != 1) {
                     return new PluginResult(PluginResult.Status.INVALID_ACTION);
                 }
-                Intent i = ((DroidGap) this.ctx).getIntent();
+                Intent i = ((DroidGap)this.cordova.getContext()).getIntent();
                 String extraName = args.getString(0);
                 if (i.hasExtra(extraName)) {
                     return new PluginResult(PluginResult.Status.OK, i.getStringExtra(extraName));
@@ -93,7 +93,7 @@ public class WebIntent extends Plugin {
                     return new PluginResult(PluginResult.Status.INVALID_ACTION);
                 }
 
-                Intent i = ((DroidGap) this.ctx).getIntent();
+                Intent i = ((DroidGap)this.cordova.getContext()).getIntent();
                 String uri = i.getDataString();
                 return new PluginResult(PluginResult.Status.OK, uri);
             } else if (action.equals("onNewIntent")) {
@@ -173,7 +173,7 @@ public class WebIntent extends Plugin {
                 i.putExtra(key, value);
             }
         }
-        this.ctx.startActivity(i);
+        this.cordova.getActivity().startActivity(i);
     }
 
     void sendBroadcast(String action, Map<String, String> extras) {
@@ -184,6 +184,6 @@ public class WebIntent extends Plugin {
             intent.putExtra(key, value);
         }
 
-        ((DroidGap) this.ctx).sendBroadcast(intent);
+        ((DroidGap)this.cordova.getContext()).sendBroadcast(intent);
     }
 }

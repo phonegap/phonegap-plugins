@@ -38,7 +38,7 @@ var BarcodeScanner = BarcodeScanner || (function() {
     /**
      * Check that window.plugins.barcodeScanner has not been initialized.
      */
-    if (typeof window.plugins.barcodeScanner !== "undefined") {
+    if (typeof window.plugins !== "undefined" && typeof window.plugins.barcodeScanner !== "undefined") {
         return;
     }
 
@@ -146,9 +146,24 @@ var BarcodeScanner = BarcodeScanner || (function() {
         }, 'BarcodeScanner', 'encode', params);
     };
 
-    cordova.addConstructor(function() {
-        cordova.addPlugin('barcodeScanner', new BarcodeScanner());
-    });
+    /**
+     * Initialize BarcodeScanner global reference
+     */
+    if (cordova && (typeof cordova.addConstructor === "function") &&
+            (typeof cordova.addPlugin === "function")) {
+        // Cordova 1.6 - 1.8.1
+        cordova.addConstructor(function() {
+            cordova.addPlugin('barcodeScanner', new BarcodeScanner());
+        });
+    } else {
+        // Cordova 2.0
+        if (!window.plugins) {
+            window.plugins = {};
+        }
+        if (!window.plugins.barcodeScanner) {
+            window.plugins.barcodeScanner = new BarcodeScanner();
+        }
+    }
 
     /**
      * Return an object that contains the static constants.

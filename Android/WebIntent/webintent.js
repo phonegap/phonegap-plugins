@@ -1,5 +1,5 @@
 /**
- * Phonegap Web Intent plugin
+ * cordova Web Intent plugin
  * Copyright (c) Boris Smus 2010
  *
  */
@@ -15,7 +15,7 @@ WebIntent.EXTRA_STREAM = "android.intent.extra.STREAM";
 WebIntent.EXTRA_EMAIL = "android.intent.extra.EMAIL";
 
 WebIntent.prototype.startActivity = function(params, success, fail) {
-	return PhoneGap.exec(function(args) {
+	return cordova.exec(function(args) {
         success(args);
     }, function(args) {
         fail(args);
@@ -23,7 +23,7 @@ WebIntent.prototype.startActivity = function(params, success, fail) {
 };
 
 WebIntent.prototype.hasExtra = function(params, success, fail) {
-	return PhoneGap.exec(function(args) {
+	return cordova.exec(function(args) {
         success(args);
     }, function(args) {
         fail(args);
@@ -31,7 +31,7 @@ WebIntent.prototype.hasExtra = function(params, success, fail) {
 };
 
 WebIntent.prototype.getUri = function(success, fail) {
-	return PhoneGap.exec(function(args) {
+	return cordova.exec(function(args) {
         success(args);
     }, function(args) {
         fail(args);
@@ -39,7 +39,7 @@ WebIntent.prototype.getUri = function(success, fail) {
 };
 
 WebIntent.prototype.getExtra = function(params, success, fail) {
-	return PhoneGap.exec(function(args) {
+	return cordova.exec(function(args) {
         success(args);
     }, function(args) {
         fail(args);
@@ -48,20 +48,24 @@ WebIntent.prototype.getExtra = function(params, success, fail) {
 
 
 WebIntent.prototype.onNewIntent = function(callback) {
-	return PhoneGap.exec(function(args) {
+	return cordova.exec(function(args) {
 		callback(args);
     }, function(args) {
     }, 'WebIntent', 'onNewIntent', []);
 };
 
 WebIntent.prototype.sendBroadcast = function(params, success, fail) {
-    return PhoneGap.exec(function(args) {
+    return cordova.exec(function(args) {
         success(args);
     }, function(args) {
         fail(args);
     }, 'WebIntent', 'sendBroadcast', [params]);
 };
 
-PhoneGap.addConstructor(function() {
-	PhoneGap.addPlugin('webintent', new WebIntent());
+cordova.addConstructor(function() {
+	window.webintent = new WebIntent();
+	
+	// backwards compatibility	
+	window.plugins = window.plugins || {};
+	window.plugins.webintent = window.webintent;
 });

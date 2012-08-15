@@ -1,0 +1,3 @@
+lib/libGoogleAnalytics.jar
+src/com/phonegap/plugins/analytics/GoogleAnalyticsTracker.java
+www/analytics.js

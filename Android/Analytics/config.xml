@@ -3,7 +3,7 @@
     id = "http://phonegap.com/plugins/Analytics"
     version = "1.0"
     platform = "Android"
-    min = "1.6"
+    min = "1.9"
     max = "">
 
   <name short="Analytics 1.0">

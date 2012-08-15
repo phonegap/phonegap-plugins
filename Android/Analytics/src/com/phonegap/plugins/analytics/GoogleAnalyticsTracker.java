@@ -7,14 +7,13 @@
 
 package com.phonegap.plugins.analytics;
 
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.api.PluginResult.Status;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.util.Log;
-
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-import com.phonegap.api.PluginResult.Status;
 
 public class GoogleAnalyticsTracker extends Plugin {
 	public static final String START = "start";
@@ -38,7 +37,7 @@ public class GoogleAnalyticsTracker extends Plugin {
 				result = new PluginResult(Status.OK);
 			} catch (JSONException e) {
 				result = new PluginResult(Status.JSON_EXCEPTION);
-			}			
+			}
 		} else if (TRACK_PAGE_VIEW.equals(action)) {
 			try {
 				trackPageView(data.getString(0));
@@ -61,12 +60,12 @@ public class GoogleAnalyticsTracker extends Plugin {
 			}
 		} else {
 			result = new PluginResult(Status.INVALID_ACTION);
-		}		
+		}
 		return result;
 	}
 	
 	private void start(String accountId) {
-		tracker.start(accountId, DISPATCH_INTERVAL, this.ctx);
+		tracker.startNewSession(accountId, DISPATCH_INTERVAL, this.cordova.getActivity());
 	}
 	
 	private void trackPageView(String key) {

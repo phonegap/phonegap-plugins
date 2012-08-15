@@ -9,7 +9,7 @@
 /**
  * Constructor
  */
-function Analytics() {
+var Analytics = function () {
 }
 
 /**
@@ -20,7 +20,7 @@ function Analytics() {
  * @param failureCallback	The error callback
  */
 Analytics.prototype.start = function(accountId, successCallback, failureCallback) {
-	return PhoneGap.exec(
+	return cordova.exec(
 				successCallback,			 
 				failureCallback,						
 				'GoogleAnalyticsTracker',				
@@ -36,7 +36,7 @@ Analytics.prototype.start = function(accountId, successCallback, failureCallback
  * @param failureCallback	The error callback 
  */
 Analytics.prototype.trackPageView = function(key, successCallback, failureCallback) {
-	return PhoneGap.exec(
+	return cordova.exec(
 				successCallback,			
 				failureCallback,		
 				'GoogleAnalyticsTracker',
@@ -56,7 +56,7 @@ Analytics.prototype.trackPageView = function(key, successCallback, failureCallba
  */
 
 Analytics.prototype.trackEvent = function(category, action, label, value, successCallback, failureCallback){
-	return PhoneGap.exec(
+	return cordova.exec(
 				successCallback,			
 				failureCallback,		
 				'GoogleAnalyticsTracker',
@@ -70,7 +70,7 @@ Analytics.prototype.trackEvent = function(category, action, label, value, succes
 };
 
 Analytics.prototype.setCustomVar = function(index, label, value, scope, successCallback, failureCallback){
-	return PhoneGap.exec(
+	return cordova.exec(
 				successCallback,			
 				failureCallback,		
 				'GoogleAnalyticsTracker',
@@ -86,10 +86,11 @@ Analytics.prototype.setCustomVar = function(index, label, value, scope, successC
 /**
  * Load Analytics
  */
-PhoneGap.addConstructor(function() {
-	PhoneGap.addPlugin('analytics', new Analytics());
-	
-//	@deprecated: No longer needed in PhoneGap 1.0. Uncomment the addService code for earlier 
-//	PhoneGap releases.
-// 	PluginManager.addService("GoogleAnalyticsTracker", "com.phonegap.plugins.analytics.GoogleAnalyticsTracker");
-});
+
+if(!window.plugins) {
+    window.plugins = {};
+}
+
+if (!window.plugins.analytics) {
+    window.plugins.analytics = new Analytics();
+}

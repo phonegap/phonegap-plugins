@@ -10,25 +10,25 @@ A simple use case would be:
 
 ## Adding the Plugin to your project ##
 
-Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonegap-android).
+Using this plugin requires [PhoneGap Cordova library for Android](http://phonegap.com/download) version 1.9 or above.
 
-1. To install the plugin, move www/analytics.js to your project's www folder and include a reference to it in your html file after phonegap.js.
+1. To install the plugin, move www/analytics.js to your project's www folder and include a reference to it in your html file after cordova.js.
 
-    &lt;script type="text/javascript" charset="utf-8" src="phonegap.js"&gt;&lt;/script&gt;<br/>
+    &lt;script type="text/javascript" charset="utf-8" src="cordova.js"&gt;&lt;/script&gt;<br/>
     &lt;script type="text/javascript" charset="utf-8" src="analytics.js"&gt;&lt;/script&gt;
 
 2. Create a directory within your project called "src/com/phonegap/plugins/analytics" and copy src/com/phonegap/plugins/analytics/GoogleAnalyticsTracker.java into it.
 
-3. Add the following activity to your AndroidManifest.xml file.  It should be added inside the &lt;application&gt; tag.
+3. Add the following activity to your AndroidManifest.xml file if it not already there. It should be added inside the &lt;application&gt; tag.
 
     &lt;activity android:name="com.phonegap.DroidGap" android:label="@string/app_name"&gt;<br/>
       &lt;intent-filter&gt;<br/>
       &lt;/intent-filter&gt;<br/>
     &lt;/activity&gt;
 
-4. Copy "lib/libGoogleAnalytics.jar" into the libs directory within your project.  You will also need to right click on this file in eclipse and add the jar to the build path.
+4. Download [GoogleAnalytics](https://developers.google.com/analytics/devguides/collection/android/resources) library (tested with 1.4.2) and copy "lib/libGoogleAnalytics.jar" into the libs directory within your project.  You will also need to right click on this file in eclipse and add the jar to the build path.
 
-5. In your res/xml/plugins.xml file add the following line:
+5. In your res/xml/config.xml file add the following line:
 
 <plugin name="GoogleAnalyticsTracker" value="com.phonegap.plugins.analytics.GoogleAnalyticsTracker" />
 
@@ -85,13 +85,27 @@ Sample use:
 
 Sample use:
 
-	window.plugins.analytics.trackPageView("category", "action", "event", 1, function(){alert("Track: success");}, function(){alert("Track: failure");});
+	window.plugins.analytics.trackEvent("category", "action", "event", 1, function(){alert("Track: success");}, function(){alert("Track: failure");});
 
 
 Please keep in mind that these methods, as in any other plugin, are ready to be invoked only after '[deviceready](http://docs.phonegap.com/phonegap_events_events.md.html#deviceready)' event has been fired
-    
+Good practice will be manual dispatch and stop session. Add this code to your main activity:
+<pre>    
+@Override
+public void onDestroy() 
+{
+    super.onDestroy();
+    GoogleAnalyticsTracker tracker = com.google.android.apps.analytics.GoogleAnalyticsTracker.getInstance();
+    tracker.dispatch();
+    tracker.stopSession();
+}
+</pre>
 
 ## RELEASE NOTES ##
+
+### AUG, 14, 2012 ###
+
+* Added suppport for Cordova 1.9 and above
 
 ### AUG, 10, 2011 ###
 

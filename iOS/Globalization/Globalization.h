@@ -6,12 +6,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#ifdef CORDOVA_FRAMEWORK
 #import <Cordova/CDVPlugin.h>
-#else
-#import "CDVPlugin.h"
-#endif
-
 
 #define FORMAT_SHORT    0
 #define FORMAT_MEDIUM   1
@@ -32,6 +27,9 @@ typedef NSUInteger GlobalizationError;
 @interface Globalization : CDVPlugin {
     CFLocaleRef currentLocale;
 }
+
+- (void) getPreferredLanguage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
 /**
  * Returns the string identifier for the client’s current locale setting.
  * It returns the locale identifier string to the successCB callback with a 

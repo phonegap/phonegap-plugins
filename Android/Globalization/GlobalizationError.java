@@ -1,7 +1,7 @@
 /**
  * User initiated exception
  */
-package com.phonegap.plugins.globalization;
+package org.apache.cordova.plugins.globalization;
 
 /** 
  * @description Exception class representing defined Globalization error codes

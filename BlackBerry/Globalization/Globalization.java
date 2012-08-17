@@ -2,7 +2,7 @@
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
- * Copyright (c) 2011, IBM Corporation
+ * Copyright (c) 2011-2012, IBM Corporation
  */
 package org.apache.cordova.plugins.globalization;
 
@@ -41,6 +41,8 @@ public class Globalization extends Plugin {
         try {
             if (action.equals(Resources.GETLOCALENAME)) {
                 obj = getLocaleName();
+            } else if (action.equals(Resources.GETPREFERREDLANGUAGE)){
+                obj = getPreferredLanguage();
             } else if (action.equalsIgnoreCase(Resources.DATETOSTRING)) {
                 obj = getDateToString(data);
             } else if (action.equalsIgnoreCase(Resources.STRINGTODATE)) {
@@ -85,6 +87,23 @@ public class Globalization extends Plugin {
         JSONObject obj = new JSONObject();
         try {
             return obj.put("value", Locale.getDefault().toString());
+        } catch (Exception e) {
+            throw new GlobalizationError(GlobalizationError.UNKNOWN_ERROR);
+        }
+    }
+
+    /* 
+     * @Description: Returns the string identifier for the client's current language
+     * 
+     * @Return: JSONObject
+     *          Object.value {String}: The language identifier
+     * 
+     * @throws: GlobalizationError.UNKNOWN_ERROR
+     */	
+    private JSONObject getPreferredLanguage() throws GlobalizationError {
+        JSONObject obj = new JSONObject();
+        try {
+            return obj.put("value", Locale.getDefault().getDisplayLanguage().toString());
         } catch (Exception e) {
             throw new GlobalizationError(GlobalizationError.UNKNOWN_ERROR);
         }

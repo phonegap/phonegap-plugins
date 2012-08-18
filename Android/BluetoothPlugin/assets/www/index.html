@@ -2,98 +2,336 @@
 <html>
 
   <head>
-    <title>Cordova - BluetoothPlugin Sample</title>
+  	<meta name="viewport" content="width=320; user-scalable=no" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    
+    <title>Phonegap - BluetoothPlugin Sample</title>
 
-  <script type="text/javascript" charset="utf-8" src="cordova-1.6.1.js"></script>      
-  <script type="text/javascript" charset="utf-8" src="bluetooth.js"></script>
-  <script type="text/javascript" charset="utf-8" src="jquery-1.6.4.js"></script>
+  	<script type="text/javascript" charset="utf-8" src="jquery-1.8.0.min.js"></script>
+  	<script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
+	<script type="text/javascript" charset="utf-8" src="bluetooth.js"></script>
+
+
+<style type="text/css">
+ body {
+    background:#222 none repeat scroll 0 0;
+    color:#666;
+    font-family:Helvetica;
+    font-size:72%;
+    line-height:1.5em;
+    margin:0;
+    border-top:1px solid #393939;
+  }
+  #status{
+    background:#ffa;
+    border: 1px solid #ffd324;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    clear:both;
+    margin:15px 6px 0;
+    width:295px;
+    padding:4px 0px 2px 10px;
+  }
+  #bt-data-dump{
+    background:#afa;
+    border: 1px solid #ffd324;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    clear:both;
+    margin:15px 6px 0;
+    width:295px;
+    padding:4px 0px 2px 10px;
+  }
+    /* Stage Buttons */
+  #stage.theme a.btn {
+  	border: 1px solid #555;
+  	-webkit-border-radius: 5px;
+  	border-radius: 5px;
+  	text-align:center;
+  	display:block;
+  	float:left;
+  	background:#444;
+  	width:150px;
+  	color:#9ab;
+  	font-size:1.1em;
+  	text-decoration:none;
+  	padding:1.2em 0;
+  	margin:3px 0px 3px 5px;
+  }
+  #stage.theme a.btn.large{
+  	width:308px;
+  	padding:1.2em 0;
+  }
+  
+  #stage.theme select.slct {
+    border: 1px solid #555;
+  	-webkit-border-radius: 5px;
+  	border-radius: 5px;
+  	text-align:center;
+  	display:block;
+  	float:left;
+  	background:#444;
+  	width:308px;
+  	color:#9ab;
+  	font-size:1.1em;
+  	text-decoration:none;
+  	padding:1.2em 0;
+  	margin:3px 0px 3px 5px;
+  	height:3em;
+   }
+</style>
         
-  <script type="text/javascript" charset="utf-8">
+  	<script type="text/javascript" charset="utf-8">
   var g_socketid = -1;
   var g_bluetoothPlugin = null;
-  
-window.addEventListener('load', function () {
-    document.addEventListener('deviceready', function () {
-        alert("Cordova is now loaded!");
-	bluetoothPlugin = cordova.require( 'cordova/plugin/bluetooth' );
-    }, false);
-}, false);
 
-function enableBT() {
+function enable() {
 	g_bluetoothPlugin.enable( function() {
-		alert( 'Enabling successfull' );
+		setStatus( 'Enabling successfull' );
 	}, function() {
-		alert( 'Error enabling BT: ' + error );
+		setStatus( 'Error enabling BT: ' + error );
 	} );
 }
 
-function disableBT() {
+function disable() {
 	g_bluetoothPlugin.disable( function() {
-		alert( 'Disabling successfull' );
+		setStatus( 'Disabling successfull' );
 	}, function() {
-		alert( 'Error disabling BT: ' + error );
+		setStatus( 'Error disabling BT: ' + error );
 	} );
 }
 
-function discoverDevices() {
-    g_bluetoothPlugin.discoverDevices( function(devices) {
-		$('#bt-devices-select').html('');
-    	
-    	for( var i = 0; i < devices.length; i++ ) {
-    		$('#bt-devices-select').append( $( '<option value="' + devices[i].address + '">' + devices[i].name + '</option>' ) );
-    	}
-    }, function(error) { alert( 'Error: ' + error ); } );
+function getAddress() {
+	g_bluetoothPlugin.getAddress(
+			function(address) {
+				setStatus("Address is : " + address);
+			},
+			function(error) {
+				setStatus("Error : " + error);
+			});
 }
 
-function listUUIDs() {
-	g_bluetoothPlugin.getUUIDs( function(uuids) {
+function getName() {
+	g_bluetoothPlugin.getName(
+			function(name) {
+				setStatus("Name is : " + name);
+			},
+			function(error) {
+				setStatus("Error : " + error);
+			});
+}
+
+function requestDiscoverable() {
+	g_bluetoothPlugin.requestDiscoverable(
+			function(duration) {
+				setStatus("Given duration : " + duration);
+			},
+			function(error) {
+				setStatus("Error : " + error);
+			},
+			250 /*duration in seconds*/);
+}
+
+function bondedDevices() {
+	setStatus("Bond Devices");
+	g_bluetoothPlugin.getBondedDevices(
+			function(devices) {
+				$('#bt-devices-bonded').html('');
+		    	for( var i = 0; i < devices.length; i++ ) {
+		    		var str = devices[i].name + (devices[i].isBonded ?" (Bonded)":" (NotBonded)");
+		    		$('#bt-devices-bonded').append( 
+		    				$( '<option value="' + devices[i].address + '">' + str + '</option>' ) );
+		    	}
+		    	if (devices.length == 0) {
+		    		setStatus("Can not find any device !");
+		    	}
+		    	else {
+		    		setStatus("Found device count : " + devices.length);
+		    	}
+			},
+			function(error) {
+				setStatus( 'Error: ' + error );
+			});
+}
+
+function startDiscovery() {
+	setStatus("Discovering...");
+    g_bluetoothPlugin.startDiscovery( 
+    		function(devices) {
+				$('#bt-devices-select').html('');
+		    	for( var i = 0; i < devices.length; i++ ) {
+		    		var str = devices[i].name + (devices[i].isBonded ?" (Bonded)":" (NotBonded)");
+		    		$('#bt-devices-select').append(
+		    				$( '<option value="' + devices[i].address + '">' + str + '</option>' ) );
+		    	}
+		    	if (devices.length == 0) {
+		    		setStatus("Can not find any device !");
+		    	}
+		    	else {
+		    		setStatus("Found device count : " + devices.length);
+		    	}
+		    }, 
+		    function(error) { 
+	    		setStatus( 'Error: ' + error ); 
+	    	});
+}
+
+function cancelDiscovery() {
+	g_bluetoothPlugin.cancelDiscovery(
+			function() {
+				setStatus("Discovery canceled");
+			},
+			function() {
+				setStatus("Discovery can not canceled");
+			});
+}
+
+function fetchUUIDs() {
+	g_bluetoothPlugin.fetchUUIDs( function(uuids) {
 		$('#bt-device-uuids').html('');
-		
 		for( var i = 0; i < uuids.length; i++ ) {
-			$('#bt-device-uuids').append( $( '<option value="' + uuids[i] + '">' + uuids[i] + '</option>' ) );
+			$('#bt-device-uuids').append( 
+					$( '<option value="' + uuids[i] + '">' + uuids[i] + '</option>' ) );
 		}
-	}, function(error) { alert( 'Error: ' + error ); }, $( '#bt-devices-select' ).val() );
+		if (uuids.length == 0) {
+    		setStatus("Can not find any UUID !");
+    	}
+	}, function(error) { setStatus( 'Error: ' + error ); }, $( '#bt-devices-select' ).val() );
 }
 
-function openRfcomm() {
-	g_bluetoothPlugin.connect( function(socketId) { g_socketid = socketId; console.log( 'Socket-id: ' + g_socketid ); }, function(error) { alert( 'Error: ' + error ); }, $( '#bt-devices-select' ).val(), $( '#bt-device-uuids' ).val() );
+function connect() {
+	g_bluetoothPlugin.connect( 
+			function(socketId) { 
+				g_socketid = socketId; 
+				console.log( 'Socket-id: ' + g_socketid );
+				setStatus("Connected, Socket-id:" + g_socketid);
+				}, 
+			function(error) { alert( 'Error: ' + error ); }, 
+			$( '#bt-devices-select' ).val(), 
+			$( '#bt-device-uuids' ).val());
 }
 
-function readRfcomm() {
-	g_bluetoothPlugin.read( bp_readSuccess, bp_readError, g_socketid );
+function disconnect() {
+	g_bluetoothPlugin.disconnect(
+			function(){
+				setStatus("Disconnected");
+				g_socketid = -1;
+			},
+			function(error){
+				setStatus("Error while disconnecting : " + error)
+			},
+			g_socketid);
 }
 
-function bp_readError( error ) {
-	alert( 'Error: ' + error );
+function listen() {
+	setStatus("Listening incoming connections ...");
+	g_bluetoothPlugin.listen(
+			function(){
+				setStatus("Connected");
+			},
+			function(error){
+				setStatus("Error while disconnecting : " + error)
+			},
+			"Serice Name",
+			"e7babb53-0160-4192-a2b6-2ccb1e9aae67");
 }
 
-function bp_readSuccess( p_data ) {
-	$( '#bt-data-dump' ).html( p_data );
+// min api 10 
+function connectInsecure() {
+	g_bluetoothPlugin.connectInsecure( 
+			function(socketId) { g_socketid = socketId; console.log( 'Socket-id: ' + g_socketid ); }, 
+			function(error) { alert( 'Error: ' + error ); }, 
+			$( '#bt-devices-select' ).val(), 
+			$( '#bt-device-uuids' ).val());
+}
+
+function readDevice() {
+	g_bluetoothPlugin.read(
+			function( p_data ) {
+				$( '#bt-data-dump' ).html( p_data );
+			},
+			function( error ) {
+				setStatus( 'Error: ' + error );
+			}, 
+			g_socketid);
+}
+
+function writeDevice() {
+	g_bluetoothPlugin.write(
+			function(){
+				setStatus("Wrote");
+			}, function(error) {
+				setStatus( 'Error: ' + error );
+			}, 
+			g_socketid,
+			[10,20,30,40,50]);
+}
+
+function init() {
+	document.addEventListener("deviceready", function() {
+		g_bluetoothPlugin = cordova.require( 'cordova/plugin/bluetooth' );
+		g_bluetoothPlugin.isSupported(
+			function(supported){
+				if (!supported)
+					setStatus("isSupported() = Bluetooth is not supported");
+				else
+					setStatus("isSupported() = Bluetooth supported and plugin loaded");
+			},
+			function(){
+				setStatus("Error while bluetooth support checking !");
+			});
+	}, true);
+}
+
+function setStatus(msg) {
+	$( '#status' ).html( msg );
 }
 
 </script>
+
   </head>
 
-  <body>
-       <button onclick="enableBT();">Enable</button>
-       <button onclick="disableBT();">Disable</button>
-       <br />
-       <button onclick="discoverDevices();">Discover</button>
-       <br />
-       <select id='bt-devices-select'>
-       </select>
-       <br />
-       <button id='bt-pair' onclick="listUUIDs();">List UUIDs</button>
-       </p>
-       <p>
-       <select id='bt-device-uuids'>
-       </select>
-       <br />
-       <button id='bt-connect' onclick="openRfcomm();">Connect</button>
-       <br />
-       <button onclick="readRfcomm();">Read</button>
-       <br />
+  <body onload="init();" id="stage" class="theme">
+  
+       <div id="status"></div>
+       
+       <a href="#" class="btn large" onclick="enable();">enabe()</a>
+       <a href="#" class="btn large" onclick="disable();">disable()</a>
+       
+       <a href="#" class="btn large" onclick="getAddress();">getAddress()</a>
+       <a href="#" class="btn large" onclick="getName();">getName</a>
+       
+       <a href="#" class="btn large" onclick="requestDiscoverable();">requestDiscoverable(duration)</a>
+       
+       <a href="#" class="btn large" onclick="bondedDevices();">bondedDevices()</a>
+       
+       <label for="bt-devices-bonded">Bonded (Paired) Devices:</label>
+       <select name="bt-devices-bonded" id="bt-devices-bonded" class="slct"></select>
+       
+       <a href="#" class="btn large" onclick="startDiscovery();">startDiscovery()</a>
+       <a href="#" class="btn large" onclick="cancelDiscovery();">cancelDiscovery()</a>
+       
+       <label for="bt-devices-select">Found Devices:</label>
+       <select name="bt-devices-select" id="bt-devices-select" class="slct"></select>
+       
+       <a href="#" class="btn large" onclick="fetchUUIDs();">fetchUUIDs() (SDK>=15)</a>
+       
+       <label for="bt-device-uuids" >Found UUIDs:</label>
+       <select name="bt-device-uuids" id="bt-device-uuids" class="slct"></select>
+       
+
+       <a href="#" class="btn large" onclick="connect();">connect()</a>
+       
+       <a href="#" class="btn large" onclick="connectInsecure();">connectInsecure() (SDK>=10)</a>
+       
+       <a href="#" class="btn large" onclick="disconnect();">disconnect()</a>
+       
+       <a href="#" class="btn large" onclick="listen();">listen() (not implemented)</a>
+       
+       <a href="#" class="btn large" onclick="readDevice();">read()</a>
+       <a href="#" class="btn large" onclick="writeDevice();">write()</a>
+       
        <div id='bt-data-dump'></div>
-       </p>
+       
   </body>
 </html>

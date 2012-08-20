@@ -58,6 +58,9 @@ This example shows how to use the tab bar:
         plugins.tabBar.init()
 
         plugins.tabBar.create()
+        // or with an orange tint:
+        plugins.tabBar.create({selectedImageTintColorRgba: '255,40,0,255'})
+
         plugins.tabBar.createItem("contacts", "Unused, iOS replaces this text by Contacts", "tabButton:Contacts")
         plugins.tabBar.createItem("recents", "Unused, iOS replaces this text by Recents", "tabButton:Recents")
 
@@ -74,6 +77,17 @@ This example shows how to use the tab bar:
 
         window.addEventListener("resize", function() { plugins.tabBar.resize() }, false)
     }, false)
+
+Retina images
+-------------
+
+You can also have different images for the normal and retina quality like "image.png" and "image@2x.png". The code to assign the image would be:
+
+    plugins.tabBar.createItem("home", "Home", "image.png", {
+        onSelect: function() {
+            alert("tab selected")
+        }
+    })
 
 Reporting issues or requests for improvement
 --------------------------------------------

@@ -15,9 +15,13 @@ function TabBar() {
 
 /**
  * Create a native tab bar that can have tab buttons added to it which can respond to events.
+ *
+ * @param options Additional options:
+ *   - selectedImageTintColorRgba: Tint color for selected items (defaults to standard light blue), must define the
+ *     color as string e.g. '255,0,0,128' for 50% transparent red. This is only supported on iOS 5 or newer.
  */
-TabBar.prototype.create = function() {
-    cordova.exec("TabBar.create");
+TabBar.prototype.create = function(options) {
+    cordova.exec("TabBar.create", options);
 };
 
 /**

@@ -55,7 +55,8 @@
 		[textField setPlaceholder:placeholder];
 	}
 	if ([[type lowercaseString] isEqualToString:@"password"]) [textField setSecureTextEntry:YES];
-        if ([[type lowercaseString] isEqualToString:@"decimalpad"]) [textField setKeyboardType:UIKeyboardTypeDecimalPad];
+    if ([[type lowercaseString] isEqualToString:@"decimalpad"]) [textField setKeyboardType:UIKeyboardTypeDecimalPad];
+    if ([[type lowercaseString] isEqualToString:@"email"]) [textField setKeyboardType:UIKeyboardTypeEmailAddress];
 
 	[prompt addSubview:textField];
 

@@ -15,6 +15,9 @@ Share.prototype.show = function(content, success, fail) {
     }, 'Share', '', [content]);
 };
 
-cordova.addConstructor(function(){
-    cordova.addPlugin('share', new Share());
-});
+if(!window.plugins) {
+    window.plugins = {};
+}
+if (!window.plugins.share) {
+    window.plugins.share = new Share();
+}

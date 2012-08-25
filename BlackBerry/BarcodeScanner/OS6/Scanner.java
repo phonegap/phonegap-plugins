@@ -4,7 +4,7 @@
  *
  * Copyright (c) 2011, IBM Corporation
  */
-package com.phonegap.plugins.barcodescanner;
+package org.apache.cordova.plugins.barcodescanner;
 
 import java.util.Hashtable;
 
@@ -13,7 +13,7 @@ import javax.microedition.media.Player;
 
 import net.rim.device.api.system.Bitmap;
 
-import com.phonegap.util.Logger;
+import org.apache.cordova.util.Logger;
 
 import net.rim.device.api.barcodelib.BarcodeDecoder;
 import net.rim.device.api.barcodelib.BarcodeDecoderListener;

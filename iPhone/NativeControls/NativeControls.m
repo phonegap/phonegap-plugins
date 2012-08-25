@@ -57,6 +57,7 @@
 - (void)createTabBar:(NSArray*)arguments withDict:(NSDictionary*)options
 {
     tabBar = [UITabBar new];
+	tabBar.autoresizingMask =  UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
     [tabBar sizeToFit];
     tabBar.delegate = self;
     tabBar.multipleTouchEnabled   = NO;
@@ -66,6 +67,13 @@
 	tabBar.opaque = YES;
 	
 	self.webView.superview.autoresizesSubviews = YES;
+	
+	/* Styling hints REF UIInterface.h
+	 
+	 tabBar.alpha = 0.5;
+	 tabBar.tintColor = [UIColor colorWithRed:1.000 green:0.000 blue:0.000 alpha:1.000];
+	 
+	 */
 	
 	[ self.webView.superview addSubview:tabBar];    
 }

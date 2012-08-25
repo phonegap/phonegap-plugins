@@ -28,14 +28,29 @@ function onDeviceReady() {
 	NapiPayment.setDebugEnabled(isDebugEnabled);
 	NapiPayment.setEndPoint(endPoint);
 	NapiPayment.setSpoofIP(spoofIPStr);
-    NapiPayment.initializeNapi(appId, credential, secret, devname, redirectOAuthURI);
+    NapiPayment.initializeNapi(appId, credential, secret, devname, redirectOAuthURI, initializeNapiCallback);
 }
 
 /**
  * The Initialize Napi Callback
  */
 var initializeNapiCallback = function(r){
-	// do Nothing.
+	// Check the availability of the server.
+	//checkBillingAvailability can be used to find the availability of WAC billing services. (Optional)
+	NapiPayment.checkBillingAvailability(checkBillingAvailabilityCallback);
+}
+
+/**
+ * The callback method after checking the availability of the server.
+ */
+var checkBillingAvailabilityCallback = function(r){
+	hide('payment_option_loading');
+	show('WAC_payment_option');
+	if(!r.isBillingAvailable){
+		document.getElementById('WAC_payment').onclick = null;
+		show('billing_not_available');
+	}
+	
 }
 
 /**
@@ -47,7 +62,7 @@ function startPayment() {
     hide('product_list');
     show('show_loading');
     // Get the list of all the operators.
-	NapiPayment.productList();
+	NapiPayment.productList(productListCallback);
     return false;
 }
 
@@ -69,34 +84,18 @@ var productListCallback = function(r) {
 };
 
 /**
- * The method starts the charge payment or the reserve payment process. The developer can select any of the options -
- * 1) NapiPayment.chargePayment or
- * 2) NapiPayment.reservePayment
+ * The method starts the reserve payment process.
  */
-function chargePayment(){
+function reservePayment(){
 	show('show_loading');
 	show('product_list');
 	hide('payment_options');
 	// Get the selected product from the drop down.
    	var selObj = document.getElementById('productList');
 	var itemId = selObj.options[selObj.selectedIndex].value;
-	//Do the payment. Choose any one of the two Payment methods below.
-	//NapiPayment.chargePayment(itemId);
-	NapiPayment.reservePayment(itemId);
+	//Reserve the payment.
+	NapiPayment.reservePayment(itemId, reservePaymentCallback);
 	hide('show_loading');
-}
-
-/**
- * The Charge Payment Callback
- */
-var chargePaymentCallback = function(r){
-	if(r.key != undefined && r.key != ''){
-		if(r.key == 'transactionDetails'){
-			showSuccessTransaction(r);
-		}
-	} else if(r.error != undefined && r.error != ''){
-		showFailedTransaction(r);
-	}
 }
 
 /**
@@ -110,7 +109,7 @@ var reservePaymentCallback = function(r){
 			hide('show_loading');
 			show('file_downloading');
 			
-			NapiPayment.capturePayment(r.value);
+			NapiPayment.capturePayment(r.value, capturePaymentCallback);
 		}
 	} else if(r.error != undefined && r.error != ''){
 		showFailedTransaction(r);
@@ -122,11 +121,17 @@ var reservePaymentCallback = function(r){
  */
 var capturePaymentCallback = function(r){
 	hide('file_downloading');
-	chargePaymentCallback(r);
+	if(r.key != undefined && r.key != ''){
+		if(r.key == 'transactionDetails'){
+			showSuccessTransaction(r);
+		}
+	} else if(r.error != undefined && r.error != ''){
+		showFailedTransaction(r);
+	}
 }
 
 /**
- * PhoneGap asynchronous call callback for chargePayment
+ * PhoneGap asynchronous call callback for capturePayment
  */
 var showSuccessTransaction = function(r) {
 	hide('show_loading');
@@ -220,7 +225,7 @@ var noProductsFound = '<tr><td colspan = "2">No Products found</td></tr>';
  */
 function transactionList(){
 	expandCollapablePanel();
-	NapiPayment.transactionList();
+	NapiPayment.transactionList(transactionListCallback);
 }
 
 /**
@@ -301,7 +306,7 @@ function checkTransaction(name, currency, amount, serverRef, itemId){
 	document.getElementById('check_transaction_item_id').innerHTML = itemId;
 	document.getElementById('check_transaction_btn').onclick = function (){
 		var args=[];
-		NapiPayment.checkTransaction(serverRef,itemId);
+		NapiPayment.checkTransaction(serverRef,itemId, checkTransactionCallback);
 	};
 }
 

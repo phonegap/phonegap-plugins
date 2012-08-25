@@ -32,11 +32,10 @@ var ChildBrowser = ChildBrowser || (function() {
      *            An object that specifies additional options
      */
     ChildBrowser.prototype.showWebPage = function(url, options) {
-        if (options === null || options === "undefined") {
-            var options = new Object();
-            options.showLocationBar = true;
-        }
-        PhoneGap.exec(this._onEvent, this._onError, "ChildBrowser",
+        options = options || {
+            showLocationBar: true
+        };
+        cordova.exec(this._onEvent, this._onError, "ChildBrowser",
                 "showWebPage", [url, options ]);
     };
 
@@ -44,7 +43,7 @@ var ChildBrowser = ChildBrowser || (function() {
      * Close the browser opened by showWebPage.
      */
     ChildBrowser.prototype.close = function() {
-        PhoneGap.exec(null, this._onError, "ChildBrowser", "close", []);
+        cordova.exec(null, this._onError, "ChildBrowser", "close", []);
     };
 
     /**
@@ -53,15 +52,15 @@ var ChildBrowser = ChildBrowser || (function() {
      *
      * @param url
      *            The url to load
-     * @param usePhoneGap
-     *            Load url in PhoneGap webview [ignored]
+     * @param useCordova
+     *            Load url in Cordova webview [ignored]
      */
-    ChildBrowser.prototype.openExternal = function(url, usePhoneGap) {
-        // if (usePhoneGap === true) {
+    ChildBrowser.prototype.openExternal = function(url, useCordova) {
+        // if (useCordova === true) {
         //     navigator.app.loadUrl(url);
         // } else {
-            PhoneGap.exec(null, null, "ChildBrowser", "openExternal", [ url,
-                    usePhoneGap ]);
+            cordova.exec(null, null, "ChildBrowser", "openExternal", [ url,
+                    useCordova ]);
         // }
     };
 
@@ -95,9 +94,21 @@ var ChildBrowser = ChildBrowser || (function() {
     };
 
     /**
-     * Load ChildBrowser
+     * Initialize ChildBrowser global reference
      */
-    PhoneGap.addConstructor(function() {
-        PhoneGap.addPlugin("childBrowser", new ChildBrowser());
-    });
+    if (cordova && (typeof cordova.addConstructor === "function") &&
+            (typeof cordova.addPlugin === "function")) {
+        // Cordova 1.6 - 1.8.1
+        cordova.addConstructor(function() {
+            cordova.addPlugin("childBrowser", new ChildBrowser());
+        });
+    } else {
+        // Cordova 2.0
+        if (!window.plugins) {
+            window.plugins = {};
+        }
+        if (!window.plugins.childBrowser) {
+            window.plugins.childBrowser = new ChildBrowser();
+        }
+    }
 })();

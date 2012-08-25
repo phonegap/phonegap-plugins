@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-ZXING_VERS = 1.7
+ZXING_VERS = 2.0
 ZXING_URL  = http://zxing.googlecode.com/files/ZXing-$(ZXING_VERS).zip
 
 #-------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ all: help
 build: tmp/zxing.zip
 	-@rm -rf zxing
 	mkdir zxing
-	cp -R tmp/zip/zxing/cpp/core/src/zxing/* zxing
+	cp -R tmp/zip/zxing-$(ZXING_VERS)/cpp/core/src/zxing/* zxing
 	python onefile-zxing.py zxing ..
 #	rm -rf zxing
 

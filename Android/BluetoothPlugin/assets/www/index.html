@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html>
+
+  <head>
+    <title>Cordova - BluetoothPlugin Sample</title>
+
+  <script type="text/javascript" charset="utf-8" src="cordova-1.6.1.js"></script>      
+  <script type="text/javascript" charset="utf-8" src="bluetooth.js"></script>
+  <script type="text/javascript" charset="utf-8" src="jquery-1.6.4.js"></script>
+        
+  <script type="text/javascript" charset="utf-8">
+  var g_socketid = -1;
+  var g_bluetoothPlugin = null;
+  
+window.addEventListener('load', function () {
+    document.addEventListener('deviceready', function () {
+        alert("Cordova is now loaded!");
+	bluetoothPlugin = cordova.require( 'cordova/plugin/bluetooth' );
+    }, false);
+}, false);
+
+function enableBT() {
+	g_bluetoothPlugin.enable( function() {
+		alert( 'Enabling successfull' );
+	}, function() {
+		alert( 'Error enabling BT: ' + error );
+	} );
+}
+
+function disableBT() {
+	g_bluetoothPlugin.disable( function() {
+		alert( 'Disabling successfull' );
+	}, function() {
+		alert( 'Error disabling BT: ' + error );
+	} );
+}
+
+function discoverDevices() {
+    g_bluetoothPlugin.discoverDevices( function(devices) {
+		$('#bt-devices-select').html('');
+    	
+    	for( var i = 0; i < devices.length; i++ ) {
+    		$('#bt-devices-select').append( $( '<option value="' + devices[i].address + '">' + devices[i].name + '</option>' ) );
+    	}
+    }, function(error) { alert( 'Error: ' + error ); } );
+}
+
+function listUUIDs() {
+	g_bluetoothPlugin.getUUIDs( function(uuids) {
+		$('#bt-device-uuids').html('');
+		
+		for( var i = 0; i < uuids.length; i++ ) {
+			$('#bt-device-uuids').append( $( '<option value="' + uuids[i] + '">' + uuids[i] + '</option>' ) );
+		}
+	}, function(error) { alert( 'Error: ' + error ); }, $( '#bt-devices-select' ).val() );
+}
+
+function openRfcomm() {
+	g_bluetoothPlugin.connect( function(socketId) { g_socketid = socketId; console.log( 'Socket-id: ' + g_socketid ); }, function(error) { alert( 'Error: ' + error ); }, $( '#bt-devices-select' ).val(), $( '#bt-device-uuids' ).val() );
+}
+
+function readRfcomm() {
+	g_bluetoothPlugin.read( bp_readSuccess, bp_readError, g_socketid );
+}
+
+function bp_readError( error ) {
+	alert( 'Error: ' + error );
+}
+
+function bp_readSuccess( p_data ) {
+	$( '#bt-data-dump' ).html( p_data );
+}
+
+</script>
+  </head>
+
+  <body>
+       <button onclick="enableBT();">Enable</button>
+       <button onclick="disableBT();">Disable</button>
+       <br />
+       <button onclick="discoverDevices();">Discover</button>
+       <br />
+       <select id='bt-devices-select'>
+       </select>
+       <br />
+       <button id='bt-pair' onclick="listUUIDs();">List UUIDs</button>
+       </p>
+       <p>
+       <select id='bt-device-uuids'>
+       </select>
+       <br />
+       <button id='bt-connect' onclick="openRfcomm();">Connect</button>
+       <br />
+       <button onclick="readRfcomm();">Read</button>
+       <br />
+       <div id='bt-data-dump'></div>
+       </p>
+  </body>
+</html>

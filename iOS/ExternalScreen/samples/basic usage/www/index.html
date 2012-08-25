@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title></title>
+  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+	<meta charset="utf-8">
+
+	<script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
+    <script type="text/javascript" src="ExternalScreen/ExternalScreen.js"></script>
+    <script type="text/javascript">
+
+	function onBodyLoad()
+	{		
+		document.addEventListener("deviceready", onDeviceReady, false);
+	}
+	
+	function onDeviceReady()
+	{
+        PGExternalScreen.setupScreenConnectionNotificationHandlers( resultHandler, errorHandler ); 	
+    }
+        
+    function resultHandler (result) {
+        //dislpay an alert using a timeout so that it doesn't block loading of the webView content
+        setTimeout( function() { alert("SUCCESS: \r\n"+result) }, 100 );
+    }
+        
+    function errorHandler (error) {
+        alert("ERROR: \r\n"+error);
+    }
+    
+    </script>
+  </head>
+  <body onload="onBodyLoad()">
+	<h1>Hey, it's PhoneGap!</h1>
+	<p>Don't know how to get started? Check out <em><a target="_blank" href="http://www.phonegap.com/start#ios-x4">PhoneGap Start</a></em>
+	<br />
+      <ol>
+          <li><a href="javascript:PGExternalScreen.checkExternalScreenAvailable( resultHandler, errorHandler )">Check isExternalScreenAvailable</a></li>
+          <li><a href="javascript:PGExternalScreen.loadHTMLResource( 'secondary.html', resultHandler, errorHandler )">Load local file: secondary.html</a></li>
+          <li><a href="javascript:PGExternalScreen.loadHTMLResource( 'tertiary.html', resultHandler, errorHandler )">Try to load a missing file (error checking)</a></li>
+          <li><a href="javascript:PGExternalScreen.loadHTMLResource( 'http://www.tricedesigns.com', resultHandler, errorHandler )">Load remote url: http://tricedesigns.com</a></li>
+          <li><a href="javascript:PGExternalScreen.loadHTML('<h1>HTML</h1>this is html content', resultHandler, errorHandler )">Load HTML</a></li>
+          <li><a href="javascript:PGExternalScreen.invokeJavaScript('document.write(\'hello world\')', resultHandler, errorHandler )">Invoke JavaScript: document.write("hello world")</a></li>
+	</ol>
+  </body>
+</html>

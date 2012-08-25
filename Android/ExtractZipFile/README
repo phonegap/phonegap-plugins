@@ -1,1 +1,37 @@
-gfhgfhfghgfhyjmhj
+ExtractZipFile Phonegap Plugin for Android
+=======================================
+This plugin allows you to eatract a zip file located in your sdcard.
+
+Adding the Plugin to your project
+=================================
+
+    To install the plugin, copy ZipPlugin.js to your project's www folder and include a reference to it in your html files.
+
+    <script type="text/javascript" src="ZipPlugin.js"></script>
+
+    Create a folder called 'com/phonegap/plugin/ExtractZipFile' within your project's src folder and copy ExtractZipFilePlugin.java file into that new folder.
+
+    Add a plugin line to res/xml/plugins.xml
+    <plugin name="ZipPlugin" value="com.phonegap.plugin.ExtractZipFile.ExtractZipFilePlugin" />
+
+Using the plugin
+================
+  function extractFile(fileName)
+  {
+		var ZipClient = new ExtractZipFilePlugin();
+		ZipClient.extractFile('sdcard/'+fileName,win,fail,'ExtractZipFilePlugin');
+	}
+
+	function win(status) 
+	{	 
+		alert('Success'+status);
+	}	 
+  
+	function fail(error) 
+	{ 
+		alert(error);
+	}
+	
+Function Call
+=============
+	<input type="button" value="Extract Zip File" onClick="extractFile('ZipFolder/ZipFile.zip');"/>

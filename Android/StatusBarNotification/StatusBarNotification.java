@@ -26,20 +26,20 @@
 */
 
 package com.phonegap.plugins.statusBarNotification;
-
+// import com.yourappid.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.app.Notification;
+import android.app.Notification.Builder;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-import com.phonegap.api.PluginResult.Status;
+import org.apache.cordova.DroidGap;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.api.PluginResult.Status;
 
 public class StatusBarNotification extends Plugin {
 	//	Action to execute
@@ -58,8 +58,8 @@ public class StatusBarNotification extends Plugin {
 	@Override
 	public PluginResult execute(String action, JSONArray data, String callbackId) {
 		String ns = Context.NOTIFICATION_SERVICE;
-		mNotificationManager = (NotificationManager) ctx.getSystemService(ns);
-        context = ctx.getApplicationContext();
+		mNotificationManager = (NotificationManager) cordova.getActivity().getSystemService(ns);
+        context = cordova.getActivity();
 		
 		PluginResult result = null;
 		if (NOTIFY.equals(action)) {
@@ -92,16 +92,16 @@ public class StatusBarNotification extends Plugin {
 	 * */
 	public void showNotification( CharSequence contentTitle, CharSequence contentText ) {
 		int icon = R.drawable.notification;
-        long when = System.currentTimeMillis();
         
-        Notification notification = new Notification(icon, contentTitle, when);
-	//notification.flags |= Notification.FLAG_NO_CLEAR; //Notification cannot be clearned by user
-	
-	Intent notificationIntent = new Intent(ctx, ctx.getClass());
-        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
-        notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-        
-        mNotificationManager.notify(1, notification);
+        Notification noti = new Notification.Builder(context)
+          .setContentTitle(contentTitle)
+          .setContentText(contentText)
+          .setSmallIcon(icon)
+          .build();
+        //notification.flags |= Notification.FLAG_NO_CLEAR; //Notification cannot be clearned by user
+
+
+        mNotificationManager.notify(1, noti);
 	}
 	
 	/**

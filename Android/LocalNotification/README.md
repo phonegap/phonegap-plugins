@@ -9,7 +9,7 @@ To use this plugin, you need to perform the following steps:
 
         <plugin name="LocalNotification" value="com.phonegap.plugin.localnotification.LocalNotification" />
 
-6. Add the following fragment in the AndroidManifest.xml inside the <application> tag:
+6. Add the following fragment in the AndroidManifest.xml inside the &lt;application&gt; tag:
 
         <receiver android:name="com.phonegap.plugin.localnotification.AlarmReceiver" >
         </receiver>

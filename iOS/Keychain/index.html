@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<!-- Change this if you want to allow scaling -->
+    <meta name="viewport" content="width=default-width; user-scalable=no" />
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+    <title>paypal-plugin-host</title>
+	
+	<!-- iPad/iPhone specific css below, add after your main css >
+	<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />		
+	<link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />		
+	-->
+	<script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+	<script type="text/javascript" charset="utf-8" src="SAiOSKeychainPlugin.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+
+	// If you want to prevent dragging, uncomment this section
+	/*
+	function preventBehavior(e) 
+	{ 
+      e.preventDefault(); 
+    };
+	document.addEventListener("touchmove", preventBehavior, false);
+	*/
+	
+	function onBodyLoad()
+	{
+		document.addEventListener("deviceready", onDeviceReady,false);
+	}
+	
+	/* When this function is called, PhoneGap has been initialized and is ready to roll */
+	function onDeviceReady()
+	{
+		try {
+		
+			// do your thing!
+		
+		} catch (e) {
+			debug.error(e);
+		}
+	}
+	
+	function onGet()
+	{
+	   var key = document.getElementById("keytoget").value;
+	   var servicename = document.getElementById("servicename").value
+	   
+	   var win = function(key, value) {
+			alert("GET SUCCESS - Key: " + key + " Value: " + value);
+	   };
+	   var fail = function(key, error) {
+			alert("GET FAIL - Key: " + key + " Error: " + error);
+	   };
+	   
+	   window.plugins.keychain.getForKey(key, servicename, win, fail);
+	}
+
+	function onSet()
+	{
+	   var key = document.getElementById("keytoset").value;
+	   var value = document.getElementById("valuetoset").value;
+	   var servicename = document.getElementById("servicename").value;
+	   
+	   var win = function(key) {
+			alert("SET SUCCESS - Key: " + key);
+	   };
+	   var fail = function(key, error) {
+			alert("SET FAIL - Key: " + key + " Error: " + error);
+	   };
+	   
+	   window.plugins.keychain.setForKey(key, value, servicename, win, fail);
+	}
+
+	function onRemove()
+	{
+	   var key = document.getElementById("keytoremove").value;
+	   var servicename = document.getElementById("servicename").value
+	   
+	   var win = function(key) {
+			alert("REMOVE SUCCESS - Key: " + key);
+	   };
+	   var fail = function(key, error) {
+			alert("REMOVE FAIL - Key: " + key + " Error: " + error);
+	   };
+	   
+	   window.plugins.keychain.removeForKey(key, servicename, win, fail);
+	}
+    
+    </script>
+  </head>
+  <body onload="onBodyLoad()">
+  
+  <div style="color:red">(using servicename <input type="text" value="GOLDILOCKS" id="servicename" />)</div>
+
+  <hr>
+  <br />
+
+  <div> GET FROM KEYCHAIN </div>
+  <br />
+  <label for="keytoget">Key to Get&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="keytoget" value="ILLUMINATI" /></label>
+  <button onclick="onGet();">GET</button>
+
+  <br />
+  <hr />
+  <br />
+
+  <div> SET TO KEYCHAIN </div>  <br />
+
+  <label for="keytoset">Key to Set&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="keytoset" value="ILLUMINATI"/></label>  <br />
+  <label for="valuetoset">Value to Set <input type="text" id="valuetoset" value="SEKRIT" /></label>
+  <button onclick="onSet();">SET</button>
+
+  <br />
+  <hr />
+  <br />
+  <div> REMOVE FROM KEYCHAIN </div>  <br />
+
+  <label for="keytoremove">Key to Remove<input type="text" id="keytoremove" value="ILLUMINATI"/></label> 
+  <button onclick="onRemove();">DEL</button>
+	
+  </body>
+</html>

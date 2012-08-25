@@ -3,7 +3,14 @@
 	Copyright (c) Greg Allen 2011
 	MIT Licensed
 **/
-if (typeof Cordova !== "undefined") {
+
+if (!window.plugins.datePicker) {
+
+    /* shim to work in 1.5 and 1.6 */
+    if (!window.Cordova) {
+        window.Cordova = cordova;
+    };
+
     /**
      * Constructor
      */

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+    id = "http://phonegap.com/plugins/Analytics"
+    version = "1.0"
+    platform = "Android"
+    min = "1.9"
+    max = "">
+
+  <name short="Analytics 1.0">
+    Analytics plugin allows you to track page views using Google Analytics framework.
+  </name>
+ 
+  <description>
+The analytics client allows you to send page views to Google Analytics server.
+
+A simple use case would be:
+
+- Initialize Analytics object with the appropriate Google Analytics account.
+- Send page views upon user navigation.
+- Send event data upon user interaction.
+  </description>
+
+  <author href="http://www.worklight.com/" email="asafy@worklight.com">Asaf Yishai</author>
+  <author href="http://broderix.blogspot.com/" email="brody.broderix@gmail.com">Kirill Danilov</author>
+
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+  <license>
+PhoneGap is available under *either* the terms of the modified BSD license *or* the
+MIT License (2008). As a recipient of PhonegGap, you may choose which
+license to receive this code under (except as noted in per-module LICENSE
+files). Some modules may not be the copyright of Nitobi.   These
+modules contain explicit declarations of copyright in both the LICENSE files in
+the directories in which they reside and in the code itself. No external
+contributions are allowed under licenses which are fundamentally incompatible
+with the MIT or BSD licenses that PhoneGap is distributed under.
+
+The libGoogleAnalytics.jar is distributed under Apache License, Version 2.0.
+  </license>
+</plugin>

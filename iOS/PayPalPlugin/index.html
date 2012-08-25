@@ -12,7 +12,7 @@
 	<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />		
 	<link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />		
 	-->
-	<script type="text/javascript" charset="utf-8" src="phonegap-1.4.1.js"></script>
+	<script type="text/javascript" charset="utf-8" src="cordova-1.6.0.js"></script>
 	<script type="text/javascript" charset="utf-8" src="SAiOSPaypalPlugin.js"></script>
     <script type="text/javascript" charset="utf-8">
 
@@ -37,11 +37,11 @@
 		try {
 		
 		// do your thing!
-		document.addEventListener(PaypalPaymentEvent.Success, onPaymentSuccess,false);
-		document.addEventListener(PaypalPaymentEvent.Canceled, onPaymentCanceled,false);
-		document.addEventListener(PaypalPaymentEvent.Failed, onPaymentFailed,false);
+		document.addEventListener(PayPal.PaymentEvent.Success, onPaymentSuccess,false);
+		document.addEventListener(PayPal.PaymentEvent.Canceled, onPaymentCanceled,false);
+		document.addEventListener(PayPal.PaymentEvent.Failed, onPaymentFailed,false);
 		
-		window.plugins.paypal.prepare(PayPalPaymentType.DONATION);
+		window.plugins.paypal.prepare(PayPal.PaymentType.DONATION);
 		window.plugins.paypal.setPaymentInfo({
 				paymentCurrency : "USD",
 				paymentAmount : "10.00",

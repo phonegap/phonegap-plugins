@@ -22,7 +22,7 @@
  * file to work on BlackBerry.
  */
 // BB: Package the file local to the plugin.
-package com.phonegap.plugins.barcodescanner;
+package org.apache.cordova.plugins.barcodescanner;
 
 import javax.microedition.amms.control.camera.ExposureControl;
 import javax.microedition.amms.control.camera.FocusControl;

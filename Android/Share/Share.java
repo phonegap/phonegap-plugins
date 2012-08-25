@@ -13,8 +13,8 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 public class Share extends Plugin {
 
@@ -34,7 +34,7 @@ public class Share extends Plugin {
 		sendIntent.setType("text/plain");
 		sendIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 		sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
-		this.ctx.startActivity(sendIntent);
+		this.cordova.startActivityForResult(this, sendIntent, 0);
 	}
 
 }

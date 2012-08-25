@@ -4,7 +4,7 @@
  *
  * Copyright (c) 2011, IBM Corporation
  */
-package com.phonegap.plugins.globalization;
+package org.apache.cordova.plugins.globalization;
 
 /**
  * User initiated exception.  Exception class representing defined

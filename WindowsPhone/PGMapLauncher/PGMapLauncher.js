@@ -1,4 +1,4 @@
-﻿PhoneGap.addConstructor(function() {
+﻿(function() {
     
     var LabeledLocation = function(label,lat,lon)
     {
@@ -16,7 +16,7 @@
         searchNear:function(searchTerm, nearToCoords )
         {
             var options = {"searchTerm":searchTerm,"center":nearToCoords};
-            PhoneGap.exec(null,null,"PGMapLauncher","searchNear",options);
+            cordova.exec(null,null,"PGMapLauncher","searchNear",options);
         },
 
         // toLabeledLocation is required
@@ -24,8 +24,7 @@
         // if fromLabeledLocation is null, the current location will be used
         getDirections:function(toLabeledLocation,fromLabeledLocation)
         {
-            PhoneGap.exec(null,null,"PGMapLauncher","getDirections",
-                    {"startPosition":fromLabeledLocation,"endPosition":toLabeledLocation});
+            cordova.exec(null,null,"PGMapLauncher","getDirections", {"startPosition":fromLabeledLocation,"endPosition":toLabeledLocation});
         }
     }
-});
+})();

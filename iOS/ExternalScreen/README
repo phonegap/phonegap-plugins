@@ -1,0 +1,36 @@
+PhoneGap iOS ExternalScreen Plugin
+
+THIS SOFTWARE IS PROVIDED BY THE ANDREW TRICE "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+EVENT SHALL ANDREW TRICE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The PhoneGap iOS ExternalScreen Plugin is a native Plugin for PhoneGap/Apache Cordova which enables multi-screen application scenarios for PhoneGap projects. This plugin is only for for iOS devices.
+
+The PhoneGap native plugin is written in Objective C, with a JavaScript interface to integrate with the client application. 
+
+Detail on creating PhoneGap projects for iOS at:
+http://phonegap.com/start#ios-x4
+
+More detail on PhoneGap Native Plugins at:
+http://wiki.phonegap.com/w/page/36752779/PhoneGap%20Plugins
+http://wiki.phonegap.com/w/page/36753496/How%20to%20Create%20a%20PhoneGap%20Plugin%20for%20iOS
+http://wiki.phonegap.com/w/page/43708792/How%20to%20Install%20a%20PhoneGap%20Plugin%20for%20iOS"
+
+The ExternalScreen plugin creates a UIWebView for the the external screen, and exposes methods for interacting with the UIWebView.   Note: This is just a normal UIWebView, it does not have support for all PhoneGap libraries... just a standard HTML container.
+
+The "plugin" directory contains both the Objective-C native code, as well as the client-side javascript libraries.   To use this code, you must create PhoneGap project for iOS, copy the PGExternalScreen.h and PGExternalScreen.m files into the native code project under the "Plugins" directory.  You will need to copy the ExternalScreen.js file into the www folder for the phonegap project (or any child of that), and add references to your HTML/JS files.   You will also need to add a mapping in PhoneGap.plist for the native plugin.
+
+The "samples" directory contains 3 sample applications:
+ * Basic usage of javascript functions
+ * FBI RSS Reader
+ * Fleet Manager Scenario
+
+Further explanation, plus videos showing the sample applications at:
+http://www.tricedesigns.com/2012/01/12/multi-screen-ios-apps-with-phonegap

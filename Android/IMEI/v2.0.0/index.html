@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+                      "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta name="viewport" content="target-densitydpi=low-dpi; user-scalable=no" />
+    <title>PhoneGap Events Example</title>
+    <script type="text/javascript" charset="utf-8" src="cordova-1.6.1.js"></script>
+    <script type="text/javascript" charset="utf-8" src="imei.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+    function onLoad() {
+        console.log("I've been loaded");
+        document.addEventListener("deviceready", onDeviceReady, true);
+    }
+
+    function onDeviceReady() {
+        console.log("We got device ready");
+        window.plugins.imei.get(function(imei) {
+            var imeiVal = document.getElementById('imei');
+            imeiVal.innerHTML = imei;
+        }, function() {
+            console.log("fail");
+        });
+    }
+    </script>
+  </head>
+  <body onload="onLoad();">
+    <h2>IMEI v1.5</h2>
+    IMEI: <span id="imei"></span><br/>
+  </body>
+</html>

@@ -1,9 +1,21 @@
-if (!PhoneGap.hasResource("globalization")) {
-	PhoneGap.addResource("globalization");
-	
-function Globalization()
-{
+var Globalization = function() {  
+};
 
+Globalization.prototype.getPreferredLanguage = function(successCB, failureCB)
+{
+	// successCallback required
+	if (typeof successCB != "function") {
+        console.log("Globalization.getPreferredLanguage Error: successCB is not a function");
+        return;
+    }
+    
+    // errorCallback required
+    if (typeof failureCB != "function") {
+        console.log("Globalization.getPreferredLanguage Error: failureCB is not a function");
+        return;
+    }
+    
+	cordova.exec(successCB, failureCB, "GlobalizationCommand","getPreferredLanguage", []);
 };
 	
 /**
@@ -36,7 +48,7 @@ Globalization.prototype.getLocaleName = function(successCB, failureCB)
     	console.log("Globalization.getLocaleName Error: failureCB is not a function");
         return;
     }
-	PhoneGap.exec(successCB, failureCB, "GlobalizationCommand","getLocaleName", []);
+	cordova.exec(successCB, failureCB, "GlobalizationCommand","getLocaleName", []);
 };
 
 	
@@ -83,7 +95,7 @@ Globalization.prototype.dateToString = function(date, successCB, failureCB, opti
 	if (date instanceof Date){
 		var dateValue;
 		dateValue = date.valueOf();		
-		PhoneGap.exec(successCB, failureCB, "GlobalizationCommand", "dateToString", [{"date": dateValue, "options": options}]);
+		cordova.exec(successCB, failureCB, "GlobalizationCommand", "dateToString", [{"date": dateValue, "options": options}]);
 	}
 	else {
 		console.log("Globalization.dateToString Error: date is not a Date object");
@@ -140,7 +152,7 @@ Globalization.prototype.stringToDate = function(dateString, successCB, failureCB
         return;
     }	
 	if (typeof dateString == "string"){
-		PhoneGap.exec(successCB, failureCB, "GlobalizationCommand", "stringToDate", [{"dateString": dateString, "options": options}]);
+		cordova.exec(successCB, failureCB, "GlobalizationCommand", "stringToDate", [{"dateString": dateString, "options": options}]);
 	}
 	else {
 		console.log("Globalization.stringToDate Error: dateString is not a string");
@@ -175,7 +187,7 @@ Globalization.prototype.stringToDate = function(dateString, successCB, failureCB
 * @error GlobalizationError.PATTERN_ERROR
 *
 * Example
-*	globalization.getDatePattern(new Date(),
+*	globalization.getDatePattern(
 *				function (date) {alert('pattern:' + date.pattern + '\n');},
 *				function () {},
 *				{formatLength:'short'});
@@ -194,7 +206,7 @@ Globalization.prototype.getDatePattern = function(successCB, failureCB, options)
         return;
     }
 	
-	PhoneGap.exec(successCB, failureCB, "GlobalizationCommand", "getDatePattern", [{"options": options}]);
+	cordova.exec(successCB, failureCB, "GlobalizationCommand", "getDatePattern", [{"options": options}]);
 };
 
 	
@@ -236,7 +248,7 @@ Globalization.prototype.getDateNames = function(successCB, failureCB, options)
         console.log("Globalization.getDateNames Error: failureCB is not a function");
         return;
     }
-    PhoneGap.exec(successCB, failureCB, "GlobalizationCommand", "getDateNames", [{"options": options}]);
+    cordova.exec(successCB, failureCB, "GlobalizationCommand", "getDateNames", [{"options": options}]);
 };
 
 /**
@@ -277,7 +289,7 @@ Globalization.prototype.isDayLightSavingsTime = function(date, successCB, failur
 	if (date instanceof Date){
 		var dateValue;
 		dateValue = date.valueOf();
-		PhoneGap.exec(successCB, failureCB, "GlobalizationCommand", "isDayLightSavingsTime", [{"date": dateValue}]);
+		cordova.exec(successCB, failureCB, "GlobalizationCommand", "isDayLightSavingsTime", [{"date": dateValue}]);
 	}
 	else {
 		console.log("Globalization.isDayLightSavingsTime Error: date is not a Date object");
@@ -317,7 +329,7 @@ Globalization.prototype.getFirstDayOfWeek = function(successCB, failureCB)
         return;
     }
 	
-	PhoneGap.exec(successCB, failureCB, "GlobalizationCommand", "getFirstDayOfWeek", []);
+	cordova.exec(successCB, failureCB, "GlobalizationCommand", "getFirstDayOfWeek", []);
 };
 
 	
@@ -359,7 +371,7 @@ Globalization.prototype.numberToString = function(number, successCB, failureCB, 
     }
 	
 	if(typeof number == "number") {
-		PhoneGap.exec(successCB, failureCB, "GlobalizationCommand", "numberToString", [{"number": number, "options": options}]);
+		cordova.exec(successCB, failureCB, "GlobalizationCommand", "numberToString", [{"number": number, "options": options}]);
 	}
 	else {
 		console.log("Globalization.numberToString Error: number is not a number");
@@ -404,7 +416,7 @@ Globalization.prototype.stringToNumber = function(numberString, successCB, failu
     }
 	
 	if(typeof numberString == "string") {
-		PhoneGap.exec(successCB, failureCB, "GlobalizationCommand", "stringToNumber", [{"numberString": numberString, "options": options}]);
+		cordova.exec(successCB, failureCB, "GlobalizationCommand", "stringToNumber", [{"numberString": numberString, "options": options}]);
 	}
 	else {
 		console.log("Globalization.stringToNumber Error: numberString is not a string");
@@ -457,7 +469,7 @@ Globalization.prototype.getNumberPattern = function(successCB, failureCB, option
         return;
     }
 	
-	PhoneGap.exec(successCB, failureCB, "GlobalizationCommand", "getNumberPattern", [{"options": options}]);	
+	cordova.exec(successCB, failureCB, "GlobalizationCommand", "getNumberPattern", [{"options": options}]);	
 };
 
 /**
@@ -502,16 +514,12 @@ Globalization.prototype.getCurrencyPattern = function(currencyCode, successCB, f
     }
 	
 	if(typeof currencyCode == "string") {
-		PhoneGap.exec(successCB, failureCB, "GlobalizationCommand", "getCurrencyPattern", [{"currencyCode": currencyCode}]);
+		cordova.exec(successCB, failureCB, "GlobalizationCommand", "getCurrencyPattern", [{"currencyCode": currencyCode}]);
 	}
 	else {
 		console.log("Globalization.getCurrencyPattern Error: currencyCode is not a currency code");
 	}
 };
-PhoneGap.addConstructor(function()
-{
-	PhoneGap.addPlugin('globalization', new Globalization());
-});
 
 GlobalizationError = function() {
 	this.code = null;
@@ -522,4 +530,11 @@ GlobalizationError.UNKNOWN_ERROR = 0;
 GlobalizationError.FORMATTING_ERROR = 1;
 GlobalizationError.PARSING_ERROR = 2;
 GlobalizationError.PATTERN_ERROR = 3;
-};
+
+
+if(!window.plugins) {
+    window.plugins = {};
+}
+if (!window.plugins.globalization) {
+    window.plugins.globalization = new Globalization();
+}

@@ -5,23 +5,28 @@
  * 	Created by Tommy-Carlos Williams on 09/08/2011.
  * 	Copyright 2011 Tommy-Carlos Williams. All rights reserved.
  * 	MIT Licensed
+ *
+ *
+ *	Update by Matt McGrath to work with Cordova version of PhoneGap 1.6 upwards - 01/06/2012
+ *
  */
 package org.devgeeks;
 
 import org.json.JSONArray;
 
-import com.phonegap.api.PhonegapActivity;
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-import android.util.Log;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+
+import org.apache.cordova.api.CordovaInterface;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 /**
- * @author Tommy-Carlos Williams
+ * @author Tommy-Carlos Williams, 
  * Huge chunks lifted/adapted from the NextworkManager core PhoneGap plugin
  */
 public class PhoneListener extends Plugin {
@@ -46,7 +51,7 @@ public class PhoneListener extends Plugin {
 	 * 
 	 * @param ctx The context of the main Activity.
 	 */
-	public void setContext(PhonegapActivity ctx) {
+	public void setContext(CordovaInterface ctx) {
 		super.setContext(ctx);
 		this.phoneListenerCallbackId = null;
 		
@@ -83,7 +88,7 @@ public class PhoneListener extends Plugin {
 				}
 			};
 			// register the receiver... this is so it doesn't have to be added to AndroidManifest.xml
-			ctx.registerReceiver(this.receiver, intentFilter);
+			ctx.getContext().registerReceiver(this.receiver, intentFilter);
 		}
 	}
 		
@@ -133,7 +138,7 @@ public class PhoneListener extends Plugin {
     private void removePhoneListener() {
         if (this.receiver != null) {
             try {
-                this.ctx.unregisterReceiver(this.receiver);
+                this.ctx.getContext().unregisterReceiver(this.receiver);
                 this.receiver = null;
             } catch (Exception e) {
                 Log.e(LOG_TAG, "Error unregistering phone listener receiver: " + e.getMessage(), e);

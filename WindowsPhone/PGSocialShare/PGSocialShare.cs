@@ -11,7 +11,7 @@ using System.Windows.Shapes;
 using System.Runtime.Serialization;
 using Microsoft.Phone.Tasks;
 
-namespace WP7GapClassLib.PhoneGap.Commands
+namespace WP7CordovaClassLib.Cordova.Commands
 {
 
     public class PGSocialShare : BaseCommand
@@ -41,7 +41,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         public void share(string options)
         {
-            ShareOptions opts = JSON.JsonHelper.Deserialize<ShareOptions>(options);
+            ShareOptions opts = JSON.JsonHelper.Deserialize<ShareOptions[]>(options)[0];
             switch (opts.shareType)
             {
                 case ShareType.Status :

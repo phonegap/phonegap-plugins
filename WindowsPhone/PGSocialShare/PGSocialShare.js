@@ -3,42 +3,23 @@
 
 
 
-(function(){
+(function(window){
 
-    var PGSocialShare = 
+    var cdv = window.cordova || window.Cordova;
+
+    window.plugins.pgSocialShare =
     {
-        ShareType:
+        shareStatus:function(msg)
         {
-            status:0,
-            link:1
+            var options = {"message":msg,"shareType":0}; // 0 == status
+            cdv.exec(null,null,"PGSocialShare","share",options);
+        },
+
+        shareLink:function(title,url,msg)
+        {
+            var options = {"message":msg, "title":title, "url":url, "shareType":1}; // 1 == link
+            cdv.exec(null,null,"PGSocialShare","share",options);
         }
     }
-    
-    PhoneGap.addConstructor(function() {
 
-        navigator.plugins.pgSocialShare =
-        {
-            shareStatus:function(msg)
-            {
-                var options = {"message":msg,"shareType":PGSocialShare.ShareType.status};
-                PhoneGap.exec(null,null,"PGSocialShare","share",options);
-            },
-
-            shareLink:function(title,url,msg)
-            {
-                var options = {"message":msg,
-                               "title":title,
-                               "url":url,
-                               "shareType":PGSocialShare.ShareType.link};
-
-                PhoneGap.exec(null,null,"PGSocialShare","share",options);
-            }
-        }
-
-
-
-    });
-
-
-
-})();
+})(window);

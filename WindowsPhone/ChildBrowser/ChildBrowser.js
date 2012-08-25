@@ -66,21 +66,21 @@ ChildBrowser.prototype.showWebPage = function(loc,geolocationEnabled)
 
   };
 
-  PhoneGap.exec(success,error,"ChildBrowserCommand","showWebPage", options);
+  Cordova.exec(success,error,"ChildBrowserCommand","showWebPage", options);
   //setTimeout(this.close,5000);
 };
 
 // close the browser, will NOT result in close callback
 ChildBrowser.prototype.close = function()
 {
-  PhoneGap.exec(null,null,"ChildBrowserCommand","close");
+  Cordova.exec(null,null,"ChildBrowserCommand","close");
 };
 
 // Not Implemented
 ChildBrowser.prototype.jsExec = function(jsString)
 {
   // Not Implemented!!
-  //PhoneGap.exec("ChildBrowserCommand.jsExec",jsString);
+  //Cordova.exec("ChildBrowserCommand.jsExec",jsString);
 };
 
 // Note: this plugin does NOT install itself, call this method some time after deviceready to install it

@@ -2,11 +2,11 @@
 by WAC Application Services Ltd.
 
 ## Adding the Plugin to your project ##
-Using this plugin requires Android PhoneGap and the WAC PhoneGap Plugin Library. The WAC Library can be downloaded [here](https://www.wacapps.net/c/document_library/get_file?uuid=04e3aa8a-21e6-4a6a-976a-ff6b47fc1f88&groupId=155802).
+Using this plugin requires Android PhoneGap and the WAC PhoneGap Plugin Library. The WAC Library can be downloaded [here](http://www.wacapps.net/c/document_library/get_file?uuid=442d5263-e438-4f87-a723-4d6400256400&groupId=155802).
 
 1. Create your Android PhoneGap project. Details at http://phonegap.com/start/#android
 
-2. From WAC_PhoneGap_Plugin_Library, (a) move wacphonegap-1.0.jar and wac-1.0.jar into your project's libs directory and (b) add them to your build path. 
+2. From WAC_PhoneGap_Plugin_Library, (a) move wacphonegap-1.0.1.jar and wac-1.0.2.jar into your project's libs directory and (b) add them to your build path. 
 
 3. Copy the files in WACNapiPaymentPlugin/assets/www/ into your assets/www/ folder.
 
@@ -25,6 +25,10 @@ Using this plugin requires Android PhoneGap and the WAC PhoneGap Plugin Library.
 ### 20120329 ###
 * Initial release
 * For API docs, see the assets/www/wac.js. For sample code, see assets/www/demo.js and assets/www/index.html.
+
+### 20120411 ###
+* New checkBillingAvailability() API has been added to check if Wac billing is available.
+* Bug fixes related to callback functions
 
 ## BUGS AND CONTRIBUTIONS ##
 

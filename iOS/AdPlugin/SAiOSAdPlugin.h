@@ -12,11 +12,11 @@
 #import "SAiOSAdPlugin.h"
 
 
-#ifdef CORDOVA_FRAMEWORK
+//#ifdef CORDOVA_FRAMEWORK
 #import <Cordova/CDVPlugin.h>
-#else
-#import "CDVPlugin.h"
-#endif
+//#else
+//#import "CDVPlugin.h"
+//#endif
 
 
 @interface SAiOSAdPlugin : CDVPlugin <ADBannerViewDelegate> {

@@ -14,9 +14,9 @@ using System.Device.Location;
 using System.Runtime.Serialization;
 using System.Diagnostics;
 
-namespace WP7GapClassLib.PhoneGap.Commands
+namespace WP7CordovaClassLib.Cordova.Commands
 {
-    public class PGMapLauncher : PhoneGap.Commands.BaseCommand
+    public class PGMapLauncher : Cordova.Commands.BaseCommand
     {
 
         [DataContract]
@@ -62,7 +62,7 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
         public void searchNear(string options)
         {
-            SearchOptions searchOptions =  JSON.JsonHelper.Deserialize<SearchOptions>(options);
+            SearchOptions searchOptions = JSON.JsonHelper.Deserialize<SearchOptions>(options);
             BingMapsTask bingMapsTask = new BingMapsTask();
 
             //Omit the Center property to use the user's current location.

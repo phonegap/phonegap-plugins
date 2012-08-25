@@ -1,0 +1,40 @@
+//
+//  UniqueIdentifier.h
+//  UniqueIdentifierPlugin
+//
+//  Created by Andrew Thorp on 4/13/12
+//
+//
+// THIS SOFTWARE IS PROVIDED BY THE ANDREW THORP "AS IS" AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+// EVENT SHALL ANDREW TRICE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+// LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+// OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+// ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+#import <Foundation/Foundation.h>
+
+#ifdef CORDOVA_FRAMEWORK
+#import <CORDOVA/CDVPlugin.h>
+#else
+#import "CORDOVA/CDVPlugin.h"
+#endif
+
+@interface UniqueIdentifier : CDVPlugin {
+  NSString* callbackId;
+  NSString* uuidString;
+  CFUUIDRef uuid;
+}
+
+@property (nonatomic, copy) NSString* callbackID;
+
+//Public Instance Method (visible in phonegap API)
+- (void) generateUUID:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) getUUID:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+@end

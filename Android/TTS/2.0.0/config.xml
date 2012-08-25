@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+    id = "http://phonegap.com/plugins/TTS"
+    version = "1.0"
+    platform = "Android"
+    min = "1.6"
+    max = "">
+
+  <name short="TTS 1.0">
+    The TTS class that allows you to access the devices TTS services.
+  </name>
+ 
+  <description>
+The TTS class that allows you to access the devices TTS services.
+
+A simple use case would be:
+
+- Playing text passed into the service out as synthesized speech
+</description>
+
+  <author href="http://www.ibm.com/" email="simon.macdonald@gmail.com">Simon MacDonald</author>
+
+  <license>
+PhoneGap is available under *either* the terms of the modified BSD license *or* the
+MIT License (2008). As a recipient of PhonegGap, you may choose which
+license to receive this code under (except as noted in per-module LICENSE
+files). Some modules may not be the copyright of Nitobi.   These
+modules contain explicit declarations of copyright in both the LICENSE files in
+the directories in which they reside and in the code itself. No external
+contributions are allowed under licenses which are fundamentally incompatible
+with the MIT or BSD licenses that PhoneGap is distributed under.
+  </license>
+</plugin>

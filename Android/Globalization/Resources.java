@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.phonegap.plugins.globalization;
+package org.apache.cordova.plugins.globalization;
 
 /**
  * @author costanzo
@@ -20,6 +20,7 @@ public class Resources {
 	public static final String STRINGTONUMBER = "stringToNumber";
 	public static final String GETNUMBERPATTERN = "getNumberPattern";
 	public static final String GETCURRENCYPATTERN = "getCurrencyPattern";
+	public static final String GETPREFERREDLANGUAGE = "getPreferredLanguage";
 	
 	//GlobalizationCommand Option Parameters
 	public static final String OPTIONS = "options";

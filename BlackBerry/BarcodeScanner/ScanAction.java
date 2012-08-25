@@ -4,7 +4,7 @@
  *
  * Copyright (c) 2011, IBM Corporation
  */
-package com.phonegap.plugins.barcodescanner;
+package org.apache.cordova.plugins.barcodescanner;
 
 import java.util.Hashtable;
 
@@ -14,11 +14,11 @@ import net.rim.device.api.ui.UiApplication;
 import net.rim.device.api.ui.container.FullScreen;
 import net.rim.device.api.ui.decor.BackgroundFactory;
 
-import com.phonegap.PhoneGapExtension;
-import com.phonegap.api.PluginResult;
-import com.phonegap.json4j.JSONException;
-import com.phonegap.json4j.JSONObject;
-import com.phonegap.util.Logger;
+import org.apache.cordova.CordovaExtension;
+import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.json4j.JSONException;
+import org.apache.cordova.json4j.JSONObject;
+import org.apache.cordova.util.Logger;
 
 /**
  * Handles the common code for the barcode scan action. Implements life cycle
@@ -90,7 +90,7 @@ class ScanAction extends FullScreen implements Runnable {
             return super.keyChar(key, status, time);
         }
 
-        PhoneGapExtension.invokeSuccessCallback(callbackId, new PluginResult(
+        CordovaExtension.invokeSuccessCallback(callbackId, new PluginResult(
                 PluginResult.Status.OK, barcodeInfo));
 
         return super.keyChar(key, status, time);
@@ -105,7 +105,7 @@ class ScanAction extends FullScreen implements Runnable {
     void error(final String text) {
         stop();
 
-        PhoneGapExtension.invokeErrorCallback(callbackId, new PluginResult(
+        CordovaExtension.invokeErrorCallback(callbackId, new PluginResult(
                 PluginResult.Status.ERROR, text));
     }
 
@@ -153,7 +153,7 @@ class ScanAction extends FullScreen implements Runnable {
             return;
         }
 
-        PhoneGapExtension.invokeSuccessCallback(callbackId, new PluginResult(
+        CordovaExtension.invokeSuccessCallback(callbackId, new PluginResult(
                 PluginResult.Status.OK, barcodeInfo));
     }
 }

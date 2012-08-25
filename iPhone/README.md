@@ -1,10 +1,16 @@
-This code is completely dependent on the PhoneGap project, also hosted on
-GitHub ( github.com/phonegap/phonegap )
+This code is completely dependent on the <= [PhoneGap 1.4.1](https://github.com/apache/incubator-cordova-ios/tree/1.4.1) project, also hosted on
+GitHub ( [https://github.com/apache/incubator-cordova-ios/tree/1.4.1](https://github.com/apache/incubator-cordova-ios/tree/1.4.1) )
+
+This folder is for <= Phonegap 1.4.1 [/iPhone](https://github.com/phonegap/phonegap-plugins/tree/master/iPhone) specific plugins.
+Please include a ReadMe.md in your plugin, and preferably some sample code for how to use it.
+
+Please submit PhoneGap/Cordova 1.5.0+ plugin versions for iOS under the [/iOS](https://github.com/phonegap/phonegap-plugins/tree/master/iOS) repository.
+
+Reference: [https://github.com/phonegap/phonegap-plugins/blob/master/iOS/README.md](https://github.com/phonegap/phonegap-plugins/blob/master/iOS/README.md)
+
+Reference: [https://github.com/phonegap/phonegap-plugins/issues/487](https://github.com/phonegap/phonegap-plugins/issues/487)
 
 
-This folder is for iPhone specific plugins.
-Please include a readme in your plugin, and preferably some sample code for how to use it.
-Please specify what devices+os versions your plugin supports.
 
 
 

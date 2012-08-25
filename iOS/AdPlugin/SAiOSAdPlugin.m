@@ -9,11 +9,11 @@
 
 #import "SAiOSAdPlugin.h"
 
-#ifdef CORDOVA_FRAMEWORK
+//#ifdef CORDOVA_FRAMEWORK
 #import <Cordova/CDVDebug.h>
-#else
-#import "CDVDebug.h"
-#endif
+//#else
+//#import "CDVDebug.h"
+//#endif
 
 @interface SAiOSAdPlugin(PrivateMethods)
 
@@ -45,6 +45,10 @@
         {
             if (self.bannerIsAtBottom) {
                 webViewFrame.origin.y = 0;
+                CGRect adViewFrame = self.adView.frame;
+                CGRect superViewFrame = [[super webView] superview].frame;
+                adViewFrame.origin.y = (self.isLandscape ? superViewFrame.size.width : superViewFrame.size.height) - adViewFrame.size.height;
+                self.adView.frame = adViewFrame;
             } else {
                 webViewFrame.origin.y = adViewFrame.size.height;
             }
@@ -69,27 +73,26 @@
 - (void) orientationChanged:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 {
     NSInteger orientation = [[arguments objectAtIndex:0] integerValue];
+
+    switch (orientation) {
+        // landscape
+        case 90:
+        case -90:
+            self.isLandscape = YES;
+            break;
+        // portrait
+        case 0:
+        case 180:
+            self.isLandscape = NO;
+            break;
+        default:
+            break;
+    }
     
     Class adBannerViewClass = NSClassFromString(@"ADBannerView");
-	if (adBannerViewClass && self.adView)
-	{
-        switch (orientation) {
-            // landscape
-            case 90:
-            case -90:
-                self.adView.currentContentSizeIdentifier = ADBannerContentSizeIdentifier480x32;
-                self.isLandscape = YES;
-                break;
-            // portrait
-            case 0:
-            case 180:
-                self.adView.currentContentSizeIdentifier = ADBannerContentSizeIdentifier320x50;
-                self.isLandscape = NO;
-                break;
-            default:
-                break;
-        }
-        
+    if (adBannerViewClass && self.adView)
+    {
+        self.adView.currentContentSizeIdentifier = self.isLandscape ? ADBannerContentSizeIdentifierLandscape : ADBannerContentSizeIdentifierPortrait;
         [self resizeViews];
     }
 }
@@ -100,22 +103,6 @@
 	if (argc > 1) {
 		return;
 	}
-    
-    self.isLandscape = NO;
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    switch (orientation) {
-        case UIDeviceOrientationPortrait:
-        case UIDeviceOrientationPortraitUpsideDown:
-            self.isLandscape = NO;
-            break;
-        case UIDeviceOrientationLandscapeLeft:
-        case UIDeviceOrientationLandscapeRight:
-            self.isLandscape = YES;
-            break;
-        default:
-            self.isLandscape = YES;
-            break;
-    }
     
 	NSString* atBottomValue = [arguments objectAtIndex:0];
 	[self __prepare:[atBottomValue boolValue]];
@@ -142,22 +129,18 @@
 	Class adBannerViewClass = NSClassFromString(@"ADBannerView");
 	if (adBannerViewClass && !self.adView)
 	{
-        CGRect superViewFrame = [[super webView] superview].frame;
-        
 		self.adView = [[ADBannerView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
         // we are still using these constants even though they are deprecated - if it is changed, iOS 4 devices < 4.3 will crash.
-        // will need to do a run-time iOS version check
-		self.adView.requiredContentSizeIdentifiers = [NSSet setWithObjects: ADBannerContentSizeIdentifier320x50, ADBannerContentSizeIdentifier480x32, nil];		
+        // will need to do a run-time iOS version check	
+		self.adView.requiredContentSizeIdentifiers = [NSSet setWithObjects: ADBannerContentSizeIdentifierPortrait, ADBannerContentSizeIdentifierLandscape, nil];		
+
 		self.adView.delegate = self;
         
-        NSString* contentSizeId = (self.isLandscape ? ADBannerContentSizeIdentifier480x32 : ADBannerContentSizeIdentifier320x50);
+        NSString* contentSizeId = (self.isLandscape ? ADBannerContentSizeIdentifierLandscape : ADBannerContentSizeIdentifierPortrait);
+
         self.adView.currentContentSizeIdentifier = contentSizeId;
 		
 		if (atBottom) {
-			CGRect adViewFrame = self.adView.frame;
-			adViewFrame.origin.y = superViewFrame.size.height - adViewFrame.size.height;
-			self.adView.frame = adViewFrame;
-			
 			self.bannerIsAtBottom = YES;
 		}
         

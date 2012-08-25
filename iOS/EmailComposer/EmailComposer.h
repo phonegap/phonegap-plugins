@@ -8,11 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <MessageUI/MFMailComposeViewController.h>
-#ifdef CORDOVA_FRAMEWORK
 #import <Cordova/CDVPlugin.h>
-#else
-#import "CDVPlugin.h"
-#endif
 
 
 @interface EmailComposer : CDVPlugin < MFMailComposeViewControllerDelegate > {

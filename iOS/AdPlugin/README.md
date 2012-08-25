@@ -1,24 +1,18 @@
-Updated for Cordova 1.5 support 2012 - @RandyMcMillan
-Add SAiOSAdPlugin SAiOSAdPlugin to the Cordova.plist under Plugins
-
-
-Include SAiOSAdPlugin.js in your www folder (blue color)
-Add iAd.framework to Frameworks weaklink/optional
-Your App must be added to https://iad.apple.com/itcportal/ to make $
-
 # Cordova AdPlugin #
 by Shazron Abdullah
 
 ## Adding the Plugin to your project ##
 
-Using this plugin requires [iPhone PhoneGap](http://github.com/phonegap/phonegap-iphone) and iAd. iAd requires the [iOS 4 SDK](http://developer.apple.com/iphone).
+Using this plugin requires [Cordova](http://github.com/apache/incubator-cordova-ios) and iAd. iAd requires at least the [iOS 4 SDK](http://developer.apple.com/iphone).
 
-1. Make sure your PhoneGap Xcode project has been [updated for the iOS 4 SDK](http://wiki.phonegap.com/Upgrade-your-PhoneGap-Xcode-Template-for-iOS-4)
+1. Make sure your Cordova Xcode project has been [updated for Cordova 1.6.0](https://github.com/apache/incubator-cordova-ios/blob/master/guides/Cordova%20Plugin%20Upgrade%20Guide.md)
 2. Add the "iAd" framework to your Frameworks folder, and set it to be weak linked (see "Weak Linking the iAd Framework" section below)
-3. Add the .h and .m files to your Plugins folder in your project
-4. Add the .js files to your "www" folder on disk, and add reference(s) to the .js files as <link> tags in your html file(s)
-5. See the sample index.html
-6. Make sure you check the "RELEASE NOTES" section below!
+3. Add the .h and .m files to your Plugins folder in your project (as a Group "yellow folder" not a Reference "blue folder")
+4. Add the .js files to your "www" folder on disk, and add reference(s) to the .js files as &lt;script&gt; tags in your html file(s)
+5. In **Cordova.plist** (1.5.0 or greater) or **PhoneGap.plist** (1.4.1 or lesser), under the **Plugins** section, add an idential key and value of **"SAiOSAdPlugin"**
+6. See the sample index.html
+7. Make sure you check the **"RELEASE NOTES"** section below!
+8. Your App must be added to [https://iad.apple.com/itcportal/](https://iad.apple.com/itcportal/) to make $
 
 ## Weak Linking the iAd Framework ##
 
@@ -31,6 +25,16 @@ Using this plugin requires [iPhone PhoneGap](http://github.com/phonegap/phonegap
 * Showing of other ad network ads in place of iAds, if no iAds are available
 
 ## RELEASE NOTES ##
+
+### 20120409 ###
+
+- Changed license to Apache 2.0 License
+- Updated for Cordova 1.6.0 (backwards compatible to earlier versions as well)
+- wrapped object in function closure (to prevent pollution of the global namespace)
+
+### 20120308 ###
+
+- Cordova 1.5.0 support (@RandyMcMillan)
 
 ### 20100712 ###
 * Initial release
@@ -48,22 +52,24 @@ Using this plugin requires [iPhone PhoneGap](http://github.com/phonegap/phonegap
 
 ## BUGS AND CONTRIBUTIONS ##
 
-Patches welcome! Send a pull request. Since this is not a part of PhoneGap Core (which requires a CLA), this should be easier.
+Patches welcome! Send a pull request. Since this is not a part of Cordova Core (which requires an Apache iCLA), this should be easier.
 
 Post issues in the [PhoneGap Google Groups](http://groups.google.com/group/phonegap), include in the subject heading - "AdPlugin" or on [Github](http://github.com/phonegap/phoneGap-plugins/issues)
 (preferred)
 
-The latest code (my fork) will always be [here](http://github.com/shazron/phoneGap-plugins/tree/master/iPhone/AdPlugin/)
 
 ## LICENSE ##
 
-The MIT License
+Copyright 2012 Shazron Abdullah
 
-Copyright (c) 2010 Shazron Abdullah
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+       http://www.apache.org/licenses/LICENSE-2.0
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.

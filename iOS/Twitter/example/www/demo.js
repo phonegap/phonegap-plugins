@@ -17,7 +17,7 @@ TwitterDemo = {
     },
     
     setup:function(){
-        var tests = ["isAvailable", "isSetup", "tweet1", "tweet2", "tweet3", "tweet4", "tweet5", "tweet6", "timeline", "mentions"];
+        var tests = ["isAvailable", "isSetup", "tweet1", "tweet2", "tweet3", "tweet4", "tweet5", "tweet6", "timeline", "mentions", "friendsIds", "usersLookup"];
         for(var i=0, l=tests.length; i<l; i++){
             this.$(tests[i]).onclick = this[tests[i]];
         }
@@ -126,6 +126,26 @@ TwitterDemo = {
         window.plugins.twitter.getMentions(
             function(s){ TwitterDemo.log("mentions success: " + JSON.stringify(s)); }, 
             function(e){ TwitterDemo.log("mentions failure: " + e); });
+    },
+    
+    friendsIds:function(){
+        TwitterDemo.log("wait..");
+        window.plugins.twitter.getTWRequest(
+            'friends/ids.json',
+            {},
+            function(s){ TwitterDemo.log("friendsIds success: " + JSON.stringify(s)); }, 
+            function(e){ TwitterDemo.log("friendsIds failure: " + e); });
+    },
+    
+    usersLookup:function(){
+        TwitterDemo.log("wait..");
+        window.plugins.twitter.getTWRequest(
+            'users/lookup.json',
+            {user_id: '16141659,783214,6253282'},
+            function(s){ TwitterDemo.log("usersLookup success: " + JSON.stringify(s)); }, 
+            function(e){ TwitterDemo.log("usersLookup failure: " + e); },
+            {requestMethod: 'POST'});
     }
+    
     
 };

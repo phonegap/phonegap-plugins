@@ -8,5 +8,5 @@ Using this plugin requires [iOS PhoneGap](http://github.com/phonegap/phonegap-ip
 2. Add the .h and .m files to your Plugins folder in your project
 3. Add the .js files to your "www" folder on disk, and add reference(s) to the .js files as &lt;script&gt; tags in your html file(s)
 4. See the sample code in "example/index.html" for an example use
-5. In your app's [APPNAME]-Info.plist, expand "Plugins", and add a new string key and value under it. For the key, add "MapKitView" (left column) for the key, and add "MapKitView" for the value (right column).
+5. In your app's PhoneGap.plist, expand "Plugins", and add a new string key and value under it. For the key, add "MapKitView" (left column) for the key, and add "MapKitView" for the value (right column).
 

@@ -1,32 +1,18 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
   <head>
     <!-- meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=2.0, maximum-scale=4.0, minimum-scale=1.0" / -->
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8"> <!-- ISO-8859-1 -->
-    <title>PhoneGap</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/> <!-- ISO-8859-1 -->
+    <title>Live Tiles</title>
     <link rel="stylesheet" href="master.css" type="text/css" media="screen"/>
    
-    <script type="text/javascript">
-        // provide our own console if it does not exist, huge dev aid!
-        if (typeof window.console == "undefined") {
-            window.console = { log: function (str) { window.external.Notify(str); } };
-        }
-
-        // output any errors to console log, created above.
-        window.onerror = function (e) {
-            console.log("window.onerror ::" + JSON.stringify(e));
-        };
-
-        console.log("Installed console ! ");
-    </script>
    
-    <script type="text/javascript" charset="utf-8" src="phonegap-1.2.0.js"></script>
+    <script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
     <script type="text/javascript" charset="utf-8" src="liveTiles.js"></script>
       
 <script type="text/javascript" charset="utf-8">
 
-    var deviceReady = false;
 
     var secondaryTile = 'www/liveTiles.html';
 
@@ -34,15 +20,7 @@
     * Function called when page has finished loading.
     */
     function init() {
-        document.addEventListener("deviceready", function () {
-            deviceReady = true;
-            console.log("Device=" + device.platform + " " + device.version);
-        }, false);
-        window.setTimeout(function () {
-            if (!deviceReady) {
-                alert("Error: PhoneGap did not initialize.  Demo will not run correctly.");
-            }
-        }, 1000);
+
     }
 
     function updateAppTile() {

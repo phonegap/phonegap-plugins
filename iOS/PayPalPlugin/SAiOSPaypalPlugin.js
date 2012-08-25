@@ -1,13 +1,23 @@
 // //////////////////////////////////////
-// Paypal PhoneGap Plugin
+// Paypal Cordova Plugin
 // by Shazron Abdullah
+//
 // Oct 8th 2010
+//     Initial implementation
+// Apr 9th 2012
+//     Updated for Cordova 1.6.0, wrapped in function closure, constants are namespaced under the global PayPal object
+//     e.g if it was PayPalPaymentType.DONATION before, it's PayPal.PaymentType.Donation now
+//         and it is also accessible under window.plugins.paypal.PaymentType.Donation
 // 
+
+// /////////////////////////
+var PayPal = (function() {
+// /////////////////////////
 
 /*
  * buttonType (unused currently)
  */
-var PayPalButtonType = {
+SAiOSPaypalPlugin.ButtonType = {
 	'BUTTON_68x24' : 0,
 	'BUTTON_68x33' : 1,
 	'BUTTON_118x24': 2,
@@ -21,7 +31,7 @@ var PayPalButtonType = {
 /*
  * PaymentType for window.plugins.prepare
  */
-var PayPalPaymentType = 
+SAiOSPaypalPlugin.PaymentType = 
 {
 	'HARD_GOODS': 0,
 	'SERVICE'	: 1,
@@ -32,7 +42,7 @@ var PayPalPaymentType =
 /*
  * errorType for PaypalPaymentEvent.Failed
  */
-var PayPalFailureType  = 
+SAiOSPaypalPlugin.FailureType  = 
 {
 	'SYSTEM_ERROR' 		: 0,
 	'RECIPIENT_ERROR'	: 1,
@@ -43,7 +53,7 @@ var PayPalFailureType  =
 /*
  * Events to listen to after a user touches the payment button 
  */
-var PaypalPaymentEvent =
+SAiOSPaypalPlugin.PaymentEvent =
 {
 	/**
 	 * Listen for this event to signify Paypal payment success. The event object will have these properties:
@@ -62,6 +72,9 @@ var PaypalPaymentEvent =
 	Failed : "PaypalPaymentEvent.Failed"
 };
 
+// get local ref to global PhoneGap/Cordova/cordova object for exec function
+var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to new fallbacks
+
 /**
  * Constructor
  */
@@ -75,7 +88,7 @@ function SAiOSPaypalPlugin()
  */
 SAiOSPaypalPlugin.prototype.prepare = function(paymentType)
 {
-	PhoneGap.exec("SAiOSPaypalPlugin.prepare", paymentType);
+	cordovaRef.exec("SAiOSPaypalPlugin.prepare", paymentType);
 }
 
 /**
@@ -83,7 +96,7 @@ SAiOSPaypalPlugin.prototype.prepare = function(paymentType)
  */
 SAiOSPaypalPlugin.prototype.pay = function()
 {
-	PhoneGap.exec("SAiOSPaypalPlugin.pay");
+	cordovaRef.exec("SAiOSPaypalPlugin.pay");
 }
 
 /**
@@ -97,10 +110,8 @@ SAiOSPaypalPlugin.prototype.pay = function()
  */
 SAiOSPaypalPlugin.prototype.setPaymentInfo = function(paymentProperties)
 {
-	PhoneGap.exec("SAiOSPaypalPlugin.setPaymentInfo", paymentProperties);
+	cordovaRef.exec("SAiOSPaypalPlugin.setPaymentInfo", paymentProperties);
 }
-
-
 
 /**
  * Install function
@@ -116,6 +127,26 @@ SAiOSPaypalPlugin.install = function()
 }
 
 /**
- * Add to PhoneGap constructor
+ * Add to Cordova constructor
  */
-PhoneGap.addConstructor(SAiOSPaypalPlugin.install);
+if (cordovaRef && cordovaRef.addConstructor) {
+	cordovaRef.addConstructor(SAiOSPaypalPlugin.install);
+} else {
+	console.log("PayPal Cordova Plugin could not be installed.");
+	return null;
+}
+
+/**
+ * Return constants
+ */
+
+return {
+	ButtonType  : SAiOSPaypalPlugin.ButtonType,
+	PaymentType : SAiOSPaypalPlugin.PaymentType,
+	FailureType : SAiOSPaypalPlugin.FailureType,
+	PaymentEvent: SAiOSPaypalPlugin.PaymentEvent
+};
+
+// /////////////////////////
+})();
+// /////////////////////////

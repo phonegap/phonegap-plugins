@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8">   
+            
+            <script type="text/javascript" charset="utf-8" src="phonegap-1.3.0.js"></script>
+            <script type="text/javascript" charset="utf-8" src="PGLowLatencyAudio.js"></script>
+            
+            <style>
+                
+                * {
+                    -webkit-overflow-scrolling: none;
+                }
+                
+                body {
+                    background-color:#FFF;
+                    background-image: url('assets/carbonFiber.png');
+                    font-size: 40px;
+                }
+                </style>
+            <script type="text/javascript">
+                
+                function onBodyLoad()
+                {		
+                    document.addEventListener("deviceready", onDeviceReady, false);
+                }
+                
+                function onDeviceReady()
+                {
+                    PGLowLatencyAudio.preloadAudio('airraid', 'assets/air raid.mp3', 1);
+                    PGLowLatencyAudio.preloadAudio('background', 'assets/background.mp3', 1);
+                    PGLowLatencyAudio.preloadFX('explosion', 'assets/explosion.mp3');
+                    PGLowLatencyAudio.preloadFX('hiroshima', 'assets/hiroshima-radio.mp3');	
+                    PGLowLatencyAudio.preloadFX('machinegun', 'assets/machine gun.mp3');	
+                    PGLowLatencyAudio.preloadFX('missilestrike', 'assets/missle strike.mp3');	
+                    PGLowLatencyAudio.preloadAudio('thunder', 'assets/thunder.mp3', 1);	  
+                    PGLowLatencyAudio.preloadAudio('war', 'assets/war.mp3', 1);	  
+                    PGLowLatencyAudio.preloadAudio('war2', 'assets/war2.mp3', 1);	    
+                }
+                </script>
+            
+            
+            
+            </head>
+    <body onload="onBodyLoad()">
+        
+        <table cellspacing="10" cellpadding="10">
+            <tr>
+                <th>Air Raid</th>
+                <td><a href="javascript:PGLowLatencyAudio.play('airraid');">Play</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.loop('airraid');">Loop</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.stop('airraid');">Stop</a></td>
+            </tr>
+            <tr>
+                <th>Background Music</th>
+                <td><a href="javascript:PGLowLatencyAudio.play('background');">Play</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.loop('background');">Loop</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.stop('background');">Stop</a></td>
+            </tr>
+            <tr>
+                <th>Explosion</th>
+                <td><a href="javascript:PGLowLatencyAudio.play('explosion');">Play</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.loop('explosion');">Loop</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.stop('explosion');">Stop</a></td>
+            </tr>
+            <tr>
+                <th>Hiroshima Radio Broadcast</th>
+                <td><a href="javascript:PGLowLatencyAudio.play('hiroshima');">Play</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.loop('hiroshima');">Loop</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.stop('hiroshima');">Stop</a></td>
+            </tr>
+            <tr>
+                <th>Machine Gun</th>
+                <td><a href="javascript:PGLowLatencyAudio.play('machinegun');">Play</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.loop('machinegun');">Loop</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.stop('machinegun');">Stop</a></td>
+            </tr>
+            <tr>
+                <th>Missile Strike</th>
+                <td><a href="javascript:PGLowLatencyAudio.play('missilestrike');">Play</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.loop('missilestrike');">Loop</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.stop('missilestrike');">Stop</a></td>
+            </tr>
+            <tr>
+                <th>Thunderstorm Ambience</th>
+                <td><a href="javascript:PGLowLatencyAudio.play('thunder');">Play</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.loop('thunder');">Loop</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.stop('thunder');">Stop</a></td>
+            </tr>
+            <tr>
+                <th>"War" Sounds</th>
+                <td><a href="javascript:PGLowLatencyAudio.play('war');">Play</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.loop('war');">Loop</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.stop('war');">Stop</a></td>
+            </tr>
+            <tr>
+                <th>"War" Sounds (different)</th>
+                <td><a href="javascript:PGLowLatencyAudio.play('war2');">Play</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.loop('war2');">Loop</a></td>
+                <td><a href="javascript:PGLowLatencyAudio.stop('war2');">Stop</a></td>
+            </tr>
+        </table>
+        
+        
+    </body>
+</html>

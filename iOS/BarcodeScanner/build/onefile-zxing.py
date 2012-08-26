@@ -275,14 +275,28 @@ def getIncludeOrder(foundIncludes):
        zxing/qrcode/decoder/DataBlock.h
        zxing/qrcode/decoder/DataMask.h
        zxing/qrcode/decoder/Mode.h
+       zxing/common/ECI.h
+       zxing/common/CharacterSetECI.h
        zxing/qrcode/decoder/DecodedBitStreamParser.h
        zxing/qrcode/detector/AlignmentPattern.h
        zxing/qrcode/detector/AlignmentPatternFinder.h
-       zxing/qrcode/detector/Detector.h
        zxing/qrcode/detector/FinderPattern.h
        zxing/qrcode/detector/FinderPatternInfo.h
+       zxing/qrcode/detector/Detector.h       
        zxing/qrcode/detector/FinderPatternFinder.h
        zxing/qrcode/detector/QREdgeDetector.h
+       zxing/FormatException.h
+       zxing/NotFoundException.h
+       zxing/common/StringUtils.h
+       zxing/common/detector/MonochromeRectangleDetector.h
+       zxing/common/detector/WhiteRectangleDetector.h
+       zxing/datamatrix/detector/DetectorException.h
+       zxing/multi/ByQuadrantReader.h
+       zxing/multi/MultipleBarcodeReader.h
+       zxing/multi/GenericMultipleBarcodeReader.h
+       zxing/multi/qrcode/QRCodeMultiReader.h
+       zxing/multi/qrcode/detector/MultiDetector.h
+       zxing/multi/qrcode/detector/MultiFinderPatternFinder.h
     """.split()
 
     foundError = False

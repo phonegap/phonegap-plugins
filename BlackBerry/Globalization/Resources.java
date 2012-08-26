@@ -2,7 +2,7 @@
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
- * Copyright (c) 2011, IBM Corporation
+ * Copyright (c) 2011-2012, IBM Corporation
  */
 package org.apache.cordova.plugins.globalization;
 
@@ -19,6 +19,7 @@ public class Resources {
 	public static final String STRINGTONUMBER = "stringToNumber";
 	public static final String GETNUMBERPATTERN = "getNumberPattern";
 	public static final String GETCURRENCYPATTERN = "getCurrencyPattern";
+    public static final String GETPREFERREDLANGUAGE = "getPreferredLanguage";
 
     // Globalization Option Parameters
 	public static final String OPTIONS = "options";

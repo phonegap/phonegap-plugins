@@ -1,7 +1,21 @@
-	
-function Globalization()
-{
+var Globalization = function() {  
+};
 
+Globalization.prototype.getPreferredLanguage = function(successCB, failureCB)
+{
+	// successCallback required
+	if (typeof successCB != "function") {
+        console.log("Globalization.getPreferredLanguage Error: successCB is not a function");
+        return;
+    }
+    
+    // errorCallback required
+    if (typeof failureCB != "function") {
+        console.log("Globalization.getPreferredLanguage Error: failureCB is not a function");
+        return;
+    }
+    
+	cordova.exec(successCB, failureCB, "GlobalizationCommand","getPreferredLanguage", []);
 };
 	
 /**
@@ -173,7 +187,7 @@ Globalization.prototype.stringToDate = function(dateString, successCB, failureCB
 * @error GlobalizationError.PATTERN_ERROR
 *
 * Example
-*	globalization.getDatePattern(new Date(),
+*	globalization.getDatePattern(
 *				function (date) {alert('pattern:' + date.pattern + '\n');},
 *				function () {},
 *				{formatLength:'short'});
@@ -506,10 +520,6 @@ Globalization.prototype.getCurrencyPattern = function(currencyCode, successCB, f
 		console.log("Globalization.getCurrencyPattern Error: currencyCode is not a currency code");
 	}
 };
-cordova.addConstructor(function()
-{
-	cordova.addPlugin('globalization', new Globalization());
-});
 
 GlobalizationError = function() {
 	this.code = null;
@@ -520,3 +530,11 @@ GlobalizationError.UNKNOWN_ERROR = 0;
 GlobalizationError.FORMATTING_ERROR = 1;
 GlobalizationError.PARSING_ERROR = 2;
 GlobalizationError.PATTERN_ERROR = 3;
+
+
+if(!window.plugins) {
+    window.plugins = {};
+}
+if (!window.plugins.globalization) {
+    window.plugins.globalization = new Globalization();
+}

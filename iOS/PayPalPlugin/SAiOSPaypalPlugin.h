@@ -6,11 +6,7 @@
 //  Copyright 2010 Shazron Abdullah. All rights reserved.
 
 #import <Foundation/Foundation.h>
-#ifdef CORDOVA_FRAMEWORK
 #import <Cordova/CDVPlugin.h>
-#else
-#import "CDVPlugin.h"
-#endif
 #import "PayPal.h"
 
 @interface PaypalPaymentInfo : NSObject

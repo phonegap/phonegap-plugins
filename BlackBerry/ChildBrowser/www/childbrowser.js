@@ -94,9 +94,21 @@ var ChildBrowser = ChildBrowser || (function() {
     };
 
     /**
-     * Load ChildBrowser
+     * Initialize ChildBrowser global reference
      */
-    cordova.addConstructor(function() {
-        cordova.addPlugin("childBrowser", new ChildBrowser());
-    });
+    if (cordova && (typeof cordova.addConstructor === "function") &&
+            (typeof cordova.addPlugin === "function")) {
+        // Cordova 1.6 - 1.8.1
+        cordova.addConstructor(function() {
+            cordova.addPlugin("childBrowser", new ChildBrowser());
+        });
+    } else {
+        // Cordova 2.0
+        if (!window.plugins) {
+            window.plugins = {};
+        }
+        if (!window.plugins.childBrowser) {
+            window.plugins.childBrowser = new ChildBrowser();
+        }
+    }
 })();

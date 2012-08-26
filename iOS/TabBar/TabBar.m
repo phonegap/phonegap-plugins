@@ -132,11 +132,22 @@
     tabBar.autoresizesSubviews    = YES;
     tabBar.hidden                 = YES;
     tabBar.userInteractionEnabled = YES;
-	tabBar.opaque = YES;
+    tabBar.opaque = YES;
 
-	self.webView.superview.autoresizesSubviews = YES;
+    NSString *iconTint = [options valueForKey:@"selectedImageTintColorRgba"];
 
-	[ self.webView.superview addSubview:tabBar];
+    if(iconTint && [tabBar respondsToSelector:@selector(setSelectedImageTintColor:)])
+    {
+        NSArray *rgba = [iconTint componentsSeparatedByString:@","];
+        tabBar.selectedImageTintColor = [UIColor colorWithRed:[[rgba objectAtIndex:0] intValue]/255.0f
+                                                        green:[[rgba objectAtIndex:1] intValue]/255.0f
+                                                         blue:[[rgba objectAtIndex:2] intValue]/255.0f
+                                                        alpha:[[rgba objectAtIndex:3] intValue]/255.0f];
+    }
+
+    self.webView.superview.autoresizesSubviews = YES;
+
+    [self.webView.superview addSubview:tabBar];
 }
 
 -(void) init:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options

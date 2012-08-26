@@ -9,11 +9,11 @@
 
 #import "SAiOSAdPlugin.h"
 
-#ifdef CORDOVA_FRAMEWORK
+//#ifdef CORDOVA_FRAMEWORK
 #import <Cordova/CDVDebug.h>
-#else
-#import "CDVDebug.h"
-#endif
+//#else
+//#import "CDVDebug.h"
+//#endif
 
 @interface SAiOSAdPlugin(PrivateMethods)
 

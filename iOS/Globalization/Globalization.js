@@ -5,17 +5,27 @@
  * Copyright (c) 2010-2011, IBM Corporation
  * 
  */
-if (!window.plugins.globalization) {
 
-    // shim to work in 1.5 and 1.6
-    if (!window.Cordova) {
-        window.Cordova = cordova;
-    };
-
-function Globalization()
-{
+var Globalization = function() {  
 };
-	
+
+Globalization.prototype.getPreferredLanguage = function(successCB, failureCB)
+{
+	// successCallback required
+	if (typeof successCB != "function") {
+        console.log("Globalization.getPreferredLanguage Error: successCB is not a function");
+        return;
+    }
+    
+    // errorCallback required
+    if (typeof failureCB != "function") {
+        console.log("Globalization.getPreferredLanguage Error: failureCB is not a function");
+        return;
+    }
+    
+	Codova.exec(successCB, failureCB, "Globalization","getPreferredLanguage", []);
+};
+
 /**
 * Returns the string identifier for the client's current locale setting.
 * It returns the locale identifier string to the successCB callback with a 
@@ -40,7 +50,7 @@ Globalization.prototype.getLocaleName = function(successCB, failureCB)
         console.log("Globalization.getLocaleName Error: successCB is not a function");
         return;
     }
-	
+
     // errorCallback required
     if (typeof failureCB != "function") {
         console.log("Globalization.getLocaleName Error: failureCB is not a function");
@@ -49,7 +59,7 @@ Globalization.prototype.getLocaleName = function(successCB, failureCB)
 	Cordova.exec(successCB, failureCB, "Globalization","getLocaleName", []);
 };
 
-	
+
 /**
 * Returns a date formatted as a string according to the client's user preferences and 
 * calendar using the time zone of the client. It returns the formatted date string to the 
@@ -82,14 +92,14 @@ Globalization.prototype.dateToString = function(date, successCB, failureCB, opti
         console.log("Globalization.dateToString Error: successCB is not a function");
         return;
     }
-	
+
     // errorCallback required
     if (typeof failureCB != "function") {
         console.log("Globalization.dateToString Error: failureCB is not a function");
         return;
     }
-	
-	
+
+
 	if (date instanceof Date){
 		var dateValue;
 		dateValue = date.valueOf();
@@ -143,13 +153,13 @@ Globalization.prototype.stringToDate = function(dateString, successCB, failureCB
         console.log("Globalization.stringToDate Error: successCB is not a function");
         return;
     }
-	
+
     // errorCallback required
     if (typeof failureCB != "function") {
         console.log("Globalization.stringToDate Error: failureCB is not a function");
         return;
     }	
-	
+
 	if (typeof dateString == "string"){
 		Cordova.exec(successCB, failureCB, "Globalization", "stringToDate", [{"dateString": dateString, "options": options}]);
 	}
@@ -158,7 +168,7 @@ Globalization.prototype.stringToDate = function(dateString, successCB, failureCB
 	}
 };
 
-	
+
 /**
 * Returns a pattern string for formatting and parsing dates according to the client's 
 * user preferences. It returns the pattern to the successCB callback with a 
@@ -198,17 +208,17 @@ Globalization.prototype.getDatePattern = function(successCB, failureCB, options)
         console.log("Globalization.getDatePattern Error: successCB is not a function");
         return;
     }
-	
+
     // errorCallback required
     if (typeof failureCB != "function") {
         console.log("Globalization.getDatePattern Error: failureCB is not a function");
         return;
     }
-	
+
 	Cordova.exec(successCB, failureCB, "Globalization", "getDatePattern", [{"options": options}]);
 };
 
-	
+
 /**
 * Returns an array of either the names of the months or days of the week 
 * according to the client's user preferences and calendar. It returns the array of names to the 
@@ -241,13 +251,13 @@ Globalization.prototype.getDateNames = function(successCB, failureCB, options)
         console.log("Globalization.getDateNames Error: successCB is not a function");
         return;
     }
-	
+
     // errorCallback required
     if (typeof failureCB != "function") {
         console.log("Globalization.getDateNames Error: failureCB is not a function");
         return;
     }
-	
+
 	Cordova.exec(successCB, failureCB, "Globalization", "getDateNames", [{"options": options}]);
 };
 
@@ -278,14 +288,14 @@ Globalization.prototype.isDayLightSavingsTime = function(date, successCB, failur
         console.log("Globalization.isDayLightSavingsTime Error: successCB is not a function");
         return;
     }
-	
+
     // errorCallback required
     if (typeof failureCB != "function") {
         console.log("Globalization.isDayLightSavingsTime Error: failureCB is not a function");
         return;
     }
-	
-	
+
+
 	if (date instanceof Date){
 		var dateValue;
 		dateValue = date.valueOf();
@@ -294,7 +304,7 @@ Globalization.prototype.isDayLightSavingsTime = function(date, successCB, failur
 	else {
 		console.log("Globalization.isDayLightSavingsTime Error: date is not a Date object");
 	}
-	
+
 };
 
 /**
@@ -322,17 +332,17 @@ Globalization.prototype.getFirstDayOfWeek = function(successCB, failureCB)
         console.log("Globalization.getFirstDayOfWeek Error: successCB is not a function");
         return;
     }
-	
+
     // errorCallback required
     if (typeof failureCB != "function") {
         console.log("Globalization.getFirstDayOfWeek Error: failureCB is not a function");
         return;
     }
-	
+
 	Cordova.exec(successCB, failureCB, "Globalization", "getFirstDayOfWeek", []);
 };
 
-	
+
 /**
 * Returns a number formatted as a string according to the client's user preferences. 
 * It returns the formatted number string to the successCB callback with a properties object as a 
@@ -363,13 +373,13 @@ Globalization.prototype.numberToString = function(number, successCB, failureCB, 
         console.log("Globalization.numberToString Error: successCB is not a function");
         return;
     }
-	
+
     // errorCallback required
     if (typeof failureCB != "function") {
         console.log("Globalization.numberToString Error: failureCB is not a function");
         return;
     }
-	
+
 	if(typeof number == "number") {
 		Cordova.exec(successCB, failureCB, "Globalization", "numberToString", [{"number": number, "options": options}]);
 	}
@@ -408,13 +418,13 @@ Globalization.prototype.stringToNumber = function(numberString, successCB, failu
         console.log("Globalization.stringToNumber Error: successCB is not a function");
         return;
     }
-	
+
     // errorCallback required
     if (typeof failureCB != "function") {
         console.log("Globalization.stringToNumber Error: failureCB is not a function");
         return;
     }
-	
+
 	if(typeof numberString == "string") {
 		Cordova.exec(successCB, failureCB, "Globalization", "stringToNumber", [{"numberString": numberString, "options": options}]);
 	}
@@ -460,13 +470,13 @@ Globalization.prototype.getNumberPattern = function(successCB, failureCB, option
         console.log("Globalization.getNumberPattern Error: successCB is not a function");
         return;
     }
-	
+
     // errorCallback required
     if (typeof failureCB != "function") {
         console.log("Globalization.getNumberPattern Error: failureCB is not a function");
         return;
     }
-	
+
 	Cordova.exec(successCB, failureCB, "Globalization", "getNumberPattern", [{"options": options}]);	
 };
 
@@ -504,31 +514,19 @@ Globalization.prototype.getCurrencyPattern = function(currencyCode, successCB, f
         console.log("Globalization.getCurrencyPattern Error: successCB is not a function");
         return;
     }
-	
+
     // errorCallback required
     if (typeof failureCB != "function") {
         console.log("Globalization.getCurrencyPattern Error: failureCB is not a function");
         return;
     }
-	
+
 	if(typeof currencyCode == "string") {
 		Cordova.exec(successCB, failureCB, "Globalization", "getCurrencyPattern", [{"currencyCode": currencyCode}]);
 	}
 	else {
 		console.log("Globalization.getCurrencyPattern Error: currencyCode is not a currency code");
 	}
-};
-
-Globalization.install = function() 
-{ 
-	if(!window.plugins)
-	{
-		window.plugins = {};
-	}
-    if (!window.plugins.globalization) {
-        window.plugins.globalization = new Globalization();
-    }
-	return window.plugins.globalization;
 };
 
 GlobalizationError = function() {
@@ -541,5 +539,10 @@ GlobalizationError.FORMATTING_ERROR = 1;
 GlobalizationError.PARSING_ERROR = 2;
 GlobalizationError.PATTERN_ERROR = 3;
 
-Cordova.addConstructor(Globalization.install);
-};
+
+if(!window.plugins) {
+    window.plugins = {};
+}
+if (!window.plugins.globalization) {
+    window.plugins.globalization = new Globalization();
+}

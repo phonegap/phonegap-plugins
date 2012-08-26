@@ -159,7 +159,7 @@ public class DatePickerPlugin extends Plugin {
 			date.setHours(hourOfDay);
 			date.setMinutes(minute);
 
-			datePickerPlugin.success(new PluginResult(PluginResult.Status.OK, date.toString()), callBackId);
+			datePickerPlugin.success(new PluginResult(PluginResult.Status.OK, date.toLocaleString()), callBackId);
 
 		}
 	}

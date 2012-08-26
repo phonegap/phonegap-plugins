@@ -1,26 +1,29 @@
 /**
  * 
  */
-package com.phonegap.plugins.globalization;
+package org.apache.cordova.plugins.globalization;
 
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Currency;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
+
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.text.format.Time;
-
-import org.apache.cordova.api.Plugin;
-import org.apache.cordova.api.PluginResult;
-
-import java.text.DateFormat;
-import java.text.DateFormatSymbols;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Currency;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.Locale;
 
 /**
  *
@@ -36,7 +39,10 @@ public class GlobalizationCommand extends Plugin  {
 			if (action.equals(Resources.GETLOCALENAME)){					
 				obj = getLocaleName();					
 				return new PluginResult(status, obj);				
-			}else if(action.equalsIgnoreCase(Resources.DATETOSTRING)){					
+			}else if (action.equals(Resources.GETPREFERREDLANGUAGE)){
+				obj = getPreferredLanguage();
+				return new PluginResult(status, obj);
+			} else if (action.equalsIgnoreCase(Resources.DATETOSTRING)) {
 				obj = getDateToString(data);				
 				return new PluginResult(PluginResult.Status.OK, obj);		
 			}else if(action.equalsIgnoreCase(Resources.STRINGTODATE)){					
@@ -90,6 +96,23 @@ public class GlobalizationCommand extends Plugin  {
 		}catch(Exception e){
 			throw new GlobalizationError(GlobalizationError.UNKNOWN_ERROR);
 		}		
+	}
+	/* 
+	 * @Description: Returns the string identifier for the client's current language
+	 * 
+	 * @Return: JSONObject
+	 * 			Object.value {String}: The language identifier
+	 * 
+	 * @throws: GlobalizationError.UNKNOWN_ERROR
+	 */	
+	private JSONObject getPreferredLanguage() throws GlobalizationError {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("value", Locale.getDefault().getDisplayLanguage().toString());
+			return obj;
+		} catch (Exception e) {
+			throw new GlobalizationError(GlobalizationError.UNKNOWN_ERROR);
+		}
 	}
 	/* 
 	 * @Description: Returns a date formatted as a string according to the client's user preferences and 
@@ -240,10 +263,9 @@ public class GlobalizationCommand extends Plugin  {
 		JSONObject obj = new JSONObject();		
 		//String[] value;
 		JSONArray value = new JSONArray();	
-		String[] list;
+		List<String> namesList = new ArrayList<String>();
+		final Map<String,Integer> namesMap; // final needed for sorting with anonymous comparator
 		try{			
-			SimpleDateFormat s = (SimpleDateFormat)android.text.format.DateFormat.getDateFormat(this.ctx.getContext());
-			DateFormatSymbols ds = s.getDateFormatSymbols();
 			int type = 0; //default wide
 			int item = 0; //default months			
 			
@@ -262,14 +284,31 @@ public class GlobalizationCommand extends Plugin  {
 			}
 			//determine return value
 			int method = item + type;
-			if  (method == 1){list = ds.getShortMonths();}//months and narrow
-			else if (method == 10){list = ds.getWeekdays();}//days and wide
-			else if (method == 11){list = ds.getShortWeekdays();}//days and narrow
-			else{list = ds.getMonths();}//default: months and wide				
+			if  (method == 1) { //months and narrow
+				namesMap = Calendar.getInstance().getDisplayNames(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+			} else if (method == 10) { //days and wide
+				namesMap = Calendar.getInstance().getDisplayNames(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+			} else if (method == 11) { //days and narrow
+				namesMap = Calendar.getInstance().getDisplayNames(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
+			} else { //default: months and wide
+				namesMap = Calendar.getInstance().getDisplayNames(Calendar.MONTH, Calendar.LONG, Locale.getDefault());				
+			}
+
+			// save names as a list
+			for(String name : namesMap.keySet()) {
+				namesList.add(name);
+			}
 			
-			//convert String[] into JSONArray of String objects 
-			for (int i = 0; i < list.length; i ++){
-				value.put(list[i]);
+			// sort the list according to values in namesMap
+			Collections.sort(namesList, new Comparator<String>() {
+				public int compare(String arg0, String arg1) {
+					return namesMap.get(arg0).compareTo(namesMap.get(arg1));
+				}
+			});
+			
+			// convert nameList into JSONArray of String objects 
+			for (int i = 0; i < namesList.size(); i ++){
+				value.put(namesList.get(i));
 			}			
 
 			//return array of names			

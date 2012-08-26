@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<!--
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#  KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+-->
+    <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name = "format-detection" content = "telephone=no"/>
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width;" />
+	<link rel="stylesheet" type="text/css" href="css/index.css" />
+	<title>Hello Cordova</title>
+    </head>
+    <body>
+
+	<span style="position:absolute; top:0;">
+	    This is some text at the top of the webview.
+	</span>
+
+
+
+	<div class="app">
+	    <h1>Apache Cordova™</h1>
+	    <div id="deviceready">
+		<p class="status pending blink">Connecting to Device</p>
+		<p class="status complete blink hide">Device is Ready</p>
+		<center>
+		<p><button onclick="window.plugins.iAdPlugin.showAd(true);">Click to show iAd!</button></p>
+		</center>
+		<center>
+		    <p><button onclick="window.plugins.iAdPlugin.showAd(false);">Click to hide iAd!</button></p>
+		</center>
+		<br /><br />
+
+		<!--
+		 <form>
+		    <input type="checkbox" id="showAd" name="showAd" disabled="disabled" onclick="showAdClicked(this);">Show iAd</input><br />
+		    <br />
+		    <span>New Ad Loaded: <span id="lastAdLoaded">Waiting.</span></span><br />
+		    <span>Total Ads Loaded: <span id="totalAdsLoaded">None.</span></span>
+		</form>
+		 -->
+
+		<br />
+	    </div>
+	</div>
+	<script type="text/javascript" src="cordova-2.0.0.js"></script>
+	<script type="text/javascript" charset="utf-8" src="SAiOSAdPlugin.js"></script>
+
+	<script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript">
+	    app.initialize();
+
+
+
+	    var gLastAdLoadedDate = null;
+	    var gTotalAdsLoaded = 0;
+	    var gTimerId = null;
+
+	    function onOrientationChange()
+	    {
+		//alert(window.orientation);
+	    }
+
+
+
+	    function iAdBannerViewDidFailToReceiveAdWithErrorEventHandler(evt)
+	    {
+		alert(evt.error);
+		window.plugins.iAdPlugin.showAd(false);
+		var elem = document.getElementById("showAd");
+		elem.checked = false;
+	    }
+
+	    function iAdBannerViewDidLoadAdEventHandler(evt)
+	    {
+		// if we got this event, a new ad is loaded
+		var elem = document.getElementById("lastAdLoaded");
+		gLastAdLoadedDate = new Date();
+		elem.innerHTML = gLastAdLoadedDate.toLocaleString();
+
+		elem = document.getElementById("showAd");
+		elem.disabled = false;
+		elem.checked = true;
+		window.plugins.iAdPlugin.showAd(true);
+
+		gTotalAdsLoaded++;
+
+		elem = document.getElementById("totalAdsLoaded");
+		elem.innerHTML = gTotalAdsLoaded.toString();
+
+		if (gTimerId) {
+		    clearInterval(gTimerId);
+		}
+		gTimerId = setInterval(lastAdLoadedInterval, 1000);
+
+	    }
+
+	    function lastAdLoadedInterval()
+	    {
+		var now = (new Date()).getTime();
+		var diff = now - gLastAdLoadedDate.getTime();
+		var elem = document.getElementById("lastAdLoaded");
+
+		var ms_in_a_year = 31449600000; /* 1000ms x 60s x 60m x 24hrs x 7d x 52w */
+		var ms_in_a_week = 604800000; /* 1000ms x 60s x 60m x 24hrs * 7d */
+		var ms_in_a_day = 86400000; /* 1000ms x 60s x 60m x 24hrs */
+		var ms_in_an_hour = 3600000; /* 1000ms x 60s x 60m */
+		var ms_in_a_minute = 60000; /* 1000ms x 60s */
+		var ms_in_a_second = 1000;
+
+		var milliseconds = Math.floor(diff);
+		var seconds = Math.floor(milliseconds / ms_in_a_second) % 60;
+		var minutes = Math.floor(milliseconds / ms_in_a_minute) % 60;
+		var hours = Math.floor(milliseconds / ms_in_an_hour) % 24;
+		var days = Math.floor(milliseconds / ms_in_a_day) % 7;
+		var weeks = Math.floor(milliseconds / ms_in_a_week) % 52;
+		var years = Math.floor(milliseconds / ms_in_a_year);
+
+		var caption = seconds + "s ago";
+
+		if (minutes > 0) {
+		    caption = minutes + "m " + caption;
+		}
+		if (hours > 0) {
+		    caption = hours + "h " + caption;
+		}
+		if (days > 0) {
+		    caption = days + "d " + caption;
+		}
+		if (weeks > 0) {
+		    caption = weeks + "w " + caption;
+		}
+		if (years > 0) {
+		    caption = years + "yr " + caption;
+		}
+
+		elem.innerHTML = caption;
+	    }
+
+	    function showAdClicked(evt)
+	    {
+		window.plugins.iAdPlugin.showAd(evt.checked);
+	    }
+
+
+
+
+
+	</script>
+
+	<span style="position:absolute;bottom:0">
+	    This is some text at the bottom of the webview.
+	</span>
+
+
+
+    </body>
+</html>

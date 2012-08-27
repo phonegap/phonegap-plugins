@@ -28,6 +28,12 @@ A full set example could be:
 	    }
 	);
 
+## Registering the plugin ## 
+
+1. Opne Cordovo.plist file in Xcode
+2. To the plugins Dictionary add a new String item
+3. Name and value of the item would be "applicationPreferences"
+
 
 ## BUGS AND CONTRIBUTIONS ##
 The latest release version is available [on GitHub](https://github.com/ttopholm/phonegap-plugins/)

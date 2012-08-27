@@ -21,7 +21,7 @@
 
         
 		NSString *settingsName = [options objectForKey:@"key"];
-        PluginResult* result = nil;
+        CDVPluginResult* result = nil;
 	
 		@try 
 		{
@@ -35,12 +35,12 @@
 				if (returnVar == nil) 
 					@throw [NSException exceptionWithName:nil reason:@"Key not found" userInfo:nil];;
 			}
-			result = [PluginResult resultWithStatus:PGCommandStatus_OK messageAsString:returnVar];
+			result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:returnVar];
 			jsString = [result toSuccessCallbackString:callbackID];		
 		}
 		@catch (NSException * e) 
 		{
-			result = [PluginResult resultWithStatus:PGCommandStatus_NO_RESULT messageAsString:[e reason]];
+			result = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT messageAsString:[e reason]];
             jsString = [result toErrorCallbackString:callbackID];
 		}
 		@finally 
@@ -53,7 +53,7 @@
 {
     NSString* callbackID = [arguments pop];
 	NSString* jsString;    
-    PluginResult* result;
+    CDVPluginResult* result;
 
     NSString *settingsName = [options objectForKey:@"key"];
     NSString *settingsValue = [options objectForKey:@"value"];
@@ -62,13 +62,13 @@
     @try 
     {
         [[NSUserDefaults standardUserDefaults] setValue:settingsValue forKey:settingsName];
-        result = [PluginResult resultWithStatus:PGCommandStatus_OK];
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         jsString = [result toSuccessCallbackString:callbackID];
 			
     }
     @catch (NSException * e) 
     {
-        result = [PluginResult resultWithStatus:PGCommandStatus_NO_RESULT messageAsString:[e reason]];
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT messageAsString:[e reason]];
         jsString = [result toErrorCallbackString:callbackID];
     }
     @finally 

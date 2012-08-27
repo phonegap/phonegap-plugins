@@ -32,35 +32,35 @@ public class LocalNotification extends Plugin {
 
     @Override
     public PluginResult execute(String action, JSONArray optionsArr, String callBackId) {
-	alarm = new AlarmHelper(this.ctx);
-	Log.d(PLUGIN_NAME, "Plugin execute called with action: " + action);
-
-	PluginResult result = null;
-
-	final AlarmOptions alarmOptions = new AlarmOptions();
-	alarmOptions.parseOptions(optionsArr);
-
-	/*
-	 * Determine which action of the plugin needs to be invoked
-	 */
-	String alarmId = alarmOptions.getNotificationId();
-	if (action.equalsIgnoreCase("add")) {
-	    final boolean daily = alarmOptions.isRepeatDaily();
-	    final String title = alarmOptions.getAlarmTitle();
-	    final String subTitle = alarmOptions.getAlarmSubTitle();
-	    final String ticker = alarmOptions.getAlarmTicker();
-
-	    persistAlarm(alarmId, optionsArr);
-	    return this.add(daily, title, subTitle, ticker, alarmId, alarmOptions.getCal());
-	} else if (action.equalsIgnoreCase("cancel")) {
-	    unpersistAlarm(alarmId);
-	    return this.cancelNotification(alarmId);
-	} else if (action.equalsIgnoreCase("cancelall")) {
-	    unpersistAlarmAll();
-	    return this.cancelAllNotifications();
-	}
-
-	return result;
+        alarm = new AlarmHelper(this.ctx.getContext());
+        Log.d(PLUGIN_NAME, "Plugin execute called with action: " + action);
+    
+        PluginResult result = null;
+    
+        final AlarmOptions alarmOptions = new AlarmOptions();
+        alarmOptions.parseOptions(optionsArr);
+    
+        /*
+         * Determine which action of the plugin needs to be invoked
+         */
+        String alarmId = alarmOptions.getNotificationId();
+        if (action.equalsIgnoreCase("add")) {
+            final boolean daily = alarmOptions.isRepeatDaily();
+            final String title = alarmOptions.getAlarmTitle();
+            final String subTitle = alarmOptions.getAlarmSubTitle();
+            final String ticker = alarmOptions.getAlarmTicker();
+    
+            persistAlarm(alarmId, optionsArr);
+            return this.add(daily, title, subTitle, ticker, alarmId, alarmOptions.getCal());
+        } else if (action.equalsIgnoreCase("cancel")) {
+            unpersistAlarm(alarmId);
+            return this.cancelNotification(alarmId);
+        } else if (action.equalsIgnoreCase("cancelall")) {
+            unpersistAlarmAll();
+            return this.cancelAllNotifications();
+        }
+    
+        return result;
     }
 
     /**
@@ -81,19 +81,19 @@ public class LocalNotification extends Plugin {
      * @return A pluginresult.
      */
     public PluginResult add(boolean repeatDaily, String alarmTitle, String alarmSubTitle, String alarmTicker,
-	    String alarmId, Calendar cal) {
-	final long triggerTime = cal.getTimeInMillis();
-	final String recurring = repeatDaily ? "daily" : "onetime";
-
-	Log.d(PLUGIN_NAME, "Adding " + recurring + " notification: '" + alarmTitle + alarmSubTitle + "' with id: "
-		+ alarmId + " at timestamp: " + triggerTime);
-
-	boolean result = alarm.addAlarm(repeatDaily, alarmTitle, alarmSubTitle, alarmTicker, alarmId, cal);
-	if (result) {
-	    return new PluginResult(PluginResult.Status.OK);
-	} else {
-	    return new PluginResult(PluginResult.Status.ERROR);
-	}
+        String alarmId, Calendar cal) {
+        final long triggerTime = cal.getTimeInMillis();
+        final String recurring = repeatDaily ? "daily" : "onetime";
+    
+        Log.d(PLUGIN_NAME, "Adding " + recurring + " notification: '" + alarmTitle + alarmSubTitle + "' with id: "
+            + alarmId + " at timestamp: " + triggerTime);
+    
+        boolean result = alarm.addAlarm(repeatDaily, alarmTitle, alarmSubTitle, alarmTicker, alarmId, cal);
+        if (result) {
+            return new PluginResult(PluginResult.Status.OK);
+        } else {
+            return new PluginResult(PluginResult.Status.ERROR);
+        }
     }
 
     /**
@@ -104,35 +104,35 @@ public class LocalNotification extends Plugin {
      *            registered using addNotification()
      */
     public PluginResult cancelNotification(String notificationId) {
-	Log.d(PLUGIN_NAME, "cancelNotification: Canceling event with id: " + notificationId);
-
-	boolean result = alarm.cancelAlarm(notificationId);
-	if (result) {
-	    return new PluginResult(PluginResult.Status.OK);
-	} else {
-	    return new PluginResult(PluginResult.Status.ERROR);
-	}
+        Log.d(PLUGIN_NAME, "cancelNotification: Canceling event with id: " + notificationId);
+    
+        boolean result = alarm.cancelAlarm(notificationId);
+        if (result) {
+            return new PluginResult(PluginResult.Status.OK);
+        } else {
+            return new PluginResult(PluginResult.Status.ERROR);
+        }
     }
 
     /**
      * Cancel all notifications that were created by this plugin.
      */
     public PluginResult cancelAllNotifications() {
-	Log.d(PLUGIN_NAME, "cancelAllNotifications: cancelling all events for this application");
-	/*
-	 * Android can only unregister a specific alarm. There is no such thing
-	 * as cancelAll. Therefore we rely on the Shared Preferences which holds
-	 * all our alarms to loop through these alarms and unregister them one
-	 * by one.
-	 */
-	final SharedPreferences alarmSettings = this.ctx.getSharedPreferences(PLUGIN_NAME, Context.MODE_PRIVATE);
-	final boolean result = alarm.cancelAll(alarmSettings);
-
-	if (result) {
-	    return new PluginResult(PluginResult.Status.OK);
-	} else {
-	    return new PluginResult(PluginResult.Status.ERROR);
-	}
+        Log.d(PLUGIN_NAME, "cancelAllNotifications: cancelling all events for this application");
+        /*
+         * Android can only unregister a specific alarm. There is no such thing
+         * as cancelAll. Therefore we rely on the Shared Preferences which holds
+         * all our alarms to loop through these alarms and unregister them one
+         * by one.
+         */
+        final SharedPreferences alarmSettings = this.ctx.getActivity().getSharedPreferences(PLUGIN_NAME, Context.MODE_PRIVATE);
+        final boolean result = alarm.cancelAll(alarmSettings);
+    
+        if (result) {
+            return new PluginResult(PluginResult.Status.OK);
+        } else {
+            return new PluginResult(PluginResult.Status.ERROR);
+        }
     }
 
     /**
@@ -148,11 +148,11 @@ public class LocalNotification extends Plugin {
      * @return true when successfull, otherwise false
      */
     private boolean persistAlarm(String alarmId, JSONArray optionsArr) {
-	final Editor alarmSettingsEditor = this.ctx.getSharedPreferences(PLUGIN_NAME, Context.MODE_PRIVATE).edit();
-
-	alarmSettingsEditor.putString(alarmId, optionsArr.toString());
-
-	return alarmSettingsEditor.commit();
+        final Editor alarmSettingsEditor = this.ctx.getActivity().getSharedPreferences(PLUGIN_NAME, Context.MODE_PRIVATE).edit();
+    
+        alarmSettingsEditor.putString(alarmId, optionsArr.toString());
+    
+        return alarmSettingsEditor.commit();
     }
 
     /**
@@ -164,12 +164,12 @@ public class LocalNotification extends Plugin {
      * @return true when successfull, otherwise false
      */
     private boolean unpersistAlarm(String alarmId) {
-	final Editor alarmSettingsEditor = this.ctx.getSharedPreferences(PLUGIN_NAME, Context.MODE_PRIVATE).edit();
-
-	alarmSettingsEditor.remove(alarmId);
-
-	return alarmSettingsEditor.commit();
-    }
+        final Editor alarmSettingsEditor = this.ctx.getActivity().getSharedPreferences(PLUGIN_NAME, Context.MODE_PRIVATE).edit();
+    
+        alarmSettingsEditor.remove(alarmId);
+    
+        return alarmSettingsEditor.commit();
+        }
 
     /**
      * Clear all alarms from the Android shared Preferences
@@ -177,10 +177,10 @@ public class LocalNotification extends Plugin {
      * @return true when successfull, otherwise false
      */
     private boolean unpersistAlarmAll() {
-	final Editor alarmSettingsEditor = this.ctx.getSharedPreferences(PLUGIN_NAME, Context.MODE_PRIVATE).edit();
-
-	alarmSettingsEditor.clear();
-
-	return alarmSettingsEditor.commit();
+        final Editor alarmSettingsEditor = this.ctx.getActivity().getSharedPreferences(PLUGIN_NAME, Context.MODE_PRIVATE).edit();
+    
+        alarmSettingsEditor.clear();
+    
+        return alarmSettingsEditor.commit();
     }
 }

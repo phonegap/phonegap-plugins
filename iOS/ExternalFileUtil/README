@@ -1,0 +1,37 @@
+PhoneGap iOS ExternalFileUtil Plugin
+by: Andrew Trice (atrice@adobe.com)
+
+The PhoneGap iOS ExternalFileUtil Plugin is a native Plugin for PhoneGap/Apache Cordova which provides the ability to open documents in an external program on the iOS device.   A sample use case would be that you want to provide the user the ability to open a file in another program, of their choosing.   For instance, the user wants to open a DRM-protected PDF in Adobe Reader.  Note: the user must already have the appropriate external reader app installed.
+
+The plugin accepts a URL path to the document which you want to open, as well as the UTI (uniform type identifier).  The plugin will then display an "open with" dialog which allows the user to select which file to use for opening the document.
+
+Sample usage for a PDF document:
+ExternalFileUtil.openWith( "http://www.tricedesigns.com/temp/log_samsung.pdf", "com.adobe.pdf" );
+
+The PhoneGap native plugin is written in Objective C, with a JavaScript interface to integrate with the client application. 
+
+The plugin workflow is as follows:
+1) App requests openWith action, specifying a file URL and UTI.
+2) Plugin downloads the file and saves as a local temp file
+3) Plugin uses UIDocumentInteractionController to launch an "open with" dialog
+4) User selects appropriate app to "preview" the content
+5) The appropriate reader app is opened and UI/input is changed to that app
+6) Plugin deletes the temp file
+
+The "plugin" directory contains all source code for the plugin, separated into 2 separate folders: the JavaScript interface and the native Objective-C code.
+
+The "samples" directory contains a sample application that shows how to open a document with an external viewer using the EternalFilePlugin native plugin.   
+
+Further explanation, plus videos showing the sample applications at:
+http://www.tricedesigns.com/2012/08/15/open-with-in-ios-phonegap-apps/
+
+THIS SOFTWARE IS PROVIDED BY THE ANDREW TRICE "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+EVENT SHALL ANDREW TRICE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

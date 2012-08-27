@@ -22,9 +22,9 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.util.Log;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-import com.phonegap.api.PluginResult.Status;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.api.PluginResult.Status;
 
 /**
  * @author triceam
@@ -70,7 +70,7 @@ public class PGLowLatencyAudio extends Plugin {
 					String assetPath =data.getString(1);
 					String fullPath = "www/".concat( assetPath );
 					
-					AssetManager am = ctx.getResources().getAssets(); 
+					AssetManager am = cordova.getActivity().getResources().getAssets(); 
 					AssetFileDescriptor afd = am.openFd(fullPath);
 					int assetIntID = soundPool.load(afd, 1);
 					soundMap.put( audioID , assetIntID );
@@ -97,7 +97,7 @@ public class PGLowLatencyAudio extends Plugin {
 					
 					String fullPath = "www/".concat( assetPath );
 					
-					AssetManager am = ctx.getResources().getAssets(); 
+					AssetManager am = cordova.getActivity().getResources().getAssets(); 
 					AssetFileDescriptor afd = am.openFd(fullPath);
 					
 					PGLowLatencyAudioAsset asset = new PGLowLatencyAudioAsset( afd, voices );

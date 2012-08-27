@@ -20,14 +20,21 @@
 	 * This class exposes the ability to take a Screenshot to JavaScript
 	 */
 	function Screenshot() { }
-
-	/**
+    
+    /**
 	 * Save the screenshot to the user's Photo Library
 	 */
 	Screenshot.prototype.saveScreenshot = function() {
 		cordovaRef.exec(null, null, "Screenshot", "saveScreenshot", []);
 	};
 
+	/**
+	 * Save the screenshot to the user's Photo Library and return it as base64
+	 */
+    Screenshot.prototype.saveScreenshotAsFile = function(success, fail, fileName, returnBase64 ) {
+        cordovaRef.exec(success, fail, 'Screenshot', 'saveScreenshotAsFile', [fileName, returnBase64]);
+    };
+        
 	cordovaRef.addConstructor(function() {
 		if (!window.plugins) {
 			window.plugins = {};

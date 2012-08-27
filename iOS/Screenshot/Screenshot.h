@@ -18,7 +18,6 @@
 
 @interface Screenshot : CDVPlugin {
 }
-
 - (void)saveScreenshot:(NSArray*)arguments withDict:(NSDictionary*)options;
-
+- (void)saveScreenshotAsFile:(NSArray*)arguments withDict:(NSDictionary*)options;
 @end

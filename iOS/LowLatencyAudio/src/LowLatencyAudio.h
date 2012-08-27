@@ -29,6 +29,8 @@
 //Public Instance Methods (visible in phonegap API)
 - (void) preloadFX:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) preloadAudio:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) setVolume:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) getVolume:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) play:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) stop:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) loop:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;

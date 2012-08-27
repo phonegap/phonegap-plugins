@@ -31,4 +31,6 @@
 - (void) stop;
 - (void) loop;
 - (void) unload;
+
+@property(nonatomic) float volume;
 @end

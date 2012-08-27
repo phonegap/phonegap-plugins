@@ -39,7 +39,8 @@ if (!window.plugins.datePicker) {
         var defaults = {
             mode: 'datetime',
             date: '',
-            allowOldDates: true
+            allowOldDates: true,
+            allowFutureDates : true
         }
         for (var key in defaults) {
             if (typeof options[key] !== "undefined")

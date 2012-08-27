@@ -10,9 +10,9 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-import com.phonegap.api.PluginResult.Status;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.api.PluginResult.Status;
 
 import android.hardware.Camera;
 import android.util.Log;
@@ -28,6 +28,7 @@ public class TorchPlugin extends Plugin {
 	public static final String CMD_TOGGLE = "toggle";
 	public static final String CMD_IS_ON = "isOn";
 	public static final String CMD_HAS_TORCH = "isCapable";
+	public static final String CMD_RELEASE = "release";
 
 	// Create camera and parameter objects
 	private Camera mCamera;
@@ -40,7 +41,7 @@ public class TorchPlugin extends Plugin {
 	public TorchPlugin() {
 		Log.d( "TorchPlugin", "Plugin created" );
 		
-		mCamera = Camera.open();		
+		getCamera();//mCamera = Camera.open();		
 	}
 
 	/*
@@ -87,11 +88,14 @@ public class TorchPlugin extends Plugin {
 		} else if (action.equals(CMD_HAS_TORCH)) {
 			try {
 				response.put( "capable", this.isCapable() );
-				
-				result = new PluginResult( Status.OK, response );
+				result = new PluginResult( Status.OK , response);
 			} catch( JSONException jsonEx ) {
 				result = new PluginResult(Status.JSON_EXCEPTION);
 			}			
+		
+		} else if (action.equals(CMD_RELEASE)) {
+				release();
+				result = new PluginResult( Status.OK );
 		
 		} else {
 			result = new PluginResult(Status.INVALID_ACTION);
@@ -108,7 +112,9 @@ public class TorchPlugin extends Plugin {
 	 */
 	protected boolean isCapable() {
 		boolean result = false;
-		
+		if(mCamera==null)
+			getCamera();
+		mParameters = mCamera.getParameters();
 		List<String> flashModes = mParameters.getSupportedFlashModes();
 
 		if (flashModes != null	&& flashModes.contains(Camera.Parameters.FLASH_MODE_TORCH)) {
@@ -133,6 +139,8 @@ public class TorchPlugin extends Plugin {
 	 * 
 	 */
 	protected void toggleTorch(boolean state) {
+		if(mCamera==null)
+			getCamera();
 		mParameters = mCamera.getParameters();
 
 		// Make sure that torch mode is supported
@@ -149,6 +157,38 @@ public class TorchPlugin extends Plugin {
 			mCamera.setParameters(mParameters);
 
 			mbTorchEnabled = state;
+		}
+	}
+	
+	/**
+	 * Get camera resource
+	 * 
+	 * 
+	 */
+	protected void getCamera() {
+		mCamera = Camera.open();
+	}
+	/**
+	 * Release camera resource
+	 * Useit onPause method
+	 * 
+	 */
+	protected void release() {
+		mCamera.release();
+		mCamera = null;
+	}
+	/**
+	 * Implements release on finalize
+	 * 
+	 * 
+	 */
+	protected void finalize() {
+		release();
+		try {
+			super.finalize();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

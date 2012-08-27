@@ -1,7 +1,8 @@
 /**
  * Phonegap Torch plugin 
  * Copyright (c) Arne de Bree 2011
- *
+ * Sebastian Greco modification
+ * BothMedia SRL
  */
 
 /**
@@ -53,6 +54,15 @@ Torch.prototype.turnOff = function( success, error )
 Torch.prototype.toggle = function( success, error ) 
 {
    return PhoneGap.exec( success, error, "Torch", "toggle", [] );   
+};
+
+/** Release camera resource, use it onPause method
+ * @param success The callback for success
+ * @param error The callback for error
+ */
+Torch.prototype.release = function( success, error ) 
+{
+   return PhoneGap.exec( success, error, "Torch", "release", [] );   
 };
  
 PhoneGap.addConstructor( function() 

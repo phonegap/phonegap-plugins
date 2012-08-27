@@ -79,6 +79,16 @@ cordova.define("cordova/plugin/bluetooth", function(require, exports, module) {
 	Bluetooth.prototype.connect = function(successCallback,failureCallback,address,uuid) {
 	    return exec(successCallback, failureCallback, 'BluetoothPlugin', 'connect', [address, uuid]);
 	}
+
+	/**
+	 * Open an insecure RFComm channel for a given device & uuid endpoint
+	 * 
+	 * @param successCallback function to be called when the connection was successfull. Passed parameter is an integer containing the socket id for the connection
+	 * @param errorCallback function to be called when there was a problem while opening the connection
+	 */
+	Bluetooth.prototype.connectInsecure = function(successCallback,failureCallback,address,uuid) {
+	    return exec(successCallback, failureCallback, 'BluetoothPlugin', 'connectInsecure', [address, uuid]);
+	}
 	
 	/**
 	 * Close a RFComm channel for a given socket-id

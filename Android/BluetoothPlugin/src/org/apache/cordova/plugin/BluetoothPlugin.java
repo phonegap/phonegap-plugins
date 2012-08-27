@@ -46,6 +46,7 @@ public class BluetoothPlugin extends Plugin {
 	private static final String ACTION_DISCOVERDEVICES = "discoverDevices";
 	private static final String ACTION_GETUUIDS = "getUUIDs";
 	private static final String ACTION_CONNECT = "connect";
+	private static final String ACTION_CONNECTINSECURE = "connectInsecure";
 	private static final String ACTION_READ = "read";
 	private static final String ACTION_DISCONNECT = "disconnect";
 	
@@ -188,6 +189,30 @@ public class BluetoothPlugin extends Plugin {
 
 				BluetoothDevice bluetoothDevice = m_bluetoothAdapter.getRemoteDevice(address);
 				BluetoothSocket bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
+				
+				bluetoothSocket.connect();
+				
+				m_bluetoothSockets.add(bluetoothSocket);
+				int socketId = m_bluetoothSockets.indexOf(bluetoothSocket);
+				
+				pluginResult = new PluginResult(PluginResult.Status.OK, socketId);
+			}
+			catch( Exception e ) {
+				Log.e("BluetoothPlugin", e.toString() + " / " + e.getMessage() );
+				
+				pluginResult = new PluginResult(PluginResult.Status.JSON_EXCEPTION, e.getMessage());
+			}
+		}
+		// Insecurely connect to a given device & uuid endpoint
+		else if( ACTION_CONNECTINSECURE.equals(action) ) {
+			try {
+				String address = args.getString(0);
+				UUID uuid = UUID.fromString(args.getString(1));
+				
+				Log.d( "BluetoothPlugin", "Connecting insecure..." );
+
+				BluetoothDevice bluetoothDevice = m_bluetoothAdapter.getRemoteDevice(address);
+				BluetoothSocket bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(uuid);
 				
 				bluetoothSocket.connect();
 				

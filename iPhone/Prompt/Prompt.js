@@ -32,15 +32,15 @@ Prompt.prototype.show = function(title, okCallback, cancelCallback, okButtonTitl
         }
     };
     var callback = 'window.plugins.Prompt.callbackMap.' + key;
-    PhoneGap.exec("Prompt.show", callback, defaults);
+    cordova.exec("Prompt.show", callback, defaults);
 };
 
 Prompt.prototype.callbackMap = {};
 Prompt.prototype.callbackIdx = 0;
 
-PhoneGap.addConstructor(function() {
-    if(!window.plugins) {
-        window.plugins = {};
-    }
+if(!window.plugins) {
+    window.plugins = {};
+}
+if(!window.plugins.Prompt) {
     window.plugins.Prompt = new Prompt();
 });

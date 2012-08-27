@@ -26,28 +26,35 @@
 //  
 //  function call in Javascript:
 //
-//  createEvent : function(title,location,notes, startDate, endDate){
+//  createEvent : function(title,location,notes, startDate, endDate, calendarName){
 //            var title= "My Appt";
 //            var location = "Los Felix";
 //            var notes = "me testing";
 //            var startDate = "2012-01-23 09:30:00";
 //            var endDate = "2012-01-23 12:30:00";
+//            var calendarName = "Work"; // optional
 //           
-//            cal.createEvent(title,location,notes,startDate,endDate);
+//            cal.createEvent(title,location,notes,startDate,endDate, calendarName);
 //        },
 //
 //
 //  Which can also be written as:
 //
-//  function createEvent(title,location,notes, startDate, endDate){
+//  function createEvent(title,location,notes, startDate, endDate, calendarName){
 //      var title= "My Appt";
 //      var location = "Los Felix";
 //      var notes = "me testing";
 //      var startDate = "2012-01-23 09:30:00";
 //      var endDate = "2012-01-23 12:30:00";
+//      var calendarName = "Work";  // optional
 //           
-//      cal.createEvent(title,location,notes,startDate,endDate);
+//      cal.createEvent(title,location,notes,startDate,endDate, calendarName);
 //  }
+//
+//  Also, there is a method "getCalendarList" which provides a list of calendar titles if you want 
+//  pass in the title as the last parameter to createEvent to specify a calendar other than the default.
+//  call with:
+//     window.plugins.calendarPlugin.getCalendarList(successCallback, failureCallback);
 //
 //  The example I've written, although the function is receiving variables,
 //  for testing I declared the necessary variables. You will need to comment these out and pass

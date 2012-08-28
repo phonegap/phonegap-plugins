@@ -27,23 +27,93 @@
 
 var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to new fallbacks
 
+/** @deprecated Use the W3C standard window.Notification API instead. */
 var NotificationMessenger = function() { }
 
 /**
  * @param title Title of the notification
  * @param body Body of the notification
+ * @deprecated Use the W3C standard window.Notification API instead.
  */
 NotificationMessenger.prototype.notify = function(title, body) {
-  return cordovaRef.exec(null, null, 'StatusBarNotification',	'notify', [title, body])
+    if (window.Notification) {
+        this.activeNotification = new window.Notification(title, {
+            body: body
+        });
+    }
 }
 
 /**
  * Clears the Notificaiton Bar
+ * @deprecated Use the W3C standard window.Notification API instead.
  */
 NotificationMessenger.prototype.clear = function() {
-  return cordovaRef.exec(null, null, 'StatusBarNotification', 'clear', []);
+    if (this.activeNotification) {
+        this.activeNotification.close();
+        this.activeNotification = undefined;
+    }
 }
 
 if (!window.plugins) window.plugins = {}
-if (!window.plugins.statusBarNotification) window.plugins.statusBarNotification = new NotificationMessenger()
-;
+if (!window.plugins.statusBarNotification) window.plugins.statusBarNotification = new NotificationMessenger();
+
+
+/*
+ * The W3C standard API, window.Notification. See http://www.w3.org/TR/notifications/
+ * This API should be used for new applications instead of the old plugin API above.
+ */
+if (typeof window.Notification == "undefined") {
+
+    /**
+     * Creates and shows a new notification.
+     * @param title
+     * @param options
+     */
+    window.Notification = function(title, options) {
+        options = options || {};
+        this.tag = options.tag || "defaultTag";
+
+        // May be undefined.
+        this.onclick = options.onclick;
+        this.onerror = options.onerror;
+        this.onshow = options.onshow;
+        this.onclose = options.onclose;
+
+        var content = title + (options.body ? "\n" + options.body : "");
+
+        cordova.exec(function() {
+            if (this.onshow) {
+                this.onshow();
+            }
+        }, function(error) {
+            if (this.onerror) {
+                this.onerror(error);
+            }
+        }, "StatusBarNotification", "notify", [this.tag, title, content]);
+    };
+
+    // Permission is always granted on Android.
+    window.Notification.permission = "granted";
+
+    window.Notification.requestPermission = function(callback) {
+        callback('granted');
+    };
+
+
+    /**
+     * Cancels a notification that has already been created and shown to the user.
+     */
+    window.Notification.prototype.close = function() {
+        cordova.exec(function() {
+            if (this.onclose) {
+                this.onclose();
+            }
+        }, function(error) {
+            if (this.onerror) {
+                this.onerror(error);
+            }
+        }, "StatusBarNotification", "clear", [this.tag]);
+    };
+}
+
+// vim: tabstop=4:softtabstop=4:shiftwidth=4:expandtab

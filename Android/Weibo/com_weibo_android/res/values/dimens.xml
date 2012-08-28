@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<dimen name="dialog_left_margin">10dp</dimen>
+	<dimen name="dialog_top_margin">30dp</dimen>
+	<dimen name="dialog_right_margin">10dp</dimen>
+	<dimen name="dialog_bottom_margin">10dp</dimen>		
+	<dimen name="dialog_btn_close_right_margin">10dp</dimen>
+	<dimen name="dialog_btn_close_top_margin">10dp</dimen>
+	<dimen name="dialog_title_logo_left_margin">5dp</dimen>
+	<dimen name="dialog_title_height">30dp</dimen>	
+</resources>

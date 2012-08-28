@@ -49,7 +49,29 @@ A full example could be:
 
 ## `encode()` method ##
 
-The `encode` function is not supported on iOS.
+Fork from https://github.com/myang-git/QR-Code-Encoder-for-Objective-C, under the Apache License.
+
+  encode() function is invoked as follows:
+
+    encode(type, data, success, fail, options)
+
+success return image base64 string.
+
+    Supported encoding types:
+
+* TEXT_TYPE
+* EMAIL_TYPE
+* PHONE_TYPE
+* SMS_TYPE
+
+A full example could be:
+
+        window.plugins.barcodeScanner.encode(BarcodeScanner.Encode.TEXT_TYPE, "http://www.nytimes.com", function(success) {
+            alert("encode success: " + success);
+          }, function(fail) {
+            alert("encoding failed: " + fail);
+          }
+        );
 
 ## barcode formats supported ##
 

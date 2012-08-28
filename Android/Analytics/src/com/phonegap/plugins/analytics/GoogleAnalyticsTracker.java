@@ -56,6 +56,7 @@ public class GoogleAnalyticsTracker extends Plugin {
 		} else if (SET_CUSTOM_VARIABLE.equals(action)){
 			try {
 				setCustomVar(data.getInt(0), data.getString(1), data.getString(2), data.getInt(3));
+                result = new PluginResult(Status.OK);
 			} catch (JSONException e) {
 				result = new PluginResult(Status.JSON_EXCEPTION);
 			}

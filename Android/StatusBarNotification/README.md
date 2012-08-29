@@ -1,51 +1,31 @@
-# StatusBarNotification plugin for Phonegap #
+# StatusBarNotification plugin for Cordova #
 
-Plugin allows you to display notifications in the status bar from your PhoneGap application.
+This plugin allows you to display notifications in the status bar from your Cordova application. On Android you have to explicitly add things to the status bar (as opposed to iOS where push notifications automatically get displayed in the UI). The Android status bar is the UI component at the top of the screen that has a bunch of little icons. You can also drag the status bar down to view a list of notifications.
 
 ## Adding the Plugin to your project ##
 
-Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonegap-android).
+Using this plugin requires [Android Cordova](http://github.com/apache/incubator-cordova-android).
 
-1. To install the plugin, move statusbarnotification.js to your project's www folder and include a reference to it in your html file after phonegap.js.
+1. To install the plugin, move statusbarnotification.js to your project's www folder and include a reference to it in your html file after cordova.js.
 
-    &lt;script type="text/javascript" charset="utf-8" src="phonegap.js"&gt;&lt;/script&gt;<br/>
+    &lt;script type="text/javascript" charset="utf-8" src="cordova.js"&gt;&lt;/script&gt;<br/>
     &lt;script type="text/javascript" charset="utf-8" src="statusbarnotification.js"&gt;&lt;/script&gt;
 
-2. Create a directory within your project called "src/com/phonegap/plugins/statusBarNotification" and move StatusBarNotification.java into it.
+2. Create a directory within your project called "src/com/phonegap/plugins/statusBarNotification" and move the .java files from this folder into it.
 
-3. Add the following activity to your AndroidManifest.xml file.  It should be added inside the &lt;application&gt; tag.
-
-    &lt;activity android:name="com.phonegap.DroidGap" android:label="@string/app_name"&gt;<br/>
-      &lt;intent-filter&gt;<br/>
-      &lt;/intent-filter&gt;<br/>
-    &lt;/activity&gt;
-
-4. In your res/xml/plugins.xml file add the following line:
+3. In your res/xml/plugins.xml file add the following line:
 
     &lt;plugin name="StatusBarNotification" value="com.phonegap.plugins.statusBarNotification.StatusBarNotification"/&gt;
 
-5. You will need to add a nofication.png file to you applications res/drawable-ldpi, res/drawable-mdpi & res/drawable-hdpi directories.
+4. You will need to add a notification.png file to your applications res/drawable-ldpi, res/drawable-mdpi & res/drawable-hdpi or res/drawable-xhdpi directories (depending on what resolutions you want to support).
 
-6. You will need to add an import line like:
+5. You will need to add an import line like this to the .java files (see commented out lines inside the files):
 
 	import com.my.app.R; 
 	
-Where com.my.app is your applications package name in order for this to compile.
-
 ## Using the plugin ##
 
-The plugin creates the object `window.plugins.statusBarNotification`. To use, call one of the following, available methods:
-
-<pre>
-  /**
-   * Displays new status bar notification
-   * 
-   * @param notificationTitle	The url to load
-   * @param notificationBody	Load url in PhoneGap webview [optional] - Default: false
-   */
-   
-  notify(notificationTitle, notificationBody);
-</pre>
+The plugin creates the object `window.plugins.statusBarNotification`.
 
 Sample use:
 
@@ -54,6 +34,7 @@ Sample use:
 ## License ##
 
 Copyright (C) 2011 Dmitry Savchenko <dg.freak@gmail.com>
+Copyright (C) 2012 Max Ogden <max@maxogden.com>
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

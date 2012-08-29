@@ -158,6 +158,7 @@
  	NSString *mode = [optionsOrNil objectForKey:@"mode"];
 	NSString *dateString = [optionsOrNil objectForKey:@"date"];
 	BOOL allowOldDates = NO;
+	BOOL allowFutureDates = YES;
 
 	if ([[optionsOrNil objectForKey:@"allowOldDates"] intValue] == 1) {
 		allowOldDates = YES;
@@ -165,6 +166,14 @@
 
 	if ( ! allowOldDates) {
 		self.datePicker.minimumDate = [NSDate date];
+	}
+	
+	if ([[optionsOrNil objectForKey:@"allowFutureDates"] intValue] == 0) {
+		allowFutureDates = NO;
+	}
+
+	if ( ! allowFutureDates) {
+		self.datePicker.maximumDate = [NSDate date];
 	}
 
 	self.datePicker.date = [self.isoDateFormatter dateFromString:dateString];

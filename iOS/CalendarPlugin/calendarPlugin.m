@@ -23,8 +23,7 @@
     return self;
 }
 
-
--(void)createEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options 
+-(void)createEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
 {
     //Get the Event store object
     EKEvent *myEvent;
@@ -33,12 +32,31 @@
     store = [[EKEventStore alloc] init];
     myEvent = [EKEvent eventWithEventStore: store];
     
-    NSString* title      = [arguments objectAtIndex:1];
-    NSString* location   = [arguments objectAtIndex:2];
-    NSString* message    = [arguments objectAtIndex:3];
-    NSString *startDate  = [arguments objectAtIndex:4];
-    NSString *endDate    = [arguments objectAtIndex:5];
+    NSString* title         = [arguments objectAtIndex:1];
+    NSString* location      = [arguments objectAtIndex:2];
+    NSString* message       = [arguments objectAtIndex:3];
+    NSString* startDate     = [arguments objectAtIndex:4];
+    NSString* endDate       = [arguments objectAtIndex:5];
+    NSString* calendarTitle = [arguments objectAtIndex:6];
     
+    EKCalendar* calendar = nil;
+    if(calendarTitle == nil){
+        calendar = store.defaultCalendarForNewEvents;
+    } else {
+        NSIndexSet* indexes = [store.calendars indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+            *stop = false;
+            EKCalendar* cal = (EKCalendar*)obj;
+            if(cal.title == calendarTitle){
+                *stop = true;
+            }
+            return *stop;
+        }];
+        if (indexes.count == 0) {
+            calendar = store.defaultCalendarForNewEvents;
+        } else {
+            calendar = [store.calendars objectAtIndex:[indexes firstIndex]];
+        }
+    }
     
     //creating the dateformatter object
     NSDateFormatter *sDate = [[[NSDateFormatter alloc] init] autorelease];
@@ -56,7 +74,7 @@
     myEvent.notes = message;
     myEvent.startDate = myStartDate;
     myEvent.endDate = myEndDate;
-    myEvent.calendar = store.defaultCalendarForNewEvents;
+    myEvent.calendar = calendar;
     
     
     EKAlarm *reminder = [EKAlarm alarmWithRelativeOffset:-2*60*60];
@@ -82,10 +100,11 @@
 
 //-(void)deleteEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {}
 
-/*-(void)findEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
+/*
+-(void)findEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
  
- store = [[EKEventStore alloc] init];
- myEvent = [EKEvent eventWithEventStore: store];
+ EKEventStore* store = [[EKEventStore alloc] init];
+ EKEvent* myEvent = [EKEvent eventWithEventStore: store];
  
  NSString *startSearchDate  = [arguments objectAtIndex:1];
  NSString *endSearchDate    = [arguments objectAtIndex:2];
@@ -112,22 +131,42 @@
  [self setEvents:events];
  
  
- }
+}
+ */
+
+-(void)getCalendarList:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+{
+    NSLog(@"In plugin method getCalendarList");
+    NSString *callback = [arguments objectAtIndex:0];
+    EKEventStore* store = [[EKEventStore alloc] init];
+    NSString* js = nil;
+    if (store != nil && store.calendars.count > 0) {
+        NSMutableArray *titles = [[store.calendars valueForKey:@"title"] mutableCopy];
+        NSLog(@"Found %i calendars", titles.count);
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:titles];
+        js = [result toSuccessCallbackString:callback];
+    } else {
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"no calendars found"];
+        js = [result toErrorCallbackString:callback];
+    }
+    [self writeJavascript:js];
+}
  
- //-(void)modifyEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options{
+ 
+/*-(void)modifyEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options{
  EKEventViewController *eventViewController = [[EKEventViewController alloc] init];
  eventViewController.event = myEvent;
  eventViewController.allowsEditing = YES;
  navigationController we
 = [[UINavigationController alloc]
  initWithRootViewController:eventViewController];
- [eventViewController release];*/
-// }
+ [eventViewController release];
+} */
 
 
 //delegate method for EKEventEditViewDelegate
 -(void)eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action {
-    [self dismissModalViewControllerAnimated:YES];
+    [(UIViewController*)self dismissModalViewControllerAnimated:YES];
     [self release];
 }
 @end

@@ -28,9 +28,11 @@ A full set example could be:
 	    }
 	);
 
-## Registering the plugin ## 
+NOTE: The preference must exist in a settings bundle and Root.plist in your project. See http://developer.apple.com/library/ios/#DOCUMENTATION/Cocoa/Conceptual/UserDefaults/Preferences/Preferences.html for further details.
 
-1. Opne Cordovo.plist file in Xcode
+## Registering the plugin ##
+
+1. Open Cordovo.plist file in Xcode
 2. To the plugins Dictionary add a new String item
 3. Name and value of the item would be "applicationPreferences"
 

@@ -25,7 +25,8 @@
     
     NSString *message = [arguments objectAtIndex:1];
     SHKItem *item;
-    if ([arguments objectAtIndex:2]==NULL) {
+
+    if ([arguments count] == 3) {
         NSURL *itemUrl = [NSURL URLWithString:[arguments objectAtIndex:2]];  
         item = [SHKItem URL:itemUrl title:message contentType:SHKURLContentTypeWebpage];
     } else {
@@ -112,14 +113,12 @@
     
     SHKItem *item;
     
-    NSString *message = [arguments objectAtIndex:1];
-    if ([arguments objectAtIndex:2]==NULL) {
-        NSURL *itemUrl = [NSURL URLWithString:[arguments objectAtIndex:2]];  
-        item = [SHKItem URL:itemUrl title:message contentType:SHKURLContentTypeWebpage];
-    } else {
-        item = [SHKItem text:message];
-    }
-    
+    NSString *subject = [arguments objectAtIndex:1];
+    NSString *body = [arguments objectAtIndex:2];
+
+    item = [SHKItem text:body];
+    item.title = subject;
+
     [SHKMail shareItem:item];
     
 }

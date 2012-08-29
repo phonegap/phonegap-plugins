@@ -10,7 +10,7 @@
 #ifdef CORDOVA_FRAMEWORK
 #import <Cordova/CDVPlugin.h>
 #else
-#import "CDVlugin.h"
+#import "CDVPlugin.h"
 #endif
 
 @interface SAiOSKeychainPlugin : CDVPlugin {

@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2011, Appception, Inc.. All Rights Reserved.
  * Copyright (C) 2011, Mobile Developer Solutions All Rights Reserved.
+ * Copyright (C) 2012, Bucka IT, Tomaz Kregar s.p. All Rights Reserved.
  */
 
 package com.phonegap.plugin;
@@ -23,7 +24,7 @@ import com.paypal.android.MEP.PayPalInvoiceData;
 import com.paypal.android.MEP.PayPalInvoiceItem;
 import com.paypal.android.MEP.PayPalPayment;
 import com.paypal.android.MEP.PayPalPreapproval;
-import com.phonegap.DroidGap;
+import org.apache.cordova.DroidGap;
 
 public class mpl {
 
@@ -88,9 +89,9 @@ public class mpl {
 	}
 	
 	// Construct new instance with information from main activity
-	public mpl(Context context, String JSONdata) {
-		mpl_activity = (Activity) context;
-		mpl_context = context.getApplicationContext();
+	public mpl(Context ctx, String JSONdata) {
+		mpl_activity = (Activity) ctx;
+		mpl_context = ctx.getApplicationContext();
 		parseConstructArg(JSONdata);
 		if (mpjs_server.equals("ENV_NONE")) {
 			server = PayPal.ENV_NONE;

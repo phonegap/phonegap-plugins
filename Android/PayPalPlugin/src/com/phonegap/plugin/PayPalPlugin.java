@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2011, Appception, Inc.. All Rights Reserved.
  * Copyright (C) 2011, Mobile Developer Solutions All Rights Reserved.
+ * Copyright (C) 2012, Bucka IT, Tomaz Kregar s.p. All Rights Reserved.
  */
 
 package com.phonegap.plugin;
@@ -12,9 +13,9 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-import com.phonegap.api.PluginResult.Status;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.api.PluginResult.Status;
 
 public class PayPalPlugin extends Plugin {
 	private static mpl PluginMpl;
@@ -29,7 +30,7 @@ public class PayPalPlugin extends Plugin {
 		try {
 			if (action.equals("construct")) {
 				thisPlugin = this;
-				PluginMpl = new mpl(this.ctx, data.getString(0));
+				PluginMpl = new mpl(this.ctx.getContext(), data.getString(0));
 //				PluginMpl = new mpl(this.ctx, PayPal.ENV_NONE, "");
 				result = new PluginResult(Status.OK);
 				

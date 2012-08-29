@@ -1,19 +1,20 @@
 # PhoneGap PayPal-Plugin #
-by Paul Beusterien, Mobile Developer Solutions and Carl Stehle, Appception Inc.
+by Paul Beusterien, Mobile Developer Solutions, Carl Stehle, Appception Inc. and Tomaz Kregar, Bucka IT
 
 
 ## Adding the Plugin to your project ##
 
-Using this plugin requires Android PhoneGap and the PayPal Mobile Payments Library. The PayPal Mobile Payments Library can be downloaded [here](https://www.x.com/community/ppx/xspaces/mobile/mep).
+Using this plugin requires Android Cordova (PhoneGap) and the PayPal Mobile Payments Library. The PayPal Mobile Payments Library can be downloaded [here](https://www.x.com/community/ppx/xspaces/mobile/mep).
 
-1. Create an Android PhoneGap project. Details at http://www.mobiledevelopersolutions.com/home/start
+1. Create an Android Cordova project. Details at http://docs.phonegap.com/en/2.0.0/guide_getting-started_android_index.md.html
 2. Put PayPal_MPL.jar into your project's libs directory and add it to the build path. In Eclipse, right click on PayPal_MPL.jar and select Add to Build Path.
 3. Copy assets/www/ files into your project's assets/www/ directory
 4. Copy src/com/phonegap/plugin/ files into your project's src/com/phonegap/plugin/ directory
 5. Make sure your AndroidManifest.xml includes a superset of the permissions shown in the reference AndroidManifest.xml
 6. Add the com.paypal.android.MEP.PayPalActivity as shown in the reference AndroidManifest.xml
-7. Make sure the phonegap.{version}.js filename in index.html matches the filename in your www directory.
-8. Deploy and test the app. The default environment is ENV_NONE.
+7. Include the plugin registration in /res/xml/config.xml as shown in the reference config.xml
+8. Make sure the cordova.{version}.js filename in index.html matches the filename in your www directory.
+9. Deploy and test the app. The default environment is ENV_NONE.
 
 ## Using the PayPal Sandbox ##
 
@@ -24,7 +25,10 @@ Using this plugin requires Android PhoneGap and the PayPal Mobile Payments Libra
 
 ## RELEASE NOTES ##
 
-### 201100618 ###
+### 20120829 ###
+* Added suppport for Cordova 2.0.0
+
+### 20110618 ###
 * Initial release
 * By default the PayPalPlugin-Host runs in ENV_NONE (offline) with a dummy PayPal ID. Change to ENV_SANDBOX or ENV_LIVE
 * Only tested with ENV_NONE and ENV_SANDBOX 

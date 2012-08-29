@@ -11,7 +11,8 @@
  * 
  * This interface is similar to the existing iOS LocalNotification plugin created by Greg Allen
  */
-if (typeof PhoneGap !== "undefined") {
+ var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to new fallbacks
+if (typeof cordovaRef !== "undefined") {
 
 	/**
 	 * Empty constructor
@@ -48,7 +49,7 @@ if (typeof PhoneGap !== "undefined") {
 				defaults[key] = options[key];
 		}
 
-		PhoneGap.exec(null, null, 'LocalNotification', 'add', new Array(defaults));
+		cordovaRef.exec(null, null, 'LocalNotification', 'add', new Array(defaults));
 	};
 
 	/**
@@ -59,7 +60,7 @@ if (typeof PhoneGap !== "undefined") {
 	 *            'add' method.
 	 */
 	LocalNotification.prototype.cancel = function(notificationId) {
-		PhoneGap.exec(null, null, 'LocalNotification', 'cancel', new Array({
+		cordovaRef.exec(null, null, 'LocalNotification', 'cancel', new Array({
 			id : notificationId
 		}));
 	};
@@ -68,13 +69,13 @@ if (typeof PhoneGap !== "undefined") {
 	 * Cancel all notifications that were created by your application.
 	 */
 	LocalNotification.prototype.cancelAll = function() {
-		PhoneGap.exec(null, null, 'LocalNotification', 'cancelAll', new Array());
+		cordovaRef.exec(null, null, 'LocalNotification', 'cancelAll', new Array());
 	};
 
 	/**
 	 * Register this plugin with phonegap
 	 */
-	PhoneGap.addConstructor(function() {
+	cordovaRef.addConstructor(function() {
 		if (!window.plugins) {
 			window.plugins = {};
 		}

@@ -1,4 +1,10 @@
-Added Cordova 1.5 support March 2012 - @RandyMcMillan
+March 2012 : Added Cordova 1.5 support - RandyMcMillan
+July 2012 : Added Cordova 2.0 support - RandyMcMillan
+August 2012 : Documentation examples - Guillaume Charhon
+
+
+## Adding the Plugin to your project ##
+
 
 • You will need to add MessageUI.framework to your project if it is not already included.
 
@@ -8,8 +14,16 @@ Added Cordova 1.5 support March 2012 - @RandyMcMillan
 
 • Add to Cordova.plist Plugins: key EmailComposer value EmailComposer
 
-• This is intended to also demonstrate how to pass arguments to native code using the options/map object.
 
-• Please review the js file to understand the interface you can call, and reply with any questions.
+## Using the plugin ##
 
-        Cordova.exec(null, null, "EmailComposer", "showEmailComposer", [args]);
+The plugin creates the object `window.plugins.emailComposer` with the following methods:
+	
+	// Show an email composer
+	showEmailComposer([subject],[body],[toRecipients],[ccRecipients],[bccRecipients],[bIsHTML])
+	
+	// Show an email composer with a callback
+	showEmailComposerWithCB(cbFunction,[subject],[body],[toRecipients],[ccRecipients],[bccRecipients],[bIsHTML])
+	
+	
+	

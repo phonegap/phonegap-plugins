@@ -62,7 +62,7 @@ if (!window.plugins.statusBarNotification) window.plugins.statusBarNotification 
  * The W3C standard API, window.Notification. See http://www.w3.org/TR/notifications/
  * This API should be used for new applications instead of the old plugin API above.
  */
-if (typeof window.Notification == "undefined") {
+if (typeof window.Notification == 'undefined') {
 
     /**
      * Creates and shows a new notification.
@@ -71,7 +71,10 @@ if (typeof window.Notification == "undefined") {
      */
     window.Notification = function(title, options) {
         options = options || {};
-        this.tag = options.tag || "defaultTag";
+        this.tag = options.tag || 'defaultTag';
+
+        // Add this notification to the global index by tag.
+        window.Notification.active[this.tag] = this;
 
         // May be undefined.
         this.onclick = options.onclick;
@@ -79,7 +82,7 @@ if (typeof window.Notification == "undefined") {
         this.onshow = options.onshow;
         this.onclose = options.onclose;
 
-        var content = title + (options.body ? "\n" + options.body : "");
+        var content = options.body || '';
 
         cordova.exec(function() {
             if (this.onshow) {
@@ -89,15 +92,28 @@ if (typeof window.Notification == "undefined") {
             if (this.onerror) {
                 this.onerror(error);
             }
-        }, "StatusBarNotification", "notify", [this.tag, title, content]);
+        }, 'StatusBarNotification', 'notify', [this.tag, title, content]);
     };
 
     // Permission is always granted on Android.
-    window.Notification.permission = "granted";
+    window.Notification.permission = 'granted';
 
     window.Notification.requestPermission = function(callback) {
         callback('granted');
     };
+
+    // Not part of the W3C API. Used by the native side to call onclick handlers.
+    window.Notification.callOnclickByTag = function(tag) {
+        console.log('callOnclickByTag');
+        var notification = window.Notification.active[tag];
+        if (notification && notification.onclick && typeof notification.onclick == 'function') {
+            console.log('inside if');
+            notification.onclick();
+        }
+    };
+
+    // A global map of notifications by tag, so their onclick callbacks can be called.
+    window.Notification.active = {};
 
 
     /**
@@ -112,7 +128,7 @@ if (typeof window.Notification == "undefined") {
             if (this.onerror) {
                 this.onerror(error);
             }
-        }, "StatusBarNotification", "clear", [this.tag]);
+        }, 'StatusBarNotification', 'clear', [this.tag]);
     };
 }
 

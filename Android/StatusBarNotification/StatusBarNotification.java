@@ -26,6 +26,7 @@
  */
 
 package com.phonegap.plugins.statusBarNotification;
+
 import org.apache.cordova.api.Plugin;
 import org.apache.cordova.api.PluginResult;
 import org.apache.cordova.api.PluginResult.Status;
@@ -35,6 +36,9 @@ import org.json.JSONException;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
+
+import android.os.Handler;
 import android.util.Log;
 
 public class StatusBarNotification extends Plugin {
@@ -44,11 +48,11 @@ public class StatusBarNotification extends Plugin {
 
     /**
      * 	Executes the request and returns PluginResult
-     * 
+     *
      * 	@param action		Action to execute
      * 	@param data			JSONArray of arguments to the plugin
      *  @param callbackId	The callback id used when calling back into JavaScript
-     *  
+     *
      *  @return				A PluginRequest object with a status
      * */
     @Override
@@ -85,23 +89,23 @@ public class StatusBarNotification extends Plugin {
 
     /**
      * 	Displays status bar notification
-     * 
+     *
      * 	@param tag Notification tag.
      *  @param contentTitle	Notification title
      *  @param contentText	Notification text
      * */
     public void showNotification( CharSequence tag, CharSequence contentTitle, CharSequence contentText ) {
         String ns = Context.NOTIFICATION_SERVICE;
-        context = cordova.getActivity().getApplicationContext();  
+        context = cordova.getActivity().getApplicationContext();
         mNotificationManager = (NotificationManager) context.getSystemService(ns);
 
-        Notification noti = StatusNotificationIntent.buildNotification(context, contentTitle, contentText);
+        Notification noti = StatusNotificationIntent.buildNotification(context, tag, contentTitle, contentText);
         mNotificationManager.notify(tag.hashCode(), noti);
     }
-    
+
     /**
      * Cancels a single notification by tag.
-     * 
+     *
      * @param tag Notification tag to cancel.
      */
     public void clearNotification(String tag) {
@@ -114,6 +118,20 @@ public class StatusBarNotification extends Plugin {
     public void clearAllNotifications() {
         mNotificationManager.cancelAll();
     }
+
+    /**
+     * Called when a notification is clicked.
+     * @param intent The new Intent passed from the notification.
+     */
+    @Override
+    public void onNewIntent(Intent intent) {
+        // The incoming Intent may or may not have been for a notification.
+        String tag = intent.getStringExtra("notificationTag");
+        if (tag != null) {
+            sendJavascript("window.Notification.callOnclickByTag('"+ tag + "')");
+        }
+    }
+
 
     private NotificationManager mNotificationManager;
     private Context context;

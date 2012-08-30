@@ -29,6 +29,7 @@
     if ([arguments count] == 3) {
         NSURL *itemUrl = [NSURL URLWithString:[arguments objectAtIndex:2]];  
         item = [SHKItem URL:itemUrl title:message contentType:SHKURLContentTypeWebpage];
+        item.text = message;
     } else {
         item = [SHKItem text:message];
     }

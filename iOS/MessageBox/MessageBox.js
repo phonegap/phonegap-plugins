@@ -50,7 +50,8 @@ MessageBox.prototype.prompt = function(title, message, callback, options) {
 		title : title || 'Prompt',
 		message : message || '',
 		type : options.type || 'text',
-		placeholder : options.placeholder || ''
+		placeholder : options.placeholder || '',
+    	inputDefaultText: options.inputDefaultText || ''
 	};
 
 	var _callback = function(result) {

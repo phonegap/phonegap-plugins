@@ -28,8 +28,9 @@
 	NSMutableString *message = [NSMutableString stringWithString: ([options objectForKey:@"message"] ?: @"")];
 	NSString *type = [options objectForKey:@"type"] ?: @"text";
 	NSString *placeholder = [options objectForKey:@"placeholder"] ?: @"";
-    NSString *okButtonTitle = [options objectForKey:@"okButtonTitle"] ?: @"OK";
-    NSString *cancelButtonTitle = [options objectForKey:@"cancelButtonTitle"] ?: @"Cancel";
+  	NSString *okButtonTitle = [options objectForKey:@"okButtonTitle"] ?: @"OK";
+  	NSString *cancelButtonTitle = [options objectForKey:@"cancelButtonTitle"] ?: @"Cancel";
+  	NSString *text =  [options objectForKey:@"inputDefaultText"] ?: @"";
 	NSInteger textFieldPositionRow = (int)[options objectForKey:@"textFieldPositionRow"] ?: 1;
 
 	// Increment textFieldPositionRow if there is a message
@@ -37,6 +38,7 @@
 		[message appendString: @"\n"];
 		textFieldPositionRow = 2;
 	}
+
 	// Append line-break to the message
 	[message appendString: @"\n"];
 
@@ -50,13 +52,21 @@
 	// Create prompt textField
 	UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(12.0, 20.0 + textFieldPositionRow*25.0, 260.0, 25.0)]; // left, top, width, height
 	[textField setBackgroundColor:[UIColor whiteColor]];
+
 	if ([placeholder length] != 0) {
 		NSLog(@"Placeholder!");
 		[textField setPlaceholder:placeholder];
 	}
+
+  	if ([text length] != 0) {
+		NSLog(@"Text!");
+		[textField setText:text];
+	}
+
 	if ([[type lowercaseString] isEqualToString:@"password"]) [textField setSecureTextEntry:YES];
-    if ([[type lowercaseString] isEqualToString:@"decimalpad"]) [textField setKeyboardType:UIKeyboardTypeDecimalPad];
-    if ([[type lowercaseString] isEqualToString:@"email"]) [textField setKeyboardType:UIKeyboardTypeEmailAddress];
+  	if ([[type lowercaseString] isEqualToString:@"decimalpad"]) [textField setKeyboardType:UIKeyboardTypeDecimalPad];
+  	if ([[type lowercaseString] isEqualToString:@"email"]) [textField setKeyboardType:UIKeyboardTypeEmailAddress];
+  	if ([[type lowercaseString] isEqualToString:@"phonepad"]) [textField setKeyboardType:UIKeyboardTypePhonePad];
 
 	[prompt addSubview:textField];
 

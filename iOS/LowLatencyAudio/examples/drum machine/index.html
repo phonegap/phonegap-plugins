@@ -65,30 +65,31 @@
             
         function onDeviceReady()
         {
-            PGLowLatencyAudio.preloadFX('bass', 'assets/bass drum.mp3');
-            PGLowLatencyAudio.preloadFX('snare', 'assets/snare drum.mp3');
-            PGLowLatencyAudio.preloadFX('highhat', 'assets/high hat closed.mp3');
-            PGLowLatencyAudio.preloadFX('bongo', 'assets/bongo.mp3');	    
+	    // LowLatencyAudio not PGLowLatencyAudio , LowLatencyAudio Required for Cordova 2.0
+            LowLatencyAudio.preloadFX('bass', 'assets/bass drum.mp3');
+            LowLatencyAudio.preloadFX('snare', 'assets/snare drum.mp3');
+            LowLatencyAudio.preloadFX('highhat', 'assets/high hat closed.mp3');
+            LowLatencyAudio.preloadFX('bongo', 'assets/bongo.mp3');	    
         }
         
         function bass() {
             document.getElementById("bassDiv").className = "touched";
-            PGLowLatencyAudio.play('bass');
+            LowLatencyAudio.play('bass');
         }
         
         function snare() {
             document.getElementById("snareDiv").className = "touched";
-            PGLowLatencyAudio.play('snare');
+            LowLatencyAudio.play('snare');
         }
         
         function highhat() {
             document.getElementById("hhDiv").className = "touched";
-            PGLowLatencyAudio.play('highhat');
+            LowLatencyAudio.play('highhat');
         }
         
         function bongo() {
             document.getElementById("bongoDiv").className = "touched";
-            PGLowLatencyAudio.play('bongo');
+            LowLatencyAudio.play('bongo');
         }
         
         function touchend( event ) {

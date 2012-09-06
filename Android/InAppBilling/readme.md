@@ -7,29 +7,31 @@ Tested on Cordova 2.0
 Installation 
 -------------
 * Get acquainted with the Android In-app Billing documentation.
-* Add in your src folder the *com* folder
-It contains: 
+* Add in your src folder the *com* folder  
+It contains:
 	* [Google Play In-app Billing library]( http://developer.android.com/guide/google/play/billing/billing_overview.html)
 	* Cordova InAppBillingPlugin
-* Add in your src folder the *net* folder
+* Add in your src folder the *net* folder  
 It contains the [Android Billing Library](https://github.com/robotmedia/AndroidBillingLibrary)
 * Add inappbilling.js in your www folder 
 * Add in your index.html
-    <script type="text/javascript" charset="utf-8" src="inappbilling.js"></script>
+`<script type="text/javascript" charset="utf-8" src="inappbilling.js"></script>`
 * In res/xml/config.xml, add     
-    <plugin name="InAppBillingPlugin" value="com.smartmobilesoftware.inappbilling.InAppBillingPlugin"/>
+`<plugin name="InAppBillingPlugin" value="com.smartmobilesoftware.inappbilling.InAppBillingPlugin"/>`
 * Open the AndroidManifest.xml of your application
-	* add this permission
-    <uses-permission android:name="com.android.vending.BILLING" />
-	* this service and receiver inside the application element:
-    <service android:name="net.robotmedia.billing.BillingService" />
-    <receiver android:name="net.robotmedia.billing.BillingReceiver">
-        <intent-filter>
-            <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
-            <action android:name="com.android.vending.billing.RESPONSE_CODE" />
-            <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
-        </intent-filter>
-    </receiver>
+	* add this permission  
+`<uses-permission android:name="com.android.vending.BILLING" />`
+	* this service and receiver inside the application element:  
+<pre>
+&lt;service android:name="net.robotmedia.billing.BillingService" /&gt;
+&lt;receiver android:name="net.robotmedia.billing.BillingReceiver"&gt;
+	&lt;intent-filter&gt;
+		&lt;action android:name="com.android.vending.billing.IN_APP_NOTIFY" /&gt;
+		&lt;action android:name="com.android.vending.billing.RESPONSE_CODE" /&gt;
+		&lt;action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" /&gt;
+	&lt;/intent-filter&gt;
+&lt;/receiver&gt;
+</pre>
 * In com.smartmobilesoftware.inappbilling open InAppBillingPlugin.java
 	* Add you public key (can be found in your Google Play account)
 	* Modify the salt with random numbers
@@ -40,21 +42,21 @@ Usage
 #### Initialization
     inappbilling.init(success,error)
 parameters
-* success : The callback that is called with the extracted text.
-* error : The callback that is called if there was an error.
+* success : The success callback.
+* error : The error callback.
 
 #### Purchase
     inappbilling.purchase(success, fail,productId)
 parameters
-* success : The callback that is called with the extracted text.
-* error : The callback that is called if there was an error.
+* success : The success callback.
+* error : The error callback.
 * productId : The in app billing porduct id (example "sword_001")
 
 #### Retrieve own products
 	inappbilling.getOwnItems(success, fail)
 parameters
-* success : The callback that is called with the extracted text. It provides a json array of the list of owned products
-* error : The callback that is called if there was an error.
+* success : The success callback. It provides a json array of the list of owned products as a parameter.
+* error : The error callback.
 
 	
 Quick example
@@ -119,7 +121,7 @@ Full example
 		
 	</head>
 	<body>
-		<h1>Hello World</h1>
+		<h1>Hello Billing</h1>
 		<button onclick="init();">Initalize the billing plugin</button> 
 		<button onclick="purchase();">Purchase</button> 
 		<button onclick="ownedProducts();">Owned products</button> 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,10 +11,13 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Diagnostics;
 using System.Runtime.Serialization;
-using WP7GapClassLib.PhoneGap.UI;
+using WP7CordovaClassLib.Cordova;
+using WP7CordovaClassLib.Cordova.Commands;
+using WP7CordovaClassLib.Cordova.JSON;
 using Microsoft.Phone.Shell;
+using <app_default_namespace>;
 
-namespace WP7GapClassLib.PhoneGap.Commands
+namespace WP7CordovaClassLib.Cordova.Commands
 {
     [DataContract]
     public class BrowserOptions
@@ -72,12 +75,29 @@ namespace WP7GapClassLib.PhoneGap.Commands
                             }
 
                             ApplicationBar bar = new ApplicationBar();
-                            bar.BackgroundColor = Colors.Black;
+                            if ((Visibility)App.Current.Resources["PhoneDarkThemeVisibility"] == Visibility.Visible)
+                            {
+                                bar.BackgroundColor = Colors.Black;
+                            }
+                            else
+                            {
+                                bar.BackgroundColor = Colors.White;
+                            }
+                            //bar.BackgroundColor = Colors.Black;
+                            //bar.BackgroundColor = Colors.White;
                             bar.IsMenuEnabled = false;
 
                             backButton = new ApplicationBarIconButton();
                             backButton.Text = "Back";
-                            backButton.IconUri = new Uri("/Images/appbar.back.rest.png", UriKind.Relative);
+    						if( (Visibility)App.Current.Resources["PhoneDarkThemeVisibility"] == Visibility.Visible ) 
+							{
+								backButton.IconUri = new Uri("/Images/dark/appbar.back.rest.png", UriKind.Relative);
+							} 
+							else 
+							{
+								backButton.IconUri = new Uri("/Images/light/appbar.back.rest.png", UriKind.Relative);
+							}
+                            //backButton.IconUri = new Uri("/Images/appbar.back.rest.png", UriKind.Relative);
                             backButton.Click += new EventHandler(backButton_Click);
                             backButton.IsEnabled = false;
                             bar.Buttons.Add(backButton);
@@ -85,14 +105,30 @@ namespace WP7GapClassLib.PhoneGap.Commands
 
                             fwdButton = new ApplicationBarIconButton();
                             fwdButton.Text = "Forward";
-                            fwdButton.IconUri = new Uri("/Images/appbar.next.rest.png", UriKind.Relative);
+							if( (Visibility)App.Current.Resources["PhoneDarkThemeVisibility"] == Visibility.Visible ) 
+							{
+								fwdButton.IconUri = new Uri("/Images/dark/appbar.next.rest.png", UriKind.Relative);
+							} 
+							else 
+							{
+								fwdButton.IconUri = new Uri("/Images/light/appbar.next.rest.png", UriKind.Relative);
+							}
+                            //fwdButton.IconUri = new Uri("/Images/appbar.next.rest.png", UriKind.Relative);
                             fwdButton.Click += new EventHandler(fwdButton_Click);
                             fwdButton.IsEnabled = false;
                             bar.Buttons.Add(fwdButton);
 
                             ApplicationBarIconButton closeBtn = new ApplicationBarIconButton();
                             closeBtn.Text = "Close";
-                            closeBtn.IconUri = new Uri("/Images/appbar.close.rest.png", UriKind.Relative);
+							if( (Visibility)App.Current.Resources["PhoneDarkThemeVisibility"] == Visibility.Visible ) 
+							{
+								closeBtn.IconUri = new Uri("/Images/dark/appbar.close.rest.png", UriKind.Relative);
+							} 
+							else 
+							{
+								closeBtn.IconUri = new Uri("/Images/light/appbar.close.rest.png", UriKind.Relative);
+							}
+                            //closeBtn.IconUri = new Uri("/Images/appbar.close.rest.png", UriKind.Relative);
                             closeBtn.Click += new EventHandler(closeBtn_Click);
                             bar.Buttons.Add(closeBtn);
 

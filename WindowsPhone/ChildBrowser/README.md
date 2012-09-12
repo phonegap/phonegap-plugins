@@ -15,6 +15,7 @@ In your Head:
  
 In code:
 --------
+ * Make changes in ChildBrowserCommand.cs by replacing <app_default_namespace> with your app's default namespace.
  * Call ChildBrowser.install() before making any Child Browser Calls.
  * Use window.plugins.childBrowser.showWebPage(url) to open a URL.
  * Make sure you include the folder Images/ to your root directory with all the files. Then change the files Build Action to Content. This will enable the child browser functions (back, forward, close) to have proper icons at respective theme changes.

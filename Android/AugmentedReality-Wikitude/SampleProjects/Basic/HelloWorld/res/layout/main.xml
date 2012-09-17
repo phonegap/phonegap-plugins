@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:test="http://schemas.android.com/apk/res/com.wikitude.architect"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+ <com.wikitude.architect.ArchitectView android:id="@+id/architectView" android:layout_width="fill_parent" android:layout_height="fill_parent">
+</com.wikitude.architect.ArchitectView>
+</LinearLayout>

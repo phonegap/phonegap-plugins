@@ -12,6 +12,15 @@ import android.os.Bundle;
 import android.util.Log;
 
 /**
+ * The following two lines are required for your app to be launched when the
+ * notification is sent.
+ * YOURACTIVITY is the line which extends DroidGap
+ * Also note line 84, which sets up the Intent to launch when notification tapped.
+ */
+import com.YOURDOMAIN.YOURPROJECT.R;
+import com.YOURDOMAIN.YOURPROJECT.YOURACTIVITY;
+
+/**
  * The alarm receiver is triggered when a scheduled alarm is fired. This class
  * reads the information in the intent and displays this information in the
  * Android notification bar. The notification uses the default notification
@@ -71,6 +80,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 		final NotificationManager notificationMgr = (NotificationManager) systemService;
 		final Notification notification = new Notification(R.drawable.ic_launcher, tickerText,
 				System.currentTimeMillis());
+		
+		final Intent notificationIntent = new Intent(context, YOURACTIVITY.class);				
+		
 		final PendingIntent contentIntent = PendingIntent.getActivity(context, 0, new Intent(), 0);
 		notification.defaults |= Notification.DEFAULT_SOUND;
 		notification.vibrate = new long[] { 0, 100, 200, 300 };

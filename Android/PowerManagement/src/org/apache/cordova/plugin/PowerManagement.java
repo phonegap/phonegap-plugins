@@ -51,7 +51,7 @@ public class PowerManagement extends Plugin {
 	public void setContext(CordovaInterface ctx) {
 		super.setContext(ctx);
 		
-		this.powerManager = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+		this.powerManager = (PowerManager) ctx.getActivity().getSystemService(Context.POWER_SERVICE);
 	}
 	
 	/**

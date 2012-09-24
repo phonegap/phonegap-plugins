@@ -1,5 +1,3 @@
-# This Plugin is significantly out of date for both PhoneGap and PayPal. It should only be used as a reference for an updated implementation.#
-
 # PhoneGap PayPal-Plugin #
 by Paul Beusterien, Mobile Developer Solutions, Carl Stehle, Appception Inc. and Tomaz Kregar, Bucka IT
 

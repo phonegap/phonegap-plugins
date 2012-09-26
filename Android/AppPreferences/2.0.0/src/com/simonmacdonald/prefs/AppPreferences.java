@@ -40,18 +40,14 @@ public class AppPreferences extends Plugin {
                 }
             } else if (action.equals("set")) {
                 String key = args.getString(0);
-                String value = args.getString(1);
-                if (sharedPrefs.contains(key)) {
-                    Editor editor = sharedPrefs.edit();
-                    if ("true".equals(value.toLowerCase()) || "false".equals(value.toLowerCase())) {
-                        editor.putBoolean(key, Boolean.parseBoolean(value));
-                    } else {
-                        editor.putString(key, value);
-                    }
-                    return new PluginResult(status, editor.commit());
+                String value = args.getString(1);               
+                Editor editor = sharedPrefs.edit();
+                if ("true".equals(value.toLowerCase()) || "false".equals(value.toLowerCase())) {
+                    editor.putBoolean(key, Boolean.parseBoolean(value));
                 } else {
-                    return createErrorObj(NO_PROPERTY, "No such property called " + key);
+                    editor.putString(key, value);
                 }
+                return new PluginResult(status, editor.commit());               
             } else if (action.equals("load")) {
                 JSONObject obj = new JSONObject();
                 Map prefs = sharedPrefs.getAll();
@@ -70,6 +66,10 @@ public class AppPreferences extends Plugin {
                 } catch (ActivityNotFoundException e) {
                     return createErrorObj(NO_PREFERENCE_ACTIVITY, "No preferences activity called " + activityName);
                 }
+            } else if (action.equals("clear")) {
+            	Editor editor = sharedPrefs.edit();
+            	editor.clear();
+            	return new PluginResult(status, editor.commit());
             }
         } catch (JSONException e) {
             status = PluginResult.Status.JSON_EXCEPTION;

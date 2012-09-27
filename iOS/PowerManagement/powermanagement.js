@@ -17,10 +17,9 @@
  * along with GOFG Sports Computer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-cordova.define("cordova/plugin/powermanagement", function(require, exports, module) {
-	var exec = require('cordova/exec');
-	
-	var PowerManagement = function() {};
+( function ( cordova ) {
+
+	var PowerManagement = function () {};
 	
 	/**
 	 * Acquire a new wake-lock (keep device awake)
@@ -28,8 +27,8 @@ cordova.define("cordova/plugin/powermanagement", function(require, exports, modu
 	 * @param successCallback function to be called when the wake-lock was acquired successfully
 	 * @param errorCallback function to be called when there was a problem with acquiring the wake-lock
 	 */
-	PowerManagement.prototype.acquire = function(successCallback,failureCallback) {
-	    exec(successCallback, failureCallback, 'PowerManagement', 'acquire', []);
+	PowerManagement.prototype.acquire = function ( successCallback, failureCallback ) {
+	    cordova.exec( successCallback, failureCallback, 'PowerManagement', 'acquire', [] );
 	}
 
 	/**
@@ -38,8 +37,8 @@ cordova.define("cordova/plugin/powermanagement", function(require, exports, modu
 	 * @param successCallback function to be called when the wake-lock was released successfully
 	 * @param errorCallback function to be called when there was a problem while releasing the wake-lock
 	 */
-	PowerManagement.prototype.release = function(successCallback,failureCallback) {
-	    exec(successCallback, failureCallback, 'PowerManagement', 'release', []);
+	PowerManagement.prototype.release = function ( successCallback, failureCallback ) {
+	    cordova.exec( successCallback, failureCallback, 'PowerManagement', 'release', [] );
 	}
 
 	/**
@@ -48,10 +47,13 @@ cordova.define("cordova/plugin/powermanagement", function(require, exports, modu
 	 * @param successCallback function to be called when the wake-lock was acquired successfully
 	 * @param errorCallback function to be called when there was a problem with acquiring the wake-lock
 	 */
-	PowerManagement.prototype.dim = function(successCallback,failureCallback) {
-	    exec(successCallback, failureCallback, 'PowerManagement', 'acquire', [true]);
+	PowerManagement.prototype.dim = function ( successCallback, failureCallback ) {
+	    cordova.exec( successCallback, failureCallback, 'PowerManagement', 'acquire', [true] );
 	}
 	
-	var powermanagement = new PowerManagement();
-	module.exports = powermanagement;
-});
+    cordova.addConstructor( function () {
+        if ( typeof window.plugins === 'undefined' ) { window.plugins = {} };
+        window.plugins.PowerManagement = new PowerManagement();
+    } );
+
+}( window.cordova || window.Cordova || window.PhoneGap ) );

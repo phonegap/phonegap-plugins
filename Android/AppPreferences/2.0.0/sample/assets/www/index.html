@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Apache Cordova</title>
+<script type="text/javascript" src="js/cordova-2.0.0.js"></script>
+<script type="text/javascript" src="js/applicationPreferences.js"></script>
+<script type="text/javascript">
+
+	var preferences;
+	
+	function init() {
+		document.addEventListener("deviceready", deviceready);
+	}
+	
+	function deviceready() {
+		document.getElementById("test").innerHTML = "Cordova Ready!";
+		
+		preferences = cordova.require("cordova/plugin/applicationpreferences");
+	}
+	
+	function setPreference() {
+		preferences.set("myKey", "myValue", function() {
+			alert("Successfully saved!");
+		}, function(error) {
+			alert("Error! " + JSON.stringify(error));
+		});		
+	}
+	
+	function getPreference() {
+		preferences.get("myKey", function(value) {
+			alert("Value is " + value);
+		}, function(error) {
+			alert("Error! " + JSON.stringify(error));
+		});	
+	}
+	
+	function removePreference() {
+		preferences.remove("myKey", function(value) {
+			alert("Value removed!");
+		}, function(error) {
+			alert("Error! " + JSON.stringify(error));
+		});	
+	}
+	
+	function loadAllPreferences() {
+		preferences.load(function(prefs) {
+			alert(JSON.stringify(prefs));
+		}, function(error) {
+			alert("Error! " + JSON.stringify(error));
+		});
+	}
+	
+	function clearAllPreferences() {
+		preferences.clear(function() {
+			alert("Cleared all preferences!");
+		}, function(error) {
+			alert("Error! " + JSON.stringify(error));
+		});
+	}
+	
+	function showPreferenceActivity() {
+		preferences.show("com.ranhiru.apppreferences.PreferenceActivity", function() {
+			alert("Showing Preferences Activity!");
+		}, function(error) {
+			alert("Error! " + JSON.stringify(error));
+		});
+	}
+	
+</script>
+
+</head>
+<body onload="init();">
+	<h1 id="test"></h1>
+	
+	<button onclick="setPreference();">Set Preference</button>
+	
+	<button onclick="getPreference();">Get Preference</button>
+	
+	<button onclick="removePreference();">Remove Preference</button>
+	
+	<button onclick="loadAllPreferences();">Load Preferences</button>
+	
+	<button onclick="clearAllPreferences()">Clear All Preferences</button>
+	
+	<button onclick="showPreferenceActivity();">Show Preferences Activity</button>
+	
+</body>
+</html>

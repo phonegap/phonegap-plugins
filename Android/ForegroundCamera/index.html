@@ -1,0 +1,83 @@
+<!-- 
+		Copyright 2012 Bruno Carreira - Lucas Farias - Rafael Luna - Vin�cius Fonseca. 
+
+		Licensed under the Apache License, Version 2.0 (the "License");
+		you may not use this file except in compliance with the License.
+		You may obtain a copy of the License at
+
+		http://www.apache.org/licenses/LICENSE-2.0
+
+		Unless required by applicable law or agreed to in writing, software
+		distributed under the License is distributed on an "AS IS" BASIS,
+		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+		See the License for the specific language governing permissions and
+   		limitations under the License. 
+ -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Capture Photo</title>
+
+    <script src="js/cordova-2.1.0.js"></script>
+    <script type="text/javascript" src="js/camera.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+	    var pictureSource;   // picture source
+	    var destinationType; // sets the format of returned value 
+	
+	    // Wait for PhoneGap to connect with the device
+	    //
+	    document.addEventListener("deviceready",onDeviceReady,false);
+	
+	    // PhoneGap is ready to be used!
+	    //
+	    function onDeviceReady() {
+	        pictureSource=navigator.camera.PictureSourceType;
+	        destinationType=navigator.camera.DestinationType;
+	    }
+	
+	    // Called when a photo is successfully retrieved
+	    //
+	    function onPhotoDataSuccess(imageData) {
+	      // Uncomment to view the base64 encoded image data
+	      console.log("---> Image: "+imageData);
+	
+	      // Get image handle
+	      //
+	      var smallImage = document.getElementById('smallImage');
+	
+	      // Unhide image elements
+	      //
+	      smallImage.style.display = 'block';
+	
+	      // Show the captured photo
+	      // The inline CSS rules are used to resize the image
+	      //
+	      smallImage.src = imageData;
+	    }
+	    
+	    // Called if something bad happens.
+	    // 
+	    function onFail(message) {
+	      alert('Failed because: ' + message);
+	    }
+	
+	    // A button will call this function
+	    //
+	    function capturePhoto() {
+	      // Take picture using device camera and retrieve image as base64-encoded string
+	      navigator.camera.getPicture(onPhotoDataSuccess, onFail,
+		  {
+	          quality: 70,
+	          targetWidth: 800,
+	          targetHeight: 600
+		  });
+	    }
+
+    </script>
+  </head>
+  <body>
+    <button onclick="capturePhoto();">Capture Photo</button> <br>
+    <img style="display:none;width:160px;height:160px;" id="smallImage" src="" />
+  </body>
+</html>

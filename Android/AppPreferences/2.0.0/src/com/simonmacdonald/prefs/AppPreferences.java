@@ -70,6 +70,16 @@ public class AppPreferences extends Plugin {
             	Editor editor = sharedPrefs.edit();
             	editor.clear();
             	return new PluginResult(status, editor.commit());
+            } else if (action.equals("remove")) {
+            	String key = args.getString(0);            	
+            	if (sharedPrefs.contains(key)) {
+            		Editor editor = sharedPrefs.edit();
+                	editor.remove(key);
+                	return new PluginResult(status, editor.commit());
+                } else {
+                    return createErrorObj(NO_PROPERTY, "No such property called " + key);
+                }
+            	
             }
         } catch (JSONException e) {
             status = PluginResult.Status.JSON_EXCEPTION;

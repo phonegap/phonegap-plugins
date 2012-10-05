@@ -10,20 +10,35 @@
 function Torch()
 {
 	this._isOn = false;
+	this._isCapable = false;
 	var self = this;
 	
+	cordova.exec(null, null, "Torch","isCapable", []);
 	this.__defineGetter__("isOn", function() { return self._isOn; });	
 }
 
 Torch.prototype.turnOn = function()
 {
-	PhoneGap.exec("Torch.turnOn");
+    if (this.isCapable())
+    {
+        console.log("Torch on");
+
+        cordova.exec("Torch.turnOn");
+    }
 };
 
 Torch.prototype.turnOff = function()
 {
-	PhoneGap.exec("Torch.turnOff");
+	console.log("Torch off");
+	
+	cordova.exec("Torch.turnOff");
 };
+
+Torch.prototype.isCapable = function()
+{
+	console.log("Capable: " + this._isCapable);
+	return this._isCapable;
+}
 
 Torch.install = function()
 {
@@ -33,4 +48,4 @@ Torch.install = function()
 	window.plugins.torch = new Torch();
 };
 
-PhoneGap.addConstructor(Torch.install);
+cordova.addConstructor(Torch.install);

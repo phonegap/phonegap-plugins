@@ -17,5 +17,6 @@
 
 - (void) turnOn:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) turnOff:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) isCapable:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 @end

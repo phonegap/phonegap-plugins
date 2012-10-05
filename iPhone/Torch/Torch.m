@@ -18,13 +18,7 @@
 
 @synthesize session;
 
-#ifdef PHONEGAP_FRAMEWORK
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView
-#endif
-
-#ifdef CORDOVA_FRAMEWORK
 - (CDVPlugin*) initWithWebView:(UIWebView*)theWebView
-#endif
 
 {
     self = (Torch*)[super initWithWebView:theWebView];

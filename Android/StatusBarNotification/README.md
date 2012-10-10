@@ -17,6 +17,10 @@ Using this plugin requires [Android Cordova](http://github.com/apache/incubator-
 
     &lt;plugin name="StatusBarNotification" value="com.phonegap.plugins.statusBarNotification.StatusBarNotification"/&gt;
 
+   CAUTION: Using PhoneGap &ge; 2.0 (aka Cordova) you have to add this line into res/xml/config.xml in the &lt;plugins&gt;-section.
+The plugins.xml is no longer supported. The plugins are all located in the config.xml
+
+
 4. You will need to add a notification.png file to your applications res/drawable-ldpi, res/drawable-mdpi & res/drawable-hdpi or res/drawable-xhdpi directories (depending on what resolutions you want to support).
 
 5. You will need to add an import line like this to the .java files (see commented out lines inside the files):

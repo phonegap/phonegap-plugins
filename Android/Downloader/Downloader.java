@@ -15,8 +15,8 @@ import org.json.JSONObject;
 import android.util.Log;
 import android.os.Environment;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 public class Downloader extends Plugin {
 

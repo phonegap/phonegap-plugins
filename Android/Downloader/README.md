@@ -25,10 +25,10 @@ The plugin creates the object `window.plugins.downloader` with one method `downl
 
     {
         status: 0,        		//0 means progress, 1 means download is complete.
-	total: 1000,      		//The total number of bytes to download.        
-	file: "file.ext"  		//Name of the file
-	dir: "/mnt/sdcard/download"	//Name of the directory
-	progress: 46,     		//In percent
+        total: 1000,      		//The total number of bytes to download.        
+        file: "file.ext"  		//Name of the file
+        dir: "/mnt/sdcard/download"	//Name of the directory
+        progress: 46,     		//In percent
     }
 
 An example could be:

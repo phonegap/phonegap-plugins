@@ -4,12 +4,6 @@
 	MIT Licensed
 **/
 
-
-    /* shim to work in 1.5 and 1.6 */
-    if (!window.Cordova) {
-        window.Cordova = cordova;
-    };
-
     /**
      * Constructor
      */
@@ -62,7 +56,7 @@
                 defaults[key] = options[key];
         }
         this._callback = cb;
-        Cordova.exec("DatePicker.show", defaults);
+        PhoneGap.exec("DatePicker.show", defaults);
     }
 
     DatePicker.prototype._dateSelected = function(date) {
@@ -72,7 +66,7 @@
     }
 
 
-    Cordova.addConstructor(function() {
+    PhoneGap.addConstructor(function() {
         if(!window.plugins)
         {
             window.plugins = {};

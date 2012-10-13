@@ -33,7 +33,11 @@
 
 #pragma mark - Public Methods
 
+#ifdef CORDOVA_FRAMEWORK
 - (CDVPlugin *)initWithWebView:(UIWebView *)theWebView
+#else
+- (PGPlugin *)initWithWebView:(UIWebView *)theWebView
+#endif
 {
 	self = (DatePicker *)[super initWithWebView:theWebView];
 
@@ -156,27 +160,35 @@
 - (void)configureDatePicker:(NSMutableDictionary *)optionsOrNil;
 {
  	NSString *mode = [optionsOrNil objectForKey:@"mode"];
-	NSString *dateString = [optionsOrNil objectForKey:@"date"];
+	NSString *defaultDateString = [optionsOrNil objectForKey:@"defaultDate"];
+	NSString *startDateString = [optionsOrNil objectForKey:@"startDate"];
+	NSString *endDateString = [optionsOrNil objectForKey:@"endDate"];
 	BOOL allowOldDates = NO;
 	BOOL allowFutureDates = YES;
 
+	self.datePicker.date = [self.isoDateFormatter dateFromString:defaultDateString];
+
 	if ([[optionsOrNil objectForKey:@"allowOldDates"] intValue] == 1) {
 		allowOldDates = YES;
-	}
-
-	if ( ! allowOldDates) {
-		self.datePicker.minimumDate = [NSDate date];
 	}
 	
 	if ([[optionsOrNil objectForKey:@"allowFutureDates"] intValue] == 0) {
 		allowFutureDates = NO;
 	}
 
+	if ( ! allowOldDates) {
+		self.datePicker.minimumDate = [NSDate date];
+	}
+	else if ( [startDateString length] ) {	
+		self.datePicker.minimumDate = [self.isoDateFormatter dateFromString:startDateString];
+	}
+
 	if ( ! allowFutureDates) {
 		self.datePicker.maximumDate = [NSDate date];
 	}
-
-	self.datePicker.date = [self.isoDateFormatter dateFromString:dateString];
+	else if ( [endDateString length] ) {	
+		self.datePicker.maximumDate = [self.isoDateFormatter dateFromString:endDateString];
+	}
 
 	if ([mode isEqualToString:@"date"]) {
 		self.datePicker.datePickerMode = UIDatePickerModeDate;

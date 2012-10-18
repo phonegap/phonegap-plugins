@@ -23,21 +23,25 @@
 
 	NSMutableDictionary* tabBarItems;
 
-	CGRect	originalWebViewBounds;
+	// Represents frame of web view as if started in portrait mode. Coordinates are relative to the superview. With
+    // Cordova 2.1.0, frame.origin.y=0 means directly under the status bar, while in older versions it would have been
+    // frame.origin.y=20.
+	CGRect	originalWebViewFrame;
+
     CGFloat navBarHeight;
     CGFloat tabBarHeight;
     bool tabBarAtBottom;
 }
 
-- (void)create:(NSArray*)arguments withDict:(NSDictionary*)options;
-- (void)show:(NSArray*)arguments withDict:(NSDictionary*)options;
-- (void)resize:(NSArray*)arguments withDict:(NSDictionary*)options;
-- (void)hide:(NSArray*)arguments withDict:(NSDictionary*)options;
-- (void)init:(NSArray*)arguments withDict:(NSDictionary*)options;
-- (void)showItems:(NSArray*)arguments withDict:(NSDictionary*)options;
-- (void)createItem:(NSArray*)arguments withDict:(NSDictionary*)options;
-- (void)updateItem:(NSArray*)arguments withDict:(NSDictionary*)options;
-- (void)selectItem:(NSArray*)arguments withDict:(NSDictionary*)options;
+- (void)create:(CDVInvokedUrlCommand*)command;
+- (void)show:(CDVInvokedUrlCommand*)command;
+- (void)resize:(CDVInvokedUrlCommand*)command;
+- (void)hide:(CDVInvokedUrlCommand*)command;
+- (void)init:(CDVInvokedUrlCommand*)command;
+- (void)showItems:(CDVInvokedUrlCommand*)command;
+- (void)createItem:(CDVInvokedUrlCommand*)command;
+- (void)updateItem:(CDVInvokedUrlCommand*)command;
+- (void)selectItem:(CDVInvokedUrlCommand*)command;
 
 @end
 

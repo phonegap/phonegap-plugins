@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Cordova</title>
+<script type="text/javascript" charset="utf-8" src="cordova-2.1.0.js"></script>
+<script type="text/javascript" src="ActionBarSherlockTabBar.js"></script>
+<script type="text/javascript" src="jquery-1.8.2.min.js"></script>
+<script type="text/javascript">
+    document.addEventListener('deviceready', function() {
+        navigator.splashscreen.hide()
+
+        $('<p/>').text('PhoneGap ready!').appendTo($('body'))
+
+        actionBarSherlockTabBar = cordova.require('cordova/plugin/actionBarSherlockTabBar')
+        actionBarSherlockTabBar.setTabSelectedListener(function(tabTag) {
+            $('#tab-name').text('Tab "' + tabTag + '" selected.')
+        })
+    }, false)
+</script>
+</head>
+<body>
+<h1>Hello World</h1>
+<p id="tab-name"></p>
+</body>
+</html>

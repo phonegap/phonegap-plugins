@@ -18,7 +18,7 @@ Installing the plugin
 
 - Copy *.xib, *.m and *.h files to your project's "Plugins" folder (should already exist and contain a README file if you used the Cordova project template)
 - They have to be added to the project as well, so drag them from the "Plugins" folder (in Finder) to the same folder (in Xcode) and select to create references
-- Open "Supporting Files/Cordova.plist" and under "Plugins", add a key with the plugin name "NavigationBar" and a string value of "NavigationBar" (I guess it's the plugin's main class name)
+- Open "Resources/Cordova.plist" and under "Plugins", add a key with the plugin name "NavigationBar" and a string value of "NavigationBar" (I guess it's the plugin's main class name)
 
 Note regarding orientation changes and the tab bar plugin
 ---------------------------------------------------------
@@ -57,7 +57,12 @@ This example shows how to use the navigation bar:
 
         plugins.navigationBar.init()
 
-        plugins.navigationBar.create() // or .create("BlackOpaque") to apply a certain style
+        plugins.navigationBar.create()
+        // or to apply a certain style (one of "Black", "BlackOpaque", "BlackTranslucent", "Default"):
+        plugins.navigationBar.create("BlackOpaque")
+        // or with a yellow tint color (note: parameters might be changed to one object in a later version)
+        plugins.navigationBar.create('BlackOpaque', {tintColorRgba: '255,255,0,255'})
+
         plugins.navigationBar.hideLeftButton()
         plugins.navigationBar.hideRightButton()
 

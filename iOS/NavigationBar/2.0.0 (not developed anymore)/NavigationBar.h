@@ -10,7 +10,9 @@
 @interface NavigationBar : CDVPlugin <CDVNavigationBarDelegate> {
     UINavigationBar * navBar;
 
+    // Represents bounds as if started in portrait mode!
 	CGRect	originalWebViewBounds;
+
     CGFloat navBarHeight;
     CGFloat tabBarHeight;
 

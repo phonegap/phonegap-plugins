@@ -1,0 +1,9 @@
+<resources>
+
+    <string name="app_name">PhoneGapAndroidTest</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="tab_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+
+</resources>

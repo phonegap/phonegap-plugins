@@ -26,13 +26,44 @@
     self = (NavigationBar*)[super initWithWebView:theWebView];
     if(self)
     {
-        // The original web view bounds must be retrieved here. On iPhone, it would be 0,0,320,460 for example. Since
+        // -----------------------------------------------------------------------
+        // This code block is the same for both the navigation and tab bar plugin!
+        // -----------------------------------------------------------------------
+
+        // The original web view frame must be retrieved here. On iPhone, it would be 0,0,320,460 for example. Since
         // Cordova seems to initialize plugins on the first call, there is a plugin method init() that has to be called
         // in order to make Cordova call *this* method. If someone forgets the init() call and uses the navigation bar
-        // and tab bar plugins together, these values won't be the original web view bounds and layout will be wrong.
-        originalWebViewBounds = theWebView.bounds;
+        // and tab bar plugins together, these values won't be the original web view frame and layout will be wrong.
+        originalWebViewFrame = theWebView.frame;
+        UIApplication *app = [UIApplication sharedApplication];
+
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        switch (orientation)
+        {
+            case UIInterfaceOrientationPortrait:
+            case UIInterfaceOrientationPortraitUpsideDown:
+                break;
+            case UIInterfaceOrientationLandscapeLeft:
+            case UIInterfaceOrientationLandscapeRight:
+            {
+                float statusBarHeight = 0;
+                if(!app.statusBarHidden)
+                    statusBarHeight = MIN(app.statusBarFrame.size.width, app.statusBarFrame.size.height);
+
+                originalWebViewFrame = CGRectMake(originalWebViewFrame.origin.y,
+                                                  originalWebViewFrame.origin.x,
+                                                  originalWebViewFrame.size.height + statusBarHeight,
+                                                  originalWebViewFrame.size.width - statusBarHeight);
+                break;
+            }
+            default:
+                NSLog(@"Unknown orientation: %d", orientation);
+                break;
+        }
+
         navBarHeight = 44.0f;
         tabBarHeight = 49.0f;
+        // -----------------------------------------------------------------------
     }
     return self;
 }
@@ -89,7 +120,7 @@
     return backButtonItem;
 }
 
--(void)correctWebViewBounds
+-(void)correctWebViewFrame
 {
     if(!navBar)
         return;
@@ -119,24 +150,26 @@
             break;
         }
 
+    // -----------------------------------------------------------------------------
     // IMPORTANT: Below code is the same in both the navigation and tab bar plugins!
+    // -----------------------------------------------------------------------------
 
-    CGFloat left = originalWebViewBounds.origin.x;
-    CGFloat right = left + originalWebViewBounds.size.width;
-    CGFloat top = originalWebViewBounds.origin.y;
-    CGFloat bottom = top + originalWebViewBounds.size.height;
+    CGFloat left = originalWebViewFrame.origin.x;
+    CGFloat right = left + originalWebViewFrame.size.width;
+    CGFloat top = originalWebViewFrame.origin.y;
+    CGFloat bottom = top + originalWebViewFrame.size.height;
 
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     switch (orientation)
     {
         case UIInterfaceOrientationPortrait:
         case UIInterfaceOrientationPortraitUpsideDown:
-            // No need to change width/height from original bounds
+            // No need to change width/height from original frame
             break;
         case UIInterfaceOrientationLandscapeLeft:
         case UIInterfaceOrientationLandscapeRight:
-            right = left + originalWebViewBounds.size.height + 20.0f;
-            bottom = top + originalWebViewBounds.size.width - 20.0f;
+            right = left + originalWebViewFrame.size.height + 20.0f;
+            bottom = top + originalWebViewFrame.size.width - 20.0f;
             break;
         default:
             NSLog(@"Unknown orientation: %d", orientation);
@@ -154,46 +187,67 @@
             top += tabBarHeight;
     }
 
-    CGRect webViewBounds = CGRectMake(left, top, right - left, bottom - top);
+    CGRect webViewFrame = CGRectMake(left, top, right - left, bottom - top);
 
-    [self.webView setFrame:webViewBounds];
+    [self.webView setFrame:webViewFrame];
+
+    // -----------------------------------------------------------------------------
 
     // NOTE: Following part again for navigation bar plugin only
 
     if(navBarShown)
     {
         if(tabBarAtBottom)
-            [navBar setFrame:CGRectMake(left, originalWebViewBounds.origin.y, right - left, navBarHeight)];
+            [navBar setFrame:CGRectMake(left, originalWebViewFrame.origin.y, right - left, navBarHeight)];
         else
-            [navBar setFrame:CGRectMake(left, originalWebViewBounds.origin.y + tabBarHeight, right - left, navBarHeight)];
+            [navBar setFrame:CGRectMake(left, originalWebViewFrame.origin.y + tabBarHeight, right - left, navBarHeight)];
     }
 }
 
 /*********************************************************************************/
 
--(void) create:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+-(void) create:(CDVInvokedUrlCommand*)command
 {
-    if (!navBar)
+    if(navBar)
+        return;
+
+    navBarController = [[CDVNavigationBarController alloc] init];
+    navBar = (UINavigationBar*)[navBarController view];
+
+    const NSDictionary *options = command ? [command.arguments objectAtIndex:0] : nil;
+
+    if(options)
     {
-        navBarController = [[CDVNavigationBarController alloc] init];
-        navBar = (UINavigationBar*)[navBarController view];
+        id style = [options objectForKey:@"style"];
 
-        NSString * style = [arguments objectAtIndex:0];
+        if(style && style != [NSNull null])
+        {
+            if([style isEqualToString:@"BlackTranslucent"])
+                navBar.barStyle = UIBarStyleBlackTranslucent;
+            else if([style isEqualToString:@"BlackOpaque"])
+                navBar.barStyle = UIBarStyleBlackOpaque;
+            else if([style isEqualToString:@"Black"])
+                navBar.barStyle = UIBarStyleBlack;
+            // else the default will be used
+        }
 
-        if(style && [style isEqualToString:@"BlackTranslucent"])
-            navBar.barStyle = UIBarStyleBlackTranslucent;
-        else if(style && [style isEqualToString:@"BlackOpaque"])
-            navBar.barStyle = UIBarStyleBlackOpaque;
-        else if(style && [style isEqualToString:@"Black"])
-            navBar.barStyle = UIBarStyleBlack;
-        // else the default will be used
+        id tint = [options objectForKey:@"tintColorRgba"];
 
-        [navBarController setDelegate:self];
-
-        [[navBarController view] setFrame:CGRectMake(0, 0, originalWebViewBounds.size.width, navBarHeight)];
-        [[[self webView] superview] addSubview:[navBarController view]];
-        [navBar setHidden:YES];
+        if(tint && tint != [NSNull null])
+        {
+            NSArray *rgba = [tint componentsSeparatedByString:@","];
+            navBar.tintColor = [UIColor colorWithRed:[[rgba objectAtIndex:0] intValue]/255.0f
+                                               green:[[rgba objectAtIndex:1] intValue]/255.0f
+                                                blue:[[rgba objectAtIndex:2] intValue]/255.0f
+                                               alpha:[[rgba objectAtIndex:3] intValue]/255.0f];
+        }
     }
+
+    [navBarController setDelegate:self];
+
+    [[navBarController view] setFrame:CGRectMake(0, 0, originalWebViewFrame.size.width, navBarHeight)];
+    [[[self webView] superview] addSubview:[navBarController view]];
+    [navBar setHidden:YES];
 }
 
 + (UIBarButtonSystemItem)getUIBarButtonSystemItemForString:(NSString*)imageName
@@ -228,17 +282,30 @@
     return systemItem;
 }
 
--(void) init:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+-(void) init:(CDVInvokedUrlCommand*)command
 {
     // Dummy function, see initWithWebView
 }
 
 // NOTE: Returned object is owned
-- (UIBarButtonItem*)makeButtonWithOptions:(NSDictionary*)options title:(NSString*)title imageName:(NSString*)imageName actionOnSelf:(SEL)actionOnSelf
+- (UIBarButtonItem*)makeButtonWithOptions:(const NSDictionary*)options title:(NSString*)title imageName:(NSString*)imageName actionOnSelf:(SEL)actionOnSelf
 {
-    NSNumber *useImageAsBackgroundOpt = [options objectForKey:@"useImageAsBackground"];
-    float fixedMarginLeft = [[options objectForKey:@"fixedMarginLeft"] floatValue] ?: 13;
-    float fixedMarginRight = [[options objectForKey:@"fixedMarginRight"] floatValue] ?: 13;
+    NSNumber *useImageAsBackgroundOpt = [NSNumber numberWithInt:1];
+    float fixedMarginLeft = 13;
+    float fixedMarginRight = 13;
+
+    if(options)
+    {
+        useImageAsBackgroundOpt = [options objectForKey:@"useImageAsBackground"];
+        id fixedMarginLeftOpt = [options objectForKey:@"fixedMarginLeft"];
+        id fixedMarginRightOpt = [options objectForKey:@"fixedMarginRight"];
+
+        if(fixedMarginLeftOpt && fixedMarginLeftOpt != [NSNull null])
+            fixedMarginLeft = [fixedMarginLeftOpt floatValue];
+        if(fixedMarginRightOpt && fixedMarginRightOpt != [NSNull null])
+            fixedMarginRight = [fixedMarginRightOpt floatValue];
+    }
+
     bool useImageAsBackground = useImageAsBackgroundOpt ? [useImageAsBackgroundOpt boolValue] : false;
 
     if((title && [title length] > 0) || useImageAsBackground)
@@ -271,10 +338,11 @@
     }
 }
 
-- (void)setupLeftButton:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)setupLeftButton:(CDVInvokedUrlCommand*)command
 {
-    NSString * title = [arguments objectAtIndex:0];
-    NSString * imageName = [arguments objectAtIndex:1];
+    NSString * title = [command.arguments objectAtIndex:0];
+    NSString * imageName = [command.arguments objectAtIndex:1];
+    const NSDictionary *options = [command.arguments objectAtIndex:2];
 
     UIBarButtonItem *newButton = [self makeButtonWithOptions:options title:title imageName:imageName actionOnSelf:@selector(leftButtonTapped)];
     navBarController.navItem.leftBarButtonItem = newButton;
@@ -282,10 +350,11 @@
     [newButton release];
 }
 
-- (void)setupRightButton:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)setupRightButton:(CDVInvokedUrlCommand*)command
 {
-    NSString * title = [arguments objectAtIndex:0];
-    NSString * imageName = [arguments objectAtIndex:1];
+    NSString * title = [command.arguments objectAtIndex:0];
+    NSString * imageName = [command.arguments objectAtIndex:1];
+    const NSDictionary *options = [command.arguments objectAtIndex:2];
 
     UIBarButtonItem *newButton = [self makeButtonWithOptions:options title:title imageName:imageName actionOnSelf:@selector(rightButtonTapped)];
     navBarController.navItem.rightBarButtonItem = newButton;
@@ -293,22 +362,22 @@
     [newButton release];
 }
 
-- (void)hideLeftButton:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)hideLeftButton:(CDVInvokedUrlCommand*)command
 {
     [[navBarController navItem] setLeftBarButtonItem:nil];
 }
 
-- (void)showLeftButton:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)showLeftButton:(CDVInvokedUrlCommand*)command
 {
     [[navBarController navItem] setLeftBarButtonItem:[navBarController leftButton]];
 }
 
-- (void)hideRightButton:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)hideRightButton:(CDVInvokedUrlCommand*)command
 {
     [[navBarController navItem] setRightBarButtonItem:nil];
 }
 
-- (void)showRightButton:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)showRightButton:(CDVInvokedUrlCommand*)command
 {
     [[navBarController navItem] setRightBarButtonItem:[navBarController rightButton]];
 }
@@ -325,25 +394,25 @@
     [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
 }
 
--(void) show:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+-(void) show:(CDVInvokedUrlCommand*)command
 {
     if (!navBar)
-        [self create:nil withDict:nil];
+        [self create:nil];
 
     if ([navBar isHidden])
     {
         [navBar setHidden:NO];
-        [self correctWebViewBounds];
+        [self correctWebViewFrame];
     }
 }
 
 
--(void) hide:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+-(void) hide:(CDVInvokedUrlCommand*)command
 {
     if (navBar && ![navBar isHidden])
     {
         [navBar setHidden:YES];
-        [self correctWebViewBounds];
+        [self correctWebViewFrame];
     }
 }
 
@@ -351,31 +420,28 @@
  * Resize the navigation bar (this should be called on orientation change)
  * This is important in playing together with the tab bar plugin, especially because the tab bar can be placed on top
  * or at the bottom, so the navigation bar bounds also need to be changed.
- *
- * @param arguments unused
- * @param options unused
  */
-- (void)resize:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)resize:(CDVInvokedUrlCommand*)command
 {
-    [self correctWebViewBounds];
+    [self correctWebViewFrame];
 }
 
--(void) setTitle:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+-(void) setTitle:(CDVInvokedUrlCommand*)command
 {
-    if (navBar)
-    {
-        NSString  *name = [arguments objectAtIndex:0];
-        [navBarController navItem].title = name;
+    if(!navBar)
+        return;
 
-        // Reset otherwise overriding logo reference
-        [navBarController navItem].titleView = NULL;
-    }
+    NSString  *title = [command.arguments objectAtIndex:0];
+    [navBarController navItem].title = title;
+
+    // Reset otherwise overriding logo reference
+    [navBarController navItem].titleView = NULL;
 }
 
--(void) setLogo:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+-(void) setLogo:(CDVInvokedUrlCommand*)command
 {
-    NSString * logoURL = [arguments objectAtIndex:0];
-    UIImage * image = nil;
+    NSString *logoURL = [command.arguments objectAtIndex:0];
+    UIImage *image = nil;
 
     if (logoURL && logoURL != @"")
     {

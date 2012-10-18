@@ -19,9 +19,10 @@ function TabBar() {
  * @param options Additional options:
  *   - selectedImageTintColorRgba: Tint color for selected items (defaults to standard light blue), must define the
  *     color as string e.g. '255,0,0,128' for 50% transparent red. This is only supported on iOS 5 or newer.
+ *   - tintColorRgba: Tint color for the bar itself (value as above)
  */
 TabBar.prototype.create = function(options) {
-    cordova.exec("TabBar.create", options);
+    cordova.exec("TabBar.create", options || {});
 };
 
 /**
@@ -118,9 +119,7 @@ TabBar.prototype.selectItem = function(tab) {
  * - \c position specifies whether the tab bar will be placed at the \c top or \c bottom of the screen (default: \c bottom)
  */
 TabBar.prototype.show = function(options) {
-    if(!options)
-        options = {position: 'bottom'};
-    cordova.exec("TabBar.show", options);
+    cordova.exec("TabBar.show", options || {});
 };
 
 /**

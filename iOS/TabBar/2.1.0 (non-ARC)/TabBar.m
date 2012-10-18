@@ -28,16 +28,49 @@
 -(CDVPlugin*) initWithWebView:(UIWebView*)theWebView
 {
     self = (TabBar*)[super initWithWebView:theWebView];
-    if (self)
-	{
-        // The original web view bounds must be retrieved here. On iPhone, it would be 0,0,320,460 for example. Since
+    if(self)
+    {
+        tabBarItems = [[NSMutableDictionary alloc] initWithCapacity:5];
+
+        // -----------------------------------------------------------------------
+        // This code block is the same for both the navigation and tab bar plugin!
+        // -----------------------------------------------------------------------
+
+        // The original web view frame must be retrieved here. On iPhone, it would be 0,0,320,460 for example. Since
         // Cordova seems to initialize plugins on the first call, there is a plugin method init() that has to be called
         // in order to make Cordova call *this* method. If someone forgets the init() call and uses the navigation bar
-        // and tab bar plugins together, these values won't be the original web view bounds and layout will be wrong.
-        tabBarItems = [[NSMutableDictionary alloc] initWithCapacity:5];
-		originalWebViewBounds = theWebView.bounds;
-        tabBarHeight = 49.0f;
+        // and tab bar plugins together, these values won't be the original web view frame and layout will be wrong.
+        originalWebViewFrame = theWebView.frame;
+        UIApplication *app = [UIApplication sharedApplication];
+
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        switch (orientation)
+        {
+            case UIInterfaceOrientationPortrait:
+            case UIInterfaceOrientationPortraitUpsideDown:
+                break;
+            case UIInterfaceOrientationLandscapeLeft:
+            case UIInterfaceOrientationLandscapeRight:
+            {
+                float statusBarHeight = 0;
+                if(!app.statusBarHidden)
+                    statusBarHeight = MIN(app.statusBarFrame.size.width, app.statusBarFrame.size.height);
+
+                originalWebViewFrame = CGRectMake(originalWebViewFrame.origin.y,
+                                                  originalWebViewFrame.origin.x,
+                                                  originalWebViewFrame.size.height + statusBarHeight,
+                                                  originalWebViewFrame.size.width - statusBarHeight);
+                break;
+            }
+            default:
+                NSLog(@"Unknown orientation: %d", orientation);
+                break;
+        }
+
         navBarHeight = 44.0f;
+        tabBarHeight = 49.0f;
+        // -----------------------------------------------------------------------
+
         tabBarAtBottom = true;
     }
     return self;
@@ -51,7 +84,7 @@
     [super dealloc];
 }
 
--(void)correctWebViewBounds
+-(void)correctWebViewFrame
 {
     if(!tabBar)
         return;
@@ -67,24 +100,26 @@
             break;
         }
 
+    // -----------------------------------------------------------------------------
     // IMPORTANT: Below code is the same in both the navigation and tab bar plugins!
+    // -----------------------------------------------------------------------------
 
-    CGFloat left = originalWebViewBounds.origin.x;
-    CGFloat right = left + originalWebViewBounds.size.width;
-    CGFloat top = originalWebViewBounds.origin.y;
-    CGFloat bottom = top + originalWebViewBounds.size.height;
+    CGFloat left = originalWebViewFrame.origin.x;
+    CGFloat right = left + originalWebViewFrame.size.width;
+    CGFloat top = originalWebViewFrame.origin.y;
+    CGFloat bottom = top + originalWebViewFrame.size.height;
 
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     switch (orientation)
     {
         case UIInterfaceOrientationPortrait:
         case UIInterfaceOrientationPortraitUpsideDown:
-            // No need to change width/height from original bounds
+            // No need to change width/height from original frame
             break;
         case UIInterfaceOrientationLandscapeLeft:
         case UIInterfaceOrientationLandscapeRight:
-            right = left + originalWebViewBounds.size.height + 20.0f;
-            bottom = top + originalWebViewBounds.size.width - 20.0f;
+            right = left + originalWebViewFrame.size.height + 20.0f;
+            bottom = top + originalWebViewFrame.size.width - 20.0f;
             break;
         default:
             NSLog(@"Unknown orientation: %d", orientation);
@@ -102,9 +137,11 @@
             top += tabBarHeight;
     }
 
-    CGRect webViewBounds = CGRectMake(left, top, right - left, bottom - top);
+    CGRect webViewFrame = CGRectMake(left, top, right - left, bottom - top);
 
-    [self.webView setFrame:webViewBounds];
+    [self.webView setFrame:webViewFrame];
+
+    // -----------------------------------------------------------------------------
 
     // NOTE: Following part again for tab bar plugin only
 
@@ -113,17 +150,23 @@
         if(tabBarAtBottom)
             [tabBar setFrame:CGRectMake(left, bottom, right - left, tabBarHeight)];
         else
-            [tabBar setFrame:CGRectMake(left, originalWebViewBounds.origin.y, right - left, tabBarHeight)];
+            [tabBar setFrame:CGRectMake(left, originalWebViewFrame.origin.y, right - left, tabBarHeight)];
     }
+}
+
+- (UIColor*)colorStringToColor:(NSString*)colorStr
+{
+    NSArray *rgba = [colorStr componentsSeparatedByString:@","];
+    return [UIColor colorWithRed:[[rgba objectAtIndex:0] intValue]/255.0f
+                           green:[[rgba objectAtIndex:1] intValue]/255.0f
+                            blue:[[rgba objectAtIndex:2] intValue]/255.0f
+                           alpha:[[rgba objectAtIndex:3] intValue]/255.0f];
 }
 
 /**
  * Create a native tab bar at either the top or the bottom of the display.
- * @brief creates a tab bar
- * @param arguments unused
- * @param options unused
  */
-- (void)create:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)create:(CDVInvokedUrlCommand*)command
 {
     tabBar = [UITabBar new];
     [tabBar sizeToFit];
@@ -134,15 +177,17 @@
     tabBar.userInteractionEnabled = YES;
     tabBar.opaque = YES;
 
-    NSString *iconTint = [options valueForKey:@"selectedImageTintColorRgba"];
+    const NSDictionary *options = command ? [command.arguments objectAtIndex:0] : nil;
 
-    if(iconTint && [tabBar respondsToSelector:@selector(setSelectedImageTintColor:)])
+    if(options)
     {
-        NSArray *rgba = [iconTint componentsSeparatedByString:@","];
-        tabBar.selectedImageTintColor = [UIColor colorWithRed:[[rgba objectAtIndex:0] intValue]/255.0f
-                                                        green:[[rgba objectAtIndex:1] intValue]/255.0f
-                                                         blue:[[rgba objectAtIndex:2] intValue]/255.0f
-                                                        alpha:[[rgba objectAtIndex:3] intValue]/255.0f];
+        id iconTint = [options objectForKey:@"selectedImageTintColorRgba"];
+        id tint = [options objectForKey:@"tintColorRgba"];
+
+        if(iconTint && iconTint != [NSNull null] && [tabBar respondsToSelector:@selector(setSelectedImageTintColor:)])
+            [tabBar setSelectedImageTintColor:[self colorStringToColor:iconTint]];
+        if(tint && tint != [NSNull null] && [tabBar respondsToSelector:@selector(setTintColor:)])
+            [tabBar setTintColor:[self colorStringToColor:tint]];
     }
 
     self.webView.superview.autoresizesSubviews = YES;
@@ -150,7 +195,7 @@
     [self.webView.superview addSubview:tabBar];
 }
 
--(void) init:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+-(void) init:(CDVInvokedUrlCommand*)command
 {
     // Dummy function, see initWithWebView
 }
@@ -163,31 +208,37 @@
  * - \c height integer indicating the height of the tab bar (default: \c 49)
  * - \c position specifies whether the tab bar will be placed at the \c top or \c bottom of the screen (default: \c bottom)
  */
-- (void)show:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)show:(CDVInvokedUrlCommand*)command
 {
     if (!tabBar)
-        [self create:nil withDict:nil];
+        [self create:nil];
 
 	// if we are calling this again when its shown, reset
 	if (!tabBar.hidden)
 		return;
 
-    //	CGRect offsetRect = [ [UIApplication sharedApplication] statusBarFrame];
+    const NSDictionary *options = [command.arguments objectAtIndex:0];
 
     if(options)
-	{
-        tabBarHeight = [[options objectForKey:@"height"] floatValue];
-        tabBarAtBottom = [[options objectForKey:@"position"] isEqualToString:@"bottom"];
+    {
+        id tabBarHeightOpt = [options objectForKey:@"height"];
+        id positionOpt = [options objectForKey:@"position"];
+
+        if(tabBarHeightOpt && tabBarHeightOpt != [NSNull null])
+            tabBarHeight = [tabBarHeightOpt floatValue];
+
+        if([positionOpt isKindOfClass:[NSString class]])
+            tabBarAtBottom = ![positionOpt isEqualToString:@"top"];
     }
 
     tabBar.tabBarAtBottom = tabBarAtBottom;
 
-	if(tabBarHeight == 0)
+    if(tabBarHeight == 0)
         tabBarHeight = 49.0f;
 
     tabBar.hidden = NO;
 
-    [self correctWebViewBounds];
+    [self correctWebViewFrame];
 }
 
 /**
@@ -196,9 +247,9 @@
  * @param arguments unused
  * @param options unused
  */
-- (void)resize:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)resize:(CDVInvokedUrlCommand*)command
 {
-    [self correctWebViewBounds];
+    [self correctWebViewFrame];
 }
 
 /**
@@ -207,14 +258,14 @@
  * @param arguments unused
  * @param options unused
  */
-- (void)hide:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)hide:(CDVInvokedUrlCommand*)command
 {
     if (!tabBar)
-        [self create:nil withDict:nil];
+        [self create:nil];
 
     tabBar.hidden = YES;
 
-    [self correctWebViewBounds];
+    [self correctWebViewFrame];
 }
 
 /**
@@ -244,15 +295,17 @@
  * @param options Options for customizing the individual tab item
  *  - \c badge value to display in the optional circular badge on the item; if nil or unspecified, the badge will be hidden
  */
-- (void)createItem:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)createItem:(CDVInvokedUrlCommand*)command
 {
     if (!tabBar)
-        [self create:nil withDict:nil];
+        [self create:nil];
 
-    NSString  *name      = [arguments objectAtIndex:0];
-    NSString  *title     = [arguments objectAtIndex:1];
-    NSString  *imageName = [arguments objectAtIndex:2];
-    int tag              = [[arguments objectAtIndex:3] intValue];
+    const NSDictionary *options = [command.arguments objectAtIndex:4];
+
+    NSString  *name      = [command.arguments objectAtIndex:0];
+    NSString  *title     = [command.arguments objectAtIndex:1];
+    NSString  *imageName = [command.arguments objectAtIndex:2];
+    int tag              = [[command.arguments objectAtIndex:3] intValue];
 
     UITabBarItem *item = nil;
     if ([imageName length] > 0)
@@ -277,8 +330,13 @@
     if (item == nil)
         item = [[UITabBarItem alloc] initWithTitle:title image:[UIImage imageNamed:imageName] tag:tag];
 
-    if ([options objectForKey:@"badge"])
-        item.badgeValue = [options objectForKey:@"badge"];
+    if(options)
+    {
+        id badgeOpt = [options objectForKey:@"badge"];
+
+        if(badgeOpt && badgeOpt != [NSNull null])
+            item.badgeValue = [badgeOpt stringValue];
+    }
 
     [tabBarItems setObject:item forKey:name];
 	[item release];
@@ -293,15 +351,28 @@
  * @param options Options for customizing the individual tab item
  *  - \c badge value to display in the optional circular badge on the item; if nil or unspecified, the badge will be hidden
  */
-- (void)updateItem:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)updateItem:(CDVInvokedUrlCommand*)command
 {
     if (!tabBar)
-        [self create:nil withDict:nil];
+        [self create:nil];
 
-    NSString  *name = [arguments objectAtIndex:0];
+    const NSDictionary *options = [command.arguments objectAtIndex:1];
+
+    if(!options)
+    {
+        NSLog(@"Missing options parameter in tabBar.updateItem");
+        return;
+    }
+
+    NSString  *name = [command.arguments objectAtIndex:0];
     UITabBarItem *item = [tabBarItems objectForKey:name];
-    if (item)
-        item.badgeValue = [options objectForKey:@"badge"];
+    if(item)
+    {
+        id badgeOpt = [options objectForKey:@"badge"];
+
+        if(badgeOpt && badgeOpt != [NSNull null])
+            item.badgeValue = [badgeOpt stringValue];
+    }
 }
 
 
@@ -314,22 +385,34 @@
  * @see createItem
  * @see create
  */
-- (void)showItems:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)showItems:(CDVInvokedUrlCommand*)command
 {
     if (!tabBar)
-        [self create:nil withDict:nil];
+        [self create:nil];
 
-    int i, count = [arguments count];
-    NSMutableArray *items = [[NSMutableArray alloc] initWithCapacity:count];
-    for (i = 0; i < count; i++) {
-        NSString *itemName = [arguments objectAtIndex:i];
+    int i, count = [command.arguments count];
+    NSDictionary *options = nil;
+
+    NSMutableArray *items = [[NSMutableArray alloc] initWithCapacity:MAX(count - 1, 1)];
+
+    for(i = 0; i < count; ++i)
+    {
+        if(i == count - 1 && [[command.arguments objectAtIndex:i] isKindOfClass:[NSDictionary class]])
+        {
+            options = [command.arguments objectAtIndex:i];
+            break;
+        }
+
+        NSString *itemName = [command.arguments objectAtIndex:i];
         UITabBarItem *item = [tabBarItems objectForKey:itemName];
-        if (item)
+        if(item)
             [items addObject:item];
+        else
+            NSLog(@"Cannot show tab with unknown tag '%@'", itemName);
     }
 
     BOOL animateItems = NO;
-    if ([options objectForKey:@"animate"])
+    if(options && [options objectForKey:@"animate"])
         animateItems = [(NSString*)[options objectForKey:@"animate"] boolValue];
     [tabBar setItems:items animated:animateItems];
 	[items release];
@@ -342,12 +425,12 @@
  * @see createItem
  * @see showItems
  */
-- (void)selectItem:(NSArray*)arguments withDict:(NSDictionary*)options
+- (void)selectItem:(CDVInvokedUrlCommand*)command
 {
     if (!tabBar)
-        [self create:nil withDict:nil];
+        [self create:nil];
 
-    NSString *itemName = [arguments objectAtIndex:0];
+    NSString *itemName = [command.arguments objectAtIndex:0];
     UITabBarItem *item = [tabBarItems objectForKey:itemName];
     if (item)
         tabBar.selectedItem = item;
@@ -358,7 +441,7 @@
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
     NSString * jsCallBack = [NSString stringWithFormat:@"window.plugins.tabBar.onItemSelected(%d);", item.tag];
-    [self.webView stringByEvaluatingJavaScriptFromString:jsCallBack];
+    [self writeJavascript:jsCallBack];
 }
 
 @end

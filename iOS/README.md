@@ -12,6 +12,7 @@ The [/iPhone](https://github.com/phonegap/phonegap-plugins/tree/master/iPhone) f
 * Added  Badge (iOS) plugin with Cordova support.
 * Added  BarcodeScanner (iOS) plugin with Cordova support.
 * Added  CalendarPlugin (iOS) plugin with Cordova support.
+* Added  ClipboardPlugin (iOS) plugin with Cordova support.
 * Added  ChildBrowser (iOS) plugin with Cordova support.
 * Added  DatePicker (iOS) plugin with Cordova support.
 * Added  Diagnostic (iOS) plugin with Cordova support.

@@ -7,6 +7,7 @@
 //
 
 #import "DGGeofencing.h"
+#import <Cordova/CDVViewController.h>
 
 @implementation DGLocationData
 
@@ -34,15 +35,15 @@
 
 @implementation DGGeofencing
 
-@synthesize locationManager, locationData;
+@synthesize locationData;
 
 - (CDVPlugin*) initWithWebView:(UIWebView*)theWebView
 {
     self = (DGGeofencing*)[super initWithWebView:(UIWebView*)theWebView];
     if (self) 
 	{
-        self.locationManager = [[[CLLocationManager alloc] init] autorelease];
-        self.locationManager.delegate = self; // Tells the location manager to send updates to this object
+        //self.locationManager = [[[CLLocationManager alloc] init] autorelease];
+        //self.locationManager.delegate = self; // Tells the location manager to send updates to this object
         self.locationData = nil;
     }
     return self;
@@ -50,8 +51,8 @@
 
 - (void) dealloc 
 {
-	self.locationManager.delegate = nil;
-	self.locationManager = nil;
+	//self.locationManager.delegate = nil;
+	//self.locationManager = nil;
 	[super dealloc];
 }
 
@@ -96,7 +97,7 @@
 
 - (BOOL) isLocationServicesEnabled
 {
-	BOOL locationServicesEnabledInstancePropertyAvailable = [self.locationManager respondsToSelector:@selector(locationServicesEnabled)]; // iOS 3.x
+	BOOL locationServicesEnabledInstancePropertyAvailable = [[[DGGeofencingHelper sharedGeofencingHelper] locationManager] respondsToSelector:@selector(locationServicesEnabled)]; // iOS 3.x
 	BOOL locationServicesEnabledClassPropertyAvailable = [CLLocationManager respondsToSelector:@selector(locationServicesEnabled)]; // iOS 4.x
     
 	if (locationServicesEnabledClassPropertyAvailable) 
@@ -105,7 +106,7 @@
 	} 
 	else if (locationServicesEnabledInstancePropertyAvailable) 
 	{ // iOS 2.x, iOS 3.x
-		return [(id)self.locationManager locationServicesEnabled];
+		return [(id)[[DGGeofencingHelper sharedGeofencingHelper] locationManager] locationServicesEnabled];
 	} 
 	else 
 	{
@@ -209,7 +210,7 @@
 - (void) getPendingRegionUpdates:(CDVInvokedUrlCommand*)command {
     NSString* callbackId = command.callbackId;
     
-    NSString *path = [[NSBundle mainBundle] bundlePath];
+    NSString *path = [DGGeofencingHelper applicationDocumentsDirectory];
     NSString *finalPath = [path stringByAppendingPathComponent:@"notifications.dg"];
     NSMutableArray *updates = [NSMutableArray arrayWithContentsOfFile:finalPath];
     
@@ -240,7 +241,7 @@
     
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
     CLRegion *region = [[CLRegion alloc] initCircularRegionWithCenter:coord radius:radius identifier:regionId];
-    [self.locationManager startMonitoringForRegion:region desiredAccuracy:kCLLocationAccuracyBestForNavigation];
+    [[[DGGeofencingHelper sharedGeofencingHelper] locationManager] startMonitoringForRegion:region desiredAccuracy:kCLLocationAccuracyBestForNavigation];
     [region release];
 }
 
@@ -252,7 +253,7 @@
     
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
     CLRegion *region = [[CLRegion alloc] initCircularRegionWithCenter:coord radius:10.0 identifier:regionId];
-    [self.locationManager stopMonitoringForRegion:region];
+    [[[DGGeofencingHelper sharedGeofencingHelper] locationManager] stopMonitoringForRegion:region];
     [region release];
 }
 
@@ -312,7 +313,7 @@
 - (void)getWatchedRegionIds:(CDVInvokedUrlCommand*)command {
     NSString* callbackId = command.callbackId;
     
-    NSSet *regions = self.locationManager.monitoredRegions;
+    NSSet *regions = [[DGGeofencingHelper sharedGeofencingHelper] locationManager].monitoredRegions;
     NSMutableArray *watchedRegions = [NSMutableArray array];
     for (CLRegion *region in regions) {
         [watchedRegions addObject:region.identifier];
@@ -329,21 +330,5 @@
 }
 
 #pragma mark Core Location Delegates
-
-- (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
-    NSMutableDictionary* posError = [NSMutableDictionary dictionaryWithCapacity:2];
-    [posError setObject: [NSNumber numberWithInt: error.code] forKey:@"code"];
-    [posError setObject: region.identifier forKey: @"regionid"];
-    CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:posError];
-    NSString *callbackId = [self.locationData.locationCallbacks dequeue];
-    if (callbackId) {
-        [self writeJavascript:[result toErrorCallbackString:callbackId]];
-    }
-}
-
-- (void)locationManager:(CLLocationManager *)manager
-       didFailWithError:(NSError *)error {
-    [self writeJavascript:[NSString stringWithFormat:@"Error: %@", error.description]];
-}
 
 @end

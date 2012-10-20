@@ -12,6 +12,8 @@
 
 #import <Cordova/CDVPlugin.h>
 
+#import "DGGeofencingHelper.h"
+
 #define KEY_REGION_ID       @"fid"
 #define KEY_REGION_LAT      @"latitude"
 #define KEY_REGION_LNG      @"longitude"
@@ -47,7 +49,7 @@ typedef NSInteger DGLocationAccuracy;
 
 @interface DGGeofencing : CDVPlugin <CLLocationManagerDelegate>
 
-@property (nonatomic, retain) CLLocationManager *locationManager;
+//@property (nonatomic, retain) CLLocationManager *locationManager;
 @property (nonatomic, retain) DGLocationData* locationData;
 
 - (BOOL) isLocationServicesEnabled;

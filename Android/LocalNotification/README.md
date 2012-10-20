@@ -4,7 +4,9 @@ To use this plugin, you need to perform the following steps:
 1. Copy the LocalNotification.js file to your 'www' folder and include it in your index.html
 2. Create a package com.phonegap.plugin.localnotification
 3. Copy the .java files into this package
-4. Fix the import in AlarmReceiver.java around line 67 where R.drawable.ic_launcher is referenced so it matches an icon in your project
+4. Fix the import in AlarmReceiver.java around line 67 where R.drawable.ic_launcher is referenced so it matches an icon in your project (add am import referencing your project. ie 'import com.example.helloworld.R')
+4a. For PhoneGap 2 known as Cordova 2 you need to fix the LocalNotification.java constructor near line 35. 
+	alarm = new AlarmHelper(cordova.getContext());       
 5. Update your res/xml/plugins.xml file with the following line:
 
         <plugin name="LocalNotification" value="com.phonegap.plugin.localnotification.LocalNotification" />

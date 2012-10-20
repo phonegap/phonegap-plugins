@@ -7,22 +7,9 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
-#ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PGPlugin.h>
-#endif
-
-#ifdef CORDOVA_FRAMEWORK
 #import <CORDOVA/CDVPlugin.h>
-#endif
 
-#ifdef PHONEGAP_FRAMEWORK
-@interface Torch : PGPlugin {
-#endif
-
-#ifdef CORDOVA_FRAMEWORK
 @interface Torch : CDVPlugin  {
-#endif
-
 	 AVCaptureSession* session;
 }
 
@@ -30,5 +17,6 @@
 
 - (void) turnOn:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) turnOff:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) isCapable:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 @end

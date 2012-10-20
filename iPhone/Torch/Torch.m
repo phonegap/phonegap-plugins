@@ -18,13 +18,7 @@
 
 @synthesize session;
 
-#ifdef PHONEGAP_FRAMEWORK
-- (PGPlugin*) initWithWebView:(UIWebView*)theWebView
-#endif
-
-#ifdef CORDOVA_FRAMEWORK
 - (CDVPlugin*) initWithWebView:(UIWebView*)theWebView
-#endif
 
 {
     self = (Torch*)[super initWithWebView:theWebView];
@@ -84,16 +78,15 @@
 	if (captureDeviceClass != nil) {
 		
 		AVCaptureDevice* captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-		
-		[captureDevice lockForConfiguration:nil];
-		
-		[captureDevice setTorchMode:AVCaptureTorchModeOn];
-		[captureDevice setFlashMode:AVCaptureFlashModeOn];
-		
-		[captureDevice unlockForConfiguration];
-		
-		[super writeJavascript:@"window.plugins.torch._isOn = true;"];
-	}	
+        [captureDevice lockForConfiguration:nil];
+        
+        [captureDevice setTorchMode:AVCaptureTorchModeOn];
+        [captureDevice setFlashMode:AVCaptureFlashModeOn];
+        
+        [captureDevice unlockForConfiguration];
+        
+        [super writeJavascript:@"window.plugins.torch._isOn = true;"];
+	}
 }
 
 - (void) turnOff:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
@@ -102,16 +95,31 @@
 	if (captureDeviceClass != nil) 
 	{
 		AVCaptureDevice* captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-		
-		[captureDevice lockForConfiguration:nil];
-		
-		[captureDevice setTorchMode:AVCaptureTorchModeOff];
-		[captureDevice setFlashMode:AVCaptureFlashModeOff];
-		
-		[captureDevice unlockForConfiguration];
+        
+        [captureDevice lockForConfiguration:nil];
+        
+        [captureDevice setTorchMode:AVCaptureTorchModeOff];
+        [captureDevice setFlashMode:AVCaptureFlashModeOff];
+        
+        [captureDevice unlockForConfiguration];
+        
+        [super writeJavascript:@"window.plugins.torch._isOn = false;"];
+	}
+}
 
-		[super writeJavascript:@"window.plugins.torch._isOn = false;"];
-	}	
+- (void) isCapable:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+{
+    NSLog(@"running isCapable");
+    Class captureDeviceClass = NSClassFromString(@"AVCaptureDevice");
+    if (captureDeviceClass != nil)
+    {
+        AVCaptureDevice* captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        if ([captureDevice isTorchModeSupported:AVCaptureTorchModeOn])
+        {
+            NSLog(@"Torch is available.");
+            [super writeJavascript:@"window.plugins.torch._isCapable = true;"];
+        }
+    }
 }
 
 - (void) dealloc

@@ -12,13 +12,7 @@
  // Does nothing
  }
  
- // Callback when the location of the page changes
- // called from native
- PDFViewer._onLocationChange = function(newLoc)
- {
- window.plugins.PDFViewer.onLocationChange(newLoc);
- };
- 
+  
  // Callback when the user chooses the 'Done' button
  // called from native
  PDFViewer._onClose = function()
@@ -26,27 +20,12 @@
  window.plugins.PDFViewer.onClose();
  };
  
- // Callback when the user chooses the 'open in Safari' button
- // called from native
- PDFViewer._onOpenExternal = function()
- {
- window.plugins.PDFViewer.onOpenExternal();
- };
  
- // Pages loaded into the PDFViewer can execute callback scripts, so be careful to
- // check location, and make sure it is a location you trust.
- // Warning ... don't exec arbitrary code, it's risky and could fuck up your app.
- // called from native
- PDFViewer._onJSCallback = function(js,loc)
- {
- // Not Implemented
- //window.plugins.PDFViewer.onJSCallback(js,loc);
- };
  
 /* The interface that you will use to access functionality */
  
  // Show a webpage, will result in a callback to onLocationChange
- PDFViewer.prototype.showWebPage = function(loc)
+ PDFViewer.prototype.showPDF = function(loc)
  {
  cordovaRef.exec("PDFViewerCommand.showPDF", loc);
  };

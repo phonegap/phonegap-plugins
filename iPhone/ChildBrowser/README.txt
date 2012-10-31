@@ -1,13 +1,11 @@
-UPDATED March 2 2012 for Cordova 1.5 with limited backwards support for PhoneGap 1.4.1 (minor changes may be needed for anything earlier than 1.3) - @RandyMcMillan
 
-=================================
 
-The child browser allows you to display external webpages within your PhoneGap/Cordova application.
+
+The child browser allows you to display external webpages within your PhoneGap application.
 
 A simple use case would be:
 
-- Users can follow links/buttons to view web content without leaving your app. 
-- Display web pages/images/videos/pdfs in the ChildBrowser.
+- Users can post links, and you don't want your users to exit your app to view the link.
 
 This command creates a popup browser that is shown in front of your app, when the user presses the done button they are simply returned to your app ( actually they never left )
 
@@ -15,11 +13,9 @@ The ChildBrowser has buttons for refreshing, navigating back + forwards, as well
 
 Note, because this is open source, I could not include the graphics I usually use for the back/forward and safari buttons.  I have changed the XIB file to use system buttons ( rewind / fast-forward + action ) Ideally you should modify the XIB to use your own look.
 
-Here is a sample command to open google in a ChildBrowser :
+Here is a sample command to open google in a childbrowser :
 
 PhoneGap.exec("ChildBrowserCommand.showWebPage", "http://www.google.com" );
-or
-Cordova.exec("ChildBrowserCommand.showWebPage", "http://www.google.com" );
 
 =================================
 

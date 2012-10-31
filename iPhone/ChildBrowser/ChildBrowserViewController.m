@@ -1,7 +1,9 @@
-///  Created by Jesse MacFadyen on 10-05-29.
-//  Copyright 2010 Nitobi. All rights reserved.
-//  Copyright 2012, Randy McMillan
-// Continued maintainance @RandyMcMillan 2010/2011/2012
+//
+//  ChildBrowserViewController.m
+//
+//  Created by Jesse MacFadyen on 21/07/09.
+//  Copyright 2009 Nitobi. All rights reserved.
+//
 
 #import "ChildBrowserViewController.h"
 
@@ -104,12 +106,8 @@
 	{
 		[delegate onClose];		
 	}
-    if ([self respondsToSelector:@selector(presentingViewController)]) { 
-        //Reference UIViewController.h Line:179 for update to iOS 5 difference - @RandyMcMillan
-        [[self presentingViewController] dismissViewControllerAnimated:YES completion:nil];
-    } else {
-        [[self parentViewController] dismissModalViewControllerAnimated:YES];
-    }
+	
+	[ [super parentViewController] dismissModalViewControllerAnimated:YES];
 }
 
 -(IBAction) onDoneButtonPress:(id)sender
@@ -214,26 +212,6 @@
 	}
 
 }
-
-/*
-- (void)webView:(UIWebView *)wv didFailLoadWithError:(NSError *)error {
-    NSLog (@"webView:didFailLoadWithError");
-    [spinner stopAnimating];
-    addressLabel.text = @"Failed";
-    if (error != NULL) {
-        UIAlertView *errorAlert = [[UIAlertView alloc]
-                                   initWithTitle: [error localizedDescription]
-                                   message: [error localizedFailureReason]
-                                   delegate:nil
-                                   cancelButtonTitle:@"OK"
-                                   otherButtonTitles:nil];
-        [errorAlert show];
-        [errorAlert release];
-    }
-}
-
-*/
-
 
 
 @end

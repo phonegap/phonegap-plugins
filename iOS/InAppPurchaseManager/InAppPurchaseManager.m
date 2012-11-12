@@ -14,18 +14,18 @@
 // To avoid compilation warning, declare JSONKit and SBJson's
 // category methods without including their header files.
 @interface NSArray (StubsForSerializers)
-- (NSString *)JSONString;
-- (NSString *)JSONRepresentation;
+- (NSString *)cdvjk_JSONString;
+- (NSString *)cdvjk_JSONRepresentation;
 @end
 
 // Helper category method to choose which JSON serializer to use.
-@interface NSArray (JSONSerialize)
-- (NSString *)JSONSerialize;
+@interface NSArray (cdvjk_JSONSerialize)
+- (NSString *)cdvjk_JSONSerialize;
 @end
 
-@implementation NSArray (JSONSerialize)
-- (NSString *)JSONSerialize {
-    return [self respondsToSelector:@selector(JSONString)] ? [self JSONString] : [self JSONRepresentation];
+@implementation NSArray (cdvjk_JSONSerialize)
+- (NSString *)cdvjk_JSONSerialize {
+    return [self respondsToSelector:@selector(cdvjk_JSONString)] ? [self cdvjk_JSONString] : [self cdvjk_JSONRepresentation];
 }
 @end
 
@@ -153,7 +153,7 @@
                                  NILABLE(productId),
                                  NILABLE(transactionReceipt),
                                  nil];
-		NSString *js = [NSString stringWithFormat:@"plugins.inAppPurchaseManager.updatedTransactionCallback.apply(plugins.inAppPurchaseManager, %@)", [callbackArgs JSONSerialize]];
+		NSString *js = [NSString stringWithFormat:@"plugins.inAppPurchaseManager.updatedTransactionCallback.apply(plugins.inAppPurchaseManager, %@)", [callbackArgs cdvjk_JSONSerialize]];
 		NSLog(@"js: %@", js);
 		[self writeJavascript: js];
 		[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
@@ -191,7 +191,7 @@
                                  NILABLE(product.localizedDescription),
                                  NILABLE(product.localizedPrice),
                                  nil];
-		NSString *js = [NSString stringWithFormat:@"%@.apply(plugins.inAppPurchaseManager, %@)", successCallback, [callbackArgs JSONSerialize]];
+		NSString *js = [NSString stringWithFormat:@"%@.apply(plugins.inAppPurchaseManager, %@)", successCallback, [callbackArgs cdvjk_JSONSerialize]];
 		NSLog(@"js: %@", js);
 		[command writeJavascript: js];
     }
@@ -245,7 +245,7 @@
                              NILABLE(validProducts),
                              NILABLE(response.invalidProductIdentifiers),
                              nil];
-	NSString *js = [NSString stringWithFormat:@"%@.apply(plugins.inAppPurchaseManager, %@);", callback, [callbackArgs JSONSerialize]];
+	NSString *js = [NSString stringWithFormat:@"%@.apply(plugins.inAppPurchaseManager, %@);", callback, [callbackArgs cdvjk_JSONSerialize]];
 	[command writeJavascript: js];
 
 	[request release];

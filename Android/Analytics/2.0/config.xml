@@ -22,6 +22,7 @@ A simple use case would be:
 
   <author href="http://www.worklight.com/" email="asafy@worklight.com">Asaf Yishai</author>
   <author href="http://broderix.blogspot.com/" email="brody.broderix@gmail.com">Kirill Danilov</author>
+  <author href="http://doersguild.com/" email="mail@doersguild.com">Doers' Guild</author>
 
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -36,6 +37,6 @@ the directories in which they reside and in the code itself. No external
 contributions are allowed under licenses which are fundamentally incompatible
 with the MIT or BSD licenses that PhoneGap is distributed under.
 
-The libGoogleAnalytics.jar is distributed under Apache License, Version 2.0.
+The libGoogleAnalyticsV2.jar is distributed under Apache License, Version 2.0.
   </license>
 </plugin>

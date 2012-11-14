@@ -19,18 +19,20 @@ Using this plugin requires [PhoneGap Cordova library for Android](http://phonega
 
 2. Create a directory within your project called "src/com/phonegap/plugins/analytics" and copy src/com/phonegap/plugins/analytics/GoogleAnalyticsTracker.java into it.
 
-3. Add the following activity to your AndroidManifest.xml file if it not already there. It should be added inside the &lt;application&gt; tag.
+3. Add the following activity to your AndroidManifest.xml file, inside the &lt;application&gt; tag if it isn't already there.
 
     &lt;activity android:name="com.phonegap.DroidGap" android:label="@string/app_name"&gt;<br/>
       &lt;intent-filter&gt;<br/>
       &lt;/intent-filter&gt;<br/>
     &lt;/activity&gt;
 
-4. Download [GoogleAnalytics](https://developers.google.com/analytics/devguides/collection/android/resources) library (tested with 1.4.2) and copy "lib/libGoogleAnalytics.jar" into the libs directory within your project.  You will also need to right click on this file in eclipse and add the jar to the build path.
+4. Download [GoogleAnalytics](https://developers.google.com/analytics/devguides/collection/android/resources) library (tested with v2.0 Beta 3) and copy "lib/libGoogleAnalyticsV2.jar" into the libs directory within your project.  You will also need to right click on this file in eclipse and add the jar to the build path.
 
 5. In your res/xml/config.xml file add the following line:
 
 <plugin name="GoogleAnalyticsTracker" value="com.phonegap.plugins.analytics.GoogleAnalyticsTracker" />
+
+6. Copy the "res/values/analytics.xml" to the corresponding location in your project and set your App's Tracking ID in there. [Docs](https://developers.google.com/analytics/devguides/collection/android/v2/parameters)
 
 ## Using the plugin ##
 
@@ -40,17 +42,31 @@ The plugin creates the object `window.plugins.analytics`.  To use, call one of t
 /**
  * Initialize Google Analytics configuration
  * 
- * @param accountId			The Google Analytics account id 
  * @param successCallback	The success callback
  * @param failureCallback	The error callback
  */
    
-  start(accountId, successCallback, failureCallback);
+  start(successCallback, failureCallback);
 </pre>
 
 Sample use:
 
-	window.plugins.analytics.start("Your-Account-ID-Here", function(){alert("Start: success");}, function(){alert("Start: failure");});
+	window.plugins.analytics.start(function(){console.log("Start: success");}, function(){console.log("Start: failure");});
+    
+<pre>
+/**
+ * Stop tracking with Google Analytics
+ * 
+ * @param successCallback	The success callback
+ * @param failureCallback	The error callback
+ */
+   
+  stop(successCallback, failureCallback);
+</pre>
+
+Sample use:
+
+	window.plugins.analytics.stop(function(){console.log("Stop: success");}, function(){console.log("Stop: failure");});
     
 <pre>
 /**
@@ -66,7 +82,7 @@ Sample use:
 
 Sample use:
 
-    window.plugins.analytics.trackPageView("page1.html", function(){alert("Track: success");}, function(){alert("Track: failure");});
+    window.plugins.analytics.trackPageView("page1.html", function(){console.log("Track: success");}, function(){console.log("Track: failure");});
 	
 <pre>
 /**
@@ -85,23 +101,26 @@ Sample use:
 
 Sample use:
 
-	window.plugins.analytics.trackEvent("category", "action", "event", 1, function(){alert("Track: success");}, function(){alert("Track: failure");});
+	window.plugins.analytics.trackEvent("category", "action", "event", 1, function(){console.log("Track: success");}, function(){console.log("Track: failure");});
 
 
 Please keep in mind that these methods, as in any other plugin, are ready to be invoked only after '[deviceready](http://docs.phonegap.com/phonegap_events_events.md.html#deviceready)' event has been fired
-Good practice will be manual dispatch and stop session. Add this code to your main activity:
+One good practice would be to manually stop the session, when the app closes. Add this code to your main activity:
 <pre>    
 @Override
 public void onDestroy() 
 {
     super.onDestroy();
-    GoogleAnalyticsTracker tracker = com.google.android.apps.analytics.GoogleAnalyticsTracker.getInstance();
-    tracker.dispatch();
-    tracker.stopSession();
+    com.google.analytics.tracking.android.EasyTracker.getInstance().activityStop(this);
 }
 </pre>
 
 ## RELEASE NOTES ##
+
+### NOV, 14, 2012 ###
+
+* Upgraded to support Version 2 of the Google Analytics SDK
+* Added the `stop` method
 
 ### AUG, 14, 2012 ###
 
@@ -188,6 +207,6 @@ Copyright (c) <2010> <Nitobi Software Inc., et. al., >
  
  ### libGoogleAnalytics.jar
  
- The libGoogleAnalytics.jar is distributed under Apache License, Version 2.0.
+ The libGoogleAnalyticsV2.jar is distributed under Apache License, Version 2.0.
  License URL: http://www.apache.org/licenses/LICENSE-2.0
- libGoogleAnalytics.jar URL: http://code.google.com/p/android-scripting/source/browse/android/AndroidScriptingEnvironment/libs/libGoogleAnalytics.jar?r=41b40b84919bdf461784fd86e6ae464697d2abea
+ libGoogleAnalyticsV2.jar URL: https://dl.google.com/gaformobileapps/GoogleAnalyticsAndroid.zip

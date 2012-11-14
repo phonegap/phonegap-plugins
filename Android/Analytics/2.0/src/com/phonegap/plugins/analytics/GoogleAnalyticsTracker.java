@@ -2,6 +2,7 @@
  * PhoneGap is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
+ * Copyright (c) 2006-2011 Worklight, Ltd.  
  */
 
 package com.phonegap.plugins.analytics;
@@ -54,6 +55,7 @@ public class GoogleAnalyticsTracker extends Plugin {
 			}
 		} else if (STOP.equals(action)) {
 			stop();
+			result = new PluginResult(Status.OK);
 		} else {
 			result = new PluginResult(Status.INVALID_ACTION);
 		}

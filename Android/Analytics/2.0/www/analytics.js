@@ -3,6 +3,7 @@
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
  * Copyright (c) 2006-2011 Worklight, Ltd. 
+ * Upgraded by Doers' Guild. 
  */
 
 
@@ -14,17 +15,29 @@ var Analytics = function () {};
 /**
  * Initialize Google Analytics configuration
  * 
- * @param accountId			The Google Analytics account id 
- * @param successCallback	The success callback
- * @param failureCallback	The error callback
+ * @param successCallback   The success callback
+ * @param failureCallback   The error callback
  */
-Analytics.prototype.start = function(accountId, successCallback, failureCallback) {
-	return cordova.exec(
-				successCallback,			 
-				failureCallback,						
-				'GoogleAnalyticsTracker',				
-				'start',								
-				[accountId]);
+Analytics.prototype.start = function(successCallback, failureCallback) {
+    return cordova.exec(
+                successCallback,             
+                failureCallback,                        
+                'GoogleAnalyticsTracker',               
+                'start');
+};
+
+/**
+ * Stop Google Analytics
+ * 
+ * @param successCallback   The success callback
+ * @param failureCallback   The error callback
+ */
+Analytics.prototype.stop = function(successCallback, failureCallback) {
+    return cordova.exec(
+                successCallback,             
+                failureCallback,                        
+                'GoogleAnalyticsTracker',               
+                'stop');
 };
 
 /**
@@ -65,20 +78,6 @@ Analytics.prototype.trackEvent = function(category, action, label, value, succes
 				    action, 
 				    typeof label === "undefined" ? "" : label, 
 				    (isNaN(parseInt(value,10))) ? 0 : parseInt(value, 10)
-				]);					
-};
-
-Analytics.prototype.setCustomVar = function(index, label, value, scope, successCallback, failureCallback){
-	return cordova.exec(
-				successCallback,			
-				failureCallback,		
-				'GoogleAnalyticsTracker',
-				'setCustomVariable',		
-				[
-				    (isNaN(parseInt(index,10))) ? 0 : parseInt(index, 10),
-				    label,
-				    value,
-				    (isNaN(parseInt(scope,10))) ? 0 : parseInt(scope, 10)
 				]);					
 };
 

@@ -23,7 +23,7 @@ Analytics.prototype.start = function(successCallback, failureCallback) {
                 successCallback,             
                 failureCallback,                        
                 'GoogleAnalyticsTracker',               
-                'start');
+                'start', []);
 };
 
 /**
@@ -37,7 +37,7 @@ Analytics.prototype.stop = function(successCallback, failureCallback) {
                 successCallback,             
                 failureCallback,                        
                 'GoogleAnalyticsTracker',               
-                'stop');
+                'stop', []);
 };
 
 /**

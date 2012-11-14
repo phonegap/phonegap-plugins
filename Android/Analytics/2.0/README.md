@@ -32,7 +32,7 @@ Using this plugin requires [PhoneGap Cordova library for Android](http://phonega
 
 <plugin name="GoogleAnalyticsTracker" value="com.phonegap.plugins.analytics.GoogleAnalyticsTracker" />
 
-6. Copy the "res/values/analytics.xml" to the corresponding location in your project and set your App's Tracking ID in there. [Docs](https://developers.google.com/analytics/devguides/collection/android/v2/parameters)
+6. Copy the `res/values/analytics.xml` file to the corresponding location in your project and set your App's Tracking ID in there. [Documentation](https://developers.google.com/analytics/devguides/collection/android/v2/parameters)
 
 ## Using the plugin ##
 

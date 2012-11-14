@@ -14,23 +14,23 @@ Using this plugin requires [PhoneGap Cordova library for Android](http://phonega
 
 1. To install the plugin, move `www/analytics.js` to your project's www folder and include a reference to it in your html file after cordova.js.
 
-    ```&lt;script type="text/javascript" charset="utf-8" src="cordova.js"&gt;&lt;/script&gt;<br/>
-    &lt;script type="text/javascript" charset="utf-8" src="analytics.js"&gt;&lt;/script&gt;```
+    &lt;script type="text/javascript" charset="utf-8" src="cordova.js"&gt;&lt;/script&gt;<br/>
+    &lt;script type="text/javascript" charset="utf-8" src="analytics.js"&gt;&lt;/script&gt;
 
 2. Create a directory within your project called `src/com/phonegap/plugins/analytics` and copy `src/com/phonegap/plugins/analytics/GoogleAnalyticsTracker.java` into it.
 
 3. Add the following activity to your AndroidManifest.xml file, inside the &lt;application&gt; tag if it isn't already there.
 
-    ```&lt;activity android:name="com.phonegap.DroidGap" android:label="@string/app_name"&gt;<br/>
+    &lt;activity android:name="com.phonegap.DroidGap" android:label="@string/app_name"&gt;<br/>
       &lt;intent-filter&gt;<br/>
       &lt;/intent-filter&gt;<br/>
-    &lt;/activity&gt;```
+    &lt;/activity&gt;
 
 4. Download [GoogleAnalytics](https://developers.google.com/analytics/devguides/collection/android/resources) library (tested with v2.0 Beta 3; Use the version from this repo if needed) and copy `lib/libGoogleAnalyticsV2.jar` into the libs directory within your project.  You may also need to right click on this file in eclipse and add the jar to the build path.
 
 5. In your res/xml/config.xml file add the following line:
 
-<plugin name="GoogleAnalyticsTracker" value="com.phonegap.plugins.analytics.GoogleAnalyticsTracker" />
+```<plugin name="GoogleAnalyticsTracker" value="com.phonegap.plugins.analytics.GoogleAnalyticsTracker" />```
 
 6. Copy the `res/values/analytics.xml` file to the corresponding location in your project and set your App's Tracking ID in there. [Documentation](https://developers.google.com/analytics/devguides/collection/android/v2/parameters)
 

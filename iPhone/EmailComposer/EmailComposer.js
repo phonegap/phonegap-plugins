@@ -1,5 +1,7 @@
 // window.plugins.emailComposer
 
+var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to new fallbacks
+
 function EmailComposer() {
 	this.resultCallback = null; // Function
 }
@@ -31,7 +33,7 @@ EmailComposer.prototype.showEmailComposer = function(subject,body,toRecipients,c
 	if(bIsHTML)
 		args.bIsHTML = bIsHTML;
 
-	PhoneGap.exec("com.phonegap.emailComposer.showEmailComposer",args);
+	cordovaRef.exec("com.phonegap.emailComposer.showEmailComposer",args);
 }
 
 // this will be forever known as the orch-func -jm
@@ -46,7 +48,7 @@ EmailComposer.prototype._didFinishWithResult = function(res) {
 
 
 
-PhoneGap.addConstructor(function()  {
+cordovaRef.addConstructor(function()  {
 	if(!window.plugins)
 	{
 		window.plugins = {};

@@ -1,7 +1,7 @@
 #import <AudioToolbox/AudioServices.h>
-#import "PGPlugin.h"
+#import <Cordova/CDVPlugin.h>
 
-@interface SoundPlug : PGPlugin {
+@interface SoundPlug : CDVPlugin {
 }
 
 - (void) play:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;

@@ -46,6 +46,22 @@ var DGGeofencing = {
 		return PhoneGap.exec(success, fail, "DGGeofencing", "getPendingRegionUpdates", []);
 	},
 	
+	/*
+	Params:
+	NONE
+	*/
+	startMonitoringSignificantLocationChanges: function(success, fail) {
+		return PhoneGap.exec(success, fail, "DGGeofencing", "startMonitoringSignificantLocationChanges", []);
+	},
+	
+	/*
+	Params:
+	NONE
+	*/
+	stopMonitoringSignificantLocationChanges: function(success, fail) {
+		return PhoneGap.exec(success, fail, "DGGeofencing", "stopMonitoringSignificantLocationChanges", []);
+	},
+	
 	/* 
 	This is used so the JavaScript can be updated when a region is entered or exited
 	*/
@@ -54,6 +70,17 @@ var DGGeofencing = {
 		var ev = document.createEvent('HTMLEvents');
 		ev.regionupdate = regionupdate;
 		ev.initEvent('region-update', true, true, arguments);
+		document.dispatchEvent(ev);
+	},
+	
+	/* 
+	This is used so the JavaScript can be updated when a significant change has occured
+	*/
+	locationMonitorUpdate: function(locationupdate) {
+		console.log("locationMonitorUpdate: " + locationupdate);
+		var ev = document.createEvent('HTMLEvents');
+		ev.locationupdate = locationupdate;
+		ev.initEvent('location-update', true, true, arguments);
 		document.dispatchEvent(ev);
 	}
 };

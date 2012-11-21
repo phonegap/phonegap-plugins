@@ -27,9 +27,8 @@
 
 package com.phonegap.plugins.statusBarNotification;
 
-import org.apache.cordova.api.Plugin;
-import org.apache.cordova.api.PluginResult;
-import org.apache.cordova.api.PluginResult.Status;
+import org.apache.cordova.api.CallbackContext;
+import org.apache.cordova.api.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -37,11 +36,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-
-import android.os.Handler;
 import android.util.Log;
 
-public class StatusBarNotification extends Plugin {
+public class StatusBarNotification extends CordovaPlugin {
     //	Action to execute
     public static final String NOTIFY = "notify";
     public static final String CLEAR = "clear";
@@ -51,25 +48,26 @@ public class StatusBarNotification extends Plugin {
      *
      * 	@param action		Action to execute
      * 	@param data			JSONArray of arguments to the plugin
-     *  @param callbackId	The callback id used when calling back into JavaScript
+     *  @param callbackContext	The callback context used when calling back into JavaScript.
      *
      *  @return				A PluginRequest object with a status
      * */
     @Override
-    public PluginResult execute(String action, JSONArray data, String callbackId) {
-        PluginResult result = null;
+    public boolean execute(String action, JSONArray data, CallbackContext callbackContext) {
+        boolean actionValid = true;
         if (NOTIFY.equals(action)) {
             try {
                 String tag = data.getString(0);
                 String title = data.getString(1);
                 String body = data.getString(2);
+                String flag = data.getString(3);
                 Log.d("NotificationPlugin", "Notification: " + tag + ", " + title + ", " + body);
-                showNotification(tag, title, body);
-                result = new PluginResult(Status.OK);
+                int notificationFlag = getFlagValue(flag);
+                showNotification(tag, title, body, notificationFlag);
             } catch (JSONException jsonEx) {
                 Log.d("NotificationPlugin", "Got JSON Exception "
                         + jsonEx.getMessage());
-                result = new PluginResult(Status.JSON_EXCEPTION);
+                actionValid = false;
             }
         } else if (CLEAR.equals(action)){
             try {
@@ -78,28 +76,47 @@ public class StatusBarNotification extends Plugin {
                 clearNotification(tag);
             } catch (JSONException jsonEx) {
                 Log.d("NotificationPlugin", "Got JSON Exception " + jsonEx.getMessage());
-                result = new PluginResult(Status.JSON_EXCEPTION);
+                actionValid = false;
             }
         } else {
-            result = new PluginResult(Status.INVALID_ACTION);
+            actionValid = false;
             Log.d("NotificationPlugin", "Invalid action : "+action+" passed");
         }
-        return result;
+        return actionValid;
     }
 
     /**
+     * Helper method that returns a flag value to be used for notification
+     * by default it will return 16 representing FLAG_NO_CLEAR
+     * 
+     * @param flag
+     * @return int value of the flag
+     */
+    private int getFlagValue(String flag) {
+		int flagVal = Notification.FLAG_AUTO_CANCEL;
+		
+		// We trust the flag value as it comes from our JS constant.
+		// This is also backwards compatible as it will be emtpy.
+		if (!flag.isEmpty()){
+			flagVal = Integer.parseInt(flag);
+		}
+		
+		return flagVal;
+	}
+
+	/**
      * 	Displays status bar notification
      *
      * 	@param tag Notification tag.
      *  @param contentTitle	Notification title
      *  @param contentText	Notification text
      * */
-    public void showNotification( CharSequence tag, CharSequence contentTitle, CharSequence contentText ) {
+    public void showNotification( CharSequence tag, CharSequence contentTitle, CharSequence contentText, int flag) {
         String ns = Context.NOTIFICATION_SERVICE;
         context = cordova.getActivity().getApplicationContext();
         mNotificationManager = (NotificationManager) context.getSystemService(ns);
 
-        Notification noti = StatusNotificationIntent.buildNotification(context, tag, contentTitle, contentText);
+        Notification noti = StatusNotificationIntent.buildNotification(context, tag, contentTitle, contentText, flag);
         mNotificationManager.notify(tag.hashCode(), noti);
     }
 
@@ -128,7 +145,7 @@ public class StatusBarNotification extends Plugin {
         // The incoming Intent may or may not have been for a notification.
         String tag = intent.getStringExtra("notificationTag");
         if (tag != null) {
-            sendJavascript("window.Notification.callOnclickByTag('"+ tag + "')");
+        	 this.webView.sendJavascript("window.Notification.callOnclickByTag('"+ tag + "')");
         }
     }
 

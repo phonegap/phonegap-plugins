@@ -27,6 +27,15 @@
 
 var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to new fallbacks
 
+/** 
+ * Flags to denote the Android Notification constants
+ * Values are representation from Android Notification Flag bit vals 
+ */
+
+function Flag() {}
+Flag.FLAG_AUTO_CANCEL="16";
+Flag.FLAG_NO_CLEAR="32";
+
 /** @deprecated Use the W3C standard window.Notification API instead. */
 var NotificationMessenger = function() { }
 
@@ -35,10 +44,11 @@ var NotificationMessenger = function() { }
  * @param body Body of the notification
  * @deprecated Use the W3C standard window.Notification API instead.
  */
-NotificationMessenger.prototype.notify = function(title, body) {
+NotificationMessenger.prototype.notify = function(title, body, flag) {
     if (window.Notification) {
         this.activeNotification = new window.Notification(title, {
-            body: body
+            body: body,
+            flag: flag
         });
     }
 }
@@ -83,6 +93,8 @@ if (typeof window.Notification == 'undefined') {
         this.onclose = options.onclose;
 
         var content = options.body || '';
+        
+        var flag = options.flag || '';
 
         cordova.exec(function() {
             if (this.onshow) {
@@ -92,7 +104,7 @@ if (typeof window.Notification == 'undefined') {
             if (this.onerror) {
                 this.onerror(error);
             }
-        }, 'StatusBarNotification', 'notify', [this.tag, title, content]);
+        }, 'StatusBarNotification', 'notify', [this.tag, title, content, flag]);
     };
 
     // Permission is always granted on Android.

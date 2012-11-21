@@ -26,6 +26,11 @@ The plugins.xml is no longer supported. The plugins are all located in the confi
 5. You will need to add an import line like this to the .java files (see commented out lines inside the files):
 
 	import com.my.app.R; 
+6. If you need the notification to stick, you can pass a paramter to notify function. 
+	E.g.:
+	   window.plugins.statusBarNotification.notify("Put your title here", "Put your sticky message here", Flag.FLAG_NO_CLEAR);
+           //you can then use clear function to remove it.
+	   window.plugins.statusBarNotification.clear();
 	
 ## Using the plugin ##
 

@@ -2,8 +2,7 @@
 //  EmailComposer.m
 // 
 //
-//  Created by Jesse MacFadyen on 10-04-05.
-//  Copyright 2010 Nitobi. All rights reserved.
+//  Created by Guido Sabatini in 2012.
 //
 
 #define RETURN_CODE_EMAIL_CANCELLED 0

@@ -1,17 +1,21 @@
-# Cordova PushNotification Plugin #
+# Cordova FacebookConnect Plugin #
 by [Olivier Louvignes](http://olouv.com)
 
 ---
-### [This plugin is hosted by the author](https://github.com/mgcrea/cordova-push-notification/tree/master)
+### [This plugin is hosted by the author](https://github.com/mgcrea/cordova-facebook-connect/tree/master)
 ---
 
 ## DESCRIPTION ##
 
-* This plugin provides a simple way to use Apple Push Notifications (or Remote Notifications) from IOS.
+* This plugin provides a simple way to use Facebook Graph API in Cordova.
 
-* This plugin is built for Cordova >= v2.1.0 with ARC.
+* This plugin is built for Cordova >= v2.1.0 with ARC. Both iOS & Android are supported with the same javascript interface.
 
-* This was inspired by the now orphaned [ios-phonegap-plugin](https://github.com/urbanairship/ios-phonegap-plugin) built by Urban Airship.
+* For iOS, this plugin relies on the [Facebook iOS SDK](https://github.com/facebook/facebook-ios-sdk) that is bundled in the `FacebookSDK` folder (licensed under the Apache License, Version 2.0).
+
+* For Android, this plugin relies on the [Facebook Android SDK](https://github.com/facebook/facebook-android-sdk) that is packaged as a .jar in the `libs` folder (licensed under the Apache License, Version 2.0).
+
+* Regarding the existing implementation : [phonegap-plugin-facebook-connect](https://github.com/davejohnson/phonegap-plugin-facebook-connect) built by Dave Johnson, this version does not require the Facebook JS sdk (redundant to native sdk). It is also quite easier to use (unified login & initial /me request) and it does support multiple graph requests (strong callback handling).
 
 ## LICENSE ##
 

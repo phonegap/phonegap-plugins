@@ -6,14 +6,18 @@
 #ifdef CORDOVA_FRAMEWORK
 #import <Cordova/CDVPlugin.h>
 #else
-#import "CDVPlugin.h"
+#import <PhoneGap/PGPlugin.h>
 #endif
 
 #ifndef k_DATEPICKER_DATETIME_FORMAT
 #define k_DATEPICKER_DATETIME_FORMAT @"yyyy-MM-dd'T'HH:mm:ss'Z'"
 #endif
 
+#ifdef CORDOVA_FRAMEWORK
 @interface DatePicker : CDVPlugin <UIActionSheetDelegate> {
+#else
+@interface DatePicker : PGPlugin <UIActionSheetDelegate> {
+#endif
 	UIActionSheet *_datePickerSheet;
 	UIDatePicker *_datePicker;
 	NSDateFormatter *_isoDateFormatter;

@@ -4,6 +4,8 @@
 	MIT Licensed
 **/
 
+window.plugins || (window.plugins = {});
+
 if (!window.plugins.datePicker) {
 
     /* shim to work in 1.5 and 1.6 */
@@ -58,10 +60,6 @@ if (!window.plugins.datePicker) {
 
 
     Cordova.addConstructor(function() {
-        if(!window.plugins)
-        {
-            window.plugins = {};
-        }
         window.plugins.datePicker = new DatePicker();
     });
 };

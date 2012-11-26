@@ -1,16 +1,11 @@
 /**
-	Cordova DatePicker Plugin
-	Copyright (c) Greg Allen 2011
-	MIT Licensed
-**/
-
-if (!window.plugins.datePicker) {
-
-    /* shim to work in 1.5 and 1.6 */
-    if (!window.Cordova) {
-        window.Cordova = cordova;
-    };
-
+ * Cordova DatePicker Plugin
+ * Copyright (c) Greg Allen 2011
+ * MIT Licensed
+ *
+ * Updated for Cordova 2.1 by Robert (Jamie) Munro
+ */
+if (typeof cordova !== "undefined") {
     /**
      * Constructor
      */
@@ -37,29 +32,29 @@ if (!window.plugins.datePicker) {
                            padDate(options.date.getMinutes()) + ":00Z";
         }
         var defaults = {
-            mode: 'datetime',
-            date: '',
-            allowOldDates: true,
+            mode : 'datetime',
+            date : '',
+            allowOldDates : true,
             allowFutureDates : true
-        }
+        };
+
         for (var key in defaults) {
             if (typeof options[key] !== "undefined")
                 defaults[key] = options[key];
         }
         this._callback = cb;
-        Cordova.exec("DatePicker.show", defaults);
-    }
+
+        cordova.exec("DatePicker.show", defaults);
+    };
 
     DatePicker.prototype._dateSelected = function(date) {
-        var d = new Date(parseFloat(date)*1000);
+        var d = new Date(parseFloat(date) * 1000);
         if (this._callback)
             this._callback(d);
     }
 
-
-    Cordova.addConstructor(function() {
-        if(!window.plugins)
-        {
+    cordova.addConstructor(function() {
+        if (!window.plugins) {
             window.plugins = {};
         }
         window.plugins.datePicker = new DatePicker();

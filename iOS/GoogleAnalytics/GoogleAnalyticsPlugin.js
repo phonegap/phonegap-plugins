@@ -12,7 +12,7 @@ GoogleAnalyticsPlugin.prototype.trackEvent = function(category,action,label,valu
 	var options = {category:category,
 		action:action,
 		label:label,
-		value:value};
+		value:isNaN(parseInt(value)) ? -1 : value};
 	cordova.exec("GoogleAnalyticsPlugin.trackEvent",options);
 };
 

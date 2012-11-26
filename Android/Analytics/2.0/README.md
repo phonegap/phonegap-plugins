@@ -30,7 +30,7 @@ Using this plugin requires [PhoneGap Cordova library for Android](http://phonega
 
 5. In your res/xml/config.xml file add the following line:
 
-<plugin name="GoogleAnalyticsTracker" value="com.phonegap.plugins.analytics.GoogleAnalyticsTracker" />
+	&lt;plugin name=&quot;GoogleAnalyticsTracker&quot; value=&quot;com.phonegap.plugins.analytics.GoogleAnalyticsTracker&quot; /&gt;
 
 ## Using the plugin ##
 
@@ -86,7 +86,25 @@ Sample use:
 Sample use:
 
 	window.plugins.analytics.trackEvent("category", "action", "event", 1, function(){alert("Track: success");}, function(){alert("Track: failure");});
+	
+<pre>
+/**
+ * Set a custom variable on Google Analytics
+ * @param index			The slot for the custom variable
+ * @param label			The name for the custom variable
+ * @param value			The value for the custom variable
+ * @param scope			The scope for the custom variable (optional)
 
+ * @param successCallback	The success callback
+ * @param failureCallback	The error callback 
+ */
+
+  setCustomVar(index, label, value, scope, successCallback, failureCallback);
+</pre>
+
+Sample use:
+
+	window.plugins.analytics.setCustomVar(1, "type", "android", null, function(){alert("SetVar: success");}, function(){alert("SetVar: failure");});
 
 Please keep in mind that these methods, as in any other plugin, are ready to be invoked only after '[deviceready](http://docs.phonegap.com/phonegap_events_events.md.html#deviceready)' event has been fired
 Good practice will be manual dispatch and stop session. Add this code to your main activity:

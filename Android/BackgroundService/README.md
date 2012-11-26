@@ -4,12 +4,16 @@ A plugin (and framework code) that allows the development and operation of an An
 
 The example MyService Background Service will write a Hello message to the LogCat every minute.  The MyService is designed as sample code.
 
-## Versions ##
+## Cordova Versions ##
 
 Folders used for different Cordova versions:
 
 * /1.8.1 - For use with Cordova 1.8.1
-* /2.0.0 - Coming soon
+* /2.0.0 - For use with Cordova 2.0.0
+
+## Change Log ##
+
+* 14th November 2012 - Fix for service not stopping if the app has been closed then re-opened
 
 ## Further Information ##
 

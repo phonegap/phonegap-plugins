@@ -38,6 +38,9 @@ Add the following to AndroidManifest.xml
 	</intent-filter> 
 </receiver>
 ```
+## Change Log ##
+
+* 14th November 2012 - Fix for service not stopping if the app has been closed then re-opened
 
 ## Further Information ##
 

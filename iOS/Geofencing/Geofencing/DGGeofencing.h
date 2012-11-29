@@ -12,8 +12,6 @@
 
 #import <Cordova/CDVPlugin.h>
 
-#import "DGGeofencingHelper.h"
-
 #define KEY_REGION_ID       @"fid"
 #define KEY_REGION_LAT      @"latitude"
 #define KEY_REGION_LNG      @"longitude"
@@ -25,8 +23,7 @@ enum DGLocationStatus {
     POSITIONUNAVAILABLE,
     TIMEOUT,
     REGIONMONITORINGPERMISSIONDENIED,
-    REGIONMONITORINGUNAVAILABLE,
-    SIGNIFICANTLOCATIONMONITORINGUNAVAILABLE
+    REGIONMONITORINGUNAVAILABLE
 };
 typedef NSInteger DGLocationStatus;
 
@@ -50,14 +47,13 @@ typedef NSInteger DGLocationAccuracy;
 
 @interface DGGeofencing : CDVPlugin <CLLocationManagerDelegate>
 
-//@property (nonatomic, retain) CLLocationManager *locationManager;
+@property (nonatomic, retain) CLLocationManager *locationManager;
 @property (nonatomic, retain) DGLocationData* locationData;
 
 - (BOOL) isLocationServicesEnabled;
 - (BOOL) isAuthorized;
 - (BOOL) isRegionMonitoringAvailable;
 - (BOOL) isRegionMonitoringEnabled;
-- (BOOL) isSignificantLocationChangeMonitoringAvailable;
 - (void) saveGeofenceCallbackId:(NSString *) callbackId;
 - (void) addRegionToMonitor:(NSMutableDictionary *)params;
 - (void) removeRegionToMonitor:(NSMutableDictionary *)params;
@@ -70,7 +66,8 @@ typedef NSInteger DGLocationAccuracy;
 - (void) removeRegion:(CDVInvokedUrlCommand*)command;
 - (void) getWatchedRegionIds:(CDVInvokedUrlCommand*)command;
 - (void) getPendingRegionUpdates:(CDVInvokedUrlCommand*)command;
-- (void) startMonitoringSignificantLocationChanges:(CDVInvokedUrlCommand*)command;
-- (void) stopMonitoringSignificantLocationChanges:(CDVInvokedUrlCommand*)command;
+//- (void)addRegion:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+//- (void)removeRegion:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+//- (void)getWatchedRegionIds:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 @end

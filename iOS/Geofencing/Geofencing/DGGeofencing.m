@@ -7,7 +7,6 @@
 //
 
 #import "DGGeofencing.h"
-#import <Cordova/CDVViewController.h>
 
 @implementation DGLocationData
 
@@ -35,15 +34,15 @@
 
 @implementation DGGeofencing
 
-@synthesize locationData;
+@synthesize locationManager, locationData;
 
 - (CDVPlugin*) initWithWebView:(UIWebView*)theWebView
 {
     self = (DGGeofencing*)[super initWithWebView:(UIWebView*)theWebView];
     if (self) 
 	{
-        //self.locationManager = [[[CLLocationManager alloc] init] autorelease];
-        //self.locationManager.delegate = self; // Tells the location manager to send updates to this object
+        self.locationManager = [[[CLLocationManager alloc] init] autorelease];
+        self.locationManager.delegate = self; // Tells the location manager to send updates to this object
         self.locationData = nil;
     }
     return self;
@@ -51,22 +50,9 @@
 
 - (void) dealloc 
 {
-	//self.locationManager.delegate = nil;
-	//self.locationManager = nil;
+	self.locationManager.delegate = nil;
+	self.locationManager = nil;
 	[super dealloc];
-}
-
-- (BOOL) isSignificantLocationChangeMonitoringAvailable
-{
-	BOOL significantLocationChangeMonitoringAvailablelassPropertyAvailable = [CLLocationManager respondsToSelector:@selector(significantLocationChangeMonitoringAvailable)];
-    if (significantLocationChangeMonitoringAvailablelassPropertyAvailable)
-    {
-        BOOL significantLocationChangeMonitoringAvailable = [CLLocationManager significantLocationChangeMonitoringAvailable];
-        return  (significantLocationChangeMonitoringAvailable);
-    }
-    
-    // by default, assume NO
-    return NO;
 }
 
 - (BOOL) isRegionMonitoringAvailable
@@ -110,7 +96,7 @@
 
 - (BOOL) isLocationServicesEnabled
 {
-	BOOL locationServicesEnabledInstancePropertyAvailable = [[[DGGeofencingHelper sharedGeofencingHelper] locationManager] respondsToSelector:@selector(locationServicesEnabled)]; // iOS 3.x
+	BOOL locationServicesEnabledInstancePropertyAvailable = [self.locationManager respondsToSelector:@selector(locationServicesEnabled)]; // iOS 3.x
 	BOOL locationServicesEnabledClassPropertyAvailable = [CLLocationManager respondsToSelector:@selector(locationServicesEnabled)]; // iOS 4.x
     
 	if (locationServicesEnabledClassPropertyAvailable) 
@@ -119,7 +105,7 @@
 	} 
 	else if (locationServicesEnabledInstancePropertyAvailable) 
 	{ // iOS 2.x, iOS 3.x
-		return [(id)[[DGGeofencingHelper sharedGeofencingHelper] locationManager] locationServicesEnabled];
+		return [(id)self.locationManager locationServicesEnabled];
 	} 
 	else 
 	{
@@ -166,97 +152,6 @@
 }
 
 #pragma mark Plugin Functions
-
-- (void) startMonitoringSignificantLocationChanges:(CDVInvokedUrlCommand*)command {
-    NSString* callbackId = command.callbackId;
-    
-    [self saveGeofenceCallbackId:callbackId];
-    
-    if (![self isLocationServicesEnabled])
-	{
-		BOOL forcePrompt = NO;
-		if (!forcePrompt)
-		{
-            [self returnLocationError:PERMISSIONDENIED withMessage: nil];
-			return;
-		}
-    }
-    
-    if (![self isAuthorized])
-    {
-        NSString* message = nil;
-        BOOL authStatusAvailable = [CLLocationManager respondsToSelector:@selector(authorizationStatus)]; // iOS 4.2+
-        if (authStatusAvailable) {
-            NSUInteger code = [CLLocationManager authorizationStatus];
-            if (code == kCLAuthorizationStatusNotDetermined) {
-                // could return POSITION_UNAVAILABLE but need to coordinate with other platforms
-                message = @"User undecided on application's use of location services";
-            } else if (code == kCLAuthorizationStatusRestricted) {
-                message = @"application use of location services is restricted";
-            }
-        }
-        //PERMISSIONDENIED is only PositionError that makes sense when authorization denied
-        [self returnLocationError:PERMISSIONDENIED withMessage: message];
-        
-        return;
-    }
-    
-    if (![self isSignificantLocationChangeMonitoringAvailable])
-	{
-		[self returnLocationError:SIGNIFICANTLOCATIONMONITORINGUNAVAILABLE withMessage: @"Significant location monitoring is unavailable"];
-        return;
-    }
-    
-    [[[DGGeofencingHelper sharedGeofencingHelper] locationManager] startMonitoringSignificantLocationChanges];
-    
-    [self returnRegionSuccess];
-}
-
-- (void) stopMonitoringSignificantLocationChanges:(CDVInvokedUrlCommand*)command {
-    NSString* callbackId = command.callbackId;
-    
-    [self saveGeofenceCallbackId:callbackId];
-    
-    if (![self isLocationServicesEnabled])
-	{
-		BOOL forcePrompt = NO;
-		if (!forcePrompt)
-		{
-            [self returnLocationError:PERMISSIONDENIED withMessage: nil];
-			return;
-		}
-    }
-    
-    if (![self isAuthorized])
-    {
-        NSString* message = nil;
-        BOOL authStatusAvailable = [CLLocationManager respondsToSelector:@selector(authorizationStatus)]; // iOS 4.2+
-        if (authStatusAvailable) {
-            NSUInteger code = [CLLocationManager authorizationStatus];
-            if (code == kCLAuthorizationStatusNotDetermined) {
-                // could return POSITION_UNAVAILABLE but need to coordinate with other platforms
-                message = @"User undecided on application's use of location services";
-            } else if (code == kCLAuthorizationStatusRestricted) {
-                message = @"application use of location services is restricted";
-            }
-        }
-        //PERMISSIONDENIED is only PositionError that makes sense when authorization denied
-        [self returnLocationError:PERMISSIONDENIED withMessage: message];
-        
-        return;
-    }
-    
-    if (![self isSignificantLocationChangeMonitoringAvailable])
-	{
-		[self returnLocationError:SIGNIFICANTLOCATIONMONITORINGUNAVAILABLE withMessage: @"Significant location monitoring is unavailable"];
-        return;
-    }
-    
-    [[[DGGeofencingHelper sharedGeofencingHelper] locationManager] stopMonitoringSignificantLocationChanges];
-    
-    [self returnRegionSuccess];
-}
-
 
 - (void)addRegion:(CDVInvokedUrlCommand*)command {
     
@@ -314,7 +209,7 @@
 - (void) getPendingRegionUpdates:(CDVInvokedUrlCommand*)command {
     NSString* callbackId = command.callbackId;
     
-    NSString *path = [DGGeofencingHelper applicationDocumentsDirectory];
+    NSString *path = [[NSBundle mainBundle] bundlePath];
     NSString *finalPath = [path stringByAppendingPathComponent:@"notifications.dg"];
     NSMutableArray *updates = [NSMutableArray arrayWithContentsOfFile:finalPath];
     
@@ -345,7 +240,7 @@
     
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
     CLRegion *region = [[CLRegion alloc] initCircularRegionWithCenter:coord radius:radius identifier:regionId];
-    [[[DGGeofencingHelper sharedGeofencingHelper] locationManager] startMonitoringForRegion:region desiredAccuracy:kCLLocationAccuracyBestForNavigation];
+    [self.locationManager startMonitoringForRegion:region desiredAccuracy:kCLLocationAccuracyBestForNavigation];
     [region release];
 }
 
@@ -357,7 +252,7 @@
     
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([latitude doubleValue], [longitude doubleValue]);
     CLRegion *region = [[CLRegion alloc] initCircularRegionWithCenter:coord radius:10.0 identifier:regionId];
-    [[[DGGeofencingHelper sharedGeofencingHelper] locationManager] stopMonitoringForRegion:region];
+    [self.locationManager stopMonitoringForRegion:region];
     [region release];
 }
 
@@ -417,7 +312,7 @@
 - (void)getWatchedRegionIds:(CDVInvokedUrlCommand*)command {
     NSString* callbackId = command.callbackId;
     
-    NSSet *regions = [[DGGeofencingHelper sharedGeofencingHelper] locationManager].monitoredRegions;
+    NSSet *regions = self.locationManager.monitoredRegions;
     NSMutableArray *watchedRegions = [NSMutableArray array];
     for (CLRegion *region in regions) {
         [watchedRegions addObject:region.identifier];
@@ -434,5 +329,21 @@
 }
 
 #pragma mark Core Location Delegates
+
+- (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
+    NSMutableDictionary* posError = [NSMutableDictionary dictionaryWithCapacity:2];
+    [posError setObject: [NSNumber numberWithInt: error.code] forKey:@"code"];
+    [posError setObject: region.identifier forKey: @"regionid"];
+    CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:posError];
+    NSString *callbackId = [self.locationData.locationCallbacks dequeue];
+    if (callbackId) {
+        [self writeJavascript:[result toErrorCallbackString:callbackId]];
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+       didFailWithError:(NSError *)error {
+    [self writeJavascript:[NSString stringWithFormat:@"Error: %@", error.description]];
+}
 
 @end

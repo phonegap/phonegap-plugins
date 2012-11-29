@@ -20,5 +20,6 @@
 +(DGGeofencingHelper*)sharedGeofencingHelper;
 
 - (void) dispose;
++ (NSString*) applicationDocumentsDirectory;
 
 @end

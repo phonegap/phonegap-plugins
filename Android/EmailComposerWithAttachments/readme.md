@@ -1,3 +1,5 @@
+# EmailComposer with attachments handling
+
 - Add the EmailComposer.java to your project (use the correct package, or change it in the file)
 
 - Place the EmailComposer.js file somewhere in your www folder, and include it from your html.

@@ -1,6 +1,7 @@
 //
 //  EmailComposer.h
 //
+//  Version 1.1
 //
 //  Created by Guido Sabatini in 2012.
 //

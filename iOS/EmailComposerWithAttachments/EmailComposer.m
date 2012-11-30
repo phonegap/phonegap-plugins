@@ -1,6 +1,7 @@
 //
 //  EmailComposer.m
-// 
+//
+//  Version 1.1
 //
 //  Created by Guido Sabatini in 2012.
 //
@@ -12,11 +13,13 @@
 #define RETURN_CODE_EMAIL_NOTSENT 4
 
 #import "EmailComposer.h"
+#import <MobileCoreServices/MobileCoreServices.h>
 
 @interface EmailComposer ()
 
 -(void) showEmailComposerWithParameters:(NSDictionary*)parameters;
 -(void) returnWithCode:(int)code;
+-(NSString *) getMimeTypeFromFileExtension:(NSString *)extension;
 
 @end
 
@@ -107,15 +110,8 @@
         if (attachmentPaths) {
             for (NSString* path in attachmentPaths) {
                 @try {
-                    if ([path hasSuffix:@".pdf"]) {
-                        NSData *data = [[NSFileManager defaultManager] contentsAtPath:path];
-                        [mailComposer addAttachmentData:data mimeType:@"application/pdf" fileName:[NSString stringWithFormat:@"attachment%d.pdf", counter]];
-                    } else {
-                        // supposed image
-                        UIImage *image = [UIImage imageWithContentsOfFile:path];
-                        NSData *data = UIImagePNGRepresentation(image);
-                        [mailComposer addAttachmentData:data mimeType:@"image/png" fileName:[NSString stringWithFormat:@"attachment%d.png", counter]];
-                    }
+                    NSData *data = [[NSFileManager defaultManager] contentsAtPath:path];
+                    [mailComposer addAttachmentData:data mimeType:[self getMimeTypeFromFileExtension:[path pathExtension]] fileName:[NSString stringWithFormat:@"attachment%d.%@", counter, [path pathExtension]]];
                     counter++;
                 }
                 @catch (NSException *exception) {
@@ -168,6 +164,19 @@
 // Call the callback with the specified code
 -(void) returnWithCode:(int)code {
     [self writeJavascript:[NSString stringWithFormat:@"window.plugins.emailComposer._didFinishWithResult(%d);", code]];
+}
+
+// Retrieve the mime type from the file extension
+-(NSString *) getMimeTypeFromFileExtension:(NSString *)extension {
+    if (!extension)
+        return nil;
+    CFStringRef pathExtension, type;
+    // Get the UTI from the file's extension
+    pathExtension = (CFStringRef)extension;
+    type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, NULL);
+    
+    // Converting UTI to a mime type
+   return (NSString *)UTTypeCopyPreferredTagWithClass(type, kUTTagClassMIMEType);
 }
 
 @end

@@ -1,3 +1,9 @@
+# EmailComposer with attachments handling
+
+**Update: VERSION 1.1**
+Now the plugin can handle any type of attachments, not only images or PDFs
+
+**Description**
 This is a modification of the EmailComposer iOS plugin made by **Randy McMillan**
 In this version of the plugin, you can attach images and PDF files to emails. A little refactoring was made.
 It is compliant with Cordova 2.2.0 standard (new CDVInvokedUrlCommand parameter sent to native methods). If you want to use the plugin with an older version of Cordova you must comment the method

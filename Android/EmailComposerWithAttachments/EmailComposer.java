@@ -1,6 +1,9 @@
 /**
  * 
  * Phonegap Email composer plugin for Android with multiple attachments handling
+ * 
+ * Version 1.0
+ * 
  * Guido Sabatini 2012
  *
  */

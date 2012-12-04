@@ -43,4 +43,4 @@ if(!window.plugins) {
 }
 if(!window.plugins.Prompt) {
     window.plugins.Prompt = new Prompt();
-});
+}

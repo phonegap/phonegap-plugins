@@ -1,6 +1,6 @@
 Bluetooth
 ===============
-Plugin for Cordova 1.6+
+Plugin for Cordova 2.0
 
 The Bluetooth plugin offers access to the devices bluetooth functionality.
 Useful for any application requiring interaction with the bluetooth stack.
@@ -19,6 +19,7 @@ Edit your *AndroidManifest.xml* and add the following permissions:
 In addition you have to edit your *res/xml/plugins.xml* file to let Cordova know about the plugin:
 `<plugin name="BluetoothPlugin" value="org.apache.cordova.plugin.BluetoothPlugin"/>`
 
+The index.html delivered with the plugin contains a basic example code for all bluetooth functionality.
 
 License
 =======

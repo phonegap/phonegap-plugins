@@ -92,12 +92,11 @@ public class BluetoothPlugin extends Plugin {
 		super.setContext(ctx);
 
 		// Register for necessary bluetooth events
-		ctx.registerReceiver(m_bpBroadcastReceiver, new IntentFilter(
+		cordova.getActivity().registerReceiver(m_bpBroadcastReceiver, new IntentFilter(
 				BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
-		ctx.registerReceiver(m_bpBroadcastReceiver, new IntentFilter(
+		cordova.getActivity().registerReceiver(m_bpBroadcastReceiver, new IntentFilter(
 				BluetoothDevice.ACTION_FOUND));
-		ctx.registerReceiver(m_bpBroadcastReceiver, new IntentFilter(BluetoothPlugin.ACTION_UUID));
-		//ctx.registerReceiver(m_bpBroadcastReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+		cordova.getActivity().registerReceiver(m_bpBroadcastReceiver, new IntentFilter(BluetoothPlugin.ACTION_UUID));
 	}
 
 	/**
@@ -108,139 +107,148 @@ public class BluetoothPlugin extends Plugin {
 		PluginResult pluginResult = null;
 		
 		Log.d("BluetoothPlugin", "Action: " + action);
-
-		if (ACTION_ENABLE.equals(action)) {
-			// Check if bluetooth isn't disabled already
-			if( !m_bluetoothAdapter.isEnabled() ) {
-				m_stateChanging = true;
-				ctx.startActivityForResult(this, new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
-				while(m_stateChanging) {};
-			}
-			
-			// Check if bluetooth is enabled now
-			if(m_bluetoothAdapter.isEnabled()) {
-				pluginResult = new PluginResult(PluginResult.Status.OK);
-			}
-			else {
-				pluginResult = new PluginResult(PluginResult.Status.ERROR);
-			}
+		
+		// Check if bluetooth is supported at all
+		if( m_bluetoothAdapter == null ) {
+			pluginResult = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION, "No bluetooth adapter found");
 		}
-		// Want to disable bluetooth?
-		else if (ACTION_DISABLE.equals(action)) {
-			if( !m_bluetoothAdapter.disable() && m_bluetoothAdapter.isEnabled() ) {
-				pluginResult = new PluginResult(PluginResult.Status.ERROR);
-			}
-			else {
-				pluginResult = new PluginResult(PluginResult.Status.OK);
-			}
-			
-		}
-		else if (ACTION_DISCOVERDEVICES.equals(action)) {
-			m_discoveredDevices = new JSONArray();
-
-			if (!m_bluetoothAdapter.startDiscovery()) {
-				pluginResult = new PluginResult(PluginResult.Status.ERROR,
-						"Unable to start discovery");
-			} else {
-				m_discovering = true;
-
-				// Wait for discovery to finish
-				while (m_discovering) {}
-				
-				Log.d("BluetoothPlugin", "DiscoveredDevices: " + m_discoveredDevices.length());
-				
-				pluginResult = new PluginResult(PluginResult.Status.OK, m_discoveredDevices);
-			}
-		}
-		// Want to list UUIDs of a certain device
-		else if( ACTION_GETUUIDS.equals(action) ) {
-			
-			try {
-				String address = args.getString(0);
-				Log.d("BluetoothPlugin", "Listing UUIDs for: " + address);
-				
-				// Fetch UUIDs from bluetooth device
-				BluetoothDevice bluetoothDevice = m_bluetoothAdapter.getRemoteDevice(address);
-				Method m = bluetoothDevice.getClass().getMethod("fetchUuidsWithSdp");
-				Log.d("BluetoothPlugin", "Method: " + m);
-				m.invoke(bluetoothDevice);
-				
-				m_gettingUuids = true;
-				
-				while(m_gettingUuids) {}
-				
-				pluginResult = new PluginResult(PluginResult.Status.OK, m_gotUUIDs);
-				
-			}
-			catch( Exception e ) {
-				Log.e("BluetoothPlugin", e.toString() + " / " + e.getMessage() );
-				
-				pluginResult = new PluginResult(PluginResult.Status.JSON_EXCEPTION, e.getMessage());
-			}
-		}
-		// Connect to a given device & uuid endpoint
-		else if( ACTION_CONNECT.equals(action) ) {
-			try {
-				String address = args.getString(0);
-				UUID uuid = UUID.fromString(args.getString(1));
-				
-				Log.d( "BluetoothPlugin", "Connecting..." );
-
-				BluetoothDevice bluetoothDevice = m_bluetoothAdapter.getRemoteDevice(address);
-				BluetoothSocket bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
-				
-				bluetoothSocket.connect();
-				
-				m_bluetoothSockets.add(bluetoothSocket);
-				int socketId = m_bluetoothSockets.indexOf(bluetoothSocket);
-				
-				pluginResult = new PluginResult(PluginResult.Status.OK, socketId);
-			}
-			catch( Exception e ) {
-				Log.e("BluetoothPlugin", e.toString() + " / " + e.getMessage() );
-				
-				pluginResult = new PluginResult(PluginResult.Status.JSON_EXCEPTION, e.getMessage());
-			}
-		}
-		else if( ACTION_READ.equals(action) ) {
-			try {
-				int socketId = args.getInt(0);
-				
-				BluetoothSocket bluetoothSocket = m_bluetoothSockets.get(socketId);
-				InputStream inputStream = bluetoothSocket.getInputStream();
-				
-				char[] buffer = new char[128];
-				for( int i = 0; i < buffer.length; i++ ) {
-					buffer[i] = (char) inputStream.read();
+		else {
+			if (ACTION_ENABLE.equals(action)) {
+				// Check if bluetooth isn't disabled already
+				if( !m_bluetoothAdapter.isEnabled() ) {
+					m_stateChanging = true;
+					cordova.startActivityForResult(this, new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), 1);
+					while(m_stateChanging) {};
 				}
 				
-				//Log.d( "BluetoothPlugin", "Buffer: " + String.valueOf(buffer) );
-				pluginResult = new PluginResult(PluginResult.Status.OK, String.valueOf(buffer));
+				// Check if bluetooth is enabled now
+				if(m_bluetoothAdapter.isEnabled()) {
+					pluginResult = new PluginResult(PluginResult.Status.OK, "OK");
+				}
+				else {
+					pluginResult = new PluginResult(PluginResult.Status.ERROR, "Bluetooth not enabled");
+				}
 			}
-			catch( Exception e ) {
-				Log.e("BluetoothPlugin", e.toString() + " / " + e.getMessage() );
+			// Want to disable bluetooth?
+			else if (ACTION_DISABLE.equals(action)) {
+				if( !m_bluetoothAdapter.disable() && m_bluetoothAdapter.isEnabled() ) {
+					pluginResult = new PluginResult(PluginResult.Status.ERROR, "Unable to disable bluetooth");
+				}
+				else {
+					pluginResult = new PluginResult(PluginResult.Status.OK, "OK");
+				}
 				
-				pluginResult = new PluginResult(PluginResult.Status.JSON_EXCEPTION, e.getMessage());
 			}
-		}
-		else if( ACTION_DISCONNECT.equals(action) ) {
-			try {
-				int socketId = args.getInt(0);
-				
-				// Fetch socket & close it
-				BluetoothSocket bluetoothSocket = m_bluetoothSockets.get(socketId);
-				bluetoothSocket.close();
-				
-				// Remove socket from internal list
-				m_bluetoothSockets.remove(socketId);
-				
-				// Everything went fine...
-				pluginResult = new PluginResult(PluginResult.Status.OK);
+			else if (ACTION_DISCOVERDEVICES.equals(action)) {
+				m_discoveredDevices = new JSONArray();
+	
+				if (!m_bluetoothAdapter.startDiscovery()) {
+					pluginResult = new PluginResult(PluginResult.Status.ERROR,
+							"Unable to start discovery");
+				} else {
+					m_discovering = true;
+	
+					// Wait for discovery to finish
+					while (m_discovering) {}
+					
+					Log.d("BluetoothPlugin", "DiscoveredDevices: " + m_discoveredDevices.length());
+					
+					pluginResult = new PluginResult(PluginResult.Status.OK, m_discoveredDevices);
+				}
 			}
-			catch( Exception e ) {
-				Log.e("BluetoothPlugin", e.toString() + " / " + e.getMessage() );
+			// Want to list UUIDs of a certain device
+			else if( ACTION_GETUUIDS.equals(action) ) {
 				
-				pluginResult = new PluginResult(PluginResult.Status.JSON_EXCEPTION, e.getMessage());
+				try {
+					String address = args.getString(0);
+					Log.d("BluetoothPlugin", "Listing UUIDs for: " + address);
+					
+					// Fetch UUIDs from bluetooth device
+					BluetoothDevice bluetoothDevice = m_bluetoothAdapter.getRemoteDevice(address);
+					Method m = bluetoothDevice.getClass().getMethod("fetchUuidsWithSdp");
+					Log.d("BluetoothPlugin", "Method: " + m);
+					m.invoke(bluetoothDevice);
+					
+					m_gettingUuids = true;
+					
+					while(m_gettingUuids) {}
+					
+					pluginResult = new PluginResult(PluginResult.Status.OK, m_gotUUIDs);
+					
+				}
+				catch( Exception e ) {
+					Log.e("BluetoothPlugin", e.toString() + " / " + e.getMessage() );
+					
+					pluginResult = new PluginResult(PluginResult.Status.JSON_EXCEPTION, e.getMessage());
+				}
+			}
+			// Connect to a given device & uuid endpoint
+			else if( ACTION_CONNECT.equals(action) ) {
+				try {
+					String address = args.getString(0);
+					UUID uuid = UUID.fromString(args.getString(1));
+					
+					Log.d( "BluetoothPlugin", "Connecting..." );
+	
+					BluetoothDevice bluetoothDevice = m_bluetoothAdapter.getRemoteDevice(address);
+					BluetoothSocket bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
+					
+					bluetoothSocket.connect();
+					
+					m_bluetoothSockets.add(bluetoothSocket);
+					int socketId = m_bluetoothSockets.indexOf(bluetoothSocket);
+					
+					pluginResult = new PluginResult(PluginResult.Status.OK, socketId);
+				}
+				catch( Exception e ) {
+					Log.e("BluetoothPlugin", e.toString() + " / " + e.getMessage() );
+					
+					pluginResult = new PluginResult(PluginResult.Status.JSON_EXCEPTION, e.getMessage());
+				}
+			}
+			else if( ACTION_READ.equals(action) ) {
+				try {
+					int socketId = args.getInt(0);
+					
+					BluetoothSocket bluetoothSocket = m_bluetoothSockets.get(socketId);
+					InputStream inputStream = bluetoothSocket.getInputStream();
+					
+					char[] buffer = new char[128];
+					for( int i = 0; i < buffer.length; i++ ) {
+						buffer[i] = (char) inputStream.read();
+					}
+					
+					//Log.d( "BluetoothPlugin", "Buffer: " + String.valueOf(buffer) );
+					pluginResult = new PluginResult(PluginResult.Status.OK, String.valueOf(buffer));
+				}
+				catch( Exception e ) {
+					Log.e("BluetoothPlugin", e.toString() + " / " + e.getMessage() );
+					
+					pluginResult = new PluginResult(PluginResult.Status.JSON_EXCEPTION, e.getMessage());
+				}
+			}
+			else if( ACTION_DISCONNECT.equals(action) ) {
+				try {
+					int socketId = args.getInt(0);
+					
+					// Fetch socket & close it
+					BluetoothSocket bluetoothSocket = m_bluetoothSockets.get(socketId);
+					bluetoothSocket.close();
+					
+					// Remove socket from internal list
+					m_bluetoothSockets.remove(socketId);
+					
+					// Everything went fine...
+					pluginResult = new PluginResult(PluginResult.Status.OK, "OK");
+				}
+				catch( Exception e ) {
+					Log.e("BluetoothPlugin", e.toString() + " / " + e.getMessage() );
+					
+					pluginResult = new PluginResult(PluginResult.Status.JSON_EXCEPTION, e.getMessage());
+				}
+			}
+			else {
+				pluginResult = new PluginResult(PluginResult.Status.INVALID_ACTION, "Action '" + action + "' not supported");
 			}
 		}
 

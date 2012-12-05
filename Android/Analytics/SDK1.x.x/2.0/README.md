@@ -8,10 +8,11 @@ A simple use case would be:
 - Send page views upon user navigation.
 - Send events upon user interaction.
 
+This plugin supports Google Analytics SDK 1.x.x, for the newer SDK, see [SDK2.x.x](../../SDK2.x.x)
+
 ## Adding the Plugin to your project ##
 
 Using this plugin requires [PhoneGap Cordova library for Android](http://phonegap.com/download) version 1.9 or above.
-This plugin supports Google Analytics SDK 1.x.x, for the newer SDK, see [SDK2.x.x](../SDK2.x.x)
 
 1. To install the plugin, move www/analytics.js to your project's www folder and include a reference to it in your html file after cordova.js.
 

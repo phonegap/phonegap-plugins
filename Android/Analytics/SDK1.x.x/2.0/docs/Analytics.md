@@ -13,8 +13,6 @@ Methods
 
 - start: Initialize Google Analytics with the appropriate Google Analytics account.
 - trackPageView: Track a page view on Google Analytics. 
-- trackEvent: Track an event on Google Analytics. 
-- stop: Stop Tracking with Google Analytics. 
 
 
 Supported Platforms
@@ -49,8 +47,7 @@ Quick Example
         alert("An event has failed to be submitted to Google Analytics");
     }
 
-	// Get your account id from http://www.google.com/analytics/ and set it up in the analytics.xml file
-    window.plugins.analytics.start(onStartSuccess, onStartFailure);
+	var myGoogleAnalyticsAccountId = "Your-Account-ID-Here"; // Get your account id from http://www.google.com/analytics/
+    window.plugins.analytics.start(myGoogleAnalyticsAccountId, onStartSuccess, onStartFailure);
 	window.plugins.analytics.trackPageView("page1.html", onTrackSuccess, onTrackFailure);
-	window.plugins.analytics.trackEvent("category", "action", "event", 1, onEventSuccess, onEventFailure);
-    window.plugins.analytics.stop(onStartSuccess, onStartFailure);
+	window.plugins.analytics.trackEvent("category", "action", "event", 1, onEventSuccess, onEventFailure);    

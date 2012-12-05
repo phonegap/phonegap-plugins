@@ -1,0 +1,1 @@
+This plugin is maintianed at https://github.com/DoersGuild/Cordova-Android-Analytics

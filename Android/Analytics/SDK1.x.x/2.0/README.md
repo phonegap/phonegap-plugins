@@ -8,7 +8,7 @@ A simple use case would be:
 - Send page views upon user navigation.
 - Send events upon user interaction.
 
-This plugin supports Google Analytics SDK 1.x.x, for the newer SDK, see [SDK2.x.x](../../SDK2.x.x)
+This plugin supports Google Analytics SDK 1.x.x, for the newer SDK, see [SDK2.x.x](../SDK2.x.x)
 
 ## Adding the Plugin to your project ##
 

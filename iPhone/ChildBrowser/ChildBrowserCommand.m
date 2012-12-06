@@ -38,6 +38,10 @@
 
 }
 
+- (void) jsExec:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options; {
+	[childBrowser executeJS:(NSString *)[arguments objectAtIndex:0]];
+}
+
 -(void) close:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options // args: url
 {
 	[ childBrowser closeBrowser];

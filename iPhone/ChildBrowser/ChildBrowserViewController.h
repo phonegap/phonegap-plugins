@@ -48,7 +48,8 @@
 - (ChildBrowserViewController*)initWithScale:(BOOL)enabled;
 - (IBAction)onDoneButtonPress:(id)sender;
 - (IBAction)onSafariButtonPress:(id)sender;
+- (void)executeJS:(NSString *)js;
 - (void)loadURL:(NSString*)url;
--(void)closeBrowser;
+- (void)closeBrowser;
 
 @end

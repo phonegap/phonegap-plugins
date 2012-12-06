@@ -51,11 +51,9 @@ ChildBrowser.prototype.close = function()
 	PhoneGap.exec("ChildBrowserCommand.close");
 }
 
-// Not Implemented
 ChildBrowser.prototype.jsExec = function(jsString)
 {
-	// Not Implemented!!
-	//PhoneGap.exec("ChildBrowserCommand.jsExec",jsString);
+	PhoneGap.exec("ChildBrowserCommand.jsExec", jsString);
 }
 
 // Note: this plugin does NOT install itself, call this method some time after deviceready to install it

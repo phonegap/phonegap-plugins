@@ -21,6 +21,7 @@
 
 
 - (void) showWebPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
--(void) onChildLocationChange:(NSString*)newLoc;
+- (void) jsExec:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) onChildLocationChange:(NSString*)newLoc;
 
 @end

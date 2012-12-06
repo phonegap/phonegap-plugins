@@ -134,6 +134,9 @@
 }
 
 
+- (void) executeJS:(NSString *)js {
+	[webView stringByEvaluatingJavaScriptFromString:js];
+}
 
 
 - (void)loadURL:(NSString*)url

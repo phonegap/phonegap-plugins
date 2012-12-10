@@ -160,10 +160,9 @@ public class EmailComposer extends CordovaPlugin {
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		// TODO handle callback
 		super.onActivityResult(requestCode, resultCode, intent);
-		LOG.e("EmailComposer", "ResultCode: " + resultCode);
-		// IT DOESN'T SEEM TO HANDLE RESULT CODES
+		webView.loadUrl("javascript:window.plugins.emailComposer._didFinishWithResult("+resultCode+")");
+		LOG.d("EmailComposer", "ResultCode: " + resultCode);
 	}
 
 }

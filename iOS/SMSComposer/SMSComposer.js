@@ -42,8 +42,10 @@ SMSComposer.prototype._didFinishWithResult = function(res)
 	this.resultCallback(res);
 }
 
-Cordova.addConstructor(function() {
-					   
+cordova.addConstructor(function() {
+					   if (!window.Cordova) {
+					   window.Cordova = cordova;
+					   };
 					   if(!window.plugins)	{
 					   window.plugins = {};
 					   }

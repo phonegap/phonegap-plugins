@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  id="com.phonegap.plugins.modalviewcontrollerplugin"
+  version="0.1.0">
+  
+  <name>Modal View Controller Plugin</name>
+  
+  <asset src="www/ModalViewControllerPlugin.js" target="ModalViewControllerPlugin.js" />
+  
+  <!-- ios -->
+  <platform name="ios">
+    <plugins-plist key="ModalViewControllerPlugin" string="ModalViewControllerPlugin" />
+    
+    <header-file src="ModalViewControllerPlugin.h" />
+    
+    <source-file src="ModalViewControllerPlugin.m" />
+  </platform>
+</plugin>

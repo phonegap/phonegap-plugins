@@ -121,7 +121,7 @@ public class BarcodeScanner extends Plugin {
                     //Log.d(LOG_TAG, "This should never happen");
                 }
                 this.success(new PluginResult(PluginResult.Status.OK, obj), this.callback);
-            } if (resultCode == Activity.RESULT_CANCELED) {
+            } else if (resultCode == Activity.RESULT_CANCELED) {
                 JSONObject obj = new JSONObject();
                 try {
                     obj.put(TEXT, "");

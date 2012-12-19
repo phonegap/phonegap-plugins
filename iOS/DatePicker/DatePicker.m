@@ -176,7 +176,11 @@
 		self.datePicker.maximumDate = [NSDate date];
 	}
 
-	self.datePicker.date = [self.isoDateFormatter dateFromString:dateString];
+	NSDate *date = [self.isoDateFormatter dateFromString:dateString];
+    if (!date) {
+        date = [NSDate date];
+    }
+    self.datePicker.date = date;
 
 	if ([mode isEqualToString:@"date"]) {
 		self.datePicker.datePickerMode = UIDatePickerModeDate;

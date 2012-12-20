@@ -233,8 +233,8 @@ def getIncludeOrder(foundIncludes):
        zxing/common/GreyscaleRotatedLuminanceSource.h
        zxing/common/GridSampler.h
        zxing/common/HybridBinarizer.h
-       zxing/common/reedsolomon/GF256.h
-       zxing/common/reedsolomon/GF256Poly.h
+       zxing/common/reedsolomon/GenericGF.h
+       zxing/common/reedsolomon/GenericGFPoly.h
        zxing/common/reedsolomon/ReedSolomonDecoder.h
        zxing/common/reedsolomon/ReedSolomonException.h
        zxing/BarcodeFormat.h
@@ -275,7 +275,6 @@ def getIncludeOrder(foundIncludes):
        zxing/qrcode/decoder/DataBlock.h
        zxing/qrcode/decoder/DataMask.h
        zxing/qrcode/decoder/Mode.h
-       zxing/common/ECI.h
        zxing/common/CharacterSetECI.h
        zxing/qrcode/decoder/DecodedBitStreamParser.h
        zxing/qrcode/detector/AlignmentPattern.h
@@ -297,6 +296,11 @@ def getIncludeOrder(foundIncludes):
        zxing/multi/qrcode/QRCodeMultiReader.h
        zxing/multi/qrcode/detector/MultiDetector.h
        zxing/multi/qrcode/detector/MultiFinderPatternFinder.h
+       zxing/aztec/AztecDetectorResult.h
+	   zxing/aztec/detector/Detector.h
+       zxing/aztec/decoder/Decoder.h
+	   zxing/aztec/AztecReader.h
+	   zxing/common/detector/math_utils.h
     """.split()
 
     foundError = False

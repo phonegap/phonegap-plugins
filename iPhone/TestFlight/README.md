@@ -1,0 +1,1 @@
+This plugin has been moved to [http://github.com/shazron/TestFlightPlugin](http://github.com/shazron/TestFlightPlugin)

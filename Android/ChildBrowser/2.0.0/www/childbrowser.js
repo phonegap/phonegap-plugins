@@ -23,11 +23,10 @@ ChildBrowser.LOCATION_CHANGED_EVENT = 1;
  * @param options       An object that specifies additional options
  */
 ChildBrowser.prototype.showWebPage = function(url, options) {
-    if (options === null || options === "undefined") {
-        var options = new Object();
-        options.showLocationBar = true;
-        options.locationBarAlign = "top";
-    }
+    options = options || {
+        showLocationBar: true,
+        locationBarAlign: "top"
+    };
     cordova.exec(this._onEvent, this._onError, "ChildBrowser", "showWebPage", [url, options]);
 };
 

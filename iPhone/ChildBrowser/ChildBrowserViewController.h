@@ -1,7 +1,9 @@
-//  Created by Jesse MacFadyen on 10-05-29.
-//  Copyright 2010 Nitobi. All rights reserved.
-//  Copyright 2012, Randy McMillan
-// Continued maintainance @RandyMcMillan 2010/2011/2012
+//
+//  ChildBrowserViewController.h
+//
+//  Created by Jesse MacFadyen on 21/07/09.
+//  Copyright 2009 Nitobi. All rights reserved.
+//
 
 #import <UIKit/UIKit.h>
 

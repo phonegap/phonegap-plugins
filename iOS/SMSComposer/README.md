@@ -1,3 +1,5 @@
+Cordova 2.2.0 functionality check Nov 13 2012 - @RandyMcMillan
+
 Cordova 1.5.0 support added March 29 2012 - @RandyMcMillan
 
 StatusBarHidden issue addressed

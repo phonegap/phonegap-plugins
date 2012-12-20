@@ -1,0 +1,52 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="viewport" content="target-densitydpi=device-dpi, width = 540, user-scalable = 0" />
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>My ARchitect World</title>
+
+
+
+<!-- Include the ARchitect library -->
+<script src="architect://architect.js"></script>
+
+
+<script>
+
+var label = null;
+    
+function createLabelAtLocation(geoLocation)
+{
+    label = new AR.Label("No Text", 2, {onClick : function(){
+                                document.location = "architectsdk://didClickedOnLabel?text=HelloWorld";
+                             }});
+    
+    var geoObject = new AR.GeoObject(geoLocation, {drawables: {cam: label}});
+}
+    
+function setupScene()
+{
+    createLabelAtLocation( new AR.RelativeLocation(null, 100, 0, 0) );
+}
+    
+function didReceivedNewTextForLabel(text)
+{
+alert(text + "  - text");
+    if(label)
+    {
+        label.text = text;
+    }
+}
+
+   
+
+
+
+</script>
+</head>
+    
+<body onLoad="setupScene()">
+</body>
+    
+</html>

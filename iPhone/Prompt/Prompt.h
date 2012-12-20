@@ -3,10 +3,10 @@
 //	MIT Licensed
 
 #import <Foundation/Foundation.h>
-#ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PGPlugin.h>
+#ifdef CORDOVA_FRAMEWORK
+#import <Cordova/CDVPlugin.h>
 #else
-#import "PGPlugin.h"
+#import "Cordova/CDVPlugin.h"
 #endif
 
 @interface PromptAlertView : UIAlertView {
@@ -26,10 +26,9 @@
 - (NSString *)getCallback;
 @end
 
-@interface Prompt : PGPlugin {
-
-}
+@interface Prompt : CDVPlugin
 
 - (void) show:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
 @end
 

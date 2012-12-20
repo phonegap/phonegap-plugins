@@ -9,11 +9,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#ifdef CORDOVA_FRAMEWORK
 #import <Cordova/CDVPlugin.h>
-#else
-#import "CDVPlugin.h"
-#endif
 #import "GANTracker.h"
 
 @interface GoogleAnalyticsPlugin : CDVPlugin <GANTrackerDelegate> {

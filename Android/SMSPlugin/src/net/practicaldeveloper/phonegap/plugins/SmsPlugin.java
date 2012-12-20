@@ -29,8 +29,8 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.telephony.SmsManager;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 public class SmsPlugin extends Plugin {
 	public final String ACTION_SEND_SMS = "SendSMS";

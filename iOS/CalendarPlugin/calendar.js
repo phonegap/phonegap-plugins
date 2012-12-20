@@ -13,9 +13,14 @@ function calendarPlugin()
 
 
 
-calendarPlugin.prototype.createEvent = function(title,location,notes,startDate,endDate) {
-    console.log("here");
-    cordova.exec(null,null,"calendarPlugin","createEvent", [title,location,notes,startDate,endDate]);
+calendarPlugin.prototype.createEvent = function(title,location,notes,startDate,endDate,calendarName) {
+    console.log("creating event");
+    cordova.exec(null,null,"calendarPlugin","createEvent", [title,location,notes,startDate,endDate,calendarName]);
+};
+
+calendarPlugin.prototype.getCalendarList = function(response, err) {
+    console.log("getting calendars");
+    cordova.exec(response, err, "calendarPlugin", "getCalendarList",[]);
 };
 
 // More methods will need to be added like fetch events, delete event, edit event

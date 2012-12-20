@@ -1,0 +1,12 @@
+.DS_Store
+.*.sw?
+*.cso
+tmp
+*.mode1v3
+*.pbxuser
+build
+*.xcworkspace
+xcuserdata
+CordovaLib/javascript/cordova-*.js
+CordovaLib/CordovaLibApp/www/cordova.ios.js
+console.log

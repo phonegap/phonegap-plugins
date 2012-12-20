@@ -1,6 +1,6 @@
 PowerManagement
 ===============
-Plugin for Cordova (1.6+)
+Plugin for Cordova (2.0+)
 
 The PowerManagement plugin offers access to the devices power-management functionality.
 It should be used for applications which keep running for a long time without any user interaction.
@@ -8,29 +8,43 @@ It should be used for applications which keep running for a long time without an
 For details on power functionality see:
 
 * Android: [PowerManager](http://developer.android.com/reference/android/os/PowerManager.html)
-* iOS: [idleTimerDisabled](http://developer.apple.com/library/ios/documentation/UIKit/Reference/UIApplication_Class/Reference/Reference.html#//apple_ref/occ/instp/UIApplication/idleTimerDisabled)
 
-Platforms
+Installation
 ---------
-Currently available on:
+Copy the **PowerManagement.java** file to your *src/org/apache/cordova/plugin* directory.
 
-### Android
-Copy the *PowerManagement.java* file to your *src/* directory.
+Copy the **powermanagement.js** file to your *assets/www/js* directory.
 
-Edit your *AndroidManifest.xml* and add the following permission:
+Edit your **AndroidManifest.xml** and add the following permission:
 `<uses-permission android:name="android.permission.WAKE_LOCK" />`
 
-In addition you have to edit your *res/xml/plugins.xml* file to let Cordova know about the plugin:
+Edit your **res/xml/config.xml** and add the following plugin:
 `<plugin name="PowerManagement" value="org.apache.cordova.plugin.PowerManagement"/>`
 
-### iOS
-Copy the *PowerManagement.h* and *PowerManagement.m* files to your projects "Plugins" folder.
+Usage
+---------
 
-Add the PowerManagement plugin to the *Cordova.plist* file (to the Plugins list). Both Key and Value are "PowerManagement".
+Add this script tag to your **index.html** file, *after* calling your Cordova .js file:
+`<script type="text/javascript" charset="utf-8" src="js/powermanagement.js"></script>`
 
+Add the following code to your app's .js file, inside the function called by [deviceready](http://docs.phonegap.com/en/2.0.0/cordova_events_events.md.html#deviceready):
+<pre>
+var powerman = window.plugins.powerManagement;
+</pre>
+
+There are three available methods to call:
+
+<pre>powerman.acquire(successCallback, failureCallback)</pre>
+Acquires a 'wake-lock', preventing the device screen from going to sleep.
+
+<pre>powerman.dim(successCallback, failureCallback)</pre>
+Acquires a partial 'wake-lock', allowing the screen to dim but preventing the device from going to sleep.
+
+<pre>powerman.release(successCallback, failureCallback)</pre>
+Release an acquired 'wake-lock'. Device able to sleep again.
 
 License
-=======
+---------
 Copyright (C) 2011-2012 Wolfgang Koller
 
 This file is part of GOFG Sports Computer - http://www.gofg.at/.

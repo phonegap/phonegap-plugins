@@ -4,8 +4,7 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol ChildBrowserDelegate<NSObject>
-
+@protocol ChildBrowserDelegate <NSObject>
 
 /*
  *  onChildLocationChanging:newLoc
@@ -13,38 +12,43 @@
  *  Discussion:
  *    Invoked when a new page has loaded
  */
--(void) onChildLocationChange:(NSString*)newLoc;
--(void) onOpenInSafari;
--(void) onClose;
+- (void)onChildLocationChange:(NSString*)newLoc;
+- (void)onOpenInSafari;
+- (void)onClose;
+
 @end
 
+@protocol CDVOrientationDelegate <NSObject>
 
-@interface ChildBrowserViewController : UIViewController < UIWebViewDelegate > {
-    IBOutlet UIWebView* webView;
-    IBOutlet UIBarButtonItem* closeBtn;
-    IBOutlet UIBarButtonItem* refreshBtn;
-    IBOutlet UILabel* addressLabel;
-    IBOutlet UIBarButtonItem* backBtn;
-    IBOutlet UIBarButtonItem* fwdBtn;
-    IBOutlet UIBarButtonItem* safariBtn;
-    IBOutlet UIActivityIndicatorView* spinner;
-    BOOL scaleEnabled;
-    BOOL isImage;
-    NSString* imageURL;
-    NSArray* supportedOrientations;
-    id <ChildBrowserDelegate> delegate;
-}
+- (NSUInteger)supportedInterfaceOrientations;
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
+- (BOOL)shouldAutorotate;
 
-@property (nonatomic, retain)id <ChildBrowserDelegate> delegate;
-@property (nonatomic, retain) NSArray* supportedOrientations;
-@property(retain) NSString* imageURL;
-@property(assign) BOOL isImage;
+@end
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation) interfaceOrientation;
+@interface ChildBrowserViewController : UIViewController <UIWebViewDelegate>{}
+
+@property (nonatomic, strong) IBOutlet UIWebView* webView;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem* closeBtn;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem* refreshBtn;
+@property (nonatomic, strong) IBOutlet UILabel* addressLabel;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem* backBtn;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem* fwdBtn;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem* safariBtn;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView* spinner;
+
+// unsafe_unretained is equivalent to assign - used to prevent retain cycles in the two properties below
+@property (nonatomic, unsafe_unretained) id <ChildBrowserDelegate> delegate;
+@property (nonatomic, unsafe_unretained) id orientationDelegate;
+
+@property (copy) NSString* imageURL;
+@property (assign) BOOL isImage;
+@property (assign) BOOL scaleEnabled;
+
 - (ChildBrowserViewController*)initWithScale:(BOOL)enabled;
 - (IBAction)onDoneButtonPress:(id)sender;
 - (IBAction)onSafariButtonPress:(id)sender;
 - (void)loadURL:(NSString*)url;
--(void)closeBrowser;
+- (void)closeBrowser;
 
 @end

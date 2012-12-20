@@ -55,6 +55,7 @@ public class GoogleAnalyticsTracker extends Plugin {
 		} else if (SET_CUSTOM_VARIABLE.equals(action)){
 			try {
 				setCustomVar(data.getInt(0), data.getString(1), data.getString(2), data.getInt(3));
+				result = new PluginResult(Status.OK);
 			} catch (JSONException e) {
 				result = new PluginResult(Status.JSON_EXCEPTION);
 			}
@@ -77,6 +78,7 @@ public class GoogleAnalyticsTracker extends Plugin {
 	}
 
 	private void setCustomVar(int index, String label, String value, int scope) {
-		tracker.setCustomVar(index, label, value, scope);
+		if(scope > 0) tracker.setCustomVar(index, label, value, scope);
+		else tracker.setCustomVar(index, label, value);
 	}
 }

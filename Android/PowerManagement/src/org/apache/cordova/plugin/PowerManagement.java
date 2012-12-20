@@ -1,21 +1,18 @@
 /*
- * Copyright (C) 2011-2012 Wolfgang Koller
- * 
- * This file is part of GOFG Sports Computer - http://www.gofg.at/.
- * 
- * GOFG Sports Computer is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * GOFG Sports Computer is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with GOFG Sports Computer.  If not, see <http://www.gnu.org/licenses/>.
- */
+   Copyright 2011-2012 Wolfgang Koller - http://www.gofg.at/
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 
 /**
  * Cordova (Android) plugin for accessing the power-management functions of the device
@@ -30,52 +27,42 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.util.Log;
 
+import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.api.CallbackContext;
 import org.apache.cordova.api.CordovaInterface;
-import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.CordovaPlugin;
 import org.apache.cordova.api.PluginResult;
 import org.apache.cordova.api.PluginResult.Status;
 
 /**
  * Plugin class which does the actual handling
  */
-public class PowerManagement extends Plugin {
+public class PowerManagement extends CordovaPlugin {
 	// As we only allow one wake-lock, we keep a reference to it here
 	private PowerManager.WakeLock wakeLock = null;
 	private PowerManager powerManager = null;
-	
-	/**
-	 * Sets the application context for this plugin
-	 * Used to obtain a reference to the powermanager
-	 */
-	@Override
-	public void setContext(CordovaInterface ctx) {
-		super.setContext(ctx);
-		
-		this.powerManager = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
-	}
-	
-	/**
-	 * We have a synchronous interface to our plugin, since all calls return immediately
-	 */
-	@Override
-	public boolean isSynch(String action) {
-		return true;
-	}
 
 	/**
-	 * Called by the cordova framework to handle a call to this plugin
-	 * @param action currently supported are 'acquire' and 'release'
-	 * @param data In case of action 'acquire' this may contain a parameter set to 'true' to indicate only a dim wake-lock
+	 * Fetch a reference to the power-service when the plugin is initialized
 	 */
 	@Override
-	public PluginResult execute(String action, JSONArray data, String callbackId) {
+	public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+		super.initialize(cordova, webView);
+		
+		this.powerManager = (PowerManager) cordova.getActivity().getSystemService(Context.POWER_SERVICE);
+	}
+	
+	@Override
+	public boolean execute(String action, JSONArray args,
+			CallbackContext callbackContext) throws JSONException {
+
 		PluginResult result = null;
 		Log.d("PowerManagementPlugin", "Plugin execute called - " + this.toString() );
 		Log.d("PowerManagementPlugin", "Action is " + action );
 		
 		try {
 			if( action.equals("acquire") ) {
-					if( data.length() > 0 && data.getBoolean(0) ) {
+					if( args.length() > 0 && args.getBoolean(0) ) {
 						Log.d("PowerManagementPlugin", "Only dim lock" );
 						result = this.acquire( PowerManager.SCREEN_DIM_WAKE_LOCK );
 					}
@@ -91,9 +78,8 @@ public class PowerManagement extends Plugin {
 			result = new PluginResult(Status.JSON_EXCEPTION, e.getMessage());
 		}
 		
-		Log.d("PowerManagementPlugin", "Result is " + result.toString() );
-
-		return result;
+		callbackContext.sendPluginResult(result);
+		return true;
 	}
 	
 	/**
@@ -112,11 +98,11 @@ public class PowerManagement extends Plugin {
 			}
 			catch( Exception e ) {
 				this.wakeLock = null;
-				result = new PluginResult(PluginResult.Status.ERROR, "Can't acquire wake-lock - check your permissions!");
+				result = new PluginResult(PluginResult.Status.ERROR,"Can't acquire wake-lock - check your permissions!");
 			}
 		}
 		else {
-			result = new PluginResult( PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION, "WakeLock already active - release first");
+			result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION,"WakeLock already active - release first");
 		}
 		
 		return result;
@@ -133,7 +119,7 @@ public class PowerManagement extends Plugin {
 			this.wakeLock.release();
 			this.wakeLock = null;
 			
-			result = new PluginResult(PluginResult.Status.OK);
+			result = new PluginResult(PluginResult.Status.OK, "OK");
 		}
 		else {
 			result = new PluginResult(PluginResult.Status.ILLEGAL_ACCESS_EXCEPTION, "No WakeLock active - acquire first");

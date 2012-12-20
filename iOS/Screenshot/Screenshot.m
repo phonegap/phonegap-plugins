@@ -31,7 +31,12 @@
 		imageRect = CGRectMake(0, 0, CGRectGetWidth(screenRect), CGRectGetHeight(screenRect));
 	}
 
-	UIGraphicsBeginImageContext(imageRect.size);
+	// Adds support for Retina Display. Code reverts back to original if iOs 4 not detected.
+	if (NULL != UIGraphicsBeginImageContextWithOptions)
+        UIGraphicsBeginImageContextWithOptions(imageRect.size, NO, 0);
+    else
+        UIGraphicsBeginImageContext(imageRect.size);
+
 
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	[[UIColor blackColor] set];

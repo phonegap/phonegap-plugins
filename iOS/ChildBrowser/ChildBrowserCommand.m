@@ -4,19 +4,30 @@
 
 #import "ChildBrowserCommand.h"
 #import <Cordova/CDVViewController.h>
-
-
+#import <AVFoundation/AVFoundation.h>
 
 @implementation ChildBrowserCommand
 
 @synthesize childBrowser;
 
-- (void) showWebPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options // args: url
+- (void)showWebPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options  // args: url
 {
-    if(childBrowser == NULL)
-    {
-	childBrowser = [[ ChildBrowserViewController alloc ] initWithScale:FALSE ];
-	childBrowser.delegate = self;
+    /* setting audio session category to "Playback" (since iOS 6) */
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    NSError *setCategoryError = nil;
+    BOOL ok = [audioSession setCategory:AVAudioSessionCategoryPlayback error:&setCategoryError];
+    if (!ok) {
+        NSLog(@"Error setting AVAudioSessionCategoryPlayback: %@", setCategoryError);
+    };
+
+    if (self.childBrowser == nil) {
+#if __has_feature(objc_arc)
+        self.childBrowser = [[ChildBrowserViewController alloc] initWithScale:NO];
+#else
+        self.childBrowser = [[[ChildBrowserViewController alloc] initWithScale:NO] autorelease];
+#endif
+        self.childBrowser.delegate = self;
+        self.childBrowser.orientationDelegate = self.viewController;
     }
 
     /* // TODO: Work in progress
@@ -24,47 +35,53 @@
      NSArray* supportedOrientations = [strOrientations componentsSeparatedByString:@","];
      */
 
-    CDVViewController* cont = (CDVViewController*)[ super viewController ];
-    childBrowser.supportedOrientations = cont.supportedOrientations;
-    [ cont presentModalViewController:childBrowser animated:YES ];
+    [self.viewController presentModalViewController:childBrowser animated:YES];
 
-    NSString *url = (NSString*) [arguments objectAtIndex:0];
+    NSString* url = (NSString*)[arguments objectAtIndex:0];
 
-    [childBrowser loadURL:url  ];
-
-}
-- (void) getPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
-    NSString *url = (NSString*) [arguments objectAtIndex:0];
-    [childBrowser loadURL:url  ];
+    [self.childBrowser loadURL:url];
 }
 
--(void) close:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options // args: url
+- (void)getPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
-    [ childBrowser closeBrowser];
+    NSString* url = (NSString*)[arguments objectAtIndex:0];
 
+    [self.childBrowser loadURL:url];
 }
 
--(void) onClose
+- (void)close:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options // args: url
 {
-    NSString* jsCallback = [NSString stringWithFormat:@"window.plugins.childBrowser.onClose();",@""];
-    [self.webView stringByEvaluatingJavaScriptFromString:jsCallback];
+    [self.childBrowser closeBrowser];
 }
 
--(void) onOpenInSafari
+- (void)onClose
 {
-    NSString* jsCallback = [NSString stringWithFormat:@"window.plugins.childBrowser.onOpenExternal();",@""];
-    [self.webView stringByEvaluatingJavaScriptFromString:jsCallback];
+    [self.webView stringByEvaluatingJavaScriptFromString:@"window.plugins.childBrowser.onClose();"];
 }
 
-
--(void) onChildLocationChange:(NSString*)newLoc
+- (void)onOpenInSafari
 {
+    [self.webView stringByEvaluatingJavaScriptFromString:@"window.plugins.childBrowser.onOpenExternal();"];
+}
 
-    NSString* tempLoc = [NSString stringWithFormat:@"%@",newLoc];
+- (void)onChildLocationChange:(NSString*)newLoc
+{
+    NSString* tempLoc = [NSString stringWithFormat:@"%@", newLoc];
     NSString* encUrl = [tempLoc stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
-    NSString* jsCallback = [NSString stringWithFormat:@"window.plugins.childBrowser.onLocationChange('%@');",encUrl];
-    [self.webView stringByEvaluatingJavaScriptFromString:jsCallback];
+    NSString* jsCallback = [NSString stringWithFormat:@"window.plugins.childBrowser.onLocationChange('%@');", encUrl];
 
+    [self.webView stringByEvaluatingJavaScriptFromString:jsCallback];
 }
+
+
+#if !__has_feature(objc_arc)
+- (void)dealloc
+{
+    self.childBrowser = nil;
+
+    [super dealloc];
+}
+#endif
+
 @end

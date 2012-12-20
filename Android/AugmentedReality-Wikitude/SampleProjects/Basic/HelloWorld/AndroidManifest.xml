@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.wikitude.phonegapsamplehelloworld"
+    android:versionCode="1"
+    android:versionName="0.9" >
+
+    <uses-sdk android:minSdkVersion="8"/>
+    
+    <supports-screens 
+    android:largeScreens="true" 
+    android:normalScreens="true" 
+    android:smallScreens="true" 
+    android:resizeable="true" 
+    android:anyDensity="true" />
+ 
+	<!-- 
+	
+	Please check: Wikitude's AR does not need these permissions, maybe you need them anyway
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.RECEIVE_SMS" />
+	<uses-permission android:name="android.permission.RECORD_AUDIO" />
+	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+	<uses-permission android:name="android.permission.READ_CONTACTS" />
+	<uses-permission android:name="android.permission.WRITE_CONTACTS" />
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+	<uses-permission android:name="android.permission.BROADCAST_STICKY" /> 
+	
+	-->
+
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_GPS" />
+	<uses-permission android:name="android.permission.CAMERA" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+<!-- AHAU: required hardware components -->
+	<uses-feature android:name="android.hardware.camera" android:required="true" />
+
+	<!-- you need to have a way to find users location -->
+	<uses-feature android:name="android.hardware.location" android:required="true" />
+
+	<!-- you need to have a accelerometer -->
+	<uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
+
+	<!-- you need to have a compass -->
+	<uses-feature android:name="android.hardware.sensor.compass" android:required="true" />
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" android:debuggable="true">
+        <activity
+            android:name="com.wikitude.phonegap.PhonegapSampleActivity"
+            android:label="@string/app_name" android:configChanges="orientation|keyboardHidden|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+    </application>
+
+</manifest>

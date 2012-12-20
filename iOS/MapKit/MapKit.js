@@ -1,4 +1,7 @@
-(function(window) {
+
+(function() {
+
+var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to new fallbacks
 
 	/*
 	* PhoneGap is available under *either* the terms of the modified BSD license *or* the
@@ -70,4 +73,4 @@
 		window.plugins.mapKit = new MapKit();
 	});
 
-}(window));
+})();

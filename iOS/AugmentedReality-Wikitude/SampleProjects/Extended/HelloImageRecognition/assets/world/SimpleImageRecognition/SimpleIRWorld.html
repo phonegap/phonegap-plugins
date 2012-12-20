@@ -1,0 +1,116 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="viewport" content="target-densitydpi=device-dpi, width = 540, user-scalable = 0" />
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Simple IR World</title>
+
+<style type="text/css">
+	.info {
+		color: #9F6000;
+		background-color: #FEEFB3;
+		margin: -8px 1%;
+		padding: 10px;
+		font-size: 14pt;
+		border-radius: 0 0 10px 10px;
+		text-align: center;
+	}
+</style>
+
+<!-- Include the ARchitect library -->
+<script src="architect://architect.js"></script>
+
+<script src="../ade.js"></script>
+
+<script>
+
+/* Global variables */
+var logoTracker = null;
+var overlay = null;
+var trackable2DObject = null;
+var errorOccured = false;
+var masterAnimationGroup  = null;
+
+function error() {
+	errorOccured = true;
+	document.getElementById("messageElement").innerHTML = "Unable to load image or tracker!";
+}
+
+function createTracker(){
+	var image = new AR.ImageResource("overlay.png", {onError: error});
+	overlay = new AR.ImageDrawable(image, 1.0, {zOrder: 0});
+
+	// create tracker 
+	trackerDataSetPath = "WikitudeLogo.zip";
+	logoTracker = new AR.Tracker(trackerDataSetPath, { onLoaded : trackerLoaded, onError: error });
+	
+
+	// relative position from teh arrows
+	arrowXOffset = 2.0;
+	arrowYOffset = 0.1;
+
+	var arrow1 = arrowWithDirectionality(-arrowXOffset, -arrowYOffset, -45);
+	var arrow2 = arrowWithDirectionality(-arrowXOffset, arrowYOffset, 45);
+	var arrow3 = arrowWithDirectionality(-arrowXOffset, -arrowYOffset, 135);
+	var arrow4 = arrowWithDirectionality(-arrowXOffset, arrowYOffset, 225);
+
+	trackable2DObject = new AR.Trackable2DObject(logoTracker, "WikitudeLogo", { drawables: { cam: [overlay, arrow1[0], arrow2[0], arrow3[0], arrow4[0] ] }});
+
+	// we need to pack the arrow animations into a parallel animation group to play them synchronisly
+	masterAnimationGroup = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.PARALLEL, [ arrow1[1], arrow2[1], arrow3[1], arrow4[1] ]);
+}
+
+function trackerLoaded()
+{
+	if (errorOccured) return;
+
+	document.getElementById("messageElement").style.display = "none";
+
+	// start with the parameter -1 indicates, that the group will play the animation in an infinite loop
+	masterAnimationGroup.start(-1);
+}
+
+function arrowWithDirectionality(offsetX, offsetY, roll)
+{
+
+	var animationOffset = 0.9; // distance in sdu's
+	var animationTime = 700; // ms
+
+	// load the arrow image
+	var arrowImage = new AR.ImageResource("DirectionArrow.png");
+
+	// attach the image resource to a drawable, so that its visible on the screen
+	var arrowImageDrawable = new AR.ImageDrawable(arrowImage, 0.6, {offsetX: offsetX, offsetY: offsetY, zOrder: 1, roll: roll} );
+
+
+	// we want to animte the arrow, to lets add two animation
+	var arrowSpinAnimation = new AR.PropertyAnimation(arrowImageDrawable, "tilt", 0, 360, animationTime, {type: AR.CONST.EASING_CURVE_TYPE.LINEAR});
+
+	// the first one moves the arrow to the trackableObject
+	var arrowAnimationMoveDown = new AR.PropertyAnimation(arrowImageDrawable, "offsetX", offsetX, offsetX+animationOffset, animationTime, {type: AR.CONST.EASING_CURVE_TYPE.EASE_IN_CUBIC});
+
+	// the second one moves it back to the original position 
+	var arrowAnimationMoveUp = new AR.PropertyAnimation(arrowImageDrawable, "offsetX", offsetX+animationOffset, offsetX, animationTime, {type: AR.CONST.EASING_CURVE_TYPE.EASE_OUT_CUBIC});
+
+	// because these two animations should be played one after another, we gonna pack them into a sequential animation group.
+	var animationGroup = new AR.AnimationGroup(AR.CONST.ANIMATION_GROUP_TYPE.SEQUENTIAL, [arrowAnimationMoveDown, arrowAnimationMoveUp]); 
+
+	var arrow = new Array(arrowImageDrawable, animationGroup);
+
+	return arrow;
+}
+
+</script>
+</head>
+
+<body>
+
+<div class="info" id="messageElement">Loading ...</div>
+
+<script>
+createTracker();
+</script>
+
+</body>
+</html>

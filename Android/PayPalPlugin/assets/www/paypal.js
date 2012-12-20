@@ -2,13 +2,13 @@
 *
 * Copyright (C) 2011, Appception, Inc.. All Rights Reserved.
 * Copyright (C) 2011, Mobile Developer Solutions All Rights Reserved.
+* Copyright (C) 2012, Bucka IT, Tomaz Kregar s.p. All Rights Reserved.
 */
 
 /* 
  * @return Instance of PayPal
  */
-var PayPal = function() {
-};
+var PayPal = function() {};
 
 /**
  * @param directory
@@ -29,7 +29,7 @@ var fail = function(e) {
 PayPal.prototype.invoke = function(callee, arg, successFunction) {
 
     var succ = successFunction ? successFunction : genericSuccess;
-    return PhoneGap.exec(succ, 
+    return cordova.exec(succ, 
                         fail, 
                         'PayPalPlugin',  // Telling PhoneGap that we want to run "PayPal Plugin"
                         callee, // Telling the plugin, which action we want to perform
@@ -38,34 +38,40 @@ PayPal.prototype.invoke = function(callee, arg, successFunction) {
 
 /**
  * <ul>
- * <li>Register the Directory Listing Javascript plugin.</li>
- * <li>Also register native call which will be called when this plugin runs</li>
+ * <li>Register native call which will be called when this plugin runs</li>
+ * <li>Plugin must be registered in /res/xml/config.xml : &lt;plugin name="PayPalPlugin" value="com.phonegap.plugin.PayPalPlugin"/&gt;</li>
  * </ul>
  */
-PhoneGap.addConstructor(function() {
-    // Register the javascript plugin with PhoneGap
-    PhoneGap.addPlugin('PayPal', new PayPal());
 
-    // Register the native class of plugin with PhoneGap
-    PluginManager.addService("PayPalPlugin", "com.phonegap.plugin.PayPalPlugin");
-});
+if(cordova.addPlugin) {          //versions before 2.0.0
+    cordova.addConstructor(function() {
+        // Register the javascript plugin with PhoneGap
+        cordova.addPlugin('PayPal', new PayPal());
+    });
+} else {
+    // Creating the native object of plugin
+    if(!window.plugins)
+        window.plugins = {};
+    if (!window.plugins.PayPal)
+        window.plugins.PayPal = new PayPal();
+}
 
 var mpl = {
-        construct : function(str) {
-            window.plugins.PayPal.invoke('construct', str);
-        },
-        prepare : function(ptype) {
-            window.plugins.PayPal.invoke('prepare', ptype);
-        },
-        getStatus : function() {
-            return window.plugins.PayPal.invoke('getStatus', null, getStatusCallback);
-        },
-        setPaymentInfo : function(arg) {
-            window.plugins.PayPal.invoke('setPaymentInfo', arg);            
-        },
-        payButton : function(btype) {
-            window.plugins.PayPal.invoke('pay', btype);
-        }
+    construct : function(str) {
+        window.plugins.PayPal.invoke('construct', str);
+    },
+    prepare : function(ptype) {
+        window.plugins.PayPal.invoke('prepare', ptype);
+    },
+    getStatus : function() {
+        return window.plugins.PayPal.invoke('getStatus', null, getStatusCallback);
+    },
+    setPaymentInfo : function(arg) {
+        window.plugins.PayPal.invoke('setPaymentInfo', arg);            
+    },
+    payButton : function(btype) {
+        window.plugins.PayPal.invoke('pay', btype);
+    }
 };
 
 /*

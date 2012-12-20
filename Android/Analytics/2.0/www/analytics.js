@@ -68,6 +68,17 @@ Analytics.prototype.trackEvent = function(category, action, label, value, succes
 				]);					
 };
 
+/**
+ * Set a custom variable on Google Analytics
+ * @param index			The slot for the custom variable
+ * @param label			The name for the custom variable
+ * @param value			The value for the custom variable
+ * @param scope			The scope for the custom variable (optional)
+
+ * @param successCallback	The success callback
+ * @param failureCallback	The error callback 
+ */
+
 Analytics.prototype.setCustomVar = function(index, label, value, scope, successCallback, failureCallback){
 	return cordova.exec(
 				successCallback,			

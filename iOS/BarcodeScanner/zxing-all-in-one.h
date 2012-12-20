@@ -983,7 +983,6 @@ private:
 // #include <zxing/common/Array.h>
 // #include <zxing/common/BitMatrix.h>
 // #include <zxing/ResultPoint.h>
-// #include <zxing/common/PerspectiveTransform.h>
 
 namespace zxing {
 
@@ -991,13 +990,11 @@ class DetectorResult : public Counted {
 private:
   Ref<BitMatrix> bits_;
   std::vector<Ref<ResultPoint> > points_;
-  Ref<PerspectiveTransform> transform_;
 
 public:
-  DetectorResult(Ref<BitMatrix> bits, std::vector<Ref<ResultPoint> > points, Ref<PerspectiveTransform> transform);
+        DetectorResult(Ref<BitMatrix> bits, std::vector<Ref<ResultPoint> > points);
   Ref<BitMatrix> getBits();
   std::vector<Ref<ResultPoint> > getPoints();
-  Ref<PerspectiveTransform> getTransform();
 };
 }
 
@@ -1193,6 +1190,10 @@ class Binarizer : public Counted {
 
   Ref<LuminanceSource> getLuminanceSource() const ;
   virtual Ref<Binarizer> createBinarizer(Ref<LuminanceSource> source) = 0;
+
+  int getWidth() const;
+  int getHeight() const;
+
 };
 
 }
@@ -1483,28 +1484,27 @@ namespace zxing {
                                     int height,
                                     int blackPoints[],
                                     Ref<BitMatrix> const& matrix);
-    void threshold8x8Block(unsigned char* luminances,
-                           int xoffset,
-                           int yoffset,
-                           int threshold,
-                           int stride,
-                           Ref<BitMatrix> const& matrix);
+    void thresholdBlock(unsigned char* luminances,
+                        int xoffset,
+                        int yoffset,
+                        int threshold,
+                        int stride,
+                        Ref<BitMatrix> const& matrix);
 	};
 
 }
 
 #endif
 
-// file: zxing/common/reedsolomon/GF256.h
+// file: zxing/common/reedsolomon/GenericGF.h
 
-#ifndef __GF256_H__
-// #define __GF256_H__
-
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 /*
- *  GF256.h
+ *  GenericGF.h
  *  zxing
  *
- *  Copyright 2010 ZXing authors All rights reserved.
+ *  Created by Lukas Stabe on 13/02/2012.
+ *  Copyright 2012 ZXing authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1519,63 +1519,73 @@ namespace zxing {
  * limitations under the License.
  */
 
-// #include <memory>
+#ifndef GENERICGF_H
+#define GENERICGF_H
+
 // #include <vector>
 // #include <zxing/common/Counted.h>
 
 namespace zxing {
-class GF256Poly;
+  class GenericGFPoly;
 
-class GF256 {
-  /**
-   * <p>This class contains utility methods for performing mathematical
-   * operations over the Galois Field GF(256). Operations use a given
-   * primitive polynomial in calculations.</p>
-   *
-   * <p>Throughout this package, elements of GF(256) are represented as an
-   * <code>int</code> for convenience and speed (but at the cost of memory).
-   * Only the bottom 8 bits are really used.</p>
-   *
-   * @author srowen@google.com (Sean Owen)
-   * @author christian.brunschen@gmail.com (Christian Brunschen)
-   */
-private:
-  std::vector<int> exp_;
-  std::vector<int> log_;
-  Ref<GF256Poly> zero_;
-  Ref<GF256Poly> one_;
+  class GenericGF : public Counted {
 
-  GF256(int primitive);
+  private:
+    std::vector<int> expTable_;
+    std::vector<int> logTable_;
+    Ref<GenericGFPoly> zero_;
+    Ref<GenericGFPoly> one_;
+    int size_;
+    int primitive_;
+    bool initialized_;
 
-public:
-  Ref<GF256Poly> getZero();
-  Ref<GF256Poly> getOne();
-  Ref<GF256Poly> buildMonomial(int degree, int coefficient);
-  static int addOrSubtract(int a, int b);
-  int exp(int a);
-  int log(int a);
-  int inverse(int a);
-  int multiply(int a, int b);
+    void initialize();
+    void checkInit();
 
-  static GF256 QR_CODE_FIELD;
-  static GF256 DATA_MATRIX_FIELD;
+  public:
+    static Ref<GenericGF> AZTEC_DATA_12;
+    static Ref<GenericGF> AZTEC_DATA_10;
+    static Ref<GenericGF> AZTEC_DATA_8;
+    static Ref<GenericGF> AZTEC_DATA_6;
+    static Ref<GenericGF> AZTEC_PARAM;
+    static Ref<GenericGF> QR_CODE_FIELD_256;
+    static Ref<GenericGF> DATA_MATRIX_FIELD_256;
 
-  friend std::ostream& operator<<(std::ostream& out, const GF256& field);
-};
+    GenericGF(int primitive, int size);
+
+    Ref<GenericGFPoly> getZero();
+    Ref<GenericGFPoly> getOne();
+    int getSize();
+    Ref<GenericGFPoly> buildMonomial(int degree, int coefficient);
+
+    static int addOrSubtract(int a, int b);
+    int exp(int a);
+    int log(int a);
+    int inverse(int a);
+    int multiply(int a, int b);
+
+    bool operator==(GenericGF other) {
+      return (other.getSize() == this->size_ &&
+              other.primitive_ == this->primitive_);
+    }
+
+    //#warning todo: add print method
+
+  };
 }
 
-#endif // __GF256_H__
+#endif //GENERICGF_H
 
-// file: zxing/common/reedsolomon/GF256Poly.h
 
-#ifndef __GF256_POLY_H__
-// #define __GF256_POLY_H__
+// file: zxing/common/reedsolomon/GenericGFPoly.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 /*
- *  GF256Poly.h
+ *  GenericGFPoly.h
  *  zxing
  *
- *  Copyright 2010 ZXing authors All rights reserved.
+ *  Created by Lukas Stabe on 13/02/2012.
+ *  Copyright 2012 ZXing authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1590,37 +1600,39 @@ public:
  * limitations under the License.
  */
 
-// #include <memory>
-// #include <zxing/common/Counted.h>
+#ifndef GENERICGFPOLY_H
+#define GENERICGFPOLY_H
+
+// #include <vector>
 // #include <zxing/common/Array.h>
+// #include <zxing/common/Counted.h>
 
 namespace zxing {
-class GF256;
+  class GenericGF;
 
-class GF256Poly : public Counted {
-private:
-  GF256 &field;
-  ArrayRef<int> coefficients;
-  void fixCoefficients();
-public:
-  GF256Poly(GF256 &field, ArrayRef<int> c);
-  ~GF256Poly();
+  class GenericGFPoly : public Counted {
+  private:
+    Ref<GenericGF> field_;
+    ArrayRef<int> coefficients_;
 
-  int getDegree();
-  bool isZero();
-  int getCoefficient(int degree);
-  int evaluateAt(int a);
-  Ref<GF256Poly> addOrSubtract(Ref<GF256Poly> other);
-  Ref<GF256Poly> multiply(Ref<GF256Poly> other);
-  Ref<GF256Poly> multiply(int scalar);
-  Ref<GF256Poly> multiplyByMonomial(int degree, int coefficient);
-  const char *description() const;
-  friend std::ostream& operator<<(std::ostream& out, const GF256Poly& poly);
+  public:
+    GenericGFPoly(Ref<GenericGF> field, ArrayRef<int> coefficients);
+    ArrayRef<int> getCoefficients();
+    int getDegree();
+    bool isZero();
+    int getCoefficient(int degree);
+    int evaluateAt(int a);
+    Ref<GenericGFPoly> addOrSubtract(Ref<GenericGFPoly> other);
+    Ref<GenericGFPoly> multiply(Ref<GenericGFPoly> other);
+    Ref<GenericGFPoly> multiply(int scalar);
+    Ref<GenericGFPoly> multiplyByMonomial(int degree, int coefficient);
+    std::vector<Ref<GenericGFPoly> > divide(Ref<GenericGFPoly> other);
 
-};
+      //#warning todo: add print method
+  };
 }
 
-#endif // __GF256_POLY_H__
+#endif //GENERICGFPOLY_H
 
 // file: zxing/common/reedsolomon/ReedSolomonDecoder.h
 
@@ -1650,22 +1662,24 @@ public:
 // #include <vector>
 // #include <zxing/common/Counted.h>
 // #include <zxing/common/Array.h>
+// #include <zxing/common/reedsolomon/GenericGFPoly.h>
+// #include <zxing/common/reedsolomon/GenericGF.h>
 
 namespace zxing {
-class GF256;
-class GF256Poly;
+class GenericGFPoly;
+class GenericGF;
 
 class ReedSolomonDecoder {
 private:
-  GF256 &field;
+  Ref<GenericGF> field;
 public:
-  ReedSolomonDecoder(GF256 &fld);
+  ReedSolomonDecoder(Ref<GenericGF> fld);
   ~ReedSolomonDecoder();
   void decode(ArrayRef<int> received, int twoS);
 private:
-  std::vector<Ref<GF256Poly> > runEuclideanAlgorithm(Ref<GF256Poly> a, Ref<GF256Poly> b, int R);
-  ArrayRef<int> findErrorLocations(Ref<GF256Poly> errorLocator);
-  ArrayRef<int> findErrorMagnitudes(Ref<GF256Poly> errorEvaluator, ArrayRef<int> errorLocations, bool dataMatrix);
+  std::vector<Ref<GenericGFPoly> > runEuclideanAlgorithm(Ref<GenericGFPoly> a, Ref<GenericGFPoly> b, int R);
+  ArrayRef<int> findErrorLocations(Ref<GenericGFPoly> errorLocator);
+  ArrayRef<int> findErrorMagnitudes(Ref<GenericGFPoly> errorEvaluator, ArrayRef<int> errorLocations, bool dataMatrix);
 };
 }
 
@@ -1709,6 +1723,7 @@ public:
 
 // file: zxing/BarcodeFormat.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __BARCODE_FORMAT_H__
 // #define __BARCODE_FORMAT_H__
 
@@ -1733,21 +1748,22 @@ public:
 
 namespace zxing {
 
-	typedef enum BarcodeFormat {
-		BarcodeFormat_None = 0,
-		BarcodeFormat_QR_CODE,
-		BarcodeFormat_DATA_MATRIX,
-		BarcodeFormat_UPC_E,
-		BarcodeFormat_UPC_A,
-		BarcodeFormat_EAN_8,
-		BarcodeFormat_EAN_13,
-		BarcodeFormat_CODE_128,
-		BarcodeFormat_CODE_39,
-		BarcodeFormat_ITF
-	} BarcodeFormat;
+    typedef enum BarcodeFormat {
+        BarcodeFormat_None = 0,
+        BarcodeFormat_QR_CODE,
+        BarcodeFormat_DATA_MATRIX,
+        BarcodeFormat_UPC_E,
+        BarcodeFormat_UPC_A,
+        BarcodeFormat_EAN_8,
+        BarcodeFormat_EAN_13,
+        BarcodeFormat_CODE_128,
+        BarcodeFormat_CODE_39,
+        BarcodeFormat_ITF,
+        BarcodeFormat_AZTEC
+    } BarcodeFormat;
 
-	/* if you update the enum, please update the name in BarcodeFormat.cpp */
-	extern const char *barcodeFormatNames[];
+    /* if you update the enum, please update the name in BarcodeFormat.cpp */
+    extern const char *barcodeFormatNames[];
 }
 
 #endif // __BARCODE_FORMAT_H__
@@ -1903,6 +1919,7 @@ class DecodeHints {
   static const DecodeHintType BARCODEFORMAT_CODE_128_HINT = 1 << BarcodeFormat_CODE_128;
   static const DecodeHintType BARCODEFORMAT_CODE_39_HINT = 1 << BarcodeFormat_CODE_39;
   static const DecodeHintType BARCODEFORMAT_ITF_HINT = 1 << BarcodeFormat_ITF;
+  static const DecodeHintType BARCODEFORMAT_AZTEC_HINT = 1 << BarcodeFormat_AZTEC;
   static const DecodeHintType CHARACTER_SET = 1 << 30;
   static const DecodeHintType TRYHARDER_HINT = 1 << 31;
 
@@ -2143,7 +2160,6 @@ public:
  */
 
 // #include <zxing/common/reedsolomon/ReedSolomonDecoder.h>
-// #include <zxing/common/reedsolomon/GF256.h>
 // #include <zxing/common/Counted.h>
 // #include <zxing/common/Array.h>
 // #include <zxing/common/DecoderResult.h>
@@ -2507,7 +2523,7 @@ private:
    */
   void decodeBase256Segment(Ref<BitSource> bits, std::ostringstream &result, std::vector<unsigned char> byteSegments);
 
-  void parseTwoBytes(int firstByte, int secondByte, int*& result);
+  void parseTwoBytes(int firstByte, int secondByte, int* result);
   /**
    * See ISO 16022:2006, Annex B, B.2
    */
@@ -3494,7 +3510,6 @@ public:
  */
 
 // #include <zxing/common/reedsolomon/ReedSolomonDecoder.h>
-// #include <zxing/common/reedsolomon/GF256.h>
 // #include <zxing/common/Counted.h>
 // #include <zxing/common/Array.h>
 // #include <zxing/common/DecoderResult.h>
@@ -3883,49 +3898,6 @@ public:
 
 #endif // __MODE_H__
 
-// file: zxing/common/ECI.h
-
-// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
-
-#ifndef __ECI__
-#define __ECI__
-
-/*
- * Copyright 2008-2011 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-namespace zxing {
-  namespace common {
-    class ECI;
-  }
-}
-class zxing::common::ECI {
-private:
-  const int value;
-
-protected:
-  ECI(int value);
-
-public:
-  int getValue() const;
-
-  static ECI* getECIByValue(int value);
-};
-
-#endif
-
 // file: zxing/common/CharacterSetECI.h
 
 // -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
@@ -3950,7 +3922,6 @@ public:
  */
 
 // #include <map>
-// #include <zxing/common/ECI.h>
 // #include <zxing/DecodeHints.h>
 
 namespace zxing {
@@ -3959,22 +3930,23 @@ namespace zxing {
   }
 }
 
-class zxing::common::CharacterSetECI : public ECI {
+class zxing::common::CharacterSetECI {
 private:
   static std::map<int, CharacterSetECI*> VALUE_TO_ECI;
   static std::map<std::string, CharacterSetECI*> NAME_TO_ECI;
   static const bool inited;
   static bool init_tables();
 
-  char const* const encodingName;
+  int const* const values_;
+  char const* const* const names_;
 
-  CharacterSetECI(int value, char const* encodingName);
+  CharacterSetECI(int const* values, char const* const* names);
 
-  static void addCharacterSet(int value, char const* encodingName);
-  static void addCharacterSet(int value, char const* const* encodingNames);
+  static void addCharacterSet(int const* value, char const* const* encodingNames);
 
 public:
-  char const* getEncodingName();
+  char const* name() const;
+  int getValue() const;
 
   static CharacterSetECI* getCharacterSetECIByValue(int value);
   static CharacterSetECI* getCharacterSetECIByName(std::string const& name);
@@ -4212,9 +4184,10 @@ namespace zxing {
 			float estimatedModuleSize_;
 			int count_;
 
+			FinderPattern(float posX, float posY, float estimatedModuleSize, int count);
+
 		public:
 			FinderPattern(float posX, float posY, float estimatedModuleSize);
-			FinderPattern(float posX, float posY, float estimatedModuleSize, int count);
 			int getCount() const;
 			float getEstimatedModuleSize() const;
 			void incrementCount();
@@ -4278,6 +4251,7 @@ public:
 
 // file: zxing/qrcode/detector/Detector.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __DETECTOR_H__
 // #define __DETECTOR_H__
 
@@ -4320,7 +4294,8 @@ private:
   Ref<ResultPointCallback> callback_;
 
 protected:
-  Ref<BitMatrix> getImage();
+  Ref<BitMatrix> getImage() const;
+  Ref<ResultPointCallback> getResultPointCallback() const;
 
   static Ref<BitMatrix> sampleGrid(Ref<BitMatrix> image, int dimension, Ref<PerspectiveTransform>);
   static int computeDimension(Ref<ResultPoint> topLeft, Ref<ResultPoint> topRight, Ref<ResultPoint> bottomLeft,
@@ -4333,12 +4308,13 @@ protected:
       float allowanceFactor);
   Ref<DetectorResult> processFinderPatternInfo(Ref<FinderPatternInfo> info);
 public:
-
   virtual Ref<PerspectiveTransform> createTransform(Ref<ResultPoint> topLeft, Ref<ResultPoint> topRight, Ref <
       ResultPoint > bottomLeft, Ref<ResultPoint> alignmentPattern, int dimension);
 
   Detector(Ref<BitMatrix> image);
   Ref<DetectorResult> detect(DecodeHints const& hints);
+
+
 };
 }
 }
@@ -4347,6 +4323,7 @@ public:
 
 // file: zxing/qrcode/detector/FinderPatternFinder.h
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 #ifndef __FINDER_PATTERN_FINDER_H__
 // #define __FINDER_PATTERN_FINDER_H__
 
@@ -4409,6 +4386,10 @@ protected:
   bool haveMultiplyConfirmedCenters();
   std::vector<Ref<FinderPattern> > selectBestPatterns();
   static std::vector<Ref<FinderPattern> > orderBestPatterns(std::vector<Ref<FinderPattern> > patterns);
+
+  Ref<BitMatrix> getImage();
+  std::vector<Ref<FinderPattern> >& getPossibleCenters();
+
 public:
   static float distance(Ref<ResultPoint> p1, Ref<ResultPoint> p2);
   FinderPatternFinder(Ref<BitMatrix> image, Ref<ResultPointCallback>const&);
@@ -4704,15 +4685,18 @@ class WhiteRectangleDetector : public Counted {
     Ref<BitMatrix> image_;
     int width_;
     int height_;
+    int leftInit_;
+    int rightInit_;
+    int downInit_;
+    int upInit_;
 
   public:
     WhiteRectangleDetector(Ref<BitMatrix> image);
+    WhiteRectangleDetector(Ref<BitMatrix> image, int initSize, int x, int y);
     std::vector<Ref<ResultPoint> > detect();
 
   private:
-    int round(float a);
     Ref<ResultPoint> getBlackPointOnSegment(float aX, float aY, float bX, float bY);
-    int distanceL2(float aX, float aY, float bX, float bY);
     std::vector<Ref<ResultPoint> > centerEdges(Ref<ResultPoint> y, Ref<ResultPoint> z,
                                     Ref<ResultPoint> x, Ref<ResultPoint> t);
     bool containsBlackPoint(int a, int b, int fixed, bool horizontal);
@@ -5004,4 +4988,304 @@ class MultiFinderPatternFinder : zxing::qrcode::FinderPatternFinder {
 }
 
 #endif // __MULTI_FINDER_PATTERN_FINDER_H__
+
+// file: zxing/aztec/AztecDetectorResult.h
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+/*
+ *  AtztecDetecorResult.h
+ *  zxing
+ *
+ *  Created by Lukas Stabe on 08/02/2012.
+ *  Copyright 2012 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/common/DetectorResult.h>
+
+#ifndef ZXingWidget_AtztecDetecorResult_h
+#define ZXingWidget_AtztecDetecorResult_h
+
+namespace zxing {
+    namespace aztec {
+        class AztecDetectorResult : public DetectorResult {
+        private:
+            bool compact_;
+            int nbDatablocks_, nbLayers_;
+        public:
+            AztecDetectorResult(Ref<BitMatrix> bits, std::vector<Ref<ResultPoint> > points, bool compact, int nbDatablocks, int nbLayers);
+            bool isCompact();
+            int getNBDatablocks();
+            int getNBLayers();
+        };
+    }
+}
+
+#endif
+
+// file: zxing/aztec/detector/Detector.h
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+/*
+ *  Detector.h
+ *  zxing
+ *
+ *  Created by Lukas Stabe on 08/02/2012.
+ *  Copyright 2012 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+// #include <vector>
+
+// #include <zxing/common/BitArray.h>
+// #include <zxing/ResultPoint.h>
+// #include <zxing/common/BitMatrix.h>
+// #include <zxing/DecodeHints.h>
+// #include <zxing/aztec/AztecDetectorResult.h>
+
+namespace zxing {
+    namespace aztec {
+
+        class Point : public Counted {
+        public:
+            int x;
+            int y;
+
+            Ref<ResultPoint> toResultPoint() {
+                return Ref<ResultPoint>(new ResultPoint(x, y));
+            }
+
+            Point(int ax, int ay):x(ax),y(ay) {};
+
+        };
+
+        class Detector : public Counted {
+
+        private:
+            Ref<BitMatrix> image_;
+
+            bool compact_;
+            int nbLayers_;
+            int nbDataBlocks_;
+            int nbCenterLayers_;
+            int shift_;
+
+            void extractParameters(std::vector<Ref<Point> > bullEyeCornerPoints);
+            std::vector<Ref<ResultPoint> > getMatrixCornerPoints(std::vector<Ref<Point> > bullEyeCornerPoints);
+            static void correctParameterData(Ref<BitArray> parameterData, bool compact);
+            std::vector<Ref<Point> > getBullEyeCornerPoints(Ref<Point> pCenter);
+            Ref<Point> getMatrixCenter();
+            Ref<BitMatrix> sampleGrid(Ref<BitMatrix> image,
+                                      Ref<ResultPoint> topLeft,
+                                      Ref<ResultPoint> bottomLeft,
+                                      Ref<ResultPoint> bottomRight,
+                                      Ref<ResultPoint> topRight);
+            void getParameters(Ref<BitArray> parameterData);
+            Ref<BitArray> sampleLine(Ref<Point> p1, Ref<Point> p2, int size);
+            bool isWhiteOrBlackRectangle(Ref<Point> p1,
+                                         Ref<Point> p2,
+                                         Ref<Point> p3,
+                                         Ref<Point> p4);
+            int getColor(Ref<Point> p1, Ref<Point> p2);
+            Ref<Point> getFirstDifferent(Ref<Point> init, bool color, int dx, int dy);
+            bool isValid(int x, int y);
+            static float distance(Ref<Point> a, Ref<Point> b);
+
+        public:
+            Detector(Ref<BitMatrix> image);
+            Ref<AztecDetectorResult> detect();
+        };
+
+    }
+}
+
+// file: zxing/aztec/decoder/Decoder.h
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+/*
+ *  Decoder.h
+ *  zxing
+ *
+ *  Created by Lukas Stabe on 08/02/2012.
+ *  Copyright 2012 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/common/DecoderResult.h>
+// #include <zxing/common/BitMatrix.h>
+// #include <zxing/common/Str.h>
+// #include <zxing/aztec/AztecDetectorResult.h>
+
+namespace zxing {
+    namespace aztec {
+
+        class Decoder : public Counted {
+        private:
+            enum Table {
+                UPPER,
+                LOWER,
+                MIXED,
+                DIGIT,
+                PUNCT,
+                BINARY
+            };
+
+            static Table getTable(char t);
+            static const char* getCharacter(Table table, int code);
+
+            int numCodewords_;
+            int codewordSize_;
+            Ref<AztecDetectorResult> ddata_;
+            int invertedBitCount_;
+
+            Ref<String> getEncodedData(Ref<BitArray> correctedBits);
+            Ref<BitArray> correctBits(Ref<BitArray> rawbits);
+            Ref<BitArray> extractBits(Ref<BitMatrix> matrix);
+            static Ref<BitMatrix> removeDashedLines(Ref<BitMatrix> matrix);
+            static int readCode(Ref<BitArray> rawbits, int startIndex, int length);
+
+
+        public:
+            Decoder();
+            Ref<DecoderResult> decode(Ref<AztecDetectorResult> detectorResult);
+        };
+
+    }
+}
+
+
+// file: zxing/aztec/AztecReader.h
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+/*
+ *  AztecReader.h
+ *  zxing
+ *
+ *  Created by Lukas Stabe on 08/02/2012.
+ *  Copyright 2012 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/Reader.h>
+// #include <zxing/aztec/decoder/Decoder.h>
+// #include <zxing/DecodeHints.h>
+
+#ifndef ZXingWidget_AztecReader_h
+#define ZXingWidget_AztecReader_h
+
+namespace zxing {
+    namespace aztec {
+
+        class AztecReader : public Reader {
+        private:
+            Decoder decoder_;
+
+        protected:
+            Decoder &getDecoder();
+
+        public:
+            AztecReader();
+            virtual Ref<Result> decode(Ref<BinaryBitmap> image);
+            virtual Ref<Result> decode(Ref<BinaryBitmap> image, DecodeHints hints);
+            virtual ~AztecReader();
+        };
+
+    }
+}
+
+#endif
+
+// file: zxing/common/detector/math_utils.h
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+#ifndef __ZXING_COMMON_DETECTOR_MATHUTILS_H__
+// #define __ZXING_COMMON_DETECTOR_MATHUTILS_H__
+/*
+ *  Copyright 2012 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <math.h>
+
+namespace zxing { namespace common { namespace detector { namespace math_utils {
+
+/**
+ * Ends up being a bit faster than {@link Math#round(float)}. This merely rounds its
+ * argument to the nearest int, where x.5 rounds up to x+1.
+ */
+inline int round(float d) {
+  return (int) (d + 0.5f);
+}
+
+inline float distance(float aX, float aY, float bX, float bY) {
+  float xDiff = aX - bX;
+  float yDiff = aY - bY;
+  return (float) sqrt(xDiff * xDiff + yDiff * yDiff);
+}
+
+inline float distance(int aX, int aY, int bX, int bY) {
+  int xDiff = aX - bX;
+  int yDiff = aY - bY;
+  return (float) sqrt(xDiff * xDiff + yDiff * yDiff);
+}
+
+}}}}
+
+#endif
 

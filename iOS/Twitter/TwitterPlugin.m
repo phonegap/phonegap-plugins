@@ -125,7 +125,7 @@
         
         if([urlResponse statusCode] == 200) {
             NSString *dataString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-            NSDictionary *dict = [dataString objectFromJSONString];
+            NSDictionary *dict = [dataString cdvjk_objectFromJSONString];
             jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dict] toSuccessCallbackString:callbackId];
             [dataString release];
 		}
@@ -181,7 +181,7 @@
                     NSString *jsResponse;
                     if([urlResponse statusCode] == 200) {
                         NSString *dataString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-                        NSDictionary *dict = [dataString objectFromJSONString];
+                        NSDictionary *dict = [dataString cdvjk_objectFromJSONString];
                         jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dict] toSuccessCallbackString:callbackId];
                         [dataString release];
                     }
@@ -258,7 +258,7 @@
                     NSString *jsResponse;
                     if([urlResponse statusCode] == 200) {
                         NSString *dataString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-                        NSDictionary *dict = [dataString objectFromJSONString];
+                        NSDictionary *dict = [dataString cdvjk_objectFromJSONString];
                         jsResponse = [[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dict] toSuccessCallbackString:callbackId];
                         [dataString release];
                     }

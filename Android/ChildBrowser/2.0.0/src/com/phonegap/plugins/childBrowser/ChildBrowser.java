@@ -22,6 +22,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.text.InputType;
 import android.util.Log;
@@ -32,6 +33,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebChromeClient;
@@ -40,8 +44,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class ChildBrowser extends Plugin {
 
@@ -55,6 +61,11 @@ public class ChildBrowser extends Plugin {
     private WebView webview;
     private EditText edittext;
     private boolean showLocationBar = true;
+    
+    /* Progress bar*/
+    private Dialog dialog_p;
+    private TextView urltext;
+
 
     /**
      * Executes the request and returns PluginResult.
@@ -151,6 +162,12 @@ public class ChildBrowser extends Plugin {
      * Closes the dialog
      */
     private void closeDialog() {
+
+    	if (dialog_p != null) {
+    		/* Progress Bar */
+            dialog_p.dismiss();
+        }
+    	
         if (dialog != null) {
             dialog.dismiss();
         }
@@ -386,6 +403,50 @@ public class ChildBrowser extends Plugin {
                 lp.height = WindowManager.LayoutParams.FILL_PARENT;
 
                 dialog.setContentView(main);
+                
+                /* Progress Bar */
+                dialog_p = new Dialog(ctx.getContext(), android.R.style.Theme_Translucent_NoTitleBar); 
+                
+                LinearLayout progressbar = new LinearLayout(ctx.getContext());
+                progressbar.setOrientation(LinearLayout.HORIZONTAL);
+                progressbar.setBackgroundColor(Color.rgb(240, 240, 240));
+                progressbar.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
+                urltext = new TextView(ctx.getContext());
+                urltext.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT, 1.0f));
+                urltext.setTextColor(Color.GRAY);
+                ImageView image = new ImageView(ctx.getContext());
+                try{
+                	image.setImageBitmap(loadDrawable("www/childbrowser/loader.png"));
+	            } catch (IOException e) {
+	                Log.e(LOG_TAG, e.getMessage(), e);
+	            }
+
+                float ROTATE_FROM = 0.0f; // from what position you want to rotate it
+                float ROTATE_TO = 10.0f * 360.0f; // how many times you want it to rotate in one 'animation' (in this example you want to fully rotate -360 degrees- it 10 times)
+
+                RotateAnimation r = new RotateAnimation(ROTATE_FROM, ROTATE_TO, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                r.setDuration(7500); // here you determine how fast you want the image to rotate
+                r.setRepeatCount(Animation.INFINITE); // how many times you want to repeat the animation
+                r.setInterpolator(new LinearInterpolator()); // the curve of the animation; use LinearInterpolator to keep a consistent speed all the way
+
+                image.startAnimation(r);
+                progressbar.addView(urltext);
+                progressbar.addView(image);
+                dialog_p.setContentView(progressbar);
+                
+                
+                WindowManager.LayoutParams lpd = dialog_p.getWindow().getAttributes();
+                lpd.width = WindowManager.LayoutParams.FILL_PARENT;
+                lpd.height = 40;
+                dialog_p.getWindow().setAttributes(lpd);
+                dialog_p.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+                dialog_p.getWindow().setFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH, WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
+                dialog_p.setCancelable(true);
+                dialog_p.setCanceledOnTouchOutside(true);
+                dialog_p.getWindow().setGravity(Gravity.BOTTOM);
+                
+
+                
                 dialog.show();
                 dialog.getWindow().setAttributes(lp);
             }
@@ -457,6 +518,29 @@ public class ChildBrowser extends Plugin {
             } catch (JSONException e) {
                 Log.d("ChildBrowser", "This should never happen");
             }
+            
+            /* Progress Bar */
+            if(dialog.isShowing()){
+	            try{
+	        		urltext.setText(url.substring(0, 30)+"  ...   ");
+	        	} catch (IndexOutOfBoundsException e) {
+	        		urltext.setText(url);
+	        	}
+	        	if(url.indexOf("http") != -1 && dialog_p != null) {
+	        		dialog_p.show();
+	            }
+	        	if(url.indexOf("file") != -1 && dialog_p!=null) {
+	        		dialog_p.hide();
+	            }
+	        }
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url){
+        	/* Hide ProgressBar on Page Load */
+        	if(dialog_p!=null){
+        		dialog_p.hide();
+        	}
         }
     }
 }

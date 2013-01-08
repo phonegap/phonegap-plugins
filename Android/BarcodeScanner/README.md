@@ -2,9 +2,12 @@
 Originally by Matt Kane
 Updates by Simon MacDonald
 
+## Deprecated Repo ##
+The [latest version of the Barcode Scanner plugin for Cordova/Phonegap is now maintained at: https://github.com/wildabeast/BarcodeScanner](https://github.com/wildabeast/BarcodeScanner)
+
 ## Choosing the right source directory ##
 
-If you are using PhoneGap 1.5.0 to 1.8.1 please use the 1.8.1 directory. If you have upgraded to PhoneGap version 2.0.0 or better please use the 2.0.0 directory.
+If you are using PhoneGap 1.5.0 to 1.8.1 please use the 1.8.1 directory. If you have upgraded to PhoneGap version 2.0.0 or better please use the above repo.
 
 
 ## Adding the Plugin to your project ##

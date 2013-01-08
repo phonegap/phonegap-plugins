@@ -61,6 +61,7 @@ public class ChildBrowser extends Plugin {
     private WebView webview;
     private EditText edittext;
     private boolean showLocationBar = true;
+    private boolean showLoadingIndicator = false;
     
     /* Progress bar*/
     private Dialog dialog_p;
@@ -217,6 +218,15 @@ public class ChildBrowser extends Plugin {
     private boolean getShowLocationBar() {
         return this.showLocationBar;
     }
+    
+    /**
+     * Should we show the loading indicator?
+     *
+     * @return boolean
+     */
+    private boolean getShowLoadingIndicator() {
+        return this.showLoadingIndicator;
+    }
 
     /**
      * Display a new browser with the specified URL.
@@ -228,6 +238,7 @@ public class ChildBrowser extends Plugin {
         // Determine if we should hide the location bar.
         if (options != null) {
             showLocationBar = options.optBoolean("showLocationBar", true);
+            showLoadingIndicator = options.optBoolean("showLoadingIndicator", false);
         }
 
         // Create dialog in new thread
@@ -520,7 +531,7 @@ public class ChildBrowser extends Plugin {
             }
             
             /* Progress Bar */
-            if(dialog.isShowing()){
+            if(dialog.isShowing() && getShowLoadingIndicator()){
 	            try{
 	        		urltext.setText(url.substring(0, 30)+"  ...   ");
 	        	} catch (IndexOutOfBoundsException e) {

@@ -44,7 +44,7 @@ Note that unlike the iphone version, android childbrowser doesn't require a call
 
 Sample use:
 
-    window.plugins.childBrowser.showWebPage("http://www.google.com", { showLocationBar: true });
+    window.plugins.childBrowser.showWebPage("http://www.google.com", { showLocationBar: true, showLoadingIndicator: false });
 
 <pre>
   /**

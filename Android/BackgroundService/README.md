@@ -4,31 +4,12 @@ A plugin (and framework code) that allows the development and operation of an An
 
 The example MyService Background Service will write a Hello message to the LogCat every minute.  The MyService is designed as sample code.
 
-## Cordova Versions ##
+## Repository Location ##
 
-Folders used for different Cordova versions:
+The location for this repository has been moved to https://github.com/Red-Folder/Cordova-Plugin-BackgroundService
 
-* /1.8.1 - For use with Cordova 1.8.1
-* /2.0.0 - For use with Cordova 2.0.0
+This was moved based on the Plugin recommendations here -> http://shazronatadobe.wordpress.com/2012/11/07/cordova-plugins-put-them-in-your-own-repo-2/
 
-## Change Log ##
-
-* 14th November 2012 - Fix for service not stopping if the app has been closed then re-opened
-
-## Further Information ##
-
-Further information on the plugin can be found at:
-
-* http://red-folder.blogspot.co.uk/2012/09/phonegap-android-background-service.html
-* http://red-folder.blogspot.com/2012/09/phonegap-android-background-service_11.html
-
-The below is a tutorial to create your own Twitter service:
-
-* http://red-folder.blogspot.com/2012/09/phonegap-service-tutorial-part-1.html
-* http://red-folder.blogspot.com/2012/09/phonegap-service-tutorial-part-2.html
-* http://red-folder.blogspot.com/2012/09/phonegap-service-tutorial-part-3.html
-
-Please let me know your thoughts and comments.
 
 ## Licence ##
 

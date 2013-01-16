@@ -1,4 +1,4 @@
-package com.phonegap.plugin.localnotification;
+package org.apache.cordova.plugins;
 
 import java.util.Calendar;
 
@@ -69,12 +69,19 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		// Construct the notification and notificationManager objects
 		final NotificationManager notificationMgr = (NotificationManager) systemService;
-		final Notification notification = new Notification(R.drawable.ic_launcher, tickerText,
-				System.currentTimeMillis());
-		final PendingIntent contentIntent = PendingIntent.getActivity(context, 0, new Intent(), 0);
+		final Notification notification = new Notification.Builder(context)
+				.setTicker(tickerText).setSmallIcon(R.drawable.ic_launcher)
+				.setWhen(System.currentTimeMillis())
+				.setContentTitle(notificationTitle)
+				.setContentText(notificationSubText)
+				.build();
+		// final Notification notification = new Notification(
+		// R.drawable.ic_launcher, tickerText, System.currentTimeMillis());
+
 		notification.defaults |= Notification.DEFAULT_SOUND;
 		notification.vibrate = new long[] { 0, 100, 200, 300 };
-		notification.setLatestEventInfo(context, notificationTitle, notificationSubText, contentIntent);
+//		notification.setLatestEventInfo(context, notificationTitle,
+//				notificationSubText, contentIntent);
 
 		/*
 		 * If you want all reminders to stay in the notification bar, you should

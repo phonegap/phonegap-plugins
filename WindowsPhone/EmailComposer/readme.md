@@ -8,10 +8,6 @@
 
 You can call plugin like this:
 
-	EmailComposer.show(to, subject, body, errback)
-
-or
-
-	window.plugins.emailComposer.showEmailComposer(subject,body,toRecipients,ccRecipients,bccRecipients,isHtml,attachments);
+	EmailComposer.show(to, subject, body, callback, errback)
 
 Callback and errback parameters can be null.

@@ -1,0 +1,1 @@
+# Asset2SD plugin for Phonegap #By Gautam ChaudharyPhonegap plugin for Android for copying files from app assets to device SD Card.The repository for this plugin is located at https://github.com/gkcgautam/Asset2SD

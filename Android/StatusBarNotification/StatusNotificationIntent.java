@@ -11,11 +11,12 @@ import android.content.pm.PackageManager;
 //import com.my.app.R;
 
 public class StatusNotificationIntent {
-    public static Notification buildNotification( Context context, CharSequence tag, CharSequence contentTitle, CharSequence contentText, int flag ) {
+    public static Notification buildNotification( Context context, CharSequence tag, CharSequence contentTitle, CharSequence contentText, int flag, int defaults) {
         int icon = R.drawable.notification;
         long when = System.currentTimeMillis();
         Notification noti = new Notification(icon, contentTitle, when);
         noti.flags |= flag;
+        noti.defaults |= defaults;
 
         PackageManager pm = context.getPackageManager();
         Intent notificationIntent = pm.getLaunchIntentForPackage(context.getPackageName());

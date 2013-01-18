@@ -37,6 +37,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.text.TextUtils;
+
 
 public class StatusBarNotification extends CordovaPlugin {
     //	Action to execute
@@ -61,9 +63,11 @@ public class StatusBarNotification extends CordovaPlugin {
                 String title = data.getString(1);
                 String body = data.getString(2);
                 String flag = data.getString(3);
+                String defaults = data.getString(4);
                 Log.d("NotificationPlugin", "Notification: " + tag + ", " + title + ", " + body);
                 int notificationFlag = getFlagValue(flag);
-                showNotification(tag, title, body, notificationFlag);
+                int notificationDefaults = getDefaultValue(defaults);
+                showNotification(tag, title, body, notificationFlag, notificationDefaults);
             } catch (JSONException jsonEx) {
                 Log.d("NotificationPlugin", "Got JSON Exception "
                         + jsonEx.getMessage());
@@ -88,21 +92,38 @@ public class StatusBarNotification extends CordovaPlugin {
     /**
      * Helper method that returns a flag value to be used for notification
      * by default it will return 16 representing FLAG_NO_CLEAR
-     * 
+     *
      * @param flag
      * @return int value of the flag
      */
     private int getFlagValue(String flag) {
-		int flagVal = Notification.FLAG_AUTO_CANCEL;
-		
-		// We trust the flag value as it comes from our JS constant.
-		// This is also backwards compatible as it will be emtpy.
-		if (!flag.isEmpty()){
-			flagVal = Integer.parseInt(flag);
-		}
-		
-		return flagVal;
-	}
+      int flagVal = Notification.FLAG_AUTO_CANCEL;
+
+      // We trust the flag value as it comes from our JS constant.
+      // This is also backwards compatible as it will be emtpy.
+      if (!TextUtils.isEmpty(flag)) {
+        flagVal = Integer.parseInt(flag);
+      }
+
+      return flagVal;
+    }
+
+    /**
+     * Helper method that returns a defaults value to be used for notification
+     * by default it will return 0
+     *
+     * @param defaultStr
+     * @return int value of the defaults
+     */
+    private int getDefaultValue(String defaultStr) {
+      int defaultVal = 0;
+      if (!TextUtils.isEmpty(defaultStr)) {
+        defaultVal = Integer.parseInt(defaultStr);
+      }
+
+      return defaultVal;
+    }
+
 
 	/**
      * 	Displays status bar notification
@@ -111,12 +132,12 @@ public class StatusBarNotification extends CordovaPlugin {
      *  @param contentTitle	Notification title
      *  @param contentText	Notification text
      * */
-    public void showNotification( CharSequence tag, CharSequence contentTitle, CharSequence contentText, int flag) {
+    public void showNotification( CharSequence tag, CharSequence contentTitle, CharSequence contentText, int flag, int defaults) {
         String ns = Context.NOTIFICATION_SERVICE;
         context = cordova.getActivity().getApplicationContext();
         mNotificationManager = (NotificationManager) context.getSystemService(ns);
 
-        Notification noti = StatusNotificationIntent.buildNotification(context, tag, contentTitle, contentText, flag);
+        Notification noti = StatusNotificationIntent.buildNotification(context, tag, contentTitle, contentText, flag, defaults);
         mNotificationManager.notify(tag.hashCode(), noti);
     }
 

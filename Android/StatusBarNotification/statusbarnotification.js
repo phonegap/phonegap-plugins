@@ -27,9 +27,9 @@
 
 var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to new fallbacks
 
-/** 
+/**
  * Flags to denote the Android Notification constants
- * Values are representation from Android Notification Flag bit vals 
+ * Values are representation from Android Notification Flag bit vals
  */
 
 function Flag() {}
@@ -44,11 +44,12 @@ var NotificationMessenger = function() { }
  * @param body Body of the notification
  * @deprecated Use the W3C standard window.Notification API instead.
  */
-NotificationMessenger.prototype.notify = function(title, body, flag) {
+NotificationMessenger.prototype.notify = function(title, body, flag, defaults) {
     if (window.Notification) {
         this.activeNotification = new window.Notification(title, {
             body: body,
-            flag: flag
+            flag: flag,
+            defaults: defaults
         });
     }
 }
@@ -93,8 +94,9 @@ if (typeof window.Notification == 'undefined') {
         this.onclose = options.onclose;
 
         var content = options.body || '';
-        
+
         var flag = options.flag || '';
+        var defaults = options.defaults || window.Notification.defaults.DEFAULT_NONE;
 
         cordova.exec(function() {
             if (this.onshow) {
@@ -104,7 +106,7 @@ if (typeof window.Notification == 'undefined') {
             if (this.onerror) {
                 this.onerror(error);
             }
-        }, 'StatusBarNotification', 'notify', [this.tag, title, content, flag]);
+        }, 'StatusBarNotification', 'notify', [this.tag, title, content, flag, defaults]);
     };
 
     // Permission is always granted on Android.
@@ -116,10 +118,8 @@ if (typeof window.Notification == 'undefined') {
 
     // Not part of the W3C API. Used by the native side to call onclick handlers.
     window.Notification.callOnclickByTag = function(tag) {
-        console.log('callOnclickByTag');
         var notification = window.Notification.active[tag];
         if (notification && notification.onclick && typeof notification.onclick == 'function') {
-            console.log('inside if');
             notification.onclick();
         }
     };
@@ -127,6 +127,13 @@ if (typeof window.Notification == 'undefined') {
     // A global map of notifications by tag, so their onclick callbacks can be called.
     window.Notification.active = {};
 
+    window.Notification.defaults = {
+        DEFAULT_ALL: -1,
+        DEFAULT_NONE: 0,
+        DEFAULT_SOUND: 1,
+        DEFAULT_VIBRATE: 2,
+        DEFAULT_LIGHTS: 4
+    };
 
     /**
      * Cancels a notification that has already been created and shown to the user.

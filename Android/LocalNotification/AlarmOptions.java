@@ -1,4 +1,4 @@
-package com.phonegap.plugin.localnotification;
+package org.apache.cordova.plugins;
 
 import java.util.Calendar;
 

@@ -56,7 +56,7 @@ public class DatePickerPlugin extends Plugin {
 
 	public synchronized void show(final JSONArray data, final String callBackId) {
 		final DatePickerPlugin datePickerPlugin = this;
-		final DroidGap currentCtx = (DroidGap) ctx.getContext();
+		final Context currentCtx = cordova.getActivity();
 		final Calendar c = Calendar.getInstance();
 		final Runnable runnable;
 
@@ -119,7 +119,7 @@ public class DatePickerPlugin extends Plugin {
 			return;
 		}
 
-		ctx.runOnUiThread(runnable);
+		cordova.getActivity().runOnUiThread(runnable);
 	}
 
 	private final class DateSetListener implements OnDateSetListener {

@@ -43,10 +43,5 @@ if (typeof cordova !== "undefined") {
 		console.log("datePickerPlugin.js failed: " + err);
 	}
 
-	cordova.addConstructor(function() {
-		if (!window.plugins) {
-			window.plugins = {};
-		}
-		window.plugins.datePicker = new DatePicker();
-	});
+	window.datePicker = new DatePicker();
 };

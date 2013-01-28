@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 
+import org.apache.cordova.DroidGap;
 import org.apache.cordova.api.Plugin;
 import org.apache.cordova.api.PluginResult;
 
@@ -18,7 +19,7 @@ public class AccountList extends Plugin {
 		try {
 			JSONObject obj = args.getJSONObject(0);
 			
-			AccountManager am = AccountManager.get(this.ctx.getContext());
+			AccountManager am = AccountManager.get(cordova.getActivity());
 			
 			Account[] accounts;
 			if (obj.has("type"))

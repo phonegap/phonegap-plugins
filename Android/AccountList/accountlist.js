@@ -1,13 +1,23 @@
-var AccountList = function() {};
-			
-AccountList.prototype.get = function(params, success, fail) {
-	return PhoneGap.exec( function(args) {
-		success(args);
-	}, function(args) {
-		fail(args);
-	}, 'AccountList', '', [params]);
-};
+var AccountList = function(gap) {
 
-PhoneGap.addConstructor(function() {
-	PhoneGap.addPlugin('AccountList', new AccountList());
-});
+	AccountList.prototype.get = function(params, success, fail) {
+		return gap.exec( function(args) {
+			success(args);
+		}, function(args) {
+			fail(args);
+		}, 'AccountList', '', [params]);
+	};
+
+	gap.addConstructor(function () {
+		if (gap.addPlugin) {
+	            gap.addPlugin("AccountList", new AccountList());
+	        } else {
+	            if (!window.plugins) {
+	                window.plugins = {};
+	            }
+	
+	            window.plugins.ccountList = new AccountList();
+	        }
+	});
+
+})(window.cordova || window.Cordova || window.PhoneGap);

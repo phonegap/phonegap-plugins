@@ -48,7 +48,7 @@ iOS (Mac OS X)
 8. for Xcode 4, you will need to build it once, and heed the warning - this is an Xcode 4 template limitation. The warning instructions will tell you to drag copy the **www** folder into the project in Xcode (add as a **folder reference** which is a blue folder).
 9. If you wish to allow users to share URLs and/or images you need to add a whitelist wildcard since you don't know which domains they'll reference. Simply add a wildcard entry (*) to external hosts whitelist (Cordova.plist/ExternalHosts).
 10. Run the application in Xcode.
-
+11. You need to add the JSONKit into /Plugin/Twitter (https://github.com/johnezang/JSONKit)
 
 If you have issues with the app crashing with `EXC_BAD_ACCESS` on iOS Simulator you may have a weak linking issue. With your project highlighted in the left column in XCode go to Targets > Your Project > Build Settings > Linking > Other Linker Flags and replace `-weak_library` with `-weak-lSystem`
 For more information see: http://stackoverflow.com/questions/6738858/use-of-blocks-crashes-app-in-iphone-simulator-4-3-xcode-4-2-and-4-0-2

@@ -17,6 +17,7 @@ The [/iPhone](https://github.com/phonegap/phonegap-plugins/tree/master/iPhone) f
 * Added  Diagnostic (iOS) plugin with Cordova support.
 * Added  EmailComposer (iOS) plugin with Cordova support.
 * Added  FileUploader (iOS) plugin with Cordova support.
+* Added  GameCenter (iOS) plugin with Cordova support.
 * Added  Globalization (iOS) plugin with Cordova support.
 * Added  GoogleAnalytics (iOS) plugin with Cordova support.
 * Added  InAppPurchaseManager (iOS) plugin with Cordova support.
@@ -128,7 +129,7 @@ sharedApplication] delegate]. In the past it returned a PhoneGapDelegate class.
 used by the app
 4. There is a new header file CDVAvailability.h that defines Cordova versions during compile time - to check for
 the current version during run-time, call [CDVViewController cordovaVersion]
-￼￼Cordova 2.0.0 Plugin Upgrade Guide 2/2
+Cordova 2.0.0 Plugin Upgrade Guide 2/2
 
 
 

@@ -54,6 +54,11 @@
     [self.childBrowser closeBrowser];
 }
 
+- (void)clear:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{    
+    self.childBrowser = nil;
+}
+
 - (void)onClose
 {
     [self.webView stringByEvaluatingJavaScriptFromString:@"window.plugins.childBrowser.onClose();"];

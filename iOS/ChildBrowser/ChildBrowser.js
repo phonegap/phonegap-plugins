@@ -50,9 +50,16 @@ ChildBrowser.prototype.showWebPage = function(loc)
 };
 
 // close the browser, will NOT result in close callback
-ChildBrowser.prototype.close = function()
+ChildBrowser.prototype.close = function(clearInst)
 {
     cordovaRef.exec("ChildBrowserCommand.close");
+    if(clearInst) window.plugins.childBrowser.clear();
+};
+
+// clear the browser instance/history
+ChildBrowser.prototype.clear = function()
+{
+    cordovaRef.exec("ChildBrowserCommand.clear");
 };
 
 // Not Implemented

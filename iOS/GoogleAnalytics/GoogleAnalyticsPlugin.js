@@ -16,10 +16,11 @@ GoogleAnalyticsPlugin.prototype.trackEvent = function(category,action,label,valu
 	cordova.exec("GoogleAnalyticsPlugin.trackEvent",options);
 };
 
-GoogleAnalyticsPlugin.prototype.setCustomVariable = function(index,name,value) {
+GoogleAnalyticsPlugin.prototype.setCustomVariable = function(index,name,value,scope) {
 	var options = {index:index,
 		name:name,
-		value:value};
+		value:value,
+        scope:isNaN(parseInt(scope)) ? 3 : scope};  // page-level default
 	cordova.exec("GoogleAnalyticsPlugin.setCustomVariable",options);
 };
 

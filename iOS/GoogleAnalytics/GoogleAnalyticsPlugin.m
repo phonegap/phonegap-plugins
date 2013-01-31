@@ -55,19 +55,23 @@ static const NSInteger kGANDispatchPeriodSec = 10;
 	int index = [[options valueForKey:@"index"] intValue];
 	NSString* name = [options valueForKey:@"name"];
 	NSString* value = [options valueForKey:@"value"];
+    int scopeVal = [[options valueForKey:@"scope"] intValue];
+    GANCVScope scope = (scopeVal == 1) ? kGANVisitorScope : (scopeVal == 2) ? kGANSessionScope : kGANPageScope;
+    
     
 	NSError *error;
     
 	if (![[GANTracker sharedTracker] setCustomVariableAtIndex:index 
                                                          name:name 
                                                         value:value 
+                                                        scope:scope
                                                     withError:&error]) {
 		// Handle error here
 		NSLog(@"GoogleAnalyticsPlugin.setCustonVariable Error::%@",[error localizedDescription]);
 	}
     
     
-	NSLog(@"GoogleAnalyticsPlugin.setCustomVariable::%d, %@, %@", index, name, value);
+	NSLog(@"GoogleAnalyticsPlugin.setCustomVariable::%d, %@, %@, %d", index, name, value, scope);
     
 }
 

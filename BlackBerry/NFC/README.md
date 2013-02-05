@@ -6,7 +6,9 @@ The PhoneGap NFC Plugin provides access to Near Field Communication (NFC) hardwa
 Supported Platforms
 -------------------
 * Android
-* Blackberry Webworks (OS 7.0 and higher)
+* BlackBerry 7
+* BlackBerry 10
+* Windows Phone 8
 
 Source Code
 -------------------

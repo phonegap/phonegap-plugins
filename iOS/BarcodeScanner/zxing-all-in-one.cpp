@@ -35,7 +35,8 @@ const char *barcodeFormatNames[] = {
     "EAN_13",
     "CODE_128",
     "CODE_39",
-    "ITF"
+    "ITF",
+    "AZTEC"
 };
 
 }
@@ -77,6 +78,14 @@ namespace zxing {
 	Ref<LuminanceSource> Binarizer::getLuminanceSource() const {
 		return source_;
 	}
+
+  int Binarizer::getWidth() const {
+    return source_->getWidth();
+  }
+
+  int Binarizer::getHeight() const {
+    return source_->getHeight();
+  }
 
 }
 
@@ -201,6 +210,7 @@ const DecodeHints DecodeHints::DEFAULT_HINT(
     BARCODEFORMAT_CODE_39_HINT |
     BARCODEFORMAT_ITF_HINT |
     BARCODEFORMAT_DATA_MATRIX_HINT |
+    BARCODEFORMAT_AZTEC_HINT |
     BARCODEFORMAT_QR_CODE_HINT);
 
 DecodeHints::DecodeHints() {
@@ -213,6 +223,7 @@ DecodeHints::DecodeHints(DecodeHintType init) {
 
 void DecodeHints::addFormat(BarcodeFormat toadd) {
   switch (toadd) {
+    case BarcodeFormat_AZTEC: hints |= BARCODEFORMAT_AZTEC_HINT; break;
     case BarcodeFormat_QR_CODE: hints |= BARCODEFORMAT_QR_CODE_HINT; break;
     case BarcodeFormat_DATA_MATRIX: hints |= BARCODEFORMAT_DATA_MATRIX_HINT; break;
     case BarcodeFormat_UPC_E: hints |= BARCODEFORMAT_UPC_E_HINT; break;
@@ -229,6 +240,7 @@ void DecodeHints::addFormat(BarcodeFormat toadd) {
 bool DecodeHints::containsFormat(BarcodeFormat tocheck) const {
   DecodeHintType checkAgainst;
   switch (tocheck) {
+    case BarcodeFormat_AZTEC: checkAgainst = BARCODEFORMAT_AZTEC_HINT; break;
     case BarcodeFormat_QR_CODE: checkAgainst = BARCODEFORMAT_QR_CODE_HINT; break;
     case BarcodeFormat_DATA_MATRIX: checkAgainst = BARCODEFORMAT_DATA_MATRIX_HINT; break;
     case BarcodeFormat_UPC_E: checkAgainst = BARCODEFORMAT_UPC_E_HINT; break;
@@ -455,6 +467,7 @@ LuminanceSource::operator std::string() {
 // #include <zxing/MultiFormatReader.h>
 // #include <zxing/qrcode/QRCodeReader.h>
 // #include <zxing/datamatrix/DataMatrixReader.h>
+// #include <zxing/aztec/AztecReader.h>
 // #include <zxing/oned/MultiFormatUPCEANReader.h>
 // #include <zxing/oned/MultiFormatOneDReader.h>
 // #include <zxing/ReaderException.h>
@@ -502,6 +515,9 @@ namespace zxing {
     }
     if (hints.containsFormat(BarcodeFormat_DATA_MATRIX)) {
       readers_.push_back(Ref<Reader>(new zxing::datamatrix::DataMatrixReader()));
+    }
+    if (hints.containsFormat(BarcodeFormat_AZTEC)) {
+      readers_.push_back(Ref<Reader>(new zxing::aztec::AztecReader()));
     }
     //TODO: add PDF417 here once PDF417 reader is implemented
     if (addOneDReader && tryHarder) {
@@ -706,6 +722,7 @@ ostream& operator<<(ostream &out, Result& result) {
 
 // file: zxing/ResultPoint.cpp
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 /*
  *  ResultPoint.cpp
  *  zxing
@@ -727,7 +744,9 @@ ostream& operator<<(ostream &out, Result& result) {
  */
 
 // #include <zxing/ResultPoint.h>
-// #include <math.h>
+// #include <zxing/common/detector/math_utils.h>
+
+namespace math_utils = zxing::common::detector::math_utils;
 
 namespace zxing {
 
@@ -790,8 +809,11 @@ void ResultPoint::orderBestPatterns(std::vector<Ref<ResultPoint> > &patterns) {
     patterns[2] = pointC;
 }
 
-float ResultPoint::distance(Ref<ResultPoint> point1, Ref<ResultPoint> point2) {
-  return distance(point1->getX(), point1->getY(), point2->getX(), point2->getY());
+  float ResultPoint::distance(Ref<ResultPoint> pattern1, Ref<ResultPoint> pattern2) {
+  return math_utils::distance(pattern1->posX_,
+                              pattern1->posY_,
+                              pattern2->posX_,
+                              pattern2->posY_);
 }
 
 float ResultPoint::distance(float x1, float x2, float y1, float y2) {
@@ -834,6 +856,1155 @@ namespace zxing {
 
 ResultPointCallback::~ResultPointCallback() {}
 
+}
+
+// file: zxing/aztec/AztecDetectorResult.cpp
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+/*
+ *  AtztecDetecorResult.cpp
+ *  zxing
+ *
+ *  Created by Lukas Stabe on 08/02/2012.
+ *  Copyright 2012 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/aztec/AztecDetectorResult.h>
+
+namespace zxing {
+    namespace aztec {
+        AztecDetectorResult::AztecDetectorResult(Ref<BitMatrix> bits, std::vector<Ref<ResultPoint> > points, bool compact, int nbDatablocks, int nbLayers)
+        : DetectorResult(bits, points),
+        compact_(compact),
+        nbDatablocks_(nbDatablocks),
+        nbLayers_(nbLayers) {
+        };
+
+        bool AztecDetectorResult::isCompact() {
+            return compact_;
+        }
+
+        int AztecDetectorResult::getNBDatablocks() {
+            return nbDatablocks_;
+        }
+
+        int AztecDetectorResult::getNBLayers() {
+            return nbLayers_;
+        }
+    }
+}
+
+// file: zxing/aztec/AztecReader.cpp
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+/*
+ *  AztecReader.cpp
+ *  zxing
+ *
+ *  Created by Lukas Stabe on 08/02/2012.
+ *  Copyright 2012 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/aztec/AztecReader.h>
+// #include <zxing/aztec/detector/Detector.h>
+// #include <iostream>
+
+namespace zxing {
+  namespace aztec {
+
+    AztecReader::AztecReader() : decoder_() {
+      // nothing
+    };
+
+    Ref<Result> AztecReader::decode(Ref<zxing::BinaryBitmap> image) {
+      Detector detector(image->getBlackMatrix());
+
+      Ref<AztecDetectorResult> detectorResult(detector.detect());
+
+      std::vector<Ref<ResultPoint> > points(detectorResult->getPoints());
+
+      Ref<DecoderResult> decoderResult(decoder_.decode(detectorResult));
+
+      Ref<Result> result(new Result(decoderResult->getText(),
+                                    decoderResult->getRawBytes(),
+                                    points,
+                                    BarcodeFormat_AZTEC));
+
+      return result;
+    }
+
+    Ref<Result> AztecReader::decode(Ref<BinaryBitmap> image, DecodeHints) {
+      //cout << "decoding with hints not supported for aztec" << "\n" << flush;
+      return this->decode(image);
+    }
+
+    AztecReader::~AztecReader() {
+      // nothing
+    }
+
+    Decoder& AztecReader::getDecoder() {
+      return decoder_;
+    }
+
+  }
+}
+
+// file: zxing/aztec/decoder/Decoder.cpp
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+/*
+ *  Decoder.cpp
+ *  zxing
+ *
+ *  Created by Lukas Stabe on 08/02/2012.
+ *  Copyright 2012 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/aztec/decoder/Decoder.h>
+#ifndef NO_ICONV
+// #include <iconv.h>
+#endif
+// #include <iostream>
+// #include <zxing/FormatException.h>
+// #include <zxing/common/reedsolomon/ReedSolomonDecoder.h>
+// #include <zxing/common/reedsolomon/ReedSolomonException.h>
+// #include <zxing/common/reedsolomon/GenericGF.h>
+// #include <zxing/common/IllegalArgumentException.h>
+
+using zxing::aztec::Decoder;
+using zxing::DecoderResult;
+using zxing::String;
+using zxing::BitArray;
+using zxing::BitMatrix;
+using zxing::Ref;
+
+using std::string;
+
+namespace {
+  void add(string& result, unsigned char character) {
+#ifndef NO_ICONV
+    char s[] = { character & 0xff };
+    char* ss = s;
+    size_t sl = sizeof(s);
+    char d[4];
+    char* ds = d;
+    size_t dl = sizeof(d);
+    iconv_t ic = iconv_open("UTF-8", "ISO-8859-1");
+    iconv(ic, &ss, &sl, &ds, &dl);
+    iconv_close(ic);
+    d[sizeof(d)-dl] = 0;
+    result.append(d);
+#else
+    result.push_back(character);
+#endif
+  }
+
+  const int NB_BITS_COMPACT[] = {
+    0, 104, 240, 408, 608
+  };
+
+  const int NB_BITS[] = {
+    0, 128, 288, 480, 704, 960, 1248, 1568, 1920, 2304, 2720, 3168, 3648, 4160, 4704, 5280, 5888, 6528,
+    7200, 7904, 8640, 9408, 10208, 11040, 11904, 12800, 13728, 14688, 15680, 16704, 17760, 18848, 19968
+  };
+
+  const int NB_DATABLOCK_COMPACT[] = {
+    0, 17, 40, 51, 76
+  };
+
+  const int NB_DATABLOCK[] = {
+    0, 21, 48, 60, 88, 120, 156, 196, 240, 230, 272, 316, 364, 416, 470, 528, 588, 652, 720, 790, 864,
+    940, 1020, 920, 992, 1066, 1144, 1224, 1306, 1392, 1480, 1570, 1664
+  };
+
+  const char* UPPER_TABLE[] = {
+    "CTRL_PS", " ", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
+    "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "CTRL_LL", "CTRL_ML", "CTRL_DL", "CTRL_BS"
+  };
+
+  const char* LOWER_TABLE[] = {
+    "CTRL_PS", " ", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
+    "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "CTRL_US", "CTRL_ML", "CTRL_DL", "CTRL_BS"
+  };
+
+  const char* MIXED_TABLE[] = {
+    "CTRL_PS", " ", "\1", "\2", "\3", "\4", "\5", "\6", "\7", "\b", "\t", "\n",
+    "\13", "\f", "\r", "\33", "\34", "\35", "\36", "\37", "@", "\\", "^", "_",
+    "`", "|", "~", "\177", "CTRL_LL", "CTRL_UL", "CTRL_PL", "CTRL_BS"
+  };
+
+  const char* PUNCT_TABLE[] = {
+    "", "\r", "\r\n", ". ", ", ", ": ", "!", "\"", "#", "$", "%", "&", "'", "(", ")",
+    "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "[", "]", "{", "}", "CTRL_UL"
+  };
+
+  const char* DIGIT_TABLE[] = {
+    "CTRL_PS", " ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ",", ".", "CTRL_UL", "CTRL_US"
+  };
+}
+
+Decoder::Table Decoder::getTable(char t) {
+  switch (t) {
+  case 'L':
+    return LOWER;
+  case 'P':
+    return PUNCT;
+  case 'M':
+    return MIXED;
+  case 'D':
+    return DIGIT;
+  case 'B':
+    return BINARY;
+  case 'U':
+  default:
+    return UPPER;
+  }
+}
+
+const char* Decoder::getCharacter(zxing::aztec::Decoder::Table table, int code) {
+  switch (table) {
+  case UPPER:
+    return UPPER_TABLE[code];
+  case LOWER:
+    return LOWER_TABLE[code];
+  case MIXED:
+    return MIXED_TABLE[code];
+  case PUNCT:
+    return PUNCT_TABLE[code];
+  case DIGIT:
+    return DIGIT_TABLE[code];
+  default:
+    return "";
+  }
+}
+
+Decoder::Decoder() {
+  // nothing
+}
+
+Ref<DecoderResult> Decoder::decode(Ref<zxing::aztec::AztecDetectorResult> detectorResult) {
+  ddata_ = detectorResult;
+
+  // std::printf("getting bits\n");
+
+  Ref<BitMatrix> matrix = detectorResult->getBits();
+
+  if (!ddata_->isCompact()) {
+    // std::printf("removing lines\n");
+    matrix = removeDashedLines(ddata_->getBits());
+  }
+
+  // std::printf("extracting bits\n");
+  Ref<BitArray> rawbits = extractBits(matrix);
+
+  // std::printf("correcting bits\n");
+  Ref<BitArray> aCorrectedBits = correctBits(rawbits);
+
+  // std::printf("decoding bits\n");
+  Ref<String> result = getEncodedData(aCorrectedBits);
+
+  // std::printf("constructing array\n");
+  ArrayRef<unsigned char> arrayOut(aCorrectedBits->getSize());
+  for (int i = 0; i < aCorrectedBits->count(); i++) {
+    arrayOut[i] = (unsigned char)aCorrectedBits->get(i);
+  }
+
+  // std::printf("returning\n");
+
+  return Ref<DecoderResult>(new DecoderResult(arrayOut, result));
+}
+
+Ref<String> Decoder::getEncodedData(Ref<zxing::BitArray> correctedBits) {
+  int endIndex = codewordSize_ * ddata_->getNBDatablocks() - invertedBitCount_;
+  if (endIndex > (int)correctedBits->getSize()) {
+    // std::printf("invalid input\n");
+    throw FormatException("invalid input data");
+  }
+
+  Table lastTable = UPPER;
+  Table table = UPPER;
+  int startIndex = 0;
+  std::string result;
+  bool end = false;
+  bool shift = false;
+  bool switchShift = false;
+  bool binaryShift = false;
+
+  while (!end) {
+    // std::printf("decoooooding\n");
+
+    if (shift) {
+      switchShift = true;
+    } else {
+      lastTable = table;
+    }
+
+    int code;
+    if (binaryShift) {
+      if (endIndex - startIndex < 5) {
+        break;
+      }
+
+      int length = readCode(correctedBits, startIndex, 5);
+      startIndex += 5;
+      if (length == 0) {
+        if (endIndex - startIndex < 11) {
+          break;
+        }
+
+        length = readCode(correctedBits, startIndex, 11) + 31;
+        startIndex += 11;
+      }
+      for (int charCount = 0; charCount < length; charCount++) {
+        if (endIndex - startIndex < 8) {
+          end = true;
+          break;
+        }
+
+        code = readCode(correctedBits, startIndex, 8);
+        add(result, code);
+        startIndex += 8;
+      }
+      binaryShift = false;
+    } else {
+      if (table == BINARY) {
+        if (endIndex - startIndex < 8) {
+          break;
+        }
+        code = readCode(correctedBits, startIndex, 8);
+        startIndex += 8;
+
+        add(result, code);
+      } else {
+        int size = 5;
+
+        if (table == DIGIT) {
+          size = 4;
+        }
+
+        if (endIndex - startIndex < size) {
+          break;
+        }
+
+        code = readCode(correctedBits, startIndex, size);
+        startIndex += size;
+
+        const char *str = getCharacter(table, code);
+        std::string string(str);
+        if ((int)string.find("CTRL_") != -1) {
+          table = getTable(str[5]);
+
+          if (str[6] == 'S') {
+            shift = true;
+            if (str[5] == 'B') {
+              binaryShift = true;
+            }
+          }
+        } else {
+          result.append(string);
+        }
+
+      }
+    }
+
+    if (switchShift) {
+      table = lastTable;
+      shift = false;
+      switchShift = false;
+    }
+
+
+  }
+
+  return Ref<String>(new String(result));
+
+}
+
+Ref<BitArray> Decoder::correctBits(Ref<zxing::BitArray> rawbits) {
+  //return rawbits;
+  // std::printf("decoding stuff:%d datablocks in %d layers\n", ddata_->getNBDatablocks(), ddata_->getNBLayers());
+
+  Ref<GenericGF> gf = GenericGF::AZTEC_DATA_6;
+
+  if (ddata_->getNBLayers() <= 2) {
+    codewordSize_ = 6;
+    gf = GenericGF::AZTEC_DATA_6;
+  } else if (ddata_->getNBLayers() <= 8) {
+    codewordSize_ = 8;
+    gf = GenericGF::AZTEC_DATA_8;
+  } else if (ddata_->getNBLayers() <= 22) {
+    codewordSize_ = 10;
+    gf = GenericGF::AZTEC_DATA_10;
+  } else {
+    codewordSize_ = 12;
+    gf = GenericGF::AZTEC_DATA_12;
+  }
+
+  int numDataCodewords = ddata_->getNBDatablocks();
+  int numECCodewords;
+  int offset;
+
+  if (ddata_->isCompact()) {
+    offset = NB_BITS_COMPACT[ddata_->getNBLayers()] - numCodewords_ * codewordSize_;
+    numECCodewords = NB_DATABLOCK_COMPACT[ddata_->getNBLayers()] - numDataCodewords;
+  } else {
+    offset = NB_BITS[ddata_->getNBLayers()] - numCodewords_ * codewordSize_;
+    numECCodewords = NB_DATABLOCK[ddata_->getNBLayers()] - numDataCodewords;
+  }
+
+  ArrayRef<int> dataWords(numCodewords_);
+
+  for (int i = 0; i < numCodewords_; i++) {
+    int flag = 1;
+    for (int j = 1; j <= codewordSize_; j++) {
+      if (rawbits->get(codewordSize_ * i + codewordSize_ - j + offset)) {
+        dataWords[i] += flag;
+      }
+      flag <<= 1;
+    }
+
+    //
+    //
+    //
+  }
+
+  try {
+    // std::printf("trying reed solomon, numECCodewords:%d\n", numECCodewords);
+    ReedSolomonDecoder rsDecoder(gf);
+    rsDecoder.decode(dataWords, numECCodewords);
+  } catch (ReedSolomonException rse) {
+    // std::printf("got reed solomon exception:%s, throwing formatexception\n", rse.what());
+    throw FormatException("rs decoding failed");
+  } catch (IllegalArgumentException iae) {
+    // std::printf("illegal argument exception: %s", iae.what());
+  }
+
+  offset = 0;
+  invertedBitCount_ = 0;
+
+  Ref<BitArray> correctedBits(new BitArray(numDataCodewords * codewordSize_));
+  for (int i = 0; i < numDataCodewords; i++) {
+
+    bool seriesColor = false;
+    int seriesCount = 0;
+    int flag = 1 << (codewordSize_ - 1);
+
+    for (int j = 0; j < codewordSize_; j++) {
+
+      bool color = (dataWords[i] & flag) == flag;
+
+      if (seriesCount == codewordSize_ - 1) {
+
+        if (color == seriesColor) {
+          throw FormatException("bit was not inverted");
+        }
+
+        seriesColor = false;
+        seriesCount = 0;
+        offset++;
+        invertedBitCount_++;
+
+      } else {
+
+        if (seriesColor == color) {
+          seriesCount++;
+        } else {
+          seriesCount = 1;
+          seriesColor = color;
+        }
+
+        if (color) correctedBits->set(i * codewordSize_ + j - offset);
+
+      }
+
+      flag = (unsigned int)flag >> 1;
+
+    }
+  }
+
+  return correctedBits;
+}
+
+Ref<BitArray> Decoder::extractBits(Ref<zxing::BitMatrix> matrix) {
+  std::vector<bool> rawbits;
+
+  if (ddata_->isCompact()) {
+    if (ddata_->getNBLayers() > 5) { //NB_BITS_COMPACT length
+      throw FormatException("data is too long");
+    }
+    rawbits = std::vector<bool>(NB_BITS_COMPACT[ddata_->getNBLayers()]);
+    numCodewords_ = NB_DATABLOCK_COMPACT[ddata_->getNBLayers()];
+  } else {
+    if (ddata_->getNBLayers() > 33) { //NB_BITS length
+      throw FormatException("data is too long");
+    }
+    rawbits = std::vector<bool>(NB_BITS[ddata_->getNBLayers()]);
+    numCodewords_ = NB_DATABLOCK[ddata_->getNBLayers()];
+  }
+
+  int layer = ddata_->getNBLayers();
+  int size = matrix->getHeight();
+  int rawbitsOffset = 0;
+  int matrixOffset = 0;
+
+
+  while (layer != 0) {
+
+    int flip = 0;
+    for (int i = 0; i < 2 * size - 4; i++) {
+      rawbits[rawbitsOffset + i] = matrix->get(matrixOffset + flip, matrixOffset + i / 2);
+      rawbits[rawbitsOffset + 2 * size - 4 + i] = matrix->get(matrixOffset + i / 2, matrixOffset + size - 1 - flip);
+      flip = (flip + 1) % 2;
+    }
+
+    flip = 0;
+    for (int i = 2 * size + 1; i > 5; i--) {
+      rawbits[rawbitsOffset + 4 * size - 8 + (2 * size - i) + 1] =
+        matrix->get(matrixOffset + size - 1 - flip, matrixOffset + i / 2 - 1);
+      rawbits[rawbitsOffset + 6 * size - 12 + (2 * size - i) + 1] =
+        matrix->get(matrixOffset + i / 2 - 1, matrixOffset + flip);
+      flip = (flip + 1) % 2;
+    }
+
+    matrixOffset += 2;
+    rawbitsOffset += 8 * size - 16;
+    layer--;
+    size -= 4;
+
+  }
+
+  Ref<BitArray> returnValue(new BitArray(rawbits.size()));
+  for (int i = 0; i < (int)rawbits.size(); i++) {
+    if (rawbits[i]) returnValue->set(i);
+  }
+
+  return returnValue;
+
+}
+
+Ref<BitMatrix> Decoder::removeDashedLines(Ref<zxing::BitMatrix> matrix) {
+  int nbDashed = 1 + 2 * ((matrix->getWidth() - 1) / 2 / 16);
+  Ref<BitMatrix> newMatrix(new BitMatrix(matrix->getWidth() - nbDashed, matrix->getHeight() - nbDashed));
+
+  int nx = 0;
+
+  for (int x = 0; x < (int)matrix->getWidth(); x++) {
+
+    if ((matrix->getWidth() / 2 - x) % 16 == 0) {
+      continue;
+    }
+
+    int ny = 0;
+    for (int y = 0; y < (int)matrix->getHeight(); y++) {
+
+      if ((matrix->getWidth() / 2 - y) % 16 == 0) {
+        continue;
+      }
+
+      if (matrix->get(x, y)) {
+        newMatrix->set(nx, ny);
+      }
+      ny++;
+
+    }
+    nx++;
+
+  }
+  return newMatrix;
+}
+
+int Decoder::readCode(Ref<zxing::BitArray> rawbits, int startIndex, int length) {
+  int res = 0;
+
+  for (int i = startIndex; i < startIndex + length; i++) {
+    res <<= 1;
+    if (rawbits->get(i)) {
+      res ++;
+    }
+  }
+
+  return res;
+}
+
+// file: zxing/aztec/detector/Detector.cpp
+
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
+/*
+ *  Detector.cpp
+ *  zxing
+ *
+ *  Created by Lukas Stabe on 08/02/2012.
+ *  Copyright 2012 ZXing authors All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// #include <zxing/aztec/detector/Detector.h>
+// #include <zxing/common/GridSampler.h>
+// #include <zxing/common/detector/WhiteRectangleDetector.h>
+// #include <zxing/common/reedsolomon/ReedSolomonDecoder.h>
+// #include <zxing/common/reedsolomon/ReedSolomonException.h>
+// #include <zxing/common/reedsolomon/GenericGF.h>
+// #include <iostream>
+// #include <zxing/common/detector/math_utils.h>
+// #include <zxing/NotFoundException.h>
+
+using zxing::aztec::Detector;
+using zxing::aztec::Point;
+using zxing::aztec::AztecDetectorResult;
+using zxing::Ref;
+using zxing::ResultPoint;
+using zxing::BitArray;
+using zxing::BitMatrix;
+namespace math_utils = zxing::common::detector::math_utils;
+
+Detector::Detector(Ref<BitMatrix> image):
+  image_(image),
+  nbLayers_(0),
+  nbDataBlocks_(0),
+  nbCenterLayers_(0) {
+
+}
+
+// using namespace std;
+
+Ref<AztecDetectorResult> Detector::detect() {
+  Ref<Point> pCenter = getMatrixCenter();
+
+  std::vector<Ref<Point> > bullEyeCornerPoints = getBullEyeCornerPoints(pCenter);
+
+  extractParameters(bullEyeCornerPoints);
+
+  std::vector<Ref<ResultPoint> > corners = getMatrixCornerPoints(bullEyeCornerPoints);
+
+  Ref<BitMatrix> bits = sampleGrid(image_, corners[shift_%4], corners[(shift_+3)%4], corners[(shift_+2)%4], corners[(shift_+1)%4]);
+
+  // std::printf("------------\ndetected: compact:%s, nbDataBlocks:%d, nbLayers:%d\n------------\n",compact_?"YES":"NO", nbDataBlocks_, nbLayers_);
+
+  return Ref<AztecDetectorResult>(new AztecDetectorResult(bits, corners, compact_, nbDataBlocks_, nbLayers_));
+}
+
+void Detector::extractParameters(std::vector<Ref<Point> > bullEyeCornerPoints) {
+  // get the bits around the bull's eye
+  Ref<BitArray> resab = sampleLine(bullEyeCornerPoints[0], bullEyeCornerPoints[1], 2*nbCenterLayers_+1);
+  Ref<BitArray> resbc = sampleLine(bullEyeCornerPoints[1], bullEyeCornerPoints[2], 2*nbCenterLayers_+1);
+  Ref<BitArray> rescd = sampleLine(bullEyeCornerPoints[2], bullEyeCornerPoints[3], 2*nbCenterLayers_+1);
+  Ref<BitArray> resda = sampleLine(bullEyeCornerPoints[3], bullEyeCornerPoints[0], 2*nbCenterLayers_+1);
+
+  // determin the orientation of the matrix
+  if (resab->get(0) && resab->get(2 * nbCenterLayers_)) {
+    shift_ = 0;
+  } else if (resbc->get(0) && resbc->get(2 * nbCenterLayers_)) {
+    shift_ = 1;
+  } else if (rescd->get(0) && rescd->get(2 * nbCenterLayers_)) {
+    shift_ = 2;
+  } else if (resda->get(0) && resda->get(2 * nbCenterLayers_)) {
+    shift_ = 3;
+  } else {
+    // std::printf("could not detemine orientation\n");
+    throw ReaderException("could not determine orientation");
+  }
+
+  //d      a
+  //
+  //c      b
+
+  //flatten the bits in a single array
+  Ref<BitArray> parameterData(new BitArray(compact_?28:40));
+  Ref<BitArray> shiftedParameterData(new BitArray(compact_?28:40));
+
+  if (compact_) {
+    for (int i = 0; i < 7; i++) {
+      if (resab->get(2+i)) shiftedParameterData->set(i);
+      if (resbc->get(2+i)) shiftedParameterData->set(i+7);
+      if (rescd->get(2+i)) shiftedParameterData->set(i+14);
+      if (resda->get(2+i)) shiftedParameterData->set(i+21);
+    }
+    for (int i = 0; i < 28; i++) {
+      if (shiftedParameterData->get((i+shift_*7)%28)) parameterData->set(i);
+    }
+
+  } else {
+    for (int i = 0; i < 11; i++) {
+      if (i < 5) {
+        if (resab->get(2+i)) shiftedParameterData->set(i);
+        if (resbc->get(2+i)) shiftedParameterData->set(i+10);
+        if (rescd->get(2+i)) shiftedParameterData->set(i+20);
+        if (resda->get(2+i)) shiftedParameterData->set(i+30);
+      }
+      if (i > 5) {
+        if (resab->get(2+i)) shiftedParameterData->set(i-1);
+        if (resbc->get(2+i)) shiftedParameterData->set(i+10-1);
+        if (rescd->get(2+i)) shiftedParameterData->set(i+20-1);
+        if (resda->get(2+i)) shiftedParameterData->set(i+30-1);
+      }
+    }
+    for (int i = 0; i < 40; i++) {
+      if (shiftedParameterData->get((i+shift_*10)%40)) parameterData->set(i);
+    }
+  }
+
+  correctParameterData(parameterData, compact_);
+
+  getParameters(parameterData);
+}
+
+std::vector<Ref<ResultPoint> > Detector::getMatrixCornerPoints(std::vector<Ref<Point> > bullEyeCornerPoints) {
+  float ratio = (2 * nbLayers_ + (nbLayers_ > 4 ? 1 : 0) + (nbLayers_ - 4) / 8) / (2.0f * nbCenterLayers_);
+
+  int dx = bullEyeCornerPoints[0]->x - bullEyeCornerPoints[2]->x;
+  dx += dx > 0 ? 1 : -1;
+  int dy = bullEyeCornerPoints[0]->y - bullEyeCornerPoints[2]->y;
+  dy += dy > 0 ? 1 : -1;
+
+  int targetcx = math_utils::round(bullEyeCornerPoints[2]->x - ratio * dx);
+  int targetcy = math_utils::round(bullEyeCornerPoints[2]->y - ratio * dy);
+
+  int targetax = math_utils::round(bullEyeCornerPoints[0]->x + ratio * dx);
+  int targetay = math_utils::round(bullEyeCornerPoints[0]->y + ratio * dy);
+
+  dx = bullEyeCornerPoints[1]->x - bullEyeCornerPoints[3]->x;
+  dx += dx > 0 ? 1 : -1;
+  dy = bullEyeCornerPoints[1]->y - bullEyeCornerPoints[3]->y;
+  dy += dy > 0 ? 1 : -1;
+
+  int targetdx = math_utils::round(bullEyeCornerPoints[3]->x - ratio * dx);
+  int targetdy = math_utils::round(bullEyeCornerPoints[3]->y - ratio * dy);
+  int targetbx = math_utils::round(bullEyeCornerPoints[1]->x + ratio * dx);
+  int targetby = math_utils::round(bullEyeCornerPoints[1]->y + ratio * dy);
+
+  if (!isValid(targetax, targetay) ||
+      !isValid(targetbx, targetby) ||
+      !isValid(targetcx, targetcy) ||
+      !isValid(targetdx, targetdy)) {
+    throw ReaderException("matrix extends over image bounds");
+  }
+  std::vector<Ref<ResultPoint> > returnValue;
+  returnValue.push_back(Ref<ResultPoint>(new ResultPoint(targetax, targetay)));
+  returnValue.push_back(Ref<ResultPoint>(new ResultPoint(targetbx, targetby)));
+  returnValue.push_back(Ref<ResultPoint>(new ResultPoint(targetcx, targetcy)));
+  returnValue.push_back(Ref<ResultPoint>(new ResultPoint(targetdx, targetdy)));
+
+  return returnValue;
+
+}
+
+void Detector::correctParameterData(Ref<zxing::BitArray> parameterData, bool compact) {
+  int numCodewords;
+  int numDataCodewords;
+
+  if (compact)  {
+    numCodewords = 7;
+    numDataCodewords = 2;
+  } else {
+    numCodewords = 10;
+    numDataCodewords = 4;
+  }
+
+  int numECCodewords = numCodewords - numDataCodewords;
+
+  ArrayRef<int> parameterWords(new Array<int>(numCodewords));
+
+  int codewordSize = 4;
+  for (int i = 0; i < numCodewords; i++) {
+    int flag = 1;
+    for (int j = 1; j <= codewordSize; j++) {
+      if (parameterData->get(codewordSize*i + codewordSize - j)) {
+        parameterWords[i] += flag;
+      }
+      flag <<= 1;
+    }
+  }
+
+  try {
+    // std::printf("parameter data reed solomon\n");
+    ReedSolomonDecoder rsDecoder(GenericGF::AZTEC_PARAM);
+    rsDecoder.decode(parameterWords, numECCodewords);
+  } catch (ReedSolomonException e) {
+    // std::printf("reed solomon decoding failed\n");
+    throw ReaderException("failed to decode parameter data");
+  }
+
+  parameterData->clear();
+  for (int i = 0; i < numDataCodewords; i++) {
+    int flag = 1;
+    for (int j = 1; j <= codewordSize; j++) {
+      if ((parameterWords[i] & flag) == flag) {
+        parameterData->set(i*codewordSize+codewordSize-j);
+      }
+      flag <<= 1;
+    }
+  }
+}
+
+std::vector<Ref<Point> > Detector::getBullEyeCornerPoints(Ref<zxing::aztec::Point> pCenter) {
+  Ref<Point> pina = pCenter;
+  Ref<Point> pinb = pCenter;
+  Ref<Point> pinc = pCenter;
+  Ref<Point> pind = pCenter;
+
+  bool color = true;
+
+  for (nbCenterLayers_ = 1; nbCenterLayers_ < 9; nbCenterLayers_++) {
+    Ref<Point> pouta = getFirstDifferent(pina, color, 1, -1);
+    Ref<Point> poutb = getFirstDifferent(pinb, color, 1, 1);
+    Ref<Point> poutc = getFirstDifferent(pinc, color, -1, 1);
+    Ref<Point> poutd = getFirstDifferent(pind, color, -1, -1);
+
+    //d    a
+    //
+    //c    b
+
+    if (nbCenterLayers_ > 2) {
+      float q = distance(poutd, pouta) * nbCenterLayers_ / (distance(pind, pina) * (nbCenterLayers_ + 2));
+      if (q < 0.75 || q > 1.25 || !isWhiteOrBlackRectangle(pouta, poutb, poutc, poutd)) {
+        break;
+      }
+    }
+
+    pina = pouta;
+    pinb = poutb;
+    pinc = poutc;
+    pind = poutd;
+
+    color = !color;
+  }
+
+  if (nbCenterLayers_ != 5 && nbCenterLayers_ != 7) {
+    throw ReaderException("encountered wrong bullseye ring count");
+  }
+
+  compact_ = nbCenterLayers_ == 5;
+
+
+
+  float ratio = 0.75f*2 / (2*nbCenterLayers_-3);
+
+  int dx = pina->x - pind->x;
+  int dy = pina->y - pinc->y;
+
+  int targetcx = math_utils::round(pinc->x - ratio * dx);
+  int targetcy = math_utils::round(pinc->y - ratio * dy);
+  int targetax = math_utils::round(pina->x + ratio * dx);
+  int targetay = math_utils::round(pina->y + ratio * dy);
+
+  dx = pinb->x - pind->x;
+  dy = pinb->y - pind->y;
+
+  int targetdx = math_utils::round(pind->x - ratio * dx);
+  int targetdy = math_utils::round(pind->y - ratio * dy);
+  int targetbx = math_utils::round(pinb->x + ratio * dx);
+  int targetby = math_utils::round(pinb->y + ratio * dy);
+
+  if (!isValid(targetax, targetay) ||
+      !isValid(targetbx, targetby) ||
+      !isValid(targetcx, targetcy) ||
+      !isValid(targetdx, targetdy)) {
+    throw ReaderException("bullseye extends over image bounds");
+  }
+
+  std::vector<Ref<Point> > returnValue;
+  returnValue.push_back(Ref<Point>(new Point(targetax, targetay)));
+  returnValue.push_back(Ref<Point>(new Point(targetbx, targetby)));
+  returnValue.push_back(Ref<Point>(new Point(targetcx, targetcy)));
+  returnValue.push_back(Ref<Point>(new Point(targetdx, targetdy)));
+
+  return returnValue;
+
+}
+
+Ref<Point> Detector::getMatrixCenter() {
+  Ref<ResultPoint> pointA, pointB, pointC, pointD;
+  try {
+
+    std::vector<Ref<ResultPoint> > cornerPoints = WhiteRectangleDetector(image_).detect();
+    pointA = cornerPoints[0];
+    pointB = cornerPoints[1];
+    pointC = cornerPoints[2];
+    pointD = cornerPoints[3];
+
+  } catch (NotFoundException e) {
+
+    int cx = image_->getWidth() / 2;
+    int cy = image_->getHeight() / 2;
+
+    pointA = getFirstDifferent(Ref<Point>(new Point(cx+15/2, cy-15/2)), false,  1, -1)->toResultPoint();
+    pointB = getFirstDifferent(Ref<Point>(new Point(cx+15/2, cy+15/2)), false,  1,  1)->toResultPoint();
+    pointC = getFirstDifferent(Ref<Point>(new Point(cx-15/2, cy+15/2)), false, -1, -1)->toResultPoint();
+    pointD = getFirstDifferent(Ref<Point>(new Point(cx-15/2, cy-15/2)), false, -1, -1)->toResultPoint();
+
+  }
+
+  int cx = math_utils::round((pointA->getX() + pointD->getX() + pointB->getX() + pointC->getX()) / 4);
+  int cy = math_utils::round((pointA->getY() + pointD->getY() + pointB->getY() + pointC->getY()) / 4);
+
+  try {
+
+    std::vector<Ref<ResultPoint> > cornerPoints = WhiteRectangleDetector(image_, 15, cx, cy).detect();
+    pointA = cornerPoints[0];
+    pointB = cornerPoints[1];
+    pointC = cornerPoints[2];
+    pointD = cornerPoints[3];
+
+  } catch (NotFoundException e) {
+
+    pointA = getFirstDifferent(Ref<Point>(new Point(cx+15/2, cy-15/2)), false,  1, -1)->toResultPoint();
+    pointB = getFirstDifferent(Ref<Point>(new Point(cx+15/2, cy+15/2)), false,  1,  1)->toResultPoint();
+    pointC = getFirstDifferent(Ref<Point>(new Point(cx-15/2, cy+15/2)), false, -1, -1)->toResultPoint();
+    pointD = getFirstDifferent(Ref<Point>(new Point(cx-15/2, cy-15/2)), false, -1, -1)->toResultPoint();
+
+  }
+
+  cx = math_utils::round((pointA->getX() + pointD->getX() + pointB->getX() + pointC->getX()) / 4);
+  cy = math_utils::round((pointA->getY() + pointD->getY() + pointB->getY() + pointC->getY()) / 4);
+
+  return Ref<Point>(new Point(cx, cy));
+
+}
+
+Ref<BitMatrix> Detector::sampleGrid(Ref<zxing::BitMatrix> image,
+                                    Ref<zxing::ResultPoint> topLeft,
+                                    Ref<zxing::ResultPoint> bottomLeft,
+                                    Ref<zxing::ResultPoint> bottomRight,
+                                    Ref<zxing::ResultPoint> topRight) {
+  int dimension;
+  if (compact_) {
+    dimension = 4 * nbLayers_+11;
+  } else {
+    if (nbLayers_ <= 4) {
+      dimension = 4 * nbLayers_ + 15;
+    } else {
+      dimension = 4 * nbLayers_ + 2 * ((nbLayers_-4)/8 + 1) + 15;
+    }
+  }
+
+  GridSampler sampler = GridSampler::getInstance();
+
+  return sampler.sampleGrid(image,
+                            dimension,
+                            0.5f,
+                            0.5f,
+                            dimension - 0.5f,
+                            0.5f,
+                            dimension - 0.5f,
+                            dimension - 0.5f,
+                            0.5f,
+                            dimension - 0.5f,
+                            topLeft->getX(),
+                            topLeft->getY(),
+                            topRight->getX(),
+                            topRight->getY(),
+                            bottomRight->getX(),
+                            bottomRight->getY(),
+                            bottomLeft->getX(),
+                            bottomLeft->getY());
+}
+
+void Detector::getParameters(Ref<zxing::BitArray> parameterData) {
+  nbLayers_ = 0;
+  nbDataBlocks_ = 0;
+
+  int nbBitsForNbLayers;
+  int nbBitsForNbDatablocks;
+
+  if (compact_) {
+    nbBitsForNbLayers = 2;
+    nbBitsForNbDatablocks = 6;
+  } else {
+    nbBitsForNbLayers = 5;
+    nbBitsForNbDatablocks = 11;
+  }
+
+  for (int i = 0; i < nbBitsForNbLayers; i++) {
+    nbLayers_ <<= 1;
+    if (parameterData->get(i)) {
+      nbLayers_ += 1;
+    }
+  }
+
+  for (int i = nbBitsForNbLayers; i < nbBitsForNbLayers + nbBitsForNbDatablocks; i++) {
+    nbDataBlocks_ <<= 1;
+    if (parameterData->get(i)) {
+      nbDataBlocks_ += 1;
+    }
+  }
+
+  nbLayers_ ++;
+  nbDataBlocks_ ++;
+}
+
+Ref<BitArray> Detector::sampleLine(Ref<zxing::aztec::Point> p1, Ref<zxing::aztec::Point> p2, int size) {
+  Ref<BitArray> res(new BitArray(size));
+
+  float d = distance(p1, p2);
+  float moduleSize = d / (size-1);
+  float dx = moduleSize * (p2->x - p1->x)/d;
+  float dy = moduleSize * (p2->y - p1->y)/d;
+
+  float px = p1->x;
+  float py = p1->y;
+
+  for (int i = 0; i < size; i++) {
+    if (image_->get(math_utils::round(px), math_utils::round(py))) res->set(i);
+    px += dx;
+    py += dy;
+  }
+
+  return res;
+}
+
+bool Detector::isWhiteOrBlackRectangle(Ref<zxing::aztec::Point> p1,
+                                       Ref<zxing::aztec::Point> p2,
+                                       Ref<zxing::aztec::Point> p3,
+                                       Ref<zxing::aztec::Point> p4) {
+  int corr = 3;
+
+  p1 = new Point(p1->x - corr, p1->y + corr);
+  p2 = new Point(p2->x - corr, p2->y - corr);
+  p3 = new Point(p3->x + corr, p3->y - corr);
+  p4 = new Point(p4->x + corr, p4->y + corr);
+
+  int cInit = getColor(p4, p1);
+
+  if (cInit == 0) {
+    return false;
+  }
+
+  int c = getColor(p1, p2);
+
+  if (c != cInit) {
+    return false;
+  }
+
+  c = getColor(p2, p3);
+
+  if (c != cInit) {
+    return false;
+  }
+
+  c = getColor(p3, p4);
+
+  if (c != cInit) {
+    return false;
+  }
+
+  return true;
+}
+
+int Detector::getColor(Ref<zxing::aztec::Point> p1, Ref<zxing::aztec::Point> p2) {
+  float d = distance(p1, p2);
+
+  float dx = (p2->x - p1->x) / d;
+  float dy = (p2->y - p1->y) / d;
+
+  int error = 0;
+
+  float px = p1->x;
+  float py = p1->y;
+
+  bool colorModel = image_->get(p1->x, p1->y);
+
+  for (int i = 0; i < d; i++) {
+    px += dx;
+    py += dy;
+    if (image_->get(math_utils::round(px), math_utils::round(py)) != colorModel) {
+      error ++;
+    }
+  }
+
+  float errRatio = (float)error/d;
+
+
+  if (errRatio > 0.1 && errRatio < 0.9) {
+    return 0;
+  }
+
+  if (errRatio <= 0.1) {
+    return colorModel?1:-1;
+  } else {
+    return colorModel?-1:1;
+  }
+}
+
+Ref<Point> Detector::getFirstDifferent(Ref<zxing::aztec::Point> init, bool color, int dx, int dy) {
+  int x = init->x + dx;
+  int y = init->y + dy;
+
+  while (isValid(x, y) && image_->get(x, y) == color) {
+    x += dx;
+    y += dy;
+  }
+
+  x -= dx;
+  y -= dy;
+
+  while (isValid(x, y) && image_->get(x, y) == color) {
+    x += dx;
+  }
+
+  x -= dx;
+
+  while (isValid(x, y) && image_->get(x, y) == color) {
+    y += dy;
+  }
+
+  y -= dy;
+
+  return Ref<Point>(new Point(x, y));
+}
+
+bool Detector::isValid(int x, int y) {
+  return x >= 0 && x < (int)image_->getWidth() && y > 0 && y < (int)image_->getHeight();
+}
+
+float Detector::distance(Ref<zxing::aztec::Point> a, Ref<zxing::aztec::Point> b) {
+  return sqrtf((float)((a->x - b->x) * (a->x - b->x) + (a->y - b->y) * (a->y - b->y)));
 }
 
 // file: zxing/common/Array.cpp
@@ -1153,6 +2324,7 @@ const char* BitMatrix::description() {
 
 // file: zxing/common/BitSource.cpp
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 /*
  *  BitSource.cpp
  *  zxing
@@ -1174,15 +2346,16 @@ const char* BitMatrix::description() {
  */
 
 // #include <zxing/common/BitSource.h>
+// #include <sstream>
 // #include <zxing/common/IllegalArgumentException.h>
 
 namespace zxing {
 
 int BitSource::readBits(int numBits) {
-  if (numBits < 0 || numBits > 32) {
-    throw IllegalArgumentException("cannot read <1 or >32 bits");
-  } else if (numBits > available()) {
-    throw IllegalArgumentException("reading more bits than are available");
+  if (numBits < 0 || numBits > 32 || numBits > available()) {
+    std::ostringstream oss;
+    oss << numBits;
+    throw IllegalArgumentException(oss.str().c_str());
   }
 
   int result = 0;
@@ -1248,8 +2421,8 @@ int BitSource::available() {
  */
 
 // #include <zxing/common/CharacterSetECI.h>
-// #include <sstream>
 // #include <zxing/common/IllegalArgumentException.h>
+// #include <zxing/FormatException.h>
 
 using std::string;
 
@@ -1261,58 +2434,72 @@ std::map<std::string, CharacterSetECI*> CharacterSetECI::NAME_TO_ECI;
 
 const bool CharacterSetECI::inited = CharacterSetECI::init_tables();
 
+#define ADD_CHARACTER_SET(VALUES, STRINGS) \
+  { static int values[] = {VALUES, -1}; \
+    static char const* strings[] = {STRINGS, 0}; \
+    addCharacterSet(values, strings); }
+
+#define XC ,
+
 bool CharacterSetECI::init_tables() {
-  addCharacterSet(0, "Cp437");
-  { char const* s[] = {"ISO8859_1", "ISO-8859-1", 0};
-    addCharacterSet(1, s); }
-  addCharacterSet(2, "Cp437");
-  { char const* s[] = {"ISO8859_1", "ISO-8859-1", 0};
-    addCharacterSet(3, s); }
-  addCharacterSet(4, "ISO8859_2");
-  addCharacterSet(5, "ISO8859_3");
-  addCharacterSet(6, "ISO8859_4");
-  addCharacterSet(7, "ISO8859_5");
-  addCharacterSet(8, "ISO8859_6");
-  addCharacterSet(9, "ISO8859_7");
-  addCharacterSet(10, "ISO8859_8");
-  addCharacterSet(11, "ISO8859_9");
-  addCharacterSet(12, "ISO8859_10");
-  addCharacterSet(13, "ISO8859_11");
-  addCharacterSet(15, "ISO8859_13");
-  addCharacterSet(16, "ISO8859_14");
-  addCharacterSet(17, "ISO8859_15");
-  addCharacterSet(18, "ISO8859_16");
-  { char const* s[] = {"SJIS", "Shift_JIS", 0};
-    addCharacterSet(20, s ); }
+  ADD_CHARACTER_SET(0 XC 2, "Cp437");
+  ADD_CHARACTER_SET(1 XC 3, "ISO8859_1" XC "ISO-8859-1");
+  ADD_CHARACTER_SET(4, "ISO8859_2" XC "ISO-8859-2");
+  ADD_CHARACTER_SET(5, "ISO8859_3" XC "ISO-8859-3");
+  ADD_CHARACTER_SET(6, "ISO8859_4" XC "ISO-8859-4");
+  ADD_CHARACTER_SET(7, "ISO8859_5" XC "ISO-8859-5");
+  ADD_CHARACTER_SET(8, "ISO8859_6" XC "ISO-8859-6");
+  ADD_CHARACTER_SET(9, "ISO8859_7" XC "ISO-8859-7");
+  ADD_CHARACTER_SET(10, "ISO8859_8" XC "ISO-8859-8");
+  ADD_CHARACTER_SET(11, "ISO8859_9" XC "ISO-8859-9");
+  ADD_CHARACTER_SET(12, "ISO8859_10" XC "ISO-8859-10");
+  ADD_CHARACTER_SET(13, "ISO8859_11" XC "ISO-8859-11");
+  ADD_CHARACTER_SET(15, "ISO8859_13" XC "ISO-8859-13");
+  ADD_CHARACTER_SET(16, "ISO8859_14" XC "ISO-8859-14");
+  ADD_CHARACTER_SET(17, "ISO8859_15" XC "ISO-8859-15");
+  ADD_CHARACTER_SET(18, "ISO8859_16" XC "ISO-8859-16");
+  ADD_CHARACTER_SET(20, "SJIS" XC "Shift_JIS");
+  ADD_CHARACTER_SET(21, "Cp1250" XC "windows-1250");
+  ADD_CHARACTER_SET(22, "Cp1251" XC "windows-1251");
+  ADD_CHARACTER_SET(23, "Cp1252" XC "windows-1252");
+  ADD_CHARACTER_SET(24, "Cp1256" XC "windows-1256");
+  ADD_CHARACTER_SET(25, "UnicodeBigUnmarked" XC "UTF-16BE" XC "UnicodeBig");
+  ADD_CHARACTER_SET(26, "UTF8" XC "UTF-8");
+  ADD_CHARACTER_SET(27 XC 170, "ASCII" XC "US-ASCII");
+  ADD_CHARACTER_SET(28, "Big5");
+  ADD_CHARACTER_SET(29, "GB18030" XC "GB2312" XC "EUC_CN" XC "GBK");
+  ADD_CHARACTER_SET(30, "EUC_KR" XC "EUC-KR");
   return true;
 }
 
-CharacterSetECI::CharacterSetECI(int value, char const* encodingName_)
-  : ECI(value), encodingName(encodingName_) {}
+#undef XC
 
-char const* CharacterSetECI::getEncodingName() {
-  return encodingName;
-}
-
-void CharacterSetECI::addCharacterSet(int value, char const* encodingName) {
-  CharacterSetECI* eci = new CharacterSetECI(value, encodingName);
-  VALUE_TO_ECI[value] = eci; // can't use valueOf
-  NAME_TO_ECI[string(encodingName)] = eci;
-}
-
-void CharacterSetECI::addCharacterSet(int value, char const* const* encodingNames) {
-  CharacterSetECI* eci = new CharacterSetECI(value, encodingNames[0]);
-  VALUE_TO_ECI[value] = eci;
-  for (int i = 0; encodingNames[i]; i++) {
-    NAME_TO_ECI[string(encodingNames[i])] = eci;
+CharacterSetECI::CharacterSetECI(int const* values,
+                                 char const* const* names)
+  : values_(values), names_(names) {
+  for(int const* values = values_; *values != -1; values++) {
+    VALUE_TO_ECI[*values] = this;
   }
+  for(char const* const* names = names_; *names; names++) {
+    NAME_TO_ECI[string(*names)] = this;
+  }
+}
+
+char const* CharacterSetECI::name() const {
+  return names_[0];
+}
+
+int CharacterSetECI::getValue() const {
+  return values_[0];
+}
+
+void CharacterSetECI::addCharacterSet(int const* values, char const* const* names) {
+  new CharacterSetECI(values, names);
 }
 
 CharacterSetECI* CharacterSetECI::getCharacterSetECIByValue(int value) {
   if (value < 0 || value >= 900) {
-    std::ostringstream oss;
-    oss << "Bad ECI value: " << value;
-    throw IllegalArgumentException(oss.str().c_str());
+    throw FormatException();
   }
   return VALUE_TO_ECI[value];
 }
@@ -1432,8 +2619,8 @@ Ref<String> DecoderResult::getText() {
 
 namespace zxing {
 
-DetectorResult::DetectorResult(Ref<BitMatrix> bits, std::vector<Ref<ResultPoint> > points, Ref<PerspectiveTransform> transform) :
-  bits_(bits), points_(points), transform_(transform) {
+DetectorResult::DetectorResult(Ref<BitMatrix> bits, std::vector<Ref<ResultPoint> > points) :
+  bits_(bits), points_(points) {
 }
 
 Ref<BitMatrix> DetectorResult::getBits() {
@@ -1444,55 +2631,6 @@ std::vector<Ref<ResultPoint> > DetectorResult::getPoints() {
   return points_;
 }
 
-Ref<PerspectiveTransform> DetectorResult::getTransform() {
-  return transform_;
-}
-
-}
-
-// file: zxing/common/ECI.cpp
-
-// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
-/*
- * Copyright 2008-2011 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-// #include <zxing/common/ECI.h>
-// #include <sstream>
-// #include <zxing/common/CharacterSetECI.h>
-// #include <zxing/common/IllegalArgumentException.h>
-
-using zxing::common::ECI;
-using zxing::IllegalArgumentException;
-
-ECI::ECI(int value_) : value(value_) {}
-
-int ECI::getValue() const {
-  return value;
-}
-
-ECI* ECI::getECIByValue(int value) {
-  if (value < 0 || value > 999999) {
-    std::ostringstream oss;
-    oss << "Bad ECI value: " << value;
-    throw IllegalArgumentException(oss.str().c_str());
-  }
-  if (value < 900) { // Character set ECIs use 000000 - 000899
-    return CharacterSetECI::getCharacterSetECIByValue(value);
-  }
-  return 0;
 }
 
 // file: zxing/common/EdgeDetector.cpp
@@ -1718,9 +2856,9 @@ Point intersection(Line a, Line b) {
 namespace zxing {
 using namespace std;
 
-const int LUMINANCE_BITS_25 = 5;
-const int LUMINANCE_SHIFT_25 = 8 - LUMINANCE_BITS_25;
-const int LUMINANCE_BUCKETS_25 = 1 << LUMINANCE_BITS_25;
+const int LUMINANCE_BITS_28 = 5;
+const int LUMINANCE_SHIFT_28 = 8 - LUMINANCE_BITS_28;
+const int LUMINANCE_BUCKETS_28 = 1 << LUMINANCE_BITS_28;
 
 GlobalHistogramBinarizer::GlobalHistogramBinarizer(Ref<LuminanceSource> source) :
   Binarizer(source), cached_matrix_(NULL), cached_row_(NULL), cached_row_num_(-1) {
@@ -1740,7 +2878,7 @@ Ref<BitArray> GlobalHistogramBinarizer::getBlackRow(int y, Ref<BitArray> row) {
     }
   }
 
-  vector<int> histogram(LUMINANCE_BUCKETS_25, 0);
+  vector<int> histogram(LUMINANCE_BUCKETS_28, 0);
   LuminanceSource& source = *getLuminanceSource();
   int width = source.getWidth();
   if (row == NULL || static_cast<int>(row->getSize()) < width) {
@@ -1755,7 +2893,7 @@ Ref<BitArray> GlobalHistogramBinarizer::getBlackRow(int y, Ref<BitArray> row) {
     row_pixels = new unsigned char[width];
     row_pixels = source.getRow(y, row_pixels);
     for (int x = 0; x < width; x++) {
-      histogram[row_pixels[x] >> LUMINANCE_SHIFT_25]++;
+      histogram[row_pixels[x] >> LUMINANCE_SHIFT_28]++;
     }
     int blackPoint = estimate(histogram);
 
@@ -1795,7 +2933,7 @@ Ref<BitMatrix> GlobalHistogramBinarizer::getBlackMatrix() {
   LuminanceSource& source = *getLuminanceSource();
   int width = source.getWidth();
   int height = source.getHeight();
-  vector<int> histogram(LUMINANCE_BUCKETS_25, 0);
+  vector<int> histogram(LUMINANCE_BUCKETS_28, 0);
 
   // Quickly calculates the histogram by sampling four rows from the image.
   // This proved to be more robust on the blackbox tests than sampling a
@@ -1807,7 +2945,7 @@ Ref<BitMatrix> GlobalHistogramBinarizer::getBlackMatrix() {
     int right = (width << 2) / 5;
     row = source.getRow(rownum, row);
     for (int x = width / 5; x < right; x++) {
-      histogram[row[x] >> LUMINANCE_SHIFT_25]++;
+      histogram[row[x] >> LUMINANCE_SHIFT_28]++;
     }
   }
 
@@ -1892,7 +3030,7 @@ int GlobalHistogramBinarizer::estimate(vector<int> &histogram) {
     }
   }
 
-  return bestValley << LUMINANCE_SHIFT_25;
+  return bestValley << LUMINANCE_SHIFT_28;
 }
 
 Ref<Binarizer> GlobalHistogramBinarizer::createBinarizer(Ref<LuminanceSource> source) {
@@ -1940,7 +3078,7 @@ GreyscaleLuminanceSource::GreyscaleLuminanceSource(unsigned char* greyData, int 
 
 unsigned char* GreyscaleLuminanceSource::getRow(int y, unsigned char* row) {
   if (y < 0 || y >= this->getHeight()) {
-    throw IllegalArgumentException("Requested row is outside the image: " + y);
+    throw IllegalArgumentException("Requested row is outside the image.");
   }
   int width = getWidth();
   // TODO(flyashi): determine if row has enough size.
@@ -2017,13 +3155,13 @@ GreyscaleRotatedLuminanceSource::GreyscaleRotatedLuminanceSource(unsigned char* 
 // The API asks for rows, but we're rotated, so we return columns.
 unsigned char* GreyscaleRotatedLuminanceSource::getRow(int y, unsigned char* row) {
   if (y < 0 || y >= getHeight()) {
-    throw IllegalArgumentException("Requested row is outside the image: " + y);
+    throw IllegalArgumentException("Requested row is outside the image.");
   }
   int width = getWidth();
   if (row == NULL) {
     row = new unsigned char[width];
   }
-  int offset = (left_ * dataWidth_) + (dataWidth_ - (y + top_));
+  int offset = (left_ * dataWidth_) + (dataWidth_ - 1 - (y + top_));
   for (int x = 0; x < width; x++) {
     row[x] = greyData_[offset];
     offset += dataWidth_;
@@ -2198,8 +3336,8 @@ using namespace zxing;
 
 namespace {
   const int BLOCK_SIZE_POWER = 3;
-  const int BLOCK_SIZE = 1 << BLOCK_SIZE_POWER;
-  const int BLOCK_SIZE_MASK = BLOCK_SIZE - 1;
+  const int BLOCK_SIZE = 1 << BLOCK_SIZE_POWER; // ...0100...00
+  const int BLOCK_SIZE_MASK = BLOCK_SIZE - 1;   // ...0011...11
   const int MINIMUM_DIMENSION = BLOCK_SIZE * 5;
 }
 
@@ -2216,20 +3354,21 @@ HybridBinarizer::createBinarizer(Ref<LuminanceSource> source) {
   return Ref<Binarizer> (new HybridBinarizer(source));
 }
 
+
+/**
+ * Calculates the final BitMatrix once for all requests. This could be called once from the
+ * constructor instead, but there are some advantages to doing it lazily, such as making
+ * profiling easier, and not doing heavy lifting when callers don't expect it.
+ */
 Ref<BitMatrix> HybridBinarizer::getBlackMatrix() {
-  // Calculates the final BitMatrix once for all requests. This could
-  // be called once from the constructor instead, but there are some
-  // advantages to doing it lazily, such as making profiling easier,
-  // and not doing heavy lifting when callers don't expect it.
   if (matrix_) {
     return matrix_;
   }
   LuminanceSource& source = *getLuminanceSource();
-  if (source.getWidth() >= MINIMUM_DIMENSION &&
-      source.getHeight() >= MINIMUM_DIMENSION) {
+  int width = source.getWidth();
+  int height = source.getHeight();
+  if (width >= MINIMUM_DIMENSION && height >= MINIMUM_DIMENSION) {
     unsigned char* luminances = source.getMatrix();
-    int width = source.getWidth();
-    int height = source.getHeight();
     int subWidth = width >> BLOCK_SIZE_POWER;
     if ((width & BLOCK_SIZE_MASK) != 0) {
       subWidth++;
@@ -2264,6 +3403,12 @@ Ref<BitMatrix> HybridBinarizer::getBlackMatrix() {
   return matrix_;
 }
 
+namespace {
+  inline int cap(int value, int min, int max) {
+    return value < min ? min : value > max ? max : value;
+  }
+}
+
 void
 HybridBinarizer::calculateThresholdForBlock(unsigned char* luminances,
                                             int subWidth,
@@ -2274,18 +3419,18 @@ HybridBinarizer::calculateThresholdForBlock(unsigned char* luminances,
                                             Ref<BitMatrix> const& matrix) {
   for (int y = 0; y < subHeight; y++) {
     int yoffset = y << BLOCK_SIZE_POWER;
-    if (yoffset + BLOCK_SIZE >= height) {
-      yoffset = height - BLOCK_SIZE;
+    int maxYOffset = height - BLOCK_SIZE;
+    if (yoffset > maxYOffset) {
+      yoffset = maxYOffset;
     }
     for (int x = 0; x < subWidth; x++) {
       int xoffset = x << BLOCK_SIZE_POWER;
-      if (xoffset + BLOCK_SIZE >= width) {
-        xoffset = width - BLOCK_SIZE;
+      int maxXOffset = width - BLOCK_SIZE;
+      if (xoffset > maxXOffset) {
+        xoffset = maxXOffset;
       }
-      int left = (x > 1) ? x : 2;
-      left = (left < subWidth - 2) ? left : subWidth - 3;
-      int top = (y > 1) ? y : 2;
-      top = (top < subHeight - 2) ? top : subHeight - 3;
+      int left = cap(x, 2, subWidth - 3);
+      int top = cap(y, 2, subHeight - 3);
       int sum = 0;
       for (int z = -2; z <= 2; z++) {
         int *blackRow = &blackPoints[(top + z) * subWidth];
@@ -2296,17 +3441,17 @@ HybridBinarizer::calculateThresholdForBlock(unsigned char* luminances,
         sum += blackRow[left + 2];
       }
       int average = sum / 25;
-      threshold8x8Block(luminances, xoffset, yoffset, average, width, matrix);
+      thresholdBlock(luminances, xoffset, yoffset, average, width, matrix);
     }
   }
 }
 
-void HybridBinarizer::threshold8x8Block(unsigned char* luminances,
-                                        int xoffset,
-                                        int yoffset,
-                                        int threshold,
-                                        int stride,
-                                        Ref<BitMatrix> const& matrix) {
+void HybridBinarizer::thresholdBlock(unsigned char* luminances,
+                                     int xoffset,
+                                     int yoffset,
+                                     int threshold,
+                                     int stride,
+                                     Ref<BitMatrix> const& matrix) {
   for (int y = 0, offset = yoffset * stride + xoffset;
        y < BLOCK_SIZE;
        y++,  offset += stride) {
@@ -2327,18 +3472,26 @@ namespace {
   }
 }
 
-int* HybridBinarizer::calculateBlackPoints(unsigned char* luminances, int subWidth, int subHeight,
-    int width, int height) {
+
+int* HybridBinarizer::calculateBlackPoints(unsigned char* luminances,
+                                           int subWidth,
+                                           int subHeight,
+                                           int width,
+                                           int height) {
+  const int minDynamicRange = 24;
+
   int *blackPoints = new int[subHeight * subWidth];
   for (int y = 0; y < subHeight; y++) {
     int yoffset = y << BLOCK_SIZE_POWER;
-    if (yoffset + BLOCK_SIZE >= height) {
-      yoffset = height - BLOCK_SIZE;
+    int maxYOffset = height - BLOCK_SIZE;
+    if (yoffset > maxYOffset) {
+      yoffset = maxYOffset;
     }
     for (int x = 0; x < subWidth; x++) {
       int xoffset = x << BLOCK_SIZE_POWER;
-      if (xoffset + BLOCK_SIZE >= width) {
-        xoffset = width - BLOCK_SIZE;
+      int maxXOffset = width - BLOCK_SIZE;
+      if (xoffset > maxXOffset) {
+        xoffset = maxXOffset;
       }
       int sum = 0;
       int min = 0xFF;
@@ -2349,6 +3502,7 @@ int* HybridBinarizer::calculateBlackPoints(unsigned char* luminances, int subWid
         for (int xx = 0; xx < BLOCK_SIZE; xx++) {
           int pixel = luminances[offset + xx] & 0xFF;
           sum += pixel;
+          // still looking for good contrast
           if (pixel < min) {
             min = pixel;
           }
@@ -2356,12 +3510,22 @@ int* HybridBinarizer::calculateBlackPoints(unsigned char* luminances, int subWid
             max = pixel;
           }
         }
-      }
 
+        // short-circuit min/max tests once dynamic range is met
+        if (max - min > minDynamicRange) {
+          // finish the rest of the rows quickly
+          for (yy++, offset += width; yy < BLOCK_SIZE; yy++, offset += width) {
+            for (int xx = 0; xx < BLOCK_SIZE; xx += 2) {
+              sum += luminances[offset + xx] & 0xFF;
+              sum += luminances[offset + xx + 1] & 0xFF;
+            }
+          }
+        }
+      }
       // See
       // http://groups.google.com/group/zxing/browse_thread/thread/d06efa2c35a7ddc0
-      int average = sum >> 6;
-      if (max - min <= 24) {
+      int average = sum >> (BLOCK_SIZE_POWER * 2);
+      if (max - min <= minDynamicRange) {
         average = min >> 1;
         if (y > 0 && x > 0) {
           int bp = getBlackPointFromNeighbors(blackPoints, subWidth, x, y);
@@ -2457,17 +3621,17 @@ Ref<PerspectiveTransform> PerspectiveTransform::quadrilateralToQuadrilateral(flo
 
 Ref<PerspectiveTransform> PerspectiveTransform::squareToQuadrilateral(float x0, float y0, float x1, float y1, float x2,
     float y2, float x3, float y3) {
-  float dy2 = y3 - y2;
+  float dx3 = x0 - x1 + x2 - x3;
   float dy3 = y0 - y1 + y2 - y3;
-  if (dy2 == 0.0f && dy3 == 0.0f) {
+  if (dx3 == 0.0f && dy3 == 0.0f) {
     Ref<PerspectiveTransform> result(new PerspectiveTransform(x1 - x0, x2 - x1, x0, y1 - y0, y2 - y1, y0, 0.0f,
                                      0.0f, 1.0f));
     return result;
   } else {
     float dx1 = x1 - x2;
     float dx2 = x3 - x2;
-    float dx3 = x0 - x1 + x2 - x3;
     float dy1 = y1 - y2;
+    float dy2 = y3 - y2;
     float denominator = dx1 * dy2 - dx2 * dy1;
     float a13 = (dx3 * dy2 - dx2 * dy3) / denominator;
     float a23 = (dx1 * dy3 - dx3 * dy1) / denominator;
@@ -2601,34 +3765,40 @@ char const* const StringUtils::ISO88591 = "ISO8859-1";
 const bool StringUtils::ASSUME_SHIFT_JIS = false;
 
 string
-StringUtils::guessEncoding(unsigned char* bytes, int length, Hashtable const& hints) {
+StringUtils::guessEncoding(unsigned char* bytes, int length,
+                           Hashtable const& hints) {
   Hashtable::const_iterator i = hints.find(DecodeHints::CHARACTER_SET);
   if (i != hints.end()) {
     return i->second;
   }
-  // Does it start with the UTF-8 byte order mark? then guess it's UTF-8
-  if (length > 3 &&
-      bytes[0] == (unsigned char) 0xEF &&
-      bytes[1] == (unsigned char) 0xBB &&
-      bytes[2] == (unsigned char) 0xBF) {
-    return UTF8;
-  }
+  typedef bool boolean;
   // For now, merely tries to distinguish ISO-8859-1, UTF-8 and Shift_JIS,
-  // which should be by far the most common encodings. ISO-8859-1
-  // should not have bytes in the 0x80 - 0x9F range, while Shift_JIS
-  // uses this as a first byte of a two-byte character. If we see this
-  // followed by a valid second byte in Shift_JIS, assume it is Shift_JIS.
-  // If we see something else in that second byte, we'll make the risky guess
-  // that it's UTF-8.
-  bool canBeISO88591 = true;
-  bool canBeShiftJIS = true;
-  bool canBeUTF8 = true;
+  // which should be by far the most common encodings.
+  boolean canBeISO88591 = true;
+  boolean canBeShiftJIS = true;
+  boolean canBeUTF8 = true;
   int utf8BytesLeft = 0;
-  int maybeDoubleByteCount = 0;
-  int maybeSingleByteKatakanaCount = 0;
-  bool sawLatin1Supplement = false;
-  bool sawUTF8Start = false;
-  bool lastWasPossibleDoubleByteStart = false;
+  //int utf8LowChars = 0;
+  int utf2BytesChars = 0;
+  int utf3BytesChars = 0;
+  int utf4BytesChars = 0;
+  int sjisBytesLeft = 0;
+  //int sjisLowChars = 0;
+  int sjisKatakanaChars = 0;
+  //int sjisDoubleBytesChars = 0;
+  int sjisCurKatakanaWordLength = 0;
+  int sjisCurDoubleBytesWordLength = 0;
+  int sjisMaxKatakanaWordLength = 0;
+  int sjisMaxDoubleBytesWordLength = 0;
+  //int isoLowChars = 0;
+  //int isoHighChars = 0;
+  int isoHighOther = 0;
+
+  typedef unsigned char byte;
+  boolean utf8bom = length > 3 &&
+    bytes[0] == (byte) 0xEF &&
+    bytes[1] == (byte) 0xBB &&
+    bytes[2] == (byte) 0xBF;
 
   for (int i = 0;
        i < length && (canBeISO88591 || canBeShiftJIS || canBeUTF8);
@@ -2637,104 +3807,121 @@ StringUtils::guessEncoding(unsigned char* bytes, int length, Hashtable const& hi
     int value = bytes[i] & 0xFF;
 
     // UTF-8 stuff
-    if (value >= 0x80 && value <= 0xBF) {
+    if (canBeUTF8) {
       if (utf8BytesLeft > 0) {
-        utf8BytesLeft--;
-      }
-    } else {
-      if (utf8BytesLeft > 0) {
-        canBeUTF8 = false;
-      }
-      if (value >= 0xC0 && value <= 0xFD) {
-        sawUTF8Start = true;
-        int valueCopy = value;
-        while ((valueCopy & 0x40) != 0) {
-          utf8BytesLeft++;
-          valueCopy <<= 1;
+        if ((value & 0x80) == 0) {
+          canBeUTF8 = false;
+        } else {
+          utf8BytesLeft--;
         }
-      }
+      } else if ((value & 0x80) != 0) {
+        if ((value & 0x40) == 0) {
+          canBeUTF8 = false;
+        } else {
+          utf8BytesLeft++;
+          if ((value & 0x20) == 0) {
+            utf2BytesChars++;
+          } else {
+            utf8BytesLeft++;
+            if ((value & 0x10) == 0) {
+              utf3BytesChars++;
+            } else {
+              utf8BytesLeft++;
+              if ((value & 0x08) == 0) {
+                utf4BytesChars++;
+              } else {
+                canBeUTF8 = false;
+              }
+            }
+          }
+        }
+      } //else {
+      //utf8LowChars++;
+      //}
     }
 
     // ISO-8859-1 stuff
-
-    if ((value == 0xC2 || value == 0xC3) && i < length - 1) {
-      // This is really a poor hack. The slightly more exotic characters people might want to put in
-      // a QR Code, by which I mean the Latin-1 supplement characters (e.g. u-umlaut) have encodings
-      // that start with 0xC2 followed by [0xA0,0xBF], or start with 0xC3 followed by [0x80,0xBF].
-      int nextValue = bytes[i + 1] & 0xFF;
-      if (nextValue <= 0xBF &&
-          ((value == 0xC2 && nextValue >= 0xA0) || (value == 0xC3 && nextValue >= 0x80))) {
-        sawLatin1Supplement = true;
-      }
-    }
-    if (value >= 0x7F && value <= 0x9F) {
-      canBeISO88591 = false;
+    if (canBeISO88591) {
+      if (value > 0x7F && value < 0xA0) {
+        canBeISO88591 = false;
+      } else if (value > 0x9F) {
+        if (value < 0xC0 || value == 0xD7 || value == 0xF7) {
+          isoHighOther++;
+        } //else {
+        //isoHighChars++;
+        //}
+      } //else {
+      //isoLowChars++;
+      //}
     }
 
     // Shift_JIS stuff
-
-    if (value >= 0xA1 && value <= 0xDF) {
-      // count the number of characters that might be a Shift_JIS single-byte Katakana character
-      if (!lastWasPossibleDoubleByteStart) {
-        maybeSingleByteKatakanaCount++;
-      }
-    }
-    if (!lastWasPossibleDoubleByteStart &&
-        ((value >= 0xF0 && value <= 0xFF) || value == 0x80 || value == 0xA0)) {
-      canBeShiftJIS = false;
-    }
-    if ((value >= 0x81 && value <= 0x9F) || (value >= 0xE0 && value <= 0xEF)) {
-      // These start double-byte characters in Shift_JIS. Let's see if it's followed by a valid
-      // second byte.
-      if (lastWasPossibleDoubleByteStart) {
-        // If we just checked this and the last byte for being a valid double-byte
-        // char, don't check starting on this byte. If this and the last byte
-        // formed a valid pair, then this shouldn't be checked to see if it starts
-        // a double byte pair of course.
-        lastWasPossibleDoubleByteStart = false;
-      } else {
-        // ... otherwise do check to see if this plus the next byte form a valid
-        // double byte pair encoding a character.
-        lastWasPossibleDoubleByteStart = true;
-        if (i >= length - 1) {
+    if (canBeShiftJIS) {
+      if (sjisBytesLeft > 0) {
+        if (value < 0x40 || value == 0x7F || value > 0xFC) {
           canBeShiftJIS = false;
         } else {
-          int nextValue = bytes[i + 1] & 0xFF;
-          if (nextValue < 0x40 || nextValue > 0xFC) {
-            canBeShiftJIS = false;
-          } else {
-            maybeDoubleByteCount++;
-          }
-          // There is some conflicting information out there about which bytes can follow which in
-          // double-byte Shift_JIS characters. The rule above seems to be the one that matches practice.
+          sjisBytesLeft--;
         }
+      } else if (value == 0x80 || value == 0xA0 || value > 0xEF) {
+        canBeShiftJIS = false;
+      } else if (value > 0xA0 && value < 0xE0) {
+        sjisKatakanaChars++;
+        sjisCurDoubleBytesWordLength = 0;
+        sjisCurKatakanaWordLength++;
+        if (sjisCurKatakanaWordLength > sjisMaxKatakanaWordLength) {
+          sjisMaxKatakanaWordLength = sjisCurKatakanaWordLength;
+        }
+      } else if (value > 0x7F) {
+        sjisBytesLeft++;
+        //sjisDoubleBytesChars++;
+        sjisCurKatakanaWordLength = 0;
+        sjisCurDoubleBytesWordLength++;
+        if (sjisCurDoubleBytesWordLength > sjisMaxDoubleBytesWordLength) {
+          sjisMaxDoubleBytesWordLength = sjisCurDoubleBytesWordLength;
+        }
+      } else {
+        //sjisLowChars++;
+        sjisCurKatakanaWordLength = 0;
+        sjisCurDoubleBytesWordLength = 0;
       }
-    } else {
-      lastWasPossibleDoubleByteStart = false;
     }
   }
-  if (utf8BytesLeft > 0) {
+
+  if (canBeUTF8 && utf8BytesLeft > 0) {
     canBeUTF8 = false;
   }
-
-  // Easy -- if assuming Shift_JIS and no evidence it can't be, done
-  if (canBeShiftJIS && ASSUME_SHIFT_JIS) {
-    return SHIFT_JIS;
+  if (canBeShiftJIS && sjisBytesLeft > 0) {
+    canBeShiftJIS = false;
   }
-  if (canBeUTF8 && sawUTF8Start) {
+
+  // Easy -- if there is BOM or at least 1 valid not-single byte character (and no evidence it can't be UTF-8), done
+  if (canBeUTF8 && (utf8bom || utf2BytesChars + utf3BytesChars + utf4BytesChars > 0)) {
     return UTF8;
   }
-  // Distinguishing Shift_JIS and ISO-8859-1 can be a little tough. The crude heuristic is:
-  // - If we saw
-  //   - at least 3 bytes that starts a double-byte value (bytes that are rare in ISO-8859-1), or
-  //   - over 5% of bytes could be single-byte Katakana (also rare in ISO-8859-1),
-  // - and, saw no sequences that are invalid in Shift_JIS, then we conclude Shift_JIS
-  if (canBeShiftJIS && (maybeDoubleByteCount >= 3 || 20 * maybeSingleByteKatakanaCount > length)) {
+  // Easy -- if assuming Shift_JIS or at least 3 valid consecutive not-ascii characters (and no evidence it can't be), done
+  if (canBeShiftJIS && (ASSUME_SHIFT_JIS || sjisMaxKatakanaWordLength >= 3 || sjisMaxDoubleBytesWordLength >= 3)) {
     return SHIFT_JIS;
   }
-  // Otherwise, we default to ISO-8859-1 unless we know it can't be
-  if (!sawLatin1Supplement && canBeISO88591) {
+  // Distinguishing Shift_JIS and ISO-8859-1 can be a little tough for short words. The crude heuristic is:
+  // - If we saw
+  //   - only two consecutive katakana chars in the whole text, or
+  //   - at least 10% of bytes that could be "upper" not-alphanumeric Latin1,
+  // - then we conclude Shift_JIS, else ISO-8859-1
+  if (canBeISO88591 && canBeShiftJIS) {
+    return (sjisMaxKatakanaWordLength == 2 && sjisKatakanaChars == 2) || isoHighOther * 10 >= length
+      ? SHIFT_JIS : ISO88591;
+  }
+
+  // Otherwise, try in order ISO-8859-1, Shift JIS, UTF-8 and fall back to default platform encoding
+  if (canBeISO88591) {
     return ISO88591;
+  }
+  if (canBeShiftJIS) {
+    return SHIFT_JIS;
+  }
+  if (canBeUTF8) {
+    return UTF8;
   }
   // Otherwise, we take a wild guess with platform encoding
   return PLATFORM_DEFAULT_ENCODING;
@@ -2916,6 +4103,7 @@ Ref<TwoInts> MonochromeRectangleDetector::blackWhiteRange(int fixedDimension, in
 
 // file: zxing/common/detector/WhiteRectangleDetector.cpp
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 /*
  *  WhiteRectangleDetector.cpp
  *  y_wmk
@@ -2938,8 +4126,10 @@ Ref<TwoInts> MonochromeRectangleDetector::blackWhiteRange(int fixedDimension, in
 
 // #include <zxing/NotFoundException.h>
 // #include <zxing/common/detector/WhiteRectangleDetector.h>
-// #include <math.h>
+// #include <zxing/common/detector/math_utils.h>
 // #include <sstream>
+
+namespace math_utils = zxing::common::detector::math_utils;
 
 namespace zxing {
 using namespace std;
@@ -2951,6 +4141,30 @@ int WhiteRectangleDetector::CORR = 1;
 WhiteRectangleDetector::WhiteRectangleDetector(Ref<BitMatrix> image) : image_(image) {
   width_ = image->getWidth();
   height_ = image->getHeight();
+
+  leftInit_ = (width_ - INIT_SIZE) >> 1;
+  rightInit_ = (width_ + INIT_SIZE) >> 1;
+  upInit_ = (height_ - INIT_SIZE) >> 1;
+  downInit_ = (height_ + INIT_SIZE) >> 1;
+
+  if (upInit_ < 0 || leftInit_ < 0 || downInit_ >= height_ || rightInit_ >= width_) {
+    throw NotFoundException("Invalid dimensions WhiteRectangleDetector");
+}
+}
+
+WhiteRectangleDetector::WhiteRectangleDetector(Ref<BitMatrix> image, int initSize, int x, int y) : image_(image) {
+  width_ = image->getWidth();
+  height_ = image->getHeight();
+
+  int halfsize = initSize >> 1;
+  leftInit_ = x - halfsize;
+  rightInit_ = x + halfsize;
+  upInit_ = y - halfsize;
+  downInit_ = y + halfsize;
+
+  if (upInit_ < 0 || leftInit_ < 0 || downInit_ >= height_ || rightInit_ >= width_) {
+    throw NotFoundException("Invalid dimensions WhiteRectangleDetector");
+  }
 }
 
 /**
@@ -2968,13 +4182,10 @@ WhiteRectangleDetector::WhiteRectangleDetector(Ref<BitMatrix> image) : image_(im
  * @throws NotFoundException if no Data Matrix Code can be found
 */
 std::vector<Ref<ResultPoint> > WhiteRectangleDetector::detect() {
-  int left = (width_ - INIT_SIZE) >> 1;
-  int right = (width_ + INIT_SIZE) >> 1;
-  int up = (height_ - INIT_SIZE) >> 1;
-  int down = (height_ + INIT_SIZE) >> 1;
-  if (up < 0 || left < 0 || down >= height_ || right >= width_) {
-    throw NotFoundException("Invalid dimensions WhiteRectangleDetector");
-  }
+  int left = leftInit_;
+  int right = rightInit_;
+  int up = upInit_;
+  int down = downInit_;
 
   bool sizeExceeded = false;
   bool aBlackPointFoundOnBorder = true;
@@ -3119,21 +4330,14 @@ std::vector<Ref<ResultPoint> > WhiteRectangleDetector::detect() {
   }
 }
 
-/**
- * Ends up being a bit faster than Math.round(). This merely rounds its
- * argument to the nearest int, where x.5 rounds up.
- */
-int WhiteRectangleDetector::round(float d) {
-  return (int) (d + 0.5f);
-}
-
 Ref<ResultPoint> WhiteRectangleDetector::getBlackPointOnSegment(float aX, float aY, float bX, float bY) {
-  int dist = distanceL2(aX, aY, bX, bY);
+  int dist = math_utils::round(math_utils::distance(aX, aY, bX, bY));
   float xStep = (bX - aX) / dist;
   float yStep = (bY - aY) / dist;
+
   for (int i = 0; i < dist; i++) {
-    int x = round(aX + i * xStep);
-    int y = round(aY + i * yStep);
+    int x = math_utils::round(aX + i * xStep);
+    int y = math_utils::round(aY + i * yStep);
     if (image_->get(x, y)) {
       Ref<ResultPoint> point(new ResultPoint(x, y));
       return point;
@@ -3141,12 +4345,6 @@ Ref<ResultPoint> WhiteRectangleDetector::getBlackPointOnSegment(float aX, float 
   }
   Ref<ResultPoint> point(NULL);
   return point;
-}
-
-int WhiteRectangleDetector::distanceL2(float aX, float aY, float bX, float bY) {
-  float xDiff = aX - bX;
-  float yDiff = aY - bY;
-  return round((float)sqrt(xDiff * xDiff + yDiff * yDiff));
 }
 
 /**
@@ -3232,14 +4430,15 @@ bool WhiteRectangleDetector::containsBlackPoint(int a, int b, int fixed, bool ho
 }
 }
 
-// file: zxing/common/reedsolomon/GF256.cpp
+// file: zxing/common/reedsolomon/GenericGF.cpp
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 /*
- *  GF256.cpp
+ *  GenericGF.cpp
  *  zxing
  *
- *  Created by Christian Brunschen on 05/05/2008.
- *  Copyright 2008 Google UK. All rights reserved.
+ *  Created by Lukas Stabe on 13/02/2012.
+ *  Copyright 2012 ZXing authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3254,131 +4453,142 @@ bool WhiteRectangleDetector::containsBlackPoint(int a, int b, int fixed, bool ho
  * limitations under the License.
  */
 
-// #include <vector>
 // #include <iostream>
-// #include <zxing/common/reedsolomon/GF256.h>
-// #include <zxing/common/reedsolomon/GF256Poly.h>
+// #include <zxing/common/reedsolomon/GenericGF.h>
+// #include <zxing/common/reedsolomon/GenericGFPoly.h>
 // #include <zxing/common/IllegalArgumentException.h>
-// #include <zxing/common/Array.h>
-// #include <zxing/common/Counted.h>
 
-namespace zxing {
-using namespace std;
+using zxing::GenericGF;
+using zxing::GenericGFPoly;
+using zxing::Ref;
 
-static inline ArrayRef<int> makeArray(int value) {
-  ArrayRef<int> valuesRef(new Array<int> (value, 1));
-  return valuesRef;
+Ref<GenericGF> GenericGF::QR_CODE_FIELD_256(new GenericGF(0x011D, 256));
+Ref<GenericGF> GenericGF::DATA_MATRIX_FIELD_256(new GenericGF(0x012D, 256));
+Ref<GenericGF> GenericGF::AZTEC_PARAM(new GenericGF(0x13, 16));
+Ref<GenericGF> GenericGF::AZTEC_DATA_6(new GenericGF(0x43, 64));
+Ref<GenericGF> GenericGF::AZTEC_DATA_8(GenericGF::DATA_MATRIX_FIELD_256);
+Ref<GenericGF> GenericGF::AZTEC_DATA_10(new GenericGF(0x409, 1024));
+Ref<GenericGF> GenericGF::AZTEC_DATA_12(new GenericGF(0x1069, 4096));
+
+
+static int INITIALIZATION_THRESHOLD = 0;
+
+GenericGF::GenericGF(int primitive, int size)
+  : size_(size), primitive_(primitive), initialized_(false) {
+  if (size <= INITIALIZATION_THRESHOLD) {
+    initialize();
+  }
 }
 
-static inline Ref<GF256Poly> refPoly(GF256 &field, int value) {
-  ArrayRef<int> values(makeArray(value));
-  Ref<GF256Poly> result(new GF256Poly(field, values));
-  return result;
-}
+void GenericGF::initialize() {
+  //expTable_ = std::vector<int>(size_, (const int) 0);
+  //logTable_ = std::vector<int>(size_, (const int) 0);
+  expTable_.resize(size_);
+  logTable_.resize(size_);
 
-GF256::GF256(int primitive) :
-    exp_(256, (const int)0), log_(256, (const int)0), zero_(refPoly(*this, 0)), one_(refPoly(*this, 1)) {
   int x = 1;
-  for (int i = 0; i < 256; i++) {
-    exp_[i] = x;
-    x <<= 1;
-    if (x >= 0x100) {
-      x ^= primitive;
+
+  for (int i = 0; i < size_; i++) {
+    expTable_[i] = x;
+    x <<= 1; // x = x * 2; we're assuming the generator alpha is 2
+    if (x >= size_) {
+      x ^= primitive_;
+      x &= size_-1;
     }
   }
+  for (int i = 0; i < size_-1; i++) {
+    logTable_[expTable_[i]] = i;
+  }
+  //logTable_[0] == 0 but this should never be used
 
-  // log(0) == 0, but should never be used
-  log_[0] = 0;
-  for (int i = 0; i < 255; i++) {
-    log_[exp_[i]] = i;
+  zero_ = Ref<GenericGFPoly>(new GenericGFPoly(Ref<GenericGF>(this), ArrayRef<int>(new Array<int>(1))));
+  zero_->getCoefficients()[0] = 0;
+  one_ = Ref<GenericGFPoly>(new GenericGFPoly(Ref<GenericGF>(this), ArrayRef<int>(new Array<int>(1))));
+  one_->getCoefficients()[0] = 1;
+
+  initialized_ = true;
+}
+
+void GenericGF::checkInit() {
+  if (!initialized_) {
+    initialize();
   }
 }
 
-Ref<GF256Poly> GF256::getZero() {
+Ref<GenericGFPoly> GenericGF::getZero() {
+  checkInit();
   return zero_;
 }
 
-Ref<GF256Poly> GF256::getOne() {
+Ref<GenericGFPoly> GenericGF::getOne() {
+  checkInit();
   return one_;
 }
 
-Ref<GF256Poly> GF256::buildMonomial(int degree, int coefficient) {
-#ifdef DEBUG
-  cout << __FUNCTION__ << "\n";
-#endif
+Ref<GenericGFPoly> GenericGF::buildMonomial(int degree, int coefficient) {
+  checkInit();
+
   if (degree < 0) {
     throw IllegalArgumentException("Degree must be non-negative");
   }
   if (coefficient == 0) {
     return zero_;
   }
-  int nCoefficients = degree + 1;
-  ArrayRef<int> coefficients(new Array<int> (nCoefficients));
+  ArrayRef<int> coefficients(new Array<int>(degree + 1));
   coefficients[0] = coefficient;
-  Ref<GF256Poly> result(new GF256Poly(*this, coefficients));
-  return result;
+
+  //return new GenericGFPoly(this, coefficients);
+  return Ref<GenericGFPoly>(new GenericGFPoly(Ref<GenericGF>(this), coefficients));
 }
 
-int GF256::addOrSubtract(int a, int b) {
+int GenericGF::addOrSubtract(int a, int b) {
   return a ^ b;
 }
 
-int GF256::exp(int a) {
-  return exp_[a];
+int GenericGF::exp(int a) {
+  checkInit();
+  return expTable_[a];
 }
 
-int GF256::log(int a) {
+int GenericGF::log(int a) {
+  checkInit();
   if (a == 0) {
-    throw IllegalArgumentException("Cannot take the logarithm of 0");
+    throw IllegalArgumentException("cannot give log(0)");
   }
-  return log_[a];
+  return logTable_[a];
 }
 
-int GF256::inverse(int a) {
+int GenericGF::inverse(int a) {
+  checkInit();
   if (a == 0) {
     throw IllegalArgumentException("Cannot calculate the inverse of 0");
   }
-  return exp_[255 - log_[a]];
+  return expTable_[size_ - logTable_[a] - 1];
 }
 
-int GF256::multiply(int a, int b) {
+int GenericGF::multiply(int a, int b) {
+  checkInit();
+
   if (a == 0 || b == 0) {
     return 0;
   }
-  int logSum = log_[a] + log_[b];
-  // index is a sped-up alternative to logSum % 255 since sum
-  // is in [0,510]. Thanks to jmsachs for the idea
-  return exp_[(logSum & 0xFF) + (logSum >> 8)];
-}
 
-GF256 GF256::QR_CODE_FIELD(0x011D); // x^8 + x^4 + x^3 + x^2 + 1
-GF256 GF256::DATA_MATRIX_FIELD(0x012D); // x^8 + x^5 + x^3 + x^2 + 1
-
-ostream& operator<<(ostream& out, const GF256& field) {
-  out << "Field[\nexp=(";
-  out << field.exp_[0];
-  for (int i = 1; i < 256; i++) {
-    out << "," << field.exp_[i];
+  return expTable_[(logTable_[a] + logTable_[b]) % (size_ - 1)];
   }
-  out << "),\nlog=(";
-  out << field.log_[0];
-  for (int i = 1; i < 256; i++) {
-    out << "," << field.log_[i];
-  }
-  out << ")\n]";
-  return out;
+
+int GenericGF::getSize() {
+  return size_;
 }
 
-}
+// file: zxing/common/reedsolomon/GenericGFPoly.cpp
 
-// file: zxing/common/reedsolomon/GF256Poly.cpp
-
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 /*
- *  GF256Poly.cpp
+ *  GenericGFPoly.cpp
  *  zxing
  *
- *  Created by Christian Brunschen on 05/05/2008.
- *  Copyright 2008 Google UK. All rights reserved.
+ *  Created by Lukas Stabe on 13/02/2012.
+ *  Copyright 2012 ZXing authors All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -3394,182 +4604,198 @@ ostream& operator<<(ostream& out, const GF256& field) {
  */
 
 // #include <iostream>
-// #include <sstream>
-// #include <zxing/common/reedsolomon/GF256Poly.h>
-// #include <zxing/common/reedsolomon/GF256.h>
+// #include <zxing/common/reedsolomon/GenericGFPoly.h>
+// #include <zxing/common/reedsolomon/GenericGF.h>
 // #include <zxing/common/IllegalArgumentException.h>
 
-namespace zxing {
-using namespace std;
+using zxing::GenericGFPoly;
+using zxing::ArrayRef;
+using zxing::Ref;
 
-void GF256Poly::fixCoefficients() {
+GenericGFPoly::GenericGFPoly(Ref<GenericGF> field,
+                             ArrayRef<int> coefficients)
+  :  field_(field) {
+  if (coefficients.size() == 0) {
+    throw IllegalArgumentException("need coefficients");
+  }
   int coefficientsLength = coefficients.size();
   if (coefficientsLength > 1 && coefficients[0] == 0) {
-    // Leading term must be non-zero for anything except
-    // the constant polynomial "0"
+    // Leading term must be non-zero for anything except the constant polynomial "0"
     int firstNonZero = 1;
     while (firstNonZero < coefficientsLength && coefficients[firstNonZero] == 0) {
       firstNonZero++;
     }
     if (firstNonZero == coefficientsLength) {
-      coefficientsLength = field.getZero()->coefficients.size();
-      coefficients.reset(new Array<int> (coefficientsLength));
-      *coefficients = *(field.getZero()->coefficients);
+      coefficients_ = field->getZero()->getCoefficients();
     } else {
-      ArrayRef<int> c(coefficients);
-      coefficientsLength -= firstNonZero;
-      coefficients.reset(new Array<int> (coefficientsLength));
-      for (int i = 0; i < coefficientsLength; i++) {
-        coefficients[i] = c[i + firstNonZero];
+      coefficients_ = ArrayRef<int>(new Array<int>(coefficientsLength-firstNonZero));
+      for (int i = 0; i < (int)coefficients_.size(); i++) {
+        coefficients_[i] = coefficients[i + firstNonZero];
       }
     }
+  } else {
+    coefficients_ = coefficients;
   }
 }
 
-GF256Poly::GF256Poly(GF256 &f, ArrayRef<int> c) :
-    Counted(), field(f), coefficients(c) {
-  fixCoefficients();
+ArrayRef<int> GenericGFPoly::getCoefficients() {
+  return coefficients_;
 }
 
-GF256Poly::~GF256Poly() {
-
+int GenericGFPoly::getDegree() {
+  return coefficients_.size() - 1;
 }
 
-int GF256Poly::getDegree() {
-  return coefficients.size() - 1;
+bool GenericGFPoly::isZero() {
+  return coefficients_[0] == 0;
 }
 
-bool GF256Poly::isZero() {
-  return coefficients[0] == 0;
+int GenericGFPoly::getCoefficient(int degree) {
+  return coefficients_[coefficients_.size() - 1 - degree];
 }
 
-int GF256Poly::getCoefficient(int degree) {
-  return coefficients[coefficients.size() - 1 - degree];
-}
-
-int GF256Poly::evaluateAt(int a) {
+int GenericGFPoly::evaluateAt(int a) {
   if (a == 0) {
+    // Just return the x^0 coefficient
     return getCoefficient(0);
   }
-  int size = coefficients.size();
+
+  int size = coefficients_.size();
   if (a == 1) {
     // Just the sum of the coefficients
     int result = 0;
     for (int i = 0; i < size; i++) {
-      result = GF256::addOrSubtract(result, coefficients[i]);
+      result = GenericGF::addOrSubtract(result, coefficients_[i]);
     }
     return result;
   }
-  int result = coefficients[0];
+  int result = coefficients_[0];
   for (int i = 1; i < size; i++) {
-    result = GF256::addOrSubtract(field.multiply(a, result), coefficients[i]);
+    result = GenericGF::addOrSubtract(field_->multiply(a, result), coefficients_[i]);
   }
   return result;
 }
 
-Ref<GF256Poly> GF256Poly::addOrSubtract(Ref<GF256Poly> b) {
-  if (&field != &b->field) {
-    throw IllegalArgumentException("Fields must be the same");
+Ref<GenericGFPoly> GenericGFPoly::addOrSubtract(Ref<zxing::GenericGFPoly> other) {
+  if (!(field_.object_ == other->field_.object_)) {
+    throw IllegalArgumentException("GenericGFPolys do not have same GenericGF field");
   }
   if (isZero()) {
-    return b;
+    return other;
   }
-  if (b->isZero()) {
-    return Ref<GF256Poly>(this);
+  if (other->isZero()) {
+    return Ref<GenericGFPoly>(this);
   }
 
-  ArrayRef<int> largerCoefficients = coefficients;
-  ArrayRef<int> smallerCoefficients = b->coefficients;
+  ArrayRef<int> smallerCoefficients = coefficients_;
+  ArrayRef<int> largerCoefficients = other->getCoefficients();
   if (smallerCoefficients.size() > largerCoefficients.size()) {
-    ArrayRef<int> tmp(smallerCoefficients);
+    ArrayRef<int> temp = smallerCoefficients;
     smallerCoefficients = largerCoefficients;
-    largerCoefficients = tmp;
+    largerCoefficients = temp;
   }
 
-  ArrayRef<int> sumDiff(new Array<int> (largerCoefficients.size()));
-
-  unsigned lengthDiff = largerCoefficients.size() - smallerCoefficients.size();
-  for (unsigned i = 0; i < lengthDiff; i++) {
+  ArrayRef<int> sumDiff(new Array<int>(largerCoefficients.size()));
+  int lengthDiff = largerCoefficients.size() - smallerCoefficients.size();
+  // Copy high-order terms only found in higher-degree polynomial's coefficients
+  for (int i = 0; i < lengthDiff; i++) {
     sumDiff[i] = largerCoefficients[i];
   }
-  for (unsigned i = lengthDiff; i < largerCoefficients.size(); i++) {
-    sumDiff[i] = GF256::addOrSubtract(smallerCoefficients[i - lengthDiff], largerCoefficients[i]);
+
+  for (int i = lengthDiff; i < (int)largerCoefficients.size(); i++) {
+    sumDiff[i] = GenericGF::addOrSubtract(smallerCoefficients[i-lengthDiff],
+                                          largerCoefficients[i]);
   }
-  return Ref<GF256Poly>(new GF256Poly(field, sumDiff));
+
+  return Ref<GenericGFPoly>(new GenericGFPoly(field_, sumDiff));
 }
 
-Ref<GF256Poly> GF256Poly::multiply(Ref<GF256Poly> b) {
-  if (&field != &b->field) {
-    throw IllegalArgumentException("Fields must be the same");
+Ref<GenericGFPoly> GenericGFPoly::multiply(Ref<zxing::GenericGFPoly> other) {
+  if (!(field_.object_ == other->field_.object_)) {
+    throw IllegalArgumentException("GenericGFPolys do not have same GenericGF field");
   }
-  if (isZero() || b->isZero()) {
-    return field.getZero();
+
+  if (isZero() || other->isZero()) {
+    return field_->getZero();
   }
-  ArrayRef<int> aCoefficients = coefficients;
+
+  ArrayRef<int> aCoefficients = coefficients_;
   int aLength = aCoefficients.size();
-  ArrayRef<int> bCoefficients = b->coefficients;
+
+  ArrayRef<int> bCoefficients = other->getCoefficients();
   int bLength = bCoefficients.size();
-  int productLength = aLength + bLength - 1;
-  ArrayRef<int> product(new Array<int> (productLength));
+
+  ArrayRef<int> product(new Array<int>(aLength + bLength - 1));
   for (int i = 0; i < aLength; i++) {
     int aCoeff = aCoefficients[i];
     for (int j = 0; j < bLength; j++) {
-      product[i + j] = GF256::addOrSubtract(product[i + j], field.multiply(aCoeff, bCoefficients[j]));
+      product[i+j] = GenericGF::addOrSubtract(product[i+j],
+                                              field_->multiply(aCoeff, bCoefficients[j]));
     }
   }
 
-  return Ref<GF256Poly>(new GF256Poly(field, product));
+  return Ref<GenericGFPoly>(new GenericGFPoly(field_, product));
 }
 
-Ref<GF256Poly> GF256Poly::multiply(int scalar) {
+Ref<GenericGFPoly> GenericGFPoly::multiply(int scalar) {
   if (scalar == 0) {
-    return field.getZero();
+    return field_->getZero();
   }
   if (scalar == 1) {
-    return Ref<GF256Poly>(this);
+    return Ref<GenericGFPoly>(this);
   }
-  int size = coefficients.size();
-  ArrayRef<int> product(new Array<int> (size));
+  int size = coefficients_.size();
+  ArrayRef<int> product(new Array<int>(size));
   for (int i = 0; i < size; i++) {
-    product[i] = field.multiply(coefficients[i], scalar);
+    product[i] = field_->multiply(coefficients_[i], scalar);
   }
-  return Ref<GF256Poly>(new GF256Poly(field, product));
+  return Ref<GenericGFPoly>(new GenericGFPoly(field_, product));
 }
 
-Ref<GF256Poly> GF256Poly::multiplyByMonomial(int degree, int coefficient) {
+Ref<GenericGFPoly> GenericGFPoly::multiplyByMonomial(int degree, int coefficient) {
   if (degree < 0) {
-    throw IllegalArgumentException("Degree must be non-negative");
+    throw IllegalArgumentException("degree must not be less then 0");
   }
   if (coefficient == 0) {
-    return field.getZero();
+    return field_->getZero();
   }
-  int size = coefficients.size();
-  ArrayRef<int> product(new Array<int> (size + degree));
+  int size = coefficients_.size();
+  ArrayRef<int> product(new Array<int>(size+degree));
   for (int i = 0; i < size; i++) {
-    product[i] = field.multiply(coefficients[i], coefficient);
+    product[i] = field_->multiply(coefficients_[i], coefficient);
   }
-  return Ref<GF256Poly>(new GF256Poly(field, product));
+  return Ref<GenericGFPoly>(new GenericGFPoly(field_, product));
 }
 
-const char *GF256Poly::description() const {
-  ostringstream result;
-  result << *this;
-  return result.str().c_str();
-}
-
-ostream& operator<<(ostream& out, const GF256Poly& p) {
-  GF256Poly &poly = const_cast<GF256Poly&>(p);
-  out << "Poly[" << poly.coefficients.size() << "]";
-  if (poly.coefficients.size() > 0) {
-    out << "(" << poly.coefficients[0];
-    for (unsigned i = 1; i < poly.coefficients.size(); i++) {
-      out << "," << poly.coefficients[i];
-    }
-    out << ")";
+std::vector<Ref<GenericGFPoly> > GenericGFPoly::divide(Ref<GenericGFPoly> other) {
+  if (!(field_.object_ == other->field_.object_)) {
+    throw IllegalArgumentException("GenericGFPolys do not have same GenericGF field");
   }
-  return out;
-}
+  if (other->isZero()) {
+    throw IllegalArgumentException("divide by 0");
+  }
 
+  Ref<GenericGFPoly> quotient = field_->getZero();
+  Ref<GenericGFPoly> remainder = Ref<GenericGFPoly>(this);
+
+  int denominatorLeadingTerm = other->getCoefficient(other->getDegree());
+  int inverseDenominatorLeadingTerm = field_->inverse(denominatorLeadingTerm);
+
+  while (remainder->getDegree() >= other->getDegree() && !remainder->isZero()) {
+    int degreeDifference = remainder->getDegree() - other->getDegree();
+    int scale = field_->multiply(remainder->getCoefficient(remainder->getDegree()),
+                                 inverseDenominatorLeadingTerm);
+    Ref<GenericGFPoly> term = other->multiplyByMonomial(degreeDifference, scale);
+    Ref<GenericGFPoly> iterationQuotiont = field_->buildMonomial(degreeDifference,
+                                                                 scale);
+    quotient = quotient->addOrSubtract(iterationQuotiont);
+    remainder = remainder->addOrSubtract(term);
+  }
+
+  std::vector<Ref<GenericGFPoly> > returnValue;
+  returnValue[0] = quotient;
+  returnValue[1] = remainder;
+  return returnValue;
 }
 
 // file: zxing/common/reedsolomon/ReedSolomonDecoder.cpp
@@ -3598,8 +4824,6 @@ ostream& operator<<(ostream& out, const GF256Poly& p) {
 
 // #include <memory>
 // #include <zxing/common/reedsolomon/ReedSolomonDecoder.h>
-// #include <zxing/common/reedsolomon/GF256.h>
-// #include <zxing/common/reedsolomon/GF256Poly.h>
 // #include <zxing/common/reedsolomon/ReedSolomonException.h>
 // #include <zxing/common/IllegalArgumentException.h>
 
@@ -3607,7 +4831,7 @@ using namespace std;
 
 namespace zxing {
 
-ReedSolomonDecoder::ReedSolomonDecoder(GF256 &fld) :
+ReedSolomonDecoder::ReedSolomonDecoder(Ref<GenericGF> fld) :
     field(fld) {
 }
 
@@ -3616,25 +4840,27 @@ ReedSolomonDecoder::~ReedSolomonDecoder() {
 
 void ReedSolomonDecoder::decode(ArrayRef<int> received, int twoS) {
 
-  Ref<GF256Poly> poly(new GF256Poly(field, received));
+  Ref<GenericGFPoly> poly(new GenericGFPoly(field, received));
 
 
+/*
 #ifdef DEBUG
-  cout << "decoding with poly " << *poly << "\n";
+  cout << "decoding with poly " << *poly << endl;
 #endif
+*/
 
   ArrayRef<int> syndromeCoefficients(new Array<int> (twoS));
 
 
 #ifdef DEBUG
   cout << "syndromeCoefficients array = " <<
-       syndromeCoefficients.array_ << "\n";
+      syndromeCoefficients.array_ << endl;
 #endif
 
-  bool dataMatrix = (&field == &GF256::DATA_MATRIX_FIELD);
+  bool dataMatrix = (field.object_ == GenericGF::DATA_MATRIX_FIELD_256.object_);
   bool noError = true;
   for (int i = 0; i < twoS; i++) {
-    int eval = poly->evaluateAt(field.exp(dataMatrix ? i + 1 : i));
+    int eval = poly->evaluateAt(field->exp(dataMatrix ? i + 1 : i));
     syndromeCoefficients[syndromeCoefficients->size() - 1 - i] = eval;
     if (eval != 0) {
       noError = false;
@@ -3644,43 +4870,41 @@ void ReedSolomonDecoder::decode(ArrayRef<int> received, int twoS) {
     return;
   }
 
-  Ref<GF256Poly> syndrome(new GF256Poly(field, syndromeCoefficients));
-  Ref<GF256Poly> monomial(field.buildMonomial(twoS, 1));
-  vector<Ref<GF256Poly> > sigmaOmega(runEuclideanAlgorithm(monomial, syndrome, twoS));
+  Ref<GenericGFPoly> syndrome(new GenericGFPoly(field, syndromeCoefficients));
+  Ref<GenericGFPoly> monomial = field->buildMonomial(twoS, 1);
+  vector<Ref<GenericGFPoly> > sigmaOmega = runEuclideanAlgorithm(monomial, syndrome, twoS);
   ArrayRef<int> errorLocations = findErrorLocations(sigmaOmega[0]);
   ArrayRef<int> errorMagitudes = findErrorMagnitudes(sigmaOmega[1], errorLocations, dataMatrix);
   for (unsigned i = 0; i < errorLocations->size(); i++) {
-    int position = received->size() - 1 - field.log(errorLocations[i]);
+    int position = received->size() - 1 - field->log(errorLocations[i]);
     //TODO: check why the position would be invalid
     if (position < 0 || (size_t)position >= received.size())
       throw IllegalArgumentException("Invalid position (ReedSolomonDecoder)");
-    received[position] = GF256::addOrSubtract(received[position], errorMagitudes[i]);
+    received[position] = GenericGF::addOrSubtract(received[position], errorMagitudes[i]);
   }
 }
 
-vector<Ref<GF256Poly> > ReedSolomonDecoder::runEuclideanAlgorithm(Ref<GF256Poly> a, Ref<GF256Poly> b, int R) {
+vector<Ref<GenericGFPoly> > ReedSolomonDecoder::runEuclideanAlgorithm(Ref<GenericGFPoly> a,
+                                                                      Ref<GenericGFPoly> b,
+                                                                      int R) {
   // Assume a's degree is >= b's
   if (a->getDegree() < b->getDegree()) {
-    Ref<GF256Poly> tmp = a;
+    Ref<GenericGFPoly> tmp = a;
     a = b;
     b = tmp;
   }
 
-  Ref<GF256Poly> rLast(a);
-  Ref<GF256Poly> r(b);
-  Ref<GF256Poly> sLast(field.getOne());
-  Ref<GF256Poly> s(field.getZero());
-  Ref<GF256Poly> tLast(field.getZero());
-  Ref<GF256Poly> t(field.getOne());
+  Ref<GenericGFPoly> rLast(a);
+  Ref<GenericGFPoly> r(b);
+  Ref<GenericGFPoly> tLast(field->getZero());
+  Ref<GenericGFPoly> t(field->getOne());
 
 
   // Run Euclidean algorithm until r's degree is less than R/2
   while (r->getDegree() >= R / 2) {
-    Ref<GF256Poly> rLastLast(rLast);
-    Ref<GF256Poly> sLastLast(sLast);
-    Ref<GF256Poly> tLastLast(tLast);
+    Ref<GenericGFPoly> rLastLast(rLast);
+    Ref<GenericGFPoly> tLastLast(tLast);
     rLast = r;
-    sLast = s;
     tLast = t;
 
 
@@ -3690,18 +4914,18 @@ vector<Ref<GF256Poly> > ReedSolomonDecoder::runEuclideanAlgorithm(Ref<GF256Poly>
       throw ReedSolomonException("r_{i-1} was zero");
     }
     r = rLastLast;
-    Ref<GF256Poly> q(field.getZero());
+    Ref<GenericGFPoly> q(field->getZero());
     int denominatorLeadingTerm = rLast->getCoefficient(rLast->getDegree());
-    int dltInverse = field.inverse(denominatorLeadingTerm);
+    int dltInverse = field->inverse(denominatorLeadingTerm);
     while (r->getDegree() >= rLast->getDegree() && !r->isZero()) {
       int degreeDiff = r->getDegree() - rLast->getDegree();
-      int scale = field.multiply(r->getCoefficient(r->getDegree()), dltInverse);
-      q = q->addOrSubtract(field.buildMonomial(degreeDiff, scale));
+      int scale = field->multiply(r->getCoefficient(r->getDegree()), dltInverse);
+      q = q->addOrSubtract(field->buildMonomial(degreeDiff, scale));
       r = r->addOrSubtract(rLast->multiplyByMonomial(degreeDiff, scale));
     }
 
-    s = q->multiply(sLast)->addOrSubtract(sLastLast);
     t = q->multiply(tLast)->addOrSubtract(tLastLast);
+
   }
 
   int sigmaTildeAtZero = t->getCoefficient(0);
@@ -3709,38 +4933,40 @@ vector<Ref<GF256Poly> > ReedSolomonDecoder::runEuclideanAlgorithm(Ref<GF256Poly>
     throw ReedSolomonException("sigmaTilde(0) was zero");
   }
 
-  int inverse = field.inverse(sigmaTildeAtZero);
-  Ref<GF256Poly> sigma(t->multiply(inverse));
-  Ref<GF256Poly> omega(r->multiply(inverse));
+  int inverse = field->inverse(sigmaTildeAtZero);
+  Ref<GenericGFPoly> sigma(t->multiply(inverse));
+  Ref<GenericGFPoly> omega(r->multiply(inverse));
 
 
+/*
 #ifdef DEBUG
-  cout << "t = " << *t << "\n";
+  cout << "t = " << *t << endl;
   cout << "r = " << *r << "\n";
-  cout << "sigma = " << *sigma << "\n";
-  cout << "omega = " << *omega << "\n";
+  cout << "sigma = " << *sigma << endl;
+  cout << "omega = " << *omega << endl;
 #endif
+*/
 
-  vector<Ref<GF256Poly> > result(2);
+  vector<Ref<GenericGFPoly> > result(2);
   result[0] = sigma;
   result[1] = omega;
   return result;
 }
 
-ArrayRef<int> ReedSolomonDecoder::findErrorLocations(Ref<GF256Poly> errorLocator) {
+ArrayRef<int> ReedSolomonDecoder::findErrorLocations(Ref<GenericGFPoly> errorLocator) {
   // This is a direct application of Chien's search
   int numErrors = errorLocator->getDegree();
   if (numErrors == 1) { // shortcut
-    ArrayRef<int> result(1);
+    ArrayRef<int> result(new Array<int>(1));
     result[0] = errorLocator->getCoefficient(1);
     return result;
   }
-  ArrayRef<int> result(numErrors);
+  ArrayRef<int> result(new Array<int>(numErrors));
   int e = 0;
-  for (int i = 1; i < 256 && e < numErrors; i++) {
-    // cout << "errorLocator(" << i << ") == " << errorLocator->evaluateAt(i) << "\n";
+  for (int i = 1; i < field->getSize() && e < numErrors; i++) {
+    // cout << "errorLocator(" << i << ") == " << errorLocator->evaluateAt(i) << endl;
     if (errorLocator->evaluateAt(i) == 0) {
-      result[e] = field.inverse(i);
+      result[e] = field->inverse(i);
       e++;
     }
   }
@@ -3750,23 +4976,23 @@ ArrayRef<int> ReedSolomonDecoder::findErrorLocations(Ref<GF256Poly> errorLocator
   return result;
 }
 
-ArrayRef<int> ReedSolomonDecoder::findErrorMagnitudes(Ref<GF256Poly> errorEvaluator, ArrayRef<int> errorLocations, bool dataMatrix) {
+ArrayRef<int> ReedSolomonDecoder::findErrorMagnitudes(Ref<GenericGFPoly> errorEvaluator, ArrayRef<int> errorLocations, bool dataMatrix) {
   // This is directly applying Forney's Formula
   int s = errorLocations.size();
-  ArrayRef<int> result(s);
+  ArrayRef<int> result(new Array<int>(s));
   for (int i = 0; i < s; i++) {
-    int xiInverse = field.inverse(errorLocations[i]);
+    int xiInverse = field->inverse(errorLocations[i]);
     int denominator = 1;
     for (int j = 0; j < s; j++) {
       if (i != j) {
-        denominator = field.multiply(denominator, GF256::addOrSubtract(1, field.multiply(errorLocations[j],
+        denominator = field->multiply(denominator, GenericGF::addOrSubtract(1, field->multiply(errorLocations[j],
                                      xiInverse)));
       }
     }
-    result[i] = field.multiply(errorEvaluator->evaluateAt(xiInverse), field.inverse(denominator));
+    result[i] = field->multiply(errorEvaluator->evaluateAt(xiInverse), field->inverse(denominator));
 
     if (dataMatrix) {
-      result[i] = field.multiply(result[i], xiInverse);
+      result[i] = field->multiply(result[i], xiInverse);
 	}
   }
   return result;
@@ -4577,6 +5803,7 @@ std::vector<Ref<DataBlock> > DataBlock::getDataBlocks(ArrayRef<unsigned char> ra
 
 // file: zxing/datamatrix/decoder/DecodedBitStreamParser.cpp
 
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 /*
  *  DecodedBitStreamParser.cpp
  *  zxing
@@ -4720,9 +5947,7 @@ int DecodedBitStreamParser::decodeAsciiSegment(Ref<BitSource> bits, ostringstrea
       // Ignore this symbol for now
     } else if (oneByte >= 242) { // Not to be used in ASCII encodation
       // ... but work around encoders that end with 254, latch back to ASCII
-      if (oneByte == 254 && bits->available() == 0) {
-        // Ignore
-      } else {
+      if (oneByte != 254 || bits->available() != 0) {
         throw FormatException("Not to be used in ASCII encodation");
       }
     }
@@ -4736,7 +5961,7 @@ void DecodedBitStreamParser::decodeC40Segment(Ref<BitSource> bits, ostringstream
   // TODO(bbrown): The Upper Shift with C40 doesn't work in the 4 value scenario all the time
   bool upperShift = false;
 
-  int* cValues = new int[3];
+  int cValues[3];
   int shift = 0;
   do {
     // If there is only one byte left then it will be encoded as ASCII
@@ -4813,7 +6038,7 @@ void DecodedBitStreamParser::decodeTextSegment(Ref<BitSource> bits, ostringstrea
   // TODO(bbrown): The Upper Shift with Text doesn't work in the 4 value scenario all the time
   bool upperShift = false;
 
-  int* cValues = new int[3];
+  int cValues[3];
   int shift = 0;
   do {
     // If there is only one byte left then it will be encoded as ASCII
@@ -4889,7 +6114,7 @@ void DecodedBitStreamParser::decodeAnsiX12Segment(Ref<BitSource> bits, ostringst
   // Three ANSI X12 values are encoded in a 16-bit value as
   // (1600 * C1) + (40 * C2) + C3 + 1
 
-  int* cValues = new int[3];
+  int cValues[3];
   do {
     // If there is only one byte left then it will be encoded as ASCII
     if (bits->available() == 8) {
@@ -4923,7 +6148,7 @@ void DecodedBitStreamParser::decodeAnsiX12Segment(Ref<BitSource> bits, ostringst
   } while (bits->available() > 0);
 }
 
-void DecodedBitStreamParser::parseTwoBytes(int firstByte, int secondByte, int*& result) {
+void DecodedBitStreamParser::parseTwoBytes(int firstByte, int secondByte, int* result) {
   int fullBitValue = (firstByte << 8) + secondByte - 1;
   int temp = fullBitValue / 1600;
   result[0] = temp;
@@ -5031,7 +6256,7 @@ namespace datamatrix {
 using namespace std;
 
 Decoder::Decoder() :
-    rsDecoder_(GF256::DATA_MATRIX_FIELD) {
+    rsDecoder_(GenericGF::DATA_MATRIX_FIELD_256) {
 }
 
 
@@ -5167,9 +6392,11 @@ namespace zxing {
 // #include <zxing/ResultPoint.h>
 // #include <zxing/common/GridSampler.h>
 // #include <zxing/datamatrix/detector/Detector.h>
-// #include <cmath>
+// #include <zxing/common/detector/math_utils.h>
 // #include <sstream>
 // #include <cstdlib>
+
+namespace math_utils = zxing::common::detector::math_utils;
 
 namespace zxing {
 namespace datamatrix {
@@ -5377,7 +6604,7 @@ Ref<DetectorResult> Detector::detect() {
   points[1].reset(bottomLeft);
   points[2].reset(correctedTopRight);
   points[3].reset(bottomRight);
-  Ref<DetectorResult> detectorResult(new DetectorResult(bits, points, transform));
+  Ref<DetectorResult> detectorResult(new DetectorResult(bits, points));
   return detectorResult;
 }
 
@@ -5439,7 +6666,7 @@ Ref<ResultPoint> Detector::correctTopRight(Ref<ResultPoint> bottomLeft,
   Ref<ResultPoint> c1(
       new ResultPoint(topRight->getX() + corr * cos, topRight->getY() + corr * sin));
 
-  corr = distance(bottomLeft, bottomRight) / (float) dimension;
+  corr = distance(bottomLeft, topLeft) / (float) dimension;
   norm = distance(bottomRight, topRight);
   cos = (topRight->getX() - bottomRight->getX()) / norm;
   sin = (topRight->getY() - bottomRight->getY()) / norm;
@@ -5472,12 +6699,8 @@ bool Detector::isValid(Ref<ResultPoint> p) {
       && p->getY() < image_->getHeight();
 }
 
-// L2 distance
 int Detector::distance(Ref<ResultPoint> a, Ref<ResultPoint> b) {
-  return round(
-      (float) sqrt(
-          (double) (a->getX() - b->getX()) * (a->getX() - b->getX())
-              + (a->getY() - b->getY()) * (a->getY() - b->getY())));
+  return math_utils::round(ResultPoint::distance(a, b));
 }
 
 Ref<ResultPointsAndTransitions> Detector::transitionsBetween(Ref<ResultPoint> from,
@@ -6536,16 +7759,15 @@ namespace zxing {
 								bestMatch = startCode;
 							}
 						}
-						if (bestMatch >= 0) {
-							// Look for whitespace before start pattern, >= 50% of width of start pattern
-              if (row->isRange(std::max(0, patternStart - (i - patternStart) / 2), patternStart,
+            // Look for whitespace before start pattern, >= 50% of width of start pattern
+						if (bestMatch >= 0 &&
+                row->isRange(std::max(0, patternStart - (i - patternStart) / 2), patternStart,
 							    false)) {
-								int* resultValue = new int[3];
-								resultValue[0] = patternStart;
-								resultValue[1] = i;
-								resultValue[2] = bestMatch;
-								return resultValue;
-							}
+              int* resultValue = new int[3];
+              resultValue[0] = patternStart;
+              resultValue[1] = i;
+              resultValue[2] = bestMatch;
+              return resultValue;
 						}
 						patternStart += counters[0] + counters[1];
 						for (int y = 2; y < patternLength; y++) {
@@ -7059,15 +8281,14 @@ namespace oned {
         counters[counterPosition]++;
       } else {
         if (counterPosition == patternLength - 1) {
-          if (toNarrowWidePattern(counters, countersLen) == ASTERISK_ENCODING) {
-            // Look for whitespace before start pattern, >= 50% of width of
-            // start pattern.
-            if (row->isRange(std::max(0, patternStart - ((i - patternStart) >> 1)), patternStart, false)) {
-              int* resultValue = new int[2];
-              resultValue[0] = patternStart;
-              resultValue[1] = i;
-              return resultValue;
-            }
+          // Look for whitespace before start pattern, >= 50% of width of
+          // start pattern.
+          if (toNarrowWidePattern(counters, countersLen) == ASTERISK_ENCODING &&
+              row->isRange(std::max(0, patternStart - ((i - patternStart) >> 1)), patternStart, false)) {
+            int* resultValue = new int[2];
+            resultValue[0] = patternStart;
+            resultValue[1] = i;
+            return resultValue;
           }
           patternStart += counters[0] + counters[1];
           for (int y = 2; y < patternLength; y++) {
@@ -10181,7 +11402,7 @@ void DecodedBitStreamParser::decodeByteSegment(Ref<BitSource> bits_,
     // give a hint.
     encoding = StringUtils::guessEncoding(readBytes, count, hints);
   } else {
-    encoding = currentCharacterSetECI->getEncodingName();
+    encoding = currentCharacterSetECI->name();
   }
   try {
     append(result, readBytes, nBytes, encoding.c_str());
@@ -10260,6 +11481,9 @@ void DecodedBitStreamParser::decodeAlphanumericSegment(Ref<BitSource> bits_,
   ostringstream bytes;
   // Read two characters at a time
   while (count > 1) {
+    if (bits.available() < 11) {
+      throw FormatException();
+    }
     int nextTwoCharsBits = bits.readBits(11);
     bytes << toAlphaNumericChar(nextTwoCharsBits / 45);
     bytes << toAlphaNumericChar(nextTwoCharsBits % 45);
@@ -10267,6 +11491,9 @@ void DecodedBitStreamParser::decodeAlphanumericSegment(Ref<BitSource> bits_,
   }
   if (count == 1) {
     // special case: one character left
+    if (bits.available() < 6) {
+      throw FormatException();
+    }
     bytes << toAlphaNumericChar(bits.readBits(6));
   }
   // See section 6.4.8.1, 6.4.8.2
@@ -10309,7 +11536,7 @@ namespace {
       int secondThirdBytes = bits.readBits(16);
       return ((firstByte & 0x1F) << 16) | secondThirdBytes;
     }
-    throw IllegalArgumentException("Bad ECI bits starting with byte " + firstByte);
+    throw FormatException();
   }
 }
 
@@ -10423,7 +11650,7 @@ namespace qrcode {
 using namespace std;
 
 Decoder::Decoder() :
-    rsDecoder_(GF256::QR_CODE_FIELD) {
+    rsDecoder_(GenericGF::QR_CODE_FIELD_256) {
 }
 
 void Decoder::correctErrors(ArrayRef<unsigned char> codewordBytes, int numDataCodewords) {
@@ -10877,9 +12104,11 @@ Ref<AlignmentPattern> AlignmentPatternFinder::find() {
 // #include <zxing/qrcode/Version.h>
 // #include <zxing/common/GridSampler.h>
 // #include <zxing/DecodeHints.h>
-// #include <cmath>
+// #include <zxing/common/detector/math_utils.h>
 // #include <sstream>
 // #include <cstdlib>
+
+namespace math_utils = zxing::common::detector::math_utils;
 
 namespace zxing {
 namespace qrcode {
@@ -10890,8 +12119,12 @@ Detector::Detector(Ref<BitMatrix> image) :
     image_(image) {
 }
 
-Ref<BitMatrix> Detector::getImage() {
+Ref<BitMatrix> Detector::getImage() const {
    return image_;
+}
+
+Ref<ResultPointCallback> Detector::getResultPointCallback() const {
+   return callback_;
 }
 
 Ref<DetectorResult> Detector::detect(DecodeHints const& hints) {
@@ -10956,7 +12189,7 @@ Ref<DetectorResult> Detector::processFinderPatternInfo(Ref<FinderPatternInfo> in
     points[3].reset(alignmentPattern);
   }
 
-  Ref<DetectorResult> result(new DetectorResult(bits, points, transform));
+            Ref<DetectorResult> result(new DetectorResult(bits, points));
   return result;
 }
 
@@ -10971,12 +12204,14 @@ Ref<PerspectiveTransform> Detector::createTransform(Ref<ResultPoint> topLeft, Re
   if (alignmentPattern != 0) {
     bottomRightX = alignmentPattern->getX();
     bottomRightY = alignmentPattern->getY();
-    sourceBottomRightX = sourceBottomRightY = dimMinusThree - 3.0f;
+    sourceBottomRightX = dimMinusThree - 3.0f;
+    sourceBottomRightY = sourceBottomRightX;
   } else {
     // Don't have an alignment pattern, just make up the bottom-right point
     bottomRightX = (topRight->getX() - topLeft->getX()) + bottomLeft->getX();
     bottomRightY = (topRight->getY() - topLeft->getY()) + bottomLeft->getY();
-    sourceBottomRightX = sourceBottomRightY = dimMinusThree;
+    sourceBottomRightX = dimMinusThree;
+    sourceBottomRightY = dimMinusThree;
   }
 
   Ref<PerspectiveTransform> transform(PerspectiveTransform::quadrilateralToQuadrilateral(3.5f, 3.5f, dimMinusThree, 3.5f, sourceBottomRightX,
@@ -10993,8 +12228,10 @@ Ref<BitMatrix> Detector::sampleGrid(Ref<BitMatrix> image, int dimension, Ref<Per
 
 int Detector::computeDimension(Ref<ResultPoint> topLeft, Ref<ResultPoint> topRight, Ref<ResultPoint> bottomLeft,
                                float moduleSize) {
-  int tltrCentersDimension = int(FinderPatternFinder::distance(topLeft, topRight) / moduleSize + 0.5f);
-  int tlblCentersDimension = int(FinderPatternFinder::distance(topLeft, bottomLeft) / moduleSize + 0.5f);
+  int tltrCentersDimension =
+    math_utils::round(ResultPoint::distance(topLeft, topRight) / moduleSize);
+  int tlblCentersDimension =
+    math_utils::round(ResultPoint::distance(topLeft, bottomLeft) / moduleSize);
   int dimension = ((tltrCentersDimension + tlblCentersDimension) >> 1) + 7;
   switch (dimension & 0x03) { // mod 4
   case 0:
@@ -11095,9 +12332,7 @@ float Detector::sizeOfBlackWhiteBlackRun(int fromX, int fromY, int toX, int toY)
       // Does current pixel mean we have moved white to black or vice versa?
       if (!((state == 1) ^ image_->get(realX, realY))) {
         if (state == 2) {
-          int diffX = x - fromX;
-          int diffY = y - fromY;
-          return (float) sqrt((double) (diffX * diffX + diffY * diffY));
+          return math_utils::distance(x, y, fromX, fromY);
         }
         state++;
       }
@@ -11115,9 +12350,7 @@ float Detector::sizeOfBlackWhiteBlackRun(int fromX, int fromY, int toX, int toY)
     // is "white" so this last point at (toX+xStep,toY) is the right ending. This is really a
     // small approximation; (toX+xStep,toY+yStep) might be really correct. Ignore this.
     if (state == 2) {
-      int diffX = toX + xstep - fromX;
-      int diffY = toY - fromY;
-      return (float) sqrt((double) (diffX * diffX + diffY * diffY));
+      return math_utils::distance(toX + xstep, toY, fromX, fromY);
     }
     // else we didn't find even black-white-black; no estimate is really possible
     return NAN;
@@ -11762,6 +12995,15 @@ Ref<FinderPatternInfo> FinderPatternFinder::find(DecodeHints const& hints) {
   Ref<FinderPatternInfo> result(new FinderPatternInfo(patternInfo));
   return result;
 }
+
+Ref<BitMatrix> FinderPatternFinder::getImage() {
+  return image_;
+}
+
+std::vector<Ref<FinderPattern> >& FinderPatternFinder::getPossibleCenters() {
+  return possibleCenters_;
+}
+
 }
 }
 

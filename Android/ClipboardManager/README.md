@@ -1,6 +1,7 @@
 # ClipboardManager plugin for Phonegap #
 By Omer Saatcioglu
 Enhanced by Guillaume Charhon
+
 plugin enhanced to support all android SDK by Raid A. Nahi - globaleastsw.com 
 
 ## Adding the Plugin to your project ##

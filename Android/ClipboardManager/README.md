@@ -8,8 +8,10 @@ plugin enhanced to support all android SDK by Raid A. Nahi - globaleastsw.com
 1. To install the plugin, move clipboardmanager.js to your project's www folder and include a reference to it in your html files. 
 2. Create a folder called 'src/com/saatcioglu/phonegap/clipboardmanager' within your project's src folder.
 3. Copy ClipboardManagerPlugin.java into that new folder.
+4. 
 Note:
   instant you can use ClipboardManagerPlugin2.java that support all Android SDK versions, rename it to ClipboardManagerPlugin.java and copy it inside the created folder in step 2.
+
 4. Add in your plugins.xml (located in /res/xml/)
 <plugin name="ClipboardManager" value="com.saatcioglu.phonegap.clipboardmanager.ClipboardManagerPlugin"/>
 

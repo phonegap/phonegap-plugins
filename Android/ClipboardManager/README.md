@@ -1,6 +1,13 @@
 # ClipboardManager plugin for Phonegap #
 By Omer Saatcioglu
 Enhanced by Guillaume Charhon
+Ported to Phonegap 2.0 by Jacob Robbins
+
+
+This plugin gives access to Copy & Paste methods of the Android ClipboardManager.
+
+Repository including version for Phonegap 2.0 is located at: https://github.com/jacob/ClipboardManagerPlugin
+
 
 ## Adding the Plugin to your project ##
 1. To install the plugin, move clipboardmanager.js to your project's www folder and include a reference to it in your html files. 

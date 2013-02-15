@@ -1,5 +1,13 @@
 # PhoneGap ClipboardPlugin #
 by Michel Weimerskirch
+Ported to Phonegap 2.0 by Jacob Robbins
+
+This plugin gives access to Copy & Paste methods of the iOS Clipboard.
+
+Repository including version for Phonegap 2.0 is located at: https://github.com/jacob/ClipboardPlugin
+
+
+
 
 ## Adding the Plugin to your project ##
 

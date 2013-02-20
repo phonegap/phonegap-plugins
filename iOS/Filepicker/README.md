@@ -12,7 +12,7 @@ and [Jon Uy](http://github.com/jonuy)
 
 * This plugin is built for Cordova >= v2.1.0 with ARC.
 
-[![Screenshot](https://raw.github.com/mgcrea/cordova-actionsheet/master/samples/ios/sample.png)](https://github.com/mgcrea/cordova-actionsheet/tree/master)
+[![Screenshot](http://albertut.com/filepicker_ios.png)](https://github.com/albertut/cordova-filepicker)
 
 ## LICENSE ##
 

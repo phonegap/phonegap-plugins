@@ -55,7 +55,7 @@ public class ChildBrowser extends Plugin {
     private WebView webview;
     private EditText edittext;
     private boolean showLocationBar = true;
-
+    private boolean clearAllCache = false;
     /**
      * Executes the request and returns PluginResult.
      *
@@ -211,6 +211,7 @@ public class ChildBrowser extends Plugin {
         // Determine if we should hide the location bar.
         if (options != null) {
             showLocationBar = options.optBoolean("showLocationBar", true);
+            clearAllCache = options.optBoolean("clearAllCache", false);
         }
 
         // Create dialog in new thread
@@ -355,6 +356,10 @@ public class ChildBrowser extends Plugin {
                 settings.setBuiltInZoomControls(true);
                 settings.setPluginsEnabled(true);
                 settings.setDomStorageEnabled(true);
+                if(clearAllCache){
+                    Log.v(LOG_TAG,"clear cache request detected");
+                    CookieManager.getInstance().removeAllCookie();
+                }
                 webview.loadUrl(url);
                 webview.setId(6);
                 webview.getSettings().setLoadWithOverviewMode(true);

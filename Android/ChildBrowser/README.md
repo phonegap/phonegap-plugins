@@ -37,7 +37,7 @@ Note that unlike the iphone version, android childbrowser doesn't require a call
     * This method loads up a new web view in a dialog.
     *
     * @param url           The url to load
-    * @param options       An object that specifies additional options
+    * @param options       An object that specifies additional options (showLocationBar, clearAllCache)
     */
   showWebPage(url, [options])
 </pre>

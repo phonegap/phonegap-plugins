@@ -28,7 +28,7 @@ SMSComposer.prototype.showSMSComposer = function(toRecipients, body)
 	if(body)
 		args.body = body;
 	
-	Cordova.exec("SMSComposer.showSMSComposer",args);
+	cordova.exec("SMSComposer.showSMSComposer",args);
 }
 
 SMSComposer.prototype.showSMSComposerWithCB = function(cbFunction,toRecipients,body)
@@ -42,7 +42,7 @@ SMSComposer.prototype._didFinishWithResult = function(res)
 	this.resultCallback(res);
 }
 
-Cordova.addConstructor(function() {
+cordova.addConstructor(function() {
 					   
 					   if(!window.plugins)	{
 					   window.plugins = {};

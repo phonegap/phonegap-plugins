@@ -73,7 +73,7 @@ public class WebIntent extends Plugin {
                 if (args.length() != 1) {
                     return new PluginResult(PluginResult.Status.INVALID_ACTION);
                 }
-                Intent i = ((DroidGap)this.cordova.getContext()).getIntent();
+                Intent i = (DroidGap)this.cordova.getActivity().getIntent();
                 String extraName = args.getString(0);
                 return new PluginResult(PluginResult.Status.OK, i.hasExtra(extraName));
 
@@ -81,7 +81,7 @@ public class WebIntent extends Plugin {
                 if (args.length() != 1) {
                     return new PluginResult(PluginResult.Status.INVALID_ACTION);
                 }
-                Intent i = ((DroidGap)this.cordova.getContext()).getIntent();
+                Intent i = (DroidGap)this.cordova.getActivity().getIntent();
                 String extraName = args.getString(0);
                 if (i.hasExtra(extraName)) {
                     return new PluginResult(PluginResult.Status.OK, i.getStringExtra(extraName));
@@ -93,7 +93,7 @@ public class WebIntent extends Plugin {
                     return new PluginResult(PluginResult.Status.INVALID_ACTION);
                 }
 
-                Intent i = ((DroidGap)this.cordova.getContext()).getIntent();
+                Intent i = (DroidGap)this.cordova.getActivity().getIntent();
                 String uri = i.getDataString();
                 return new PluginResult(PluginResult.Status.OK, uri);
             } else if (action.equals("onNewIntent")) {
@@ -173,7 +173,7 @@ public class WebIntent extends Plugin {
                 i.putExtra(key, value);
             }
         }
-        this.cordova.getActivity().startActivity(i);
+        (DroidGap)this.cordova.getActivity().startActivity(i);
     }
 
     void sendBroadcast(String action, Map<String, String> extras) {
@@ -184,6 +184,6 @@ public class WebIntent extends Plugin {
             intent.putExtra(key, value);
         }
 
-        ((DroidGap)this.cordova.getContext()).sendBroadcast(intent);
+        (DroidGap)this.cordova.getActivity().sendBroadcast(intent);
     }
 }

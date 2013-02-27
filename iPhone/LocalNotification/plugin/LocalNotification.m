@@ -65,6 +65,8 @@
 
 - (void)cancelAllNotifications:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options {
 	NSLog(@"All Notifications cancelled");
+	[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+	[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
 	[[UIApplication sharedApplication] cancelAllLocalNotifications];
 }
 

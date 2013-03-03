@@ -39,7 +39,7 @@ Using this plugin requires a PhoneGap project for Android: [Get Started Guide](h
 The plugin creates the object:
 
 <pre>
- window.plugins.diagnostic
+ window.Diagnostic
 </pre>
 To use, call one of the following, available methods:
 
@@ -61,7 +61,7 @@ isLocationEnabled()
 Usage:
 
 <pre>
-   window.plugins.diagnostic.isLocationEnabled(locationEnabledSuccessCallback, locationEnabledErrorCallback);
+   window.Diagnostic.isLocationEnabled(locationEnabledSuccessCallback, locationEnabledErrorCallback);
 
    function locationEnabledSuccessCallback(result) {
       if (result)
@@ -88,7 +88,7 @@ Usage:
 
 <pre>
    alert("You must enable the location services in device settings.");
-   window.plugins.diagnostic.switchToLocationSettings();
+   window.Diagnostic.switchToLocationSettings();
 </pre>
 
 - isGpsEnabled:
@@ -108,7 +108,7 @@ isGpsEnabled()
 Usage:
 
 <pre>
-   window.plugins.diagnostic.isGpsEnabled(gpsEnabledSuccessCallback, gpsEnabledErrorCallback);
+   window.Diagnostic.isGpsEnabled(gpsEnabledSuccessCallback, gpsEnabledErrorCallback);
 
    function gpsEnabledSuccessCallback(result) {
       if (result)
@@ -139,7 +139,7 @@ isWirelessNetworkLocationEnabled()
 Usage:
 
 <pre>
-   window.plugins.diagnostic.isWirelessNetworkLocationEnabled(wirelessNetworkLocationEnabledSuccessCallback, wirelessNetworkLocationEnabledErrorCallback);
+   window.Diagnostic.isWirelessNetworkLocationEnabled(wirelessNetworkLocationEnabledSuccessCallback, wirelessNetworkLocationEnabledErrorCallback);
 
    function wirelessNetworkLocationEnabledSuccessCallback(result) {
 	  if (result)
@@ -170,7 +170,7 @@ isWifiEnabled()
 Usage:
 
 <pre>
-   window.plugins.diagnostic.isWifiEnabled(wifiEnabledSuccessCallback, wifiEnabledErrorCallback);
+   window.Diagnostic.isWifiEnabled(wifiEnabledSuccessCallback, wifiEnabledErrorCallback);
 
    function wifiEnabledSuccessCallback(result) {
 	  if (result)
@@ -197,7 +197,7 @@ Usage:
 
 <pre>
    alert("You must enable the Wi-Fi in device settings.");
-   window.plugins.diagnostic.switchToWifiSettings();
+   window.Diagnostic.switchToWifiSettings();
 </pre>
 
 - isBluetoothEnabled:
@@ -217,7 +217,7 @@ isBluetoothEnabled()
 Usage:
 
 <pre>
-   window.plugins.diagnostic.isBluetoothEnabled(bluetoothEnabledSuccessCallback, bluetoothEnabledErrorCallback);
+   window.Diagnostic.isBluetoothEnabled(bluetoothEnabledSuccessCallback, bluetoothEnabledErrorCallback);
 
    function bluetoothEnabledSuccessCallback(result) {
 	  if (result)
@@ -244,7 +244,7 @@ Usage:
 
 <pre>
    alert("You must enable the Bluetooth in device settings.");
-   window.plugins.diagnostic.switchToBluetoothSettings();
+   window.Diagnostic.switchToBluetoothSettings();
 </pre>
 
 

@@ -19,8 +19,8 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 public class Diagnostic extends Plugin {
 

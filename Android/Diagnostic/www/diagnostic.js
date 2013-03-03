@@ -124,6 +124,4 @@ Diagnostic.prototype.switchToBluetoothSettings = function() {
 						[]);
 };
 
-cordova.addConstructor(function() {
-	cordova.addPlugin("diagnostic", new Diagnostic());
-});
+window.Diagnostic = new Diagnostic();

@@ -20,9 +20,8 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 
-import org.apache.cordova.DroidGap;
-import org.apache.cordova.api.Plugin;
-import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.api.CallbackContext;
+import org.apache.cordova.api.CordovaPlugin;
 
 /**
  * @author ng4e
@@ -31,7 +30,7 @@ import org.apache.cordova.api.PluginResult;
  *         Rewrote plugin so it it similar to the iOS datepicker plugin and it
  *         accepts prefilled dates and time
  */
-public class DatePickerPlugin extends Plugin {
+public class DatePickerPlugin extends CordovaPlugin {
 
 	private static final String ACTION_DATE = "date";
 	private static final String ACTION_TIME = "time";
@@ -42,20 +41,15 @@ public class DatePickerPlugin extends Plugin {
 	 * 
 	 * @see com.phonegap.api.Plugin#execute(java.lang.String,
 	 * org.json.JSONArray, java.lang.String)
-	 */
+	 */	
 	@Override
-	public PluginResult execute(final String action, final JSONArray data, final String callBackId) {
-		Log.d(pluginName, "DatePicker called with options: " + data);
-		PluginResult result = null;
+	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+		Log.d(pluginName, "DatePicker called with options: " + args);
+		this.show(args, callbackContext);
+		return true;
+	};
 
-		this.show(data, callBackId);
-		result = new PluginResult(PluginResult.Status.NO_RESULT);
-		result.setKeepCallback(true);
-
-		return result;
-	}
-
-	public synchronized void show(final JSONArray data, final String callBackId) {
+	public synchronized void show(JSONArray data, final CallbackContext callbackContext) {
 		final DatePickerPlugin datePickerPlugin = this;
 		final Context currentCtx = cordova.getActivity();
 		final Calendar c = Calendar.getInstance();
@@ -98,7 +92,7 @@ public class DatePickerPlugin extends Plugin {
 		if (ACTION_TIME.equalsIgnoreCase(action)) {
 			runnable = new Runnable() {
 				public void run() {
-					final TimeSetListener timeSetListener = new TimeSetListener(datePickerPlugin, callBackId);
+					final TimeSetListener timeSetListener = new TimeSetListener(datePickerPlugin, callbackContext);
 					final TimePickerDialog timeDialog = new TimePickerDialog(currentCtx, timeSetListener, mHour,
 							mMinutes, true);
 					timeDialog.show();
@@ -108,7 +102,7 @@ public class DatePickerPlugin extends Plugin {
 		} else if (ACTION_DATE.equalsIgnoreCase(action)) {
 			runnable = new Runnable() {
 				public void run() {
-					final DateSetListener dateSetListener = new DateSetListener(datePickerPlugin, callBackId);
+					final DateSetListener dateSetListener = new DateSetListener(datePickerPlugin, callbackContext);
 					final DatePickerDialog dateDialog = new DatePickerDialog(currentCtx, dateSetListener, mYear,
 							mMonth, mDay);
 					dateDialog.show();
@@ -124,12 +118,10 @@ public class DatePickerPlugin extends Plugin {
 	}
 
 	private final class DateSetListener implements OnDateSetListener {
-		private final DatePickerPlugin datePickerPlugin;
-		private final String callBackId;
+		private final CallbackContext callbackContext;
 
-		private DateSetListener(DatePickerPlugin datePickerPlugin, String callBackId) {
-			this.datePickerPlugin = datePickerPlugin;
-			this.callBackId = callBackId;
+		private DateSetListener(DatePickerPlugin datePickerPlugin, CallbackContext callbackContext) {
+			this.callbackContext = callbackContext;
 		}
 
 		/**
@@ -137,18 +129,18 @@ public class DatePickerPlugin extends Plugin {
 		 */
 		public void onDateSet(final DatePicker view, final int year, final int monthOfYear, final int dayOfMonth) {
 			String returnDate = year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
-			datePickerPlugin.success(new PluginResult(PluginResult.Status.OK, returnDate), callBackId);
+			
+			this.callbackContext.success(returnDate);
+			//datePickerPlugin.success(new PluginResult(PluginResult.Status.OK, returnDate), callBackId);
 
 		}
 	}
 
 	private final class TimeSetListener implements OnTimeSetListener {
-		private final DatePickerPlugin datePickerPlugin;
-		private final String callBackId;
+		private final CallbackContext callbackContext;
 
-		private TimeSetListener(DatePickerPlugin datePickerPlugin, String callBackId) {
-			this.datePickerPlugin = datePickerPlugin;
-			this.callBackId = callBackId;
+		private TimeSetListener(DatePickerPlugin datePickerPlugin, CallbackContext callbackContext) {
+			this.callbackContext = callbackContext;
 		}
 
 		/**
@@ -160,7 +152,8 @@ public class DatePickerPlugin extends Plugin {
 			date.setHours(hourOfDay);
 			date.setMinutes(minute);
 
-			datePickerPlugin.success(new PluginResult(PluginResult.Status.OK, date.toLocaleString()), callBackId);
+			this.callbackContext.success(date.toLocaleString());
+			//datePickerPlugin.success(new PluginResult(PluginResult.Status.OK, date.toLocaleString()), callBackId);
 
 		}
 	}

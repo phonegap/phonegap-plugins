@@ -1,0 +1,3 @@
+[submodule "Android/CalendarPlugin"]
+	path = Android/CalendarPlugin
+	url = git://github.com/tenforwardconsulting/Phonegap-Calendar-Plugin-android.git

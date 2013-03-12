@@ -15,6 +15,7 @@ var DatePicker = (function (gap) {
 	 */
 	DatePicker.prototype.show = function(options, cb) {
 		if (options.date) {
+			options.date = new Date(options.date);
 			options.date = (options.date.getMonth() + 1) + "/" + (options.date.getDate()) + "/" + (options.date.getFullYear()) + "/"
 					+ (options.date.getHours()) + "/" + (options.date.getMinutes());
 		}

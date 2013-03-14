@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
-#import <Cordova/JSONKit.h>
+#import <Cordova/CDVJSON.h>
 
 @class CDVCordovaView;
 @interface DGGeofencingHelper : NSObject <CLLocationManagerDelegate>
@@ -20,5 +20,6 @@
 +(DGGeofencingHelper*)sharedGeofencingHelper;
 
 - (void) dispose;
++ (NSString*) applicationDocumentsDirectory;
 
 @end

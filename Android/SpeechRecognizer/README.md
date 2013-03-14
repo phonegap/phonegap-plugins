@@ -9,8 +9,11 @@ Of course this plugin requires [Android PhoneGap](http://github.com/phonegap/pho
 
 1. To install the plugin, copy speechrecognizer.js to your project's www folder.
 2. Add speechrecognizer.js to your html file, eg: `<script type="text/javascript" charset="utf-8" src="speechrecognizer.js"></script>`
-3. Create an 'com/urbtek/phonegap' path under 'src' and add the SpeechRecognizer.java file to it
+3. Create an 'com/urbtek/phonegap' path under 'src' and add the SpeechRecognizer.java file to it.
+3.a on version 2.0.x, this plugin has been update to the new Plugin architecture (Cordova 2.2.0+)
+Create a 'com/phonegap/plugins/speech' folder under 'src' and add the SpeechRecognizer.java file to it 
 4. Add the plugin to the 'res/xml/plugins.xml' file. eg: `<plugin name="SpeechRecognizer" value="com.urbtek.phonegap.SpeechRecognizer"/>`
+4.a On 2.0.x, `<plugin name="SpeechRecognizer" value="com.phonegap.plugins.xpeech.SpeechRecognizer"/>`
 
 ### Example
 ```html
@@ -19,7 +22,7 @@ Of course this plugin requires [Android PhoneGap](http://github.com/phonegap/pho
   <head>
     <title>PhoneGap</title>
   <script type="text/javascript" charset="utf-8" src="phonegap.js"></script> 
-  <script type="text/javascript" charset="utf-8" src="speechrecognizer.js"></script>      
+  <script type="text/javascript" charset="utf-8" src="speechrecognizer.js"></script>
   <script type="text/javascript" charset="utf-8">
      function onLoad(){
           document.addEventListener("deviceready", onDeviceReady, true);
@@ -103,9 +106,9 @@ Of course this plugin requires [Android PhoneGap](http://github.com/phonegap/pho
 
 The MIT License
 
-Copyright (c) 2011  
-Colin Turner (github.com/koolspin)  
-Guillaume Charhon (github/poiuytrez)  
+Copyright (c) 2011
+Colin Turner (github.com/koolspin)
+Guillaume Charhon (github/poiuytrez)
 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:

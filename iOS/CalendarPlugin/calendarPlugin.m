@@ -1,172 +1,260 @@
 //
-//  calendarPlugin.m
-//  Author: Felix Montanez
-//  Date: 01-17-2011
-//  Notes: 
-
+//  calendarPlugin.h
+//  basePackage
+//
+//  Created by Liu Ley on 13-2-28.
+//  Copyright (c) 2013年 SINA SAE. All rights reserved.
+//
 
 #import "calendarPlugin.h"
-#import <EventKitUI/EventKitUI.h>
-#import <EventKit/EventKit.h>
+
 
 @implementation calendarPlugin
-@synthesize eventStore;
-@synthesize defaultCalendar;
-
-
-- (CDVPlugin*) initWithWebView:(UIWebView*)theWebView
+@synthesize callbackId;
+//yyyy-MM-dd HH:mm
+-(void)createEventQuiet:(CDVInvokedUrlCommand *)command
 {
-    self = (calendarPlugin*)[super initWithWebView:theWebView];
-    if (self) {
-		//[self setup];
-    }
-    return self;
-}
-
--(void)createEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
-{
-    //Get the Event store object
-    EKEvent *myEvent;
-    EKEventStore *store;
+    eventStore=[[EKEventStore alloc] init];
+    defaultCalendar =  [eventStore defaultCalendarForNewEvents];
+    NSError *error=nil;
     
-    store = [[EKEventStore alloc] init];
-    myEvent = [EKEvent eventWithEventStore: store];
+    self.callbackId=command.callbackId;
+    NSArray *options=command.arguments;
     
-    NSString* title         = [arguments objectAtIndex:1];
-    NSString* location      = [arguments objectAtIndex:2];
-    NSString* message       = [arguments objectAtIndex:3];
-    NSString* startDate     = [arguments objectAtIndex:4];
-    NSString* endDate       = [arguments objectAtIndex:5];
-    NSString* calendarTitle = [arguments objectAtIndex:6];
-    
-    EKCalendar* calendar = nil;
-    if(calendarTitle == nil){
-        calendar = store.defaultCalendarForNewEvents;
-    } else {
-        NSIndexSet* indexes = [store.calendars indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-            *stop = false;
-            EKCalendar* cal = (EKCalendar*)obj;
-            if(cal.title == calendarTitle){
-                *stop = true;
-            }
-            return *stop;
-        }];
-        if (indexes.count == 0) {
-            calendar = store.defaultCalendarForNewEvents;
+    [eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            // 同意
         } else {
-            calendar = [store.calendars objectAtIndex:[indexes firstIndex]];
+            // 不同意
+            CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"权限未被授权"];
+            [super writeJavascript:[result toErrorCallbackString:self.callbackId]];
+            return ;
+        }
+    }];
+    
+    //title fromdate todate location notes alermRule repeateRule 
+    
+    defaultCalendar = [eventStore defaultCalendarForNewEvents];
+    EKEvent *myEvent=[EKEvent eventWithEventStore:eventStore];
+    
+    NSString* title      = [options objectAtIndex:0];
+    NSString *startDate  = [options objectAtIndex:1];
+    NSString *endDate    = [options objectAtIndex:2];
+    NSString* location   = [options objectAtIndex:3];
+    NSString* message    = [options objectAtIndex:4];
+    NSString* url        = [options objectAtIndex:5];
+    NSNumber* alarmOffset = [options objectAtIndex:6];
+    NSNumber* recur =   [options objectAtIndex:7];
+    
+    
+    NSDate *from=[self convertDateFromString:startDate];
+    NSDate *to=[self convertDateFromString:endDate];
+    
+    myEvent.title=title;
+    
+    NSDate *now=[NSDate date];
+    myEvent.startDate=from!=nil?from:now;
+    now=[NSDate dateWithTimeIntervalSinceNow:60*5];
+    myEvent.endDate=to!=nil?to:now;
+    
+    myEvent.location=location;
+    myEvent.notes=message;
+    myEvent.URL=[NSURL URLWithString:url];
+    
+    if (alarmOffset!=nil && [alarmOffset class]!=[NSNull class]) {
+        [myEvent addAlarm:[EKAlarm alarmWithRelativeOffset:[alarmOffset integerValue]]];
+    }
+    if (recur!=nil && [recur class]!=[NSNull class]) {
+        NSInteger recurValue=[recur integerValue];
+        if (recurValue<1 || recurValue>5) {
+            // no recur
+        } else {
+            EKRecurrenceRule *rule;
+            rule=[[EKRecurrenceRule alloc] initRecurrenceWithFrequency:[self ruleFrequency:recurValue] interval:1 end:nil];
+            [myEvent addRecurrenceRule:rule];
         }
     }
+    myEvent.calendar=defaultCalendar;
     
-    //creating the dateformatter object
-    NSDateFormatter *sDate = [[[NSDateFormatter alloc] init] autorelease];
-    [sDate setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSDate *myStartDate = [sDate dateFromString:startDate];
+    BOOL success=[eventStore saveEvent:myEvent span:EKSpanThisEvent commit:YES error:&error];
+    [eventStore release];
     
-    
-    NSDateFormatter *eDate = [[[NSDateFormatter alloc] init] autorelease];
-    [eDate setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSDate *myEndDate = [eDate dateFromString:endDate];
-    
-    
-    myEvent.title = title;
-    myEvent.location = location;
-    myEvent.notes = message;
-    myEvent.startDate = myStartDate;
-    myEvent.endDate = myEndDate;
-    myEvent.calendar = calendar;
-    
-    
-    EKAlarm *reminder = [EKAlarm alarmWithRelativeOffset:-2*60*60];
-    
-    [myEvent addAlarm:reminder];
-    
-    NSError *error;
-    BOOL saved = [store saveEvent:myEvent span:EKSpanThisEvent
-                            error:&error];
-    if (saved) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                        message:@"Saved to Calendar" delegate:self
-                                              cancelButtonTitle:@"Thank you!"
-                                              otherButtonTitles:nil];
-        [alert show];
-        [alert release];
-        
-        
-    }
-}
-
-/***** NOT YET IMPLEMENTED BELOW ************/
-
-//-(void)deleteEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {}
-
-/*
--(void)findEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
- 
- EKEventStore* store = [[EKEventStore alloc] init];
- EKEvent* myEvent = [EKEvent eventWithEventStore: store];
- 
- NSString *startSearchDate  = [arguments objectAtIndex:1];
- NSString *endSearchDate    = [arguments objectAtIndex:2];
- 
- 
- //creating the dateformatter object
- NSDateFormatter *sDate = [[[NSDateFormatter alloc] init] autorelease];
- [sDate setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
- NSDate *myStartDate = [sDate dateFromString:startSearchDate];
- 
- 
- NSDateFormatter *eDate = [[[NSDateFormatter alloc] init] autorelease];
- [eDate setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
- NSDate *myEndDate = [eDate dateFromString:endSearchDate];
- 
- 
- // Create the predicate
- NSPredicate *predicate = [eventStore predicateForEventsWithStartDate:myStartDate endDate:myEndDate calendars:defaultCalendar]; 
- 
- 
- // eventStore is an instance variable.
- // Fetch all events that match the predicate.
- NSArray *events = [eventStore eventsMatchingPredicate:predicate];
- [self setEvents:events];
- 
- 
-}
- */
-
--(void)getCalendarList:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
-{
-    NSLog(@"In plugin method getCalendarList");
-    NSString *callback = [arguments objectAtIndex:0];
-    EKEventStore* store = [[EKEventStore alloc] init];
-    NSString* js = nil;
-    if (store != nil && store.calendars.count > 0) {
-        NSMutableArray *titles = [[store.calendars valueForKey:@"title"] mutableCopy];
-        NSLog(@"Found %i calendars", titles.count);
-        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:titles];
-        js = [result toSuccessCallbackString:callback];
+    if (success) {
+        // success
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        [super writeJavascript:[result toSuccessCallbackString:self.callbackId]];
+        return ;
     } else {
-        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"no calendars found"];
-        js = [result toErrorCallbackString:callback];
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error description]];
+        [super writeJavascript:[result toErrorCallbackString:self.callbackId]];
+        return ;
     }
-    [self writeJavascript:js];
 }
- 
- 
-/*-(void)modifyEvent:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options{
- EKEventViewController *eventViewController = [[EKEventViewController alloc] init];
- eventViewController.event = myEvent;
- eventViewController.allowsEditing = YES;
- navigationController we
-= [[UINavigationController alloc]
- initWithRootViewController:eventViewController];
- [eventViewController release];
-} */
+
+-(void)createEventDefault:(CDVInvokedUrlCommand *)command
+{
+    self.callbackId=command.callbackId;
+    eventStore=[[EKEventStore alloc] init];
+    
+    [eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            // 同意
+        } else {
+            // 不同意
+            CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"权限未被授权"];
+            [super writeJavascript:[result toErrorCallbackString:self.callbackId]];
+            return ;
+        }
+    }];
+    EKEventEditViewController *addController = [[EKEventEditViewController alloc] initWithNibName:nil bundle:nil];
+    addController.eventStore = eventStore;
+    [eventStore release];
+    
+    [self.viewController presentModalViewController:addController animated:YES];
+    
+    addController.editViewDelegate = self;
+    [addController release];
+}
+
+-(void)getEventList:(CDVInvokedUrlCommand *)command
+{
+    self.callbackId=command.callbackId;
+    eventStore=[[EKEventStore alloc] init];
+    
+    [eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            // 同意
+            return;
+        } else {
+            // 不同意
+            CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"权限未被授权"];
+            [super writeJavascript:[result toErrorCallbackString:self.callbackId]];
+            return ;
+        }
+    }];
+    NSArray *options=command.arguments;
+    NSString *startDate = [options objectAtIndex:0];
+    NSString *endDate   = [options objectAtIndex:1];
+    NSDate *from=[self convertDateFromString:startDate];
+    NSDate *to=[self convertDateFromString:endDate];
+    NSPredicate *predicate=[eventStore predicateForEventsWithStartDate:from
+                                                               endDate:to
+                                                             calendars:[eventStore calendarsForEntityType:EKEntityTypeEvent]];
+    NSArray *resultEventList=[eventStore eventsMatchingPredicate:predicate];
+    NSMutableArray *eventList=[[NSMutableArray alloc] init];
+    for (EKEvent *event in resultEventList) {
+        // 将event转换成可用数据
+        NSMutableDictionary *dic=[[NSMutableDictionary alloc] init];
+        [dic setValue:event.title forKey:@"title"];
+        [dic setValue:event.location forKey:@"location"];
+        [dic setValue:event.URL.absoluteString forKey:@"url"];
+        [dic setValue:[self convertDateToString:event.startDate]  forKey:@"startDate"];
+        [dic setValue:[self convertDateToString:event.endDate] forKey:@"endDate"];
+        [dic setValue:[NSNumber numberWithBool:event.isDetached] forKey:@"isRepeat"];
+        [dic setValue:[NSNumber numberWithBool:event.isAllDay] forKey:@"isAllDay"];
+        [eventList addObject:dic];
+        [dic release];
+    }
+    CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:eventList];
+    [super writeJavascript:[result toSuccessCallbackString:self.callbackId]];
+}
+
+-(void)getCalendars:(CDVInvokedUrlCommand *)command
+{
+    self.callbackId=command.callbackId;
+    eventStore=[[EKEventStore alloc] init];
+    
+    [eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (granted) {
+            // 同意
+            return;
+        } else {
+            // 不同意
+            CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"权限未被授权"];
+            [super writeJavascript:[result toErrorCallbackString:self.callbackId]];
+            return ;
+        }
+    }];
+    NSArray *calendars=[eventStore calendarsForEntityType:EKEntityTypeEvent];
+    NSMutableArray *calist=[[NSMutableArray alloc] init];
+    for (EKCalendar *cal in calendars) {
+        // 遍历
+        NSMutableDictionary *dic=[[NSMutableDictionary alloc] init];
+        [dic setValue:cal.title forKey:@"title"];
+        [dic setValue:cal.calendarIdentifier forKey:@"identifier"];
+        [calist addObject:dic];
+        [dic release];
+    }
+    CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:calist];
+    [super writeJavascript:[result toSuccessCallbackString:self.callbackId]];
+}
+
+#pragma mark - private
+-(EKRecurrenceFrequency)ruleFrequency:(NSInteger)index
+{
+    switch (index) {
+        case 1:
+            return EKRecurrenceFrequencyDaily;
+            break;
+        case 2:
+            return EKRecurrenceFrequencyWeekly;
+            break;
+        case 3:
+            return EKRecurrenceFrequencyMonthly;
+            break;
+        case 4:
+            return EKRecurrenceFrequencyYearly;
+            break;
+        default:
+            return EKRecurrenceFrequencyDaily;
+            break;
+    }
+}
+
+-(NSDate*) convertDateFromString:(NSString*)uiDate
+{
+    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    NSDate *date=[formatter dateFromString:uiDate];
+    return date;
+}
+
+-(NSString *) convertDateToString:(NSDate *)uiDate
+{
+    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    NSString *date=[formatter stringFromDate:uiDate];
+    return date;
+}
 
 
 //delegate method for EKEventEditViewDelegate
 -(void)eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action {
-    [(UIViewController*)self dismissModalViewControllerAnimated:YES];
-    [self release];
+    [self.viewController dismissModalViewControllerAnimated:YES];
+    NSString *resultString=@"unknown";
+    BOOL success=NO;
+    switch (action) {
+        case EKEventEditViewActionCanceled:
+            resultString=@"canceled";
+            break;
+        case EKEventEditViewActionDeleted:
+            resultString=@"delete";
+            success=YES;
+            break;
+        case EKEventEditViewActionSaved:
+            resultString=@"saved";
+            success=YES;
+            break;
+        default:
+            break;
+    }
+    if (success) {
+        // success
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:resultString];
+        [super writeJavascript:[result toSuccessCallbackString:self.callbackId]];
+    } else {
+        CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:resultString];
+        [super writeJavascript:[result toErrorCallbackString:self.callbackId]];
+    }
 }
 @end

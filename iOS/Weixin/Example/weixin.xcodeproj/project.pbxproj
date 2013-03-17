@@ -1,0 +1,587 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AF0EA47C156B5D9F0012F040 /* SinaWeixinPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = AF0EA47B156B5D9F0012F040 /* SinaWeixinPlugin.m */; };
+		AF694D3F15634E60000C4CC9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D3E15634E60000C4CC9 /* Foundation.framework */; };
+		AF694D4115634E60000C4CC9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D4015634E60000C4CC9 /* UIKit.framework */; };
+		AF694D4315634E60000C4CC9 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D4215634E60000C4CC9 /* CoreGraphics.framework */; };
+		AF694D4515634E60000C4CC9 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D4415634E60000C4CC9 /* AddressBook.framework */; };
+		AF694D4715634E60000C4CC9 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D4615634E60000C4CC9 /* AddressBookUI.framework */; };
+		AF694D4915634E60000C4CC9 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D4815634E60000C4CC9 /* AudioToolbox.framework */; };
+		AF694D4B15634E60000C4CC9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D4A15634E60000C4CC9 /* AVFoundation.framework */; };
+		AF694D4D15634E60000C4CC9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D4C15634E60000C4CC9 /* CoreLocation.framework */; };
+		AF694D4F15634E60000C4CC9 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D4E15634E60000C4CC9 /* MediaPlayer.framework */; };
+		AF694D5115634E60000C4CC9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D5015634E60000C4CC9 /* QuartzCore.framework */; };
+		AF694D5315634E60000C4CC9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D5215634E60000C4CC9 /* SystemConfiguration.framework */; };
+		AF694D5515634E60000C4CC9 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D5415634E60000C4CC9 /* MobileCoreServices.framework */; };
+		AF694D5715634E60000C4CC9 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D5615634E60000C4CC9 /* CoreMedia.framework */; };
+		AF694D5D15634E60000C4CC9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AF694D5B15634E60000C4CC9 /* InfoPlist.strings */; };
+		AF694D5F15634E60000C4CC9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AF694D5E15634E60000C4CC9 /* main.m */; };
+		AF694D6215634E60000C4CC9 /* Cordova.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF694D6115634E60000C4CC9 /* Cordova.framework */; };
+		AF694D6715634E60000C4CC9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AF694D6515634E60000C4CC9 /* Localizable.strings */; };
+		AF694D6B15634E60000C4CC9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AF694D6915634E60000C4CC9 /* Localizable.strings */; };
+		AF694D6F15634E60000C4CC9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AF694D6D15634E60000C4CC9 /* Localizable.strings */; };
+		AF694D7315634E60000C4CC9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AF694D7115634E60000C4CC9 /* Localizable.strings */; };
+		AF694D7615634E60000C4CC9 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = AF694D7515634E60000C4CC9 /* icon.png */; };
+		AF694D7815634E60000C4CC9 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AF694D7715634E60000C4CC9 /* icon@2x.png */; };
+		AF694D7A15634E60000C4CC9 /* icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = AF694D7915634E60000C4CC9 /* icon-72.png */; };
+		AF694D7D15634E60000C4CC9 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = AF694D7C15634E60000C4CC9 /* Default.png */; };
+		AF694D7F15634E60000C4CC9 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AF694D7E15634E60000C4CC9 /* Default@2x.png */; };
+		AF694D8115634E61000C4CC9 /* Capture.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AF694D8015634E61000C4CC9 /* Capture.bundle */; };
+		AF694D8315634E61000C4CC9 /* Cordova.plist in Resources */ = {isa = PBXBuildFile; fileRef = AF694D8215634E61000C4CC9 /* Cordova.plist */; };
+		AF694D8715634E61000C4CC9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AF694D8615634E61000C4CC9 /* AppDelegate.m */; };
+		AF694D8A15634E61000C4CC9 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AF694D8915634E61000C4CC9 /* MainViewController.m */; };
+		AF694D8C15634E61000C4CC9 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AF694D8B15634E61000C4CC9 /* MainViewController.xib */; };
+		AF694D9015634E61000C4CC9 /* verify.sh in Resources */ = {isa = PBXBuildFile; fileRef = AF694D8F15634E61000C4CC9 /* verify.sh */; };
+		AFB82E1C1564A43B00ACDD1A /* www in Resources */ = {isa = PBXBuildFile; fileRef = AFB82E1B1564A43B00ACDD1A /* www */; };
+		AFBCF47F1592F0F600CA0BA7 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBCF47C1592F0F600CA0BA7 /* libWeChatSDK.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AF0EA47A156B5D9F0012F040 /* SinaWeixinPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SinaWeixinPlugin.h; path = Classes/SinaWeixinPlugin.h; sourceTree = "<group>"; };
+		AF0EA47B156B5D9F0012F040 /* SinaWeixinPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SinaWeixinPlugin.m; path = Classes/SinaWeixinPlugin.m; sourceTree = "<group>"; };
+		AF694D3A15634E60000C4CC9 /* weixin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = weixin.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AF694D3E15634E60000C4CC9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AF694D4015634E60000C4CC9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		AF694D4215634E60000C4CC9 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		AF694D4415634E60000C4CC9 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		AF694D4615634E60000C4CC9 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		AF694D4815634E60000C4CC9 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		AF694D4A15634E60000C4CC9 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		AF694D4C15634E60000C4CC9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		AF694D4E15634E60000C4CC9 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		AF694D5015634E60000C4CC9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		AF694D5215634E60000C4CC9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		AF694D5415634E60000C4CC9 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		AF694D5615634E60000C4CC9 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		AF694D5A15634E60000C4CC9 /* weixin-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "weixin-Info.plist"; sourceTree = "<group>"; };
+		AF694D5C15634E60000C4CC9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AF694D5E15634E60000C4CC9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AF694D6015634E60000C4CC9 /* weixin-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "weixin-Prefix.pch"; sourceTree = "<group>"; };
+		AF694D6115634E60000C4CC9 /* Cordova.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cordova.framework; path = /Users/Shared/Cordova/Frameworks/Cordova.framework; sourceTree = "<absolute>"; };
+		AF694D6615634E60000C4CC9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Resources/en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AF694D6A15634E60000C4CC9 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = Resources/es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AF694D6E15634E60000C4CC9 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = Resources/de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AF694D7215634E60000C4CC9 /* se */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = se; path = Resources/se.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AF694D7515634E60000C4CC9 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = Resources/icons/icon.png; sourceTree = "<group>"; };
+		AF694D7715634E60000C4CC9 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon@2x.png"; path = "Resources/icons/icon@2x.png"; sourceTree = "<group>"; };
+		AF694D7915634E60000C4CC9 /* icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-72.png"; path = "Resources/icons/icon-72.png"; sourceTree = "<group>"; };
+		AF694D7C15634E60000C4CC9 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = Resources/splash/Default.png; sourceTree = "<group>"; };
+		AF694D7E15634E60000C4CC9 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "Resources/splash/Default@2x.png"; sourceTree = "<group>"; };
+		AF694D8015634E61000C4CC9 /* Capture.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Capture.bundle; path = Resources/Capture.bundle; sourceTree = "<group>"; };
+		AF694D8215634E61000C4CC9 /* Cordova.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Cordova.plist; sourceTree = "<group>"; };
+		AF694D8515634E61000C4CC9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
+		AF694D8615634E61000C4CC9 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
+		AF694D8815634E61000C4CC9 /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MainViewController.h; path = Classes/MainViewController.h; sourceTree = "<group>"; };
+		AF694D8915634E61000C4CC9 /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MainViewController.m; path = Classes/MainViewController.m; sourceTree = "<group>"; };
+		AF694D8B15634E61000C4CC9 /* MainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainViewController.xib; path = Classes/MainViewController.xib; sourceTree = "<group>"; };
+		AF694D8E15634E61000C4CC9 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; name = README; path = Plugins/README; sourceTree = "<group>"; };
+		AF694D8F15634E61000C4CC9 /* verify.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = verify.sh; sourceTree = "<group>"; };
+		AFB82E1B1564A43B00ACDD1A /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
+		AFBCF47C1592F0F600CA0BA7 /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
+		AFBCF47D1592F0F600CA0BA7 /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApi.h; sourceTree = "<group>"; };
+		AFBCF47E1592F0F600CA0BA7 /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApiObject.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AF694D3415634E60000C4CC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF694D3F15634E60000C4CC9 /* Foundation.framework in Frameworks */,
+				AF694D4115634E60000C4CC9 /* UIKit.framework in Frameworks */,
+				AF694D4315634E60000C4CC9 /* CoreGraphics.framework in Frameworks */,
+				AF694D4515634E60000C4CC9 /* AddressBook.framework in Frameworks */,
+				AF694D4715634E60000C4CC9 /* AddressBookUI.framework in Frameworks */,
+				AF694D4915634E60000C4CC9 /* AudioToolbox.framework in Frameworks */,
+				AF694D4B15634E60000C4CC9 /* AVFoundation.framework in Frameworks */,
+				AF694D4D15634E60000C4CC9 /* CoreLocation.framework in Frameworks */,
+				AF694D4F15634E60000C4CC9 /* MediaPlayer.framework in Frameworks */,
+				AF694D5115634E60000C4CC9 /* QuartzCore.framework in Frameworks */,
+				AF694D5315634E60000C4CC9 /* SystemConfiguration.framework in Frameworks */,
+				AF694D5515634E60000C4CC9 /* MobileCoreServices.framework in Frameworks */,
+				AF694D5715634E60000C4CC9 /* CoreMedia.framework in Frameworks */,
+				AF694D6215634E60000C4CC9 /* Cordova.framework in Frameworks */,
+				AFBCF47F1592F0F600CA0BA7 /* libWeChatSDK.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AF694D3715634E60000C4CC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AF694D2C15634E60000C4CC9 = {
+			isa = PBXGroup;
+			children = (
+				AFB82E1B1564A43B00ACDD1A /* www */,
+				AF694D5815634E60000C4CC9 /* weixin */,
+				AF694D3D15634E60000C4CC9 /* Frameworks */,
+				AF694D3B15634E60000C4CC9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AF694D3B15634E60000C4CC9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AF694D3A15634E60000C4CC9 /* weixin.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AF694D3D15634E60000C4CC9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AF694D3E15634E60000C4CC9 /* Foundation.framework */,
+				AF694D4015634E60000C4CC9 /* UIKit.framework */,
+				AF694D4215634E60000C4CC9 /* CoreGraphics.framework */,
+				AF694D4415634E60000C4CC9 /* AddressBook.framework */,
+				AF694D4615634E60000C4CC9 /* AddressBookUI.framework */,
+				AF694D4815634E60000C4CC9 /* AudioToolbox.framework */,
+				AF694D4A15634E60000C4CC9 /* AVFoundation.framework */,
+				AF694D4C15634E60000C4CC9 /* CoreLocation.framework */,
+				AF694D4E15634E60000C4CC9 /* MediaPlayer.framework */,
+				AF694D5015634E60000C4CC9 /* QuartzCore.framework */,
+				AF694D5215634E60000C4CC9 /* SystemConfiguration.framework */,
+				AF694D5415634E60000C4CC9 /* MobileCoreServices.framework */,
+				AF694D5615634E60000C4CC9 /* CoreMedia.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AF694D5815634E60000C4CC9 /* weixin */ = {
+			isa = PBXGroup;
+			children = (
+				AFBCF47B1592F0F600CA0BA7 /* WeChat SDK 1.1 */,
+				AF694D6115634E60000C4CC9 /* Cordova.framework */,
+				AF694D6315634E60000C4CC9 /* Resources */,
+				AF694D8415634E61000C4CC9 /* Classes */,
+				AF694D8D15634E61000C4CC9 /* Plugins */,
+				AF694D5915634E60000C4CC9 /* Supporting Files */,
+			);
+			path = weixin;
+			sourceTree = "<group>";
+		};
+		AF694D5915634E60000C4CC9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AF694D5A15634E60000C4CC9 /* weixin-Info.plist */,
+				AF694D5B15634E60000C4CC9 /* InfoPlist.strings */,
+				AF694D5E15634E60000C4CC9 /* main.m */,
+				AF694D6015634E60000C4CC9 /* weixin-Prefix.pch */,
+				AF694D8215634E61000C4CC9 /* Cordova.plist */,
+				AF694D8B15634E61000C4CC9 /* MainViewController.xib */,
+				AF694D8F15634E61000C4CC9 /* verify.sh */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AF694D6315634E60000C4CC9 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AF694D8015634E61000C4CC9 /* Capture.bundle */,
+				AF694D6415634E60000C4CC9 /* en.lproj */,
+				AF694D6815634E60000C4CC9 /* es.lproj */,
+				AF694D6C15634E60000C4CC9 /* de.lproj */,
+				AF694D7015634E60000C4CC9 /* se.lproj */,
+				AF694D7415634E60000C4CC9 /* icons */,
+				AF694D7B15634E60000C4CC9 /* splash */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		AF694D6415634E60000C4CC9 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				AF694D6515634E60000C4CC9 /* Localizable.strings */,
+			);
+			name = en.lproj;
+			sourceTree = "<group>";
+		};
+		AF694D6815634E60000C4CC9 /* es.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				AF694D6915634E60000C4CC9 /* Localizable.strings */,
+			);
+			name = es.lproj;
+			sourceTree = "<group>";
+		};
+		AF694D6C15634E60000C4CC9 /* de.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				AF694D6D15634E60000C4CC9 /* Localizable.strings */,
+			);
+			name = de.lproj;
+			sourceTree = "<group>";
+		};
+		AF694D7015634E60000C4CC9 /* se.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				AF694D7115634E60000C4CC9 /* Localizable.strings */,
+			);
+			name = se.lproj;
+			sourceTree = "<group>";
+		};
+		AF694D7415634E60000C4CC9 /* icons */ = {
+			isa = PBXGroup;
+			children = (
+				AF694D7515634E60000C4CC9 /* icon.png */,
+				AF694D7715634E60000C4CC9 /* icon@2x.png */,
+				AF694D7915634E60000C4CC9 /* icon-72.png */,
+			);
+			name = icons;
+			sourceTree = "<group>";
+		};
+		AF694D7B15634E60000C4CC9 /* splash */ = {
+			isa = PBXGroup;
+			children = (
+				AF694D7C15634E60000C4CC9 /* Default.png */,
+				AF694D7E15634E60000C4CC9 /* Default@2x.png */,
+			);
+			name = splash;
+			sourceTree = "<group>";
+		};
+		AF694D8415634E61000C4CC9 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				AF694D8515634E61000C4CC9 /* AppDelegate.h */,
+				AF694D8615634E61000C4CC9 /* AppDelegate.m */,
+				AF694D8815634E61000C4CC9 /* MainViewController.h */,
+				AF694D8915634E61000C4CC9 /* MainViewController.m */,
+				AF0EA47A156B5D9F0012F040 /* SinaWeixinPlugin.h */,
+				AF0EA47B156B5D9F0012F040 /* SinaWeixinPlugin.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		AF694D8D15634E61000C4CC9 /* Plugins */ = {
+			isa = PBXGroup;
+			children = (
+				AF694D8E15634E61000C4CC9 /* README */,
+			);
+			name = Plugins;
+			sourceTree = "<group>";
+		};
+		AFBCF47B1592F0F600CA0BA7 /* WeChat SDK 1.1 */ = {
+			isa = PBXGroup;
+			children = (
+				AFBCF47C1592F0F600CA0BA7 /* libWeChatSDK.a */,
+				AFBCF47D1592F0F600CA0BA7 /* WXApi.h */,
+				AFBCF47E1592F0F600CA0BA7 /* WXApiObject.h */,
+			);
+			path = "WeChat SDK 1.1";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AF694D3915634E60000C4CC9 /* weixin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AF694D9315634E61000C4CC9 /* Build configuration list for PBXNativeTarget "weixin" */;
+			buildPhases = (
+				AF694D3315634E60000C4CC9 /* Sources */,
+				AF694D3415634E60000C4CC9 /* Frameworks */,
+				AF694D3515634E60000C4CC9 /* Resources */,
+				AF694D3615634E60000C4CC9 /* Sources */,
+				AF694D3715634E60000C4CC9 /* Frameworks */,
+				AF694D3815634E60000C4CC9 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = weixin;
+			productName = weixin;
+			productReference = AF694D3A15634E60000C4CC9 /* weixin.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AF694D2E15634E60000C4CC9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = "SINA SAE";
+			};
+			buildConfigurationList = AF694D3115634E60000C4CC9 /* Build configuration list for PBXProject "weixin" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				es,
+				de,
+				se,
+			);
+			mainGroup = AF694D2C15634E60000C4CC9;
+			productRefGroup = AF694D3B15634E60000C4CC9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AF694D3915634E60000C4CC9 /* weixin */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AF694D3515634E60000C4CC9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF694D5D15634E60000C4CC9 /* InfoPlist.strings in Resources */,
+				AF694D6715634E60000C4CC9 /* Localizable.strings in Resources */,
+				AF694D6B15634E60000C4CC9 /* Localizable.strings in Resources */,
+				AF694D6F15634E60000C4CC9 /* Localizable.strings in Resources */,
+				AF694D7315634E60000C4CC9 /* Localizable.strings in Resources */,
+				AF694D7615634E60000C4CC9 /* icon.png in Resources */,
+				AF694D7815634E60000C4CC9 /* icon@2x.png in Resources */,
+				AF694D7A15634E60000C4CC9 /* icon-72.png in Resources */,
+				AF694D7D15634E60000C4CC9 /* Default.png in Resources */,
+				AF694D7F15634E60000C4CC9 /* Default@2x.png in Resources */,
+				AF694D8115634E61000C4CC9 /* Capture.bundle in Resources */,
+				AF694D8315634E61000C4CC9 /* Cordova.plist in Resources */,
+				AF694D8C15634E61000C4CC9 /* MainViewController.xib in Resources */,
+				AF694D9015634E61000C4CC9 /* verify.sh in Resources */,
+				AFB82E1C1564A43B00ACDD1A /* www in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		AF694D3815634E60000C4CC9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "\n\t\t\t\t\t\t\t\tchmod 755 \"$PROJECT_DIR/$PROJECT_NAME/verify.sh\"\n\t\t\t\t\t\t\t\t\"$PROJECT_DIR/$PROJECT_NAME/verify.sh\"\n\t\t\t\t\t";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AF694D3315634E60000C4CC9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF694D5F15634E60000C4CC9 /* main.m in Sources */,
+				AF694D8715634E61000C4CC9 /* AppDelegate.m in Sources */,
+				AF694D8A15634E61000C4CC9 /* MainViewController.m in Sources */,
+				AF0EA47C156B5D9F0012F040 /* SinaWeixinPlugin.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AF694D3615634E60000C4CC9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		AF694D5B15634E60000C4CC9 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AF694D5C15634E60000C4CC9 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		AF694D6515634E60000C4CC9 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AF694D6615634E60000C4CC9 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		AF694D6915634E60000C4CC9 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AF694D6A15634E60000C4CC9 /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		AF694D6D15634E60000C4CC9 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AF694D6E15634E60000C4CC9 /* de */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		AF694D7115634E60000C4CC9 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AF694D7215634E60000C4CC9 /* se */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AF694D9115634E61000C4CC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					armv6,
+					"$(ARCHS_STANDARD_32_BIT)",
+				);
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		AF694D9215634E61000C4CC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					armv6,
+					"$(ARCHS_STANDARD_32_BIT)",
+				);
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AF694D9415634E61000C4CC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = /Users/Shared/Cordova/Frameworks;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "weixin/weixin-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1,",
+					"CORDOVA_FRAMEWORK=1",
+				);
+				INFOPLIST_FILE = "weixin/weixin-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/weixin\"",
+					"\"$(SRCROOT)/weixin/WeChat SDK 1.1\"",
+				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					UIKit,
+					"-weak_framework",
+					AVFoundation,
+					"-weak_framework",
+					CoreMedia,
+					"-weak_library",
+					/usr/lib/libSystem.B.dylib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		AF694D9515634E61000C4CC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = /Users/Shared/Cordova/Frameworks;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "weixin/weixin-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NDEBUG=1,",
+					"CORDOVA_FRAMEWORK=1",
+				);
+				INFOPLIST_FILE = "weixin/weixin-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/weixin\"",
+					"\"$(SRCROOT)/weixin/WeChat SDK 1.1\"",
+				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					UIKit,
+					"-weak_framework",
+					AVFoundation,
+					"-weak_framework",
+					CoreMedia,
+					"-weak_library",
+					/usr/lib/libSystem.B.dylib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AF694D3115634E60000C4CC9 /* Build configuration list for PBXProject "weixin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF694D9115634E61000C4CC9 /* Debug */,
+				AF694D9215634E61000C4CC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AF694D9315634E61000C4CC9 /* Build configuration list for PBXNativeTarget "weixin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF694D9415634E61000C4CC9 /* Debug */,
+				AF694D9515634E61000C4CC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AF694D2E15634E60000C4CC9 /* Project object */;
+}

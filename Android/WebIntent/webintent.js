@@ -8,12 +8,12 @@
 
     };
 
-    WebIntent.ACTION_SEND = "android.intent.action.SEND";
-    WebIntent.ACTION_VIEW= "android.intent.action.VIEW";
-    WebIntent.EXTRA_TEXT = "android.intent.extra.TEXT";
-    WebIntent.EXTRA_SUBJECT = "android.intent.extra.SUBJECT";
-    WebIntent.EXTRA_STREAM = "android.intent.extra.STREAM";
-    WebIntent.EXTRA_EMAIL = "android.intent.extra.EMAIL";
+    WebIntent.prototype.ACTION_SEND = "android.intent.action.SEND";
+    WebIntent.prototype.ACTION_VIEW= "android.intent.action.VIEW";
+    WebIntent.prototype.EXTRA_TEXT = "android.intent.extra.TEXT";
+    WebIntent.prototype.EXTRA_SUBJECT = "android.intent.extra.SUBJECT";
+    WebIntent.prototype.EXTRA_STREAM = "android.intent.extra.STREAM";
+    WebIntent.prototype.EXTRA_EMAIL = "android.intent.extra.EMAIL";
 
     WebIntent.prototype.startActivity = function(params, success, fail) {
         return cordova.exec(function(args) {

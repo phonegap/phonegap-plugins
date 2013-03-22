@@ -1,15 +1,16 @@
-# Barcode Scanner plugin for Phonegap #
+# Barcode Scanner plugin for Phonegap
+
 Originally by Matt Kane
 Updates by Simon MacDonald
 
-## Choosing the right source directory ##
+## Choosing the right source directory
 
 If you are using PhoneGap 1.5.0 to 1.8.1 please use the 1.8.1 directory. 
 If you are using PhoneGap 2.0.0 to 2.1.0 please use the 2.0.0 directory.
 If you are using PhoneGap 2.2.0 or greater please use the 2.2.0 directory.
 
 
-## Adding the Plugin to your project ##
+## Adding the Plugin to your project
 
 1. Add the 'LibraryProject' into Eclipse. File -> New Android Project -> create project from existing source.
 2. In the new project you've just added to Eclipse go to the project properties. Select the Android section and at the bottom of the dialog check the "Is Library" checkbox.
@@ -18,43 +19,43 @@ If you are using PhoneGap 2.2.0 or greater please use the 2.2.0 directory.
 5. Create a folder called 'com/phonegap/plugins/barcodescanner' within your project's src folder.
 6. And copy the BarcodeScanner.java file into that new folder.
 
-`mkdir <your_project>/src/com/phonegap/plugins/barcodescanner`
+    mkdir <your_project>/src/com/phonegap/plugins/barcodescanner
 
-`cp ./src/com/phonegap/plugins/barcodescanner/BarcodeScanner.java <your_project>/src/com/phonegap/plugins/barcodescanner`
+    cp ./src/com/phonegap/plugins/barcodescanner/BarcodeScanner.java <your_project>/src/com/phonegap/plugins/barcodescanner
 
 7. In your res/xml/plugins.xml file add the following line:
 
-    `<plugin name="BarcodeScanner" value="com.phonegap.plugins.barcodescanner.BarcodeScanner"/>`
+    <plugin name="BarcodeScanner" value="com.phonegap.plugins.barcodescanner.BarcodeScanner"/>
 
 8. Add the following activity to your AndroidManifest.xml file. It should be added inside the &lt;application/&gt; tag.
 
-    `<!-- ZXing activities -->`
-    `<activity android:name="com.google.zxing.client.android.CaptureActivity"`
-              `android:screenOrientation="landscape"`
-              `android:clearTaskOnLaunch="true"`
-              `android:configChanges="orientation|keyboardHidden"`
-              `android:theme="@android:style/Theme.NoTitleBar.Fullscreen"`
-              `android:windowSoftInputMode="stateAlwaysHidden"`
-              `android:exported="false">`
-      `<intent-filter>`
-        `<action android:name="com.phonegap.plugins.barcodescanner.SCAN"/>`
-        `<category android:name="android.intent.category.DEFAULT"/>`
-      `</intent-filter>`
-    `</activity>`
-    `<activity android:name="com.google.zxing.client.android.encode.EncodeActivity" android:label="@string/share_name">`
-      `<intent-filter>`
-        `<action android:name="com.phonegap.plugins.barcodescanner.ENCODE"/>`
-        `<category android:name="android.intent.category.DEFAULT"/>`
-      `</intent-filter>`
-    `</activity>`
+    <!-- ZXing activities -->
+    <activity android:name="com.google.zxing.client.android.CaptureActivity"
+              android:screenOrientation="landscape"
+              android:clearTaskOnLaunch="true"
+              android:configChanges="orientation|keyboardHidden"
+              android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+              android:windowSoftInputMode="stateAlwaysHidden"
+              android:exported="false">
+      <intent-filter>
+        <action android:name="com.phonegap.plugins.barcodescanner.SCAN"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
+    <activity android:name="com.google.zxing.client.android.encode.EncodeActivity" android:label="@string/share_name">
+      <intent-filter>
+        <action android:name="com.phonegap.plugins.barcodescanner.ENCODE"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
     
 9. And make sure you have the following permissions in your AndroidManifest.xml file:
 
-    `<uses-permission android:name="android.permission.CAMERA" />`
-    `<uses-permission android:name="android.permission.FLASHLIGHT" />`
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
 
+## Using the plugin
 
-## Using the plugin ##
 The plugin creates the object `window.plugins.barcodeScanner` with the method `scan(success, fail)`. 
 The following barcode types are currently supported:
 
@@ -84,10 +85,11 @@ A full example could be:
                       "Cancelled: " + result.cancelled);
         }, function(error) {
 		    alert("Scanning failed: " + error);
-	    }
-	);
+                    }
+        );
 
-## Encoding a Barcode ##
+## Encoding a Barcode
+
 The plugin creates the object `window.plugins.barcodeScanner` with the method `encode(type, data, success, fail)`. 
 Supported encoding types:
 
@@ -98,14 +100,14 @@ Supported encoding types:
 
 A full example could be:
 
-        window.plugins.barcodeScanner.encode(BarcodeScanner.Encode.TEXT_TYPE, "http://www.nytimes.com", function(success) {
-  	        alert("encode success: " + success);
-  	      }, function(fail) {
-  	        alert("encoding failed: " + fail);
-  	      }
-  	    );
+    window.plugins.barcodeScanner.encode(BarcodeScanner.Encode.TEXT_TYPE, "http://www.nytimes.com", function(success) {
+        alert("encode success: " + success);
+        }, function(fail) {
+               alert("encoding failed: " + fail);
+           }
+        );
 	
-## Licence ##
+## Licence
 
 The MIT License
 

@@ -1,5 +1,7 @@
 # Twitter plugin for Phonegap #
 
+v1.1 - Fix for cordova 2.2.0+
+
 This is inspired from the excellent iOS' plugin: https://github.com/phonegap/phonegap-plugins/tree/master/iPhone/Twitter
 
 For the moment, only two (major) functions are binding:
@@ -25,13 +27,11 @@ Using this plugin requires [Android PhoneGap](http://github.com/phonegap/phonega
 
 The plugin creates the object `window.plugins.twitter`.  To use, call one of the following, available methods:
 
-<pre>
   /**
 	* Check if Twitter is installed
     *
     */
   isTwitterAvailable(success, failure)
-</pre>
 
 Sample use:
 
@@ -49,12 +49,11 @@ Sample use:
 		}
 	);
 
-<pre>
   /**
 	* Compose tweet and open the Twitter application
     */
   composeTweet(success, failure, message) {
-</pre>
+
 
 Sample use:
 

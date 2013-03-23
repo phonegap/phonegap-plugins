@@ -13,8 +13,11 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+/*
+ * BUG FIX #1049 By Luongo Vincenzo
+ */
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 /**
  * Twitter plugin for Android

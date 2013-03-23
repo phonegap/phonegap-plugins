@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'BarCodeScannerCDV' target in the 'BarCodeScannerCDV' project
+//
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+#endif

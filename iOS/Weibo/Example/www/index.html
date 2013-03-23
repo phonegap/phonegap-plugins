@@ -1,0 +1,28 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title></title>
+  <meta name="description" content="">
+
+  <meta name="viewport" content="width=device-width">
+
+  <script charset="utf-8" src="cordova-1.8.1.js"></script>
+  <script src="js/weibo.js"></script>
+  <script src="js/script.js"></script>
+</head>
+<body>
+        <div class="section">weibo</div>
+        <button class="button" onclick="app.weibo.init()">Init</button>
+        <button onclick="app.weibo.login()">Login</button>
+        <button onclick="app.weibo.logout()">Logout</button>
+        <button onclick="app.weibo.timeline()">Timeline</button>
+        <button onclick="app.weibo.get()">get</button>
+        <button onclick="app.weibo.post()">post</button>
+        <button id="upload" onclick="app.weibo.upload()">upload</button>
+</body>
+</html>

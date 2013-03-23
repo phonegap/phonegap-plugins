@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+	<head>
+	    <meta name="viewport" content="width=320; user-scalable=no" />
+	    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	    <title>Weibo OAuth</title>
+	    <script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
+	    <script type="text/javascript" charset="utf-8" src="weibo.js"></script>
+	    <script>
+	    	function login() {
+	    		plugins.weibo.init({
+	    			appKey: "3808126424",
+	    			appSecret: "0c94f867261b2adda98882033076cc0e",
+	    			redirectUrl: "http://phonegapoauth.sinaapp.com"
+	    		}, function(response) {
+	    			plugins.weibo.login(function(access_token, expires_in) {
+	    				document.getElementById("content").innerText = "access_token: " + access_token;
+	    			}, function() {
+	    				alert("login failed");
+	    			});
+	    		}, function(response) {
+	    		});
+	    	}
+	    </script>
+  	</head>
+	<body>
+		<button id="login" onclick="login();">登陆</button>
+		<p id="content"></p>
+	</body>
+</html>

@@ -2,6 +2,7 @@
 	Phonegap LocalNotification Plugin
 	Copyright (c) Greg Allen 2011
 	Updates Drew Dahlman 2012
+    Updates Tim Hoolihan 2013
 	
 	MIT Licensed
 
@@ -10,9 +11,13 @@
 	plugins.localNotification.cancel(123);
 	plugins.localNotification.cancelAll();
 **/
-if (typeof cordova !== "undefined") {
-	var LocalNotification = function() {
-	};
+(function() {
+
+    var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to new fallbacks
+
+    LocalNotifications = function() {
+        this.serviceName = "LocalNotification";
+    };
 
 	LocalNotification.prototype.add = function(options) {
         var defaults = {
@@ -33,23 +38,31 @@ if (typeof cordova !== "undefined") {
 		if (typeof defaults.date == 'object') {
 			defaults.date = Math.round(defaults.date.getTime()/1000);
 		}
-        cordova.exec(null,null,"LocalNotification","addNotification",[defaults]);
+        cordovaRef.exec(null,null,"LocalNotification","addNotification",[defaults]);
 	};
 
 	LocalNotification.prototype.cancel = function(id) {
-		cordova.exec("LocalNotification.cancelNotification", id);
+		cordovaRef.exec("LocalNotification.cancelNotification", id);
 	};
 	
 	LocalNotification.prototype.cancelAll = function(id) {
-        cordova.exec("LocalNotification.cancelAllNotifications");
+        cordovaRef.exec("LocalNotification.cancelAllNotifications");
     };
 
-	cordova.addConstructor(function() 
-	{
-		if(!window.plugins)
-		{
-			window.plugins = {};
-		}
-		window.plugins.localNotification = new LocalNotification();
-	});
-}
+    LocalNotifications.install = function(){
+        if( !window.plugins){
+            window.plugins = {};
+        }
+        if( !window.plugins.localNotifications ){
+            window.plugins.localNotifications = new LocalNotifications();
+        }
+    };
+
+    if (cordovaRef && cordovaRef.addConstructor) {
+        cordovaRef.addConstructor(LocalNotifications.install);
+    } else {
+        console.log("LocalNotifications Cordova Plugin could not be installed.");
+        return null;
+    }
+   
+})();

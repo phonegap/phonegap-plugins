@@ -29,30 +29,34 @@ If you are using PhoneGap 2.2.0 or greater please use the 2.2.0 directory.
 
 8. Add the following activity to your AndroidManifest.xml file. It should be added inside the &lt;application/&gt; tag.
 
-    <!-- ZXing activities -->
-    <activity android:name="com.google.zxing.client.android.CaptureActivity"
-              android:screenOrientation="landscape"
-              android:clearTaskOnLaunch="true"
-              android:configChanges="orientation|keyboardHidden"
-              android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-              android:windowSoftInputMode="stateAlwaysHidden"
-              android:exported="false">
-      <intent-filter>
-        <action android:name="com.phonegap.plugins.barcodescanner.SCAN"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-      </intent-filter>
-    </activity>
-    <activity android:name="com.google.zxing.client.android.encode.EncodeActivity" android:label="@string/share_name">
-      <intent-filter>
-        <action android:name="com.phonegap.plugins.barcodescanner.ENCODE"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-      </intent-filter>
-    </activity>
-    
-9. And make sure you have the following permissions in your AndroidManifest.xml file:
+```
+<!-- ZXing activities -->
+<activity android:name="com.google.zxing.client.android.CaptureActivity"
+          android:screenOrientation="landscape"
+          android:clearTaskOnLaunch="true"
+          android:configChanges="orientation|keyboardHidden"
+          android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+          android:windowSoftInputMode="stateAlwaysHidden"
+          android:exported="false">
+  <intent-filter>
+    <action android:name="com.phonegap.plugins.barcodescanner.SCAN"/>
+    <category android:name="android.intent.category.DEFAULT"/>
+  </intent-filter>
+</activity>
+<activity android:name="com.google.zxing.client.android.encode.EncodeActivity" android:label="@string/share_name">
+  <intent-filter>
+    <action android:name="com.phonegap.plugins.barcodescanner.ENCODE"/>
+    <category android:name="android.intent.category.DEFAULT"/>
+  </intent-filter>
+</activity>
+```   
+   
+9\. And make sure you have the following permissions in your AndroidManifest.xml file:
 
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
+```
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.FLASHLIGHT" />
+```
 
 ## Using the plugin
 

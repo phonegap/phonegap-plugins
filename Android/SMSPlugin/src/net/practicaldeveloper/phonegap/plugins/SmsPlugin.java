@@ -27,19 +27,26 @@ import org.json.JSONException;
 
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.Context;
 import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 
 import org.apache.cordova.api.Plugin;
 import org.apache.cordova.api.PluginResult;
 
 public class SmsPlugin extends Plugin {
 	public final String ACTION_SEND_SMS = "SendSMS";
+
+	private boolean simStateReady() {
+		int simState = ((TelephonyManager)this.ctx.getContext().getSystemService(Context.TELEPHONY_SERVICE)).getSimState();
+		return (simState == TelephonyManager.SIM_STATE_READY);
+	}
 	
 	@Override
 	public PluginResult execute(String action, JSONArray arg1, String callbackId) {
 		PluginResult result = new PluginResult(Status.INVALID_ACTION);
 		
-		if (action.equals(ACTION_SEND_SMS)) {
+		if (action.equals(ACTION_SEND_SMS) && simStateReady() == true) {
 			try {
 				String phoneNumber = arg1.getString(0);
 				String message = arg1.getString(1);

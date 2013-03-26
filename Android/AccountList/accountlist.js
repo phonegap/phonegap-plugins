@@ -16,7 +16,7 @@ var AccountList = function(gap) {
 	                window.plugins = {};
 	            }
 	
-	            window.plugins.ccountList = new AccountList();
+	            window.plugins.AccountList = new AccountList();
 	        }
 	});
 

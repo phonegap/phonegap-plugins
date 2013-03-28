@@ -49,6 +49,12 @@ If you are using PhoneGap 2.2.0 or greater please use the 2.2.0 directory.
     <category android:name="android.intent.category.DEFAULT"/>
   </intent-filter>
 </activity>
+<activity android:name="com.google.zxing.client.android.HelpActivity" android:label="@string/share_name">
+	<intent-filter>
+    		<action android:name="android.intent.action.VIEW"/>
+		<category android:name="android.intent.category.DEFAULT"/>
+  	</intent-filter>
+</activity>
 ```   
    
 9\. And make sure you have the following permissions in your AndroidManifest.xml file:

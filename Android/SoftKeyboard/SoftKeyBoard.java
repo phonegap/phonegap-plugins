@@ -5,8 +5,8 @@ import org.json.JSONArray;
 import android.content.Context;
 import android.view.inputmethod.InputMethodManager;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 public class SoftKeyBoard extends Plugin {
 

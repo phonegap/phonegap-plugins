@@ -5,23 +5,23 @@ import org.json.JSONArray;
 import android.content.Context;
 import android.view.inputmethod.InputMethodManager;
 
-import org.apache.cordova.api.Plugin;
-import org.apache.cordova.api.PluginResult;
+import org.apache.cordova.api.CallbackContext;
+import org.apache.cordova.api.CordovaPlugin;
 
-public class SoftKeyBoard extends Plugin {
+public class SoftKeyBoard extends CordovaPlugin {
 
     public SoftKeyBoard() {
     }
 
     public void showKeyBoard() {
-        InputMethodManager mgr = (InputMethodManager) this.ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager mgr = (InputMethodManager) cordova.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.showSoftInput(webView, InputMethodManager.SHOW_IMPLICIT);
         
-        ((InputMethodManager) this.ctx.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(webView, 0); 
+        ((InputMethodManager) cordova.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(webView, 0); 
     }
     
     public void hideKeyBoard() {
-        InputMethodManager mgr = (InputMethodManager) this.ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager mgr = (InputMethodManager) cordova.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(webView.getWindowToken(), 0);
     }
     
@@ -31,21 +31,24 @@ public class SoftKeyBoard extends Plugin {
     	return (100 < heightDiff); // if more than 100 pixels, its probably a keyboard...
     }
 
-	public PluginResult execute(String action, JSONArray args, String callbackId) {
+    @Override
+	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
 		if (action.equals("show")) {
             this.showKeyBoard();
-			return new PluginResult(PluginResult.Status.OK, "done");
+            callbackContext.success("done");
+            return true;
 		} 
         else if (action.equals("hide")) {
             this.hideKeyBoard();
-            return new PluginResult(PluginResult.Status.OK);
+            callbackContext.success();
+            return true;
         }
-        else if (action.equals("isShowing")) {
-			
-            return new PluginResult(PluginResult.Status.OK, this.isKeyBoardShowing());
+        else if (action.equals("isShowing")) {			
+            callbackContext.success(Boolean.toString(this.isKeyBoardShowing()));
+            return true;
         }
 		else {
-			return new PluginResult(PluginResult.Status.INVALID_ACTION);
+			return false;
 		}
 	}    
 }

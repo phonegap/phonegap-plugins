@@ -1,5 +1,6 @@
 # Cordova 2.1.0+ iOS Free Memory Report Plugin 
 
+
 Author: [Chris Williams](http://www.twitter.com/voodootikigod) (@voodootikigod)
 
 In the config.xml file, you need to add the plugin with the key/pair value of:

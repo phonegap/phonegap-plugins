@@ -12,51 +12,39 @@ EmailComposer.ComposeResultType = {
     NotSent:4
 }
 
-
-
 // showEmailComposer : all args optional
-
-EmailComposer.prototype.showEmailComposer = function(subject,body,toRecipients,ccRecipients,bccRecipients,bIsHTML,attachments) {
+EmailComposer.prototype.showEmailComposer = function(subject, body, toRecipients, ccRecipients, bccRecipients, bIsHTML, attachments) {
 	console.log("****************************AVVIATO");
 	var args = {};
-	if(toRecipients)
-		args.toRecipients = toRecipients;
-	if(ccRecipients)
-		args.ccRecipients = ccRecipients;
-	if(bccRecipients)
-		args.bccRecipients = bccRecipients;
-	if(subject)
-		args.subject = subject;
-	if(body)
-		args.body = body;
-	if(bIsHTML)
-		args.bIsHTML = bIsHTML;
-    if(attachments)
-        args.attachments = attachments;
-	
+	args.subject = subject ? subject : "";
+	args.body = body ? body : "";
+	args.toRecipients = toRecipients ? toRecipients : [];
+	args.ccRecipients = ccRecipients ? ccRecipients : [];
+	args.bccRecipients = bccRecipients ? bccRecipients : [];
+	args.bIsHTML = bIsHTML ? true : false;
+  args.attachments = attachments ? attachments : [];
 	cordova.exec(null, null, "EmailComposer", "showEmailComposer", [args]);
 }
 
 EmailComposer.prototype.showEmailComposerWithCallback = function(callback, subject, body, toRecipients, ccRecipients, bccRecipients, isHTML, attachments) {
 	this.resultCallback = callback;
-	this.showEmailComposer.apply(this,[subject,body,toRecipients,ccRecipients,bccRecipients,isHTML,attachments]);
+	this.showEmailComposer.apply(this, [subject, body, toRecipients, ccRecipients, bccRecipients, isHTML, attachments]);
 }
 
 EmailComposer.prototype._didFinishWithResult = function(res) {
 	this.resultCallback(res);
 }
 
-cordova.addConstructor(function()  {
+cordova.addConstructor(function() {
 	console.log("****************************");
-					   if(!window.plugins)
-					   {
-					   window.plugins = {};
-					   }
+	if (!window.plugins) {
+    window.plugins = {};
+	}
 					   
-					   // shim to work in 1.5 and 1.6
-					   if (!window.Cordova) {
-					   window.Cordova = cordova;
-					   };
+	// shim to work in 1.5 and 1.6
+	if (!window.Cordova) {
+		window.Cordova = cordova;
+	};
 					   
-					   window.plugins.emailComposer = new EmailComposer();
-					   });
+	window.plugins.emailComposer = new EmailComposer();
+});

@@ -1,5 +1,5 @@
 #import "DeviceDetails.h"
-#import <Cordova/JSONKit.h>
+#import <Cordova/CDVJSON.h>
 
 @implementation DeviceDetails
 
@@ -12,7 +12,7 @@
 	return _callbackIds;
 }
 
-- (void)getDeviceDetails:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
+- (void) getDeviceDetails:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
 	[self.callbackIds setValue:[arguments pop] forKey:@"getDeviceDetails"];
 
   NSMutableDictionary *results = [NSMutableDictionary dictionary];
@@ -28,7 +28,7 @@
 	[self writeJavascript:[pluginResult toSuccessCallbackString:[self.callbackIds valueForKey:@"getDeviceDetails"]]];
 }
 
-- (void)getDeviceUUID:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
+- (void) getDeviceUUID:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options {
 	[self.callbackIds setValue:[arguments pop] forKey:@"getDeviceUUID"];
 
   NSMutableDictionary *results = [NSMutableDictionary dictionary];

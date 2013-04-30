@@ -1,6 +1,6 @@
 PowerManagement
 ===============
-Plugin for Cordova (1.6+)
+Plugin for Cordova (2.4+)
 
 The PowerManagement plugin offers access to the devices power-management functionality.
 It should be used for applications which keep running for a long time without any user interaction.
@@ -23,11 +23,12 @@ Edit your *AndroidManifest.xml* and add the following permission:
 In addition you have to edit your *res/xml/plugins.xml* file to let Cordova know about the plugin:
 `<plugin name="PowerManagement" value="org.apache.cordova.plugin.PowerManagement"/>`
 
-### iOS
+### iOS Cordova (2.4+)
 Copy the *PowerManagement.h* and *PowerManagement.m* files to your projects "Plugins" folder.
 
-Add the PowerManagement plugin to the *Cordova.plist* file (to the Plugins list). Both Key and Value are "PowerManagement".
+Add the PowerManagement plugin to the *config.xml* file (to the `<plugins>` list). Both Key and Value are "PowerManagement".
 
+> <plugin name="PowerManagement" value="PowerManagement"/>
 
 License
 =======

@@ -42,7 +42,9 @@ EmailComposer.prototype.showEmailComposerWithCallback = function(callback, subje
 }
 
 EmailComposer.prototype._didFinishWithResult = function(res) {
-	this.resultCallback(res);
+    if (typeof this.resultCallback === 'function') {
+        this.resultCallback(res);
+    }
 }
 
 cordova.addConstructor(function()  {

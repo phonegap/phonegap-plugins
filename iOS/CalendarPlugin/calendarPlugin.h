@@ -4,13 +4,10 @@
 //  Date: 01-17-2011
 //  Notes:
 //
+// 06/05/2013 - FIX for cordova 2.6.0 By Luongo Vincenzo
 
 #import <Foundation/Foundation.h>
-#ifdef CORDOVA_FRAMEWORK
 #import <Cordova/CDVPlugin.h>
-#else
-#import "CDVPlugin.h"
-#endif
 #import <EventKitUI/EventKitUI.h>
 #import <EventKit/EventKit.h>
 

@@ -33,27 +33,27 @@ public class mpl {
     Activity mpl_activity;
 
     // Default configuration
-    String mpjs_language = "en_US";
+    String mpjs_language = "de_DE";
     String mpjs_fees = "receiver";
-    String mpjs_shipping = "0";
+    String mpjs_shipping = "";
     String mpjs_dynamic = "0";
 
     String mpjs_subtotal = "0.0";
-    String mpjs_currency = "JPY";
+    String mpjs_currency = "EUR";
     String mpjs_recipient = "nobody@nobody.com";
     String mpjs_paymentType = "goods";
     String mpjs_merchantName = "";
     String mpjs_description = "";
-    String mpjs_customID = "0.0";
-    String mpjs_ipnUrl = "0.0";
-    String mpjs_memo = "0.0";
-    String mpjs_tax = "0.0";
+    String mpjs_customID = "0";
+    String mpjs_ipnUrl = "";
+    String mpjs_memo = "";
+    String mpjs_tax = "";
 // TBD: list of invoice items
-    String mpjs_name = "";
-    String mpjs_id = "";
-    String mpjs_totalPrice = "0.0";
-    String mpjs_unitPrice = "0.0";
-    String mpjs_quantity = "0";
+//    String mpjs_name = "";
+//    String mpjs_id = "";
+//    String mpjs_totalPrice = "0.0";
+//    String mpjs_unitPrice = "0.0";
+//    String mpjs_quantity = "0";
     
     private String mpjs_server = "";
 	
@@ -132,10 +132,10 @@ public class mpl {
 												// library.
 
 			// Set to true if the transaction will require shipping.
-			if (mpjs_shipping.equals("1"))
-				pp.setShippingEnabled(true);
-			else
+			if (mpjs_shipping.equals(""))
 				pp.setShippingEnabled(false);
+			else
+				pp.setShippingEnabled(true);
 
 			// Dynamic Amount Calculation allows you to set tax and shipping
 			// amounts based on the user's shipping address. Shipping must be
@@ -185,37 +185,41 @@ public class mpl {
 			ptype = PayPal.PAYMENT_TYPE_NONE;
 		payment.setPaymentType(ptype);
 
-		if (!mpjs_tax.equals("") || !mpjs_shipping.equals("")) {
+		if (!mpjs_tax.equals("") || !mpjs_shipping.equals("") || !mpjs_description.equals("")) {
 			// PayPalInvoiceData can contain tax and shipping amounts. It also
 			// contains an ArrayList of PayPalInvoiceItem which can
 			// be filled out. These are not required for any transaction.
 			PayPalInvoiceData invoice = new PayPalInvoiceData();
 			// Sets the tax amount.
-			invoice.setTax(new BigDecimal(mpjs_tax));
+			if (!mpjs_tax.equals(""))
+				invoice.setTax(new BigDecimal(mpjs_tax));
 			// Sets the shipping amount.
-			invoice.setShipping(new BigDecimal(mpjs_shipping));
+			if (!mpjs_shipping.equals(""))
+				invoice.setShipping(new BigDecimal(mpjs_shipping));
 
-			// PayPalInvoiceItem has several parameters available to it.
-			// None of these parameters is required.
-			PayPalInvoiceItem item1 = new PayPalInvoiceItem();
-			// Sets the name of the item.
-			item1.setName(mpjs_name);
-			// Sets the ID. This is any ID that you would like to have
-			// associated with the item.
-			item1.setID(mpjs_id);
-			// Sets the total price which should be (quantity * unit price).
-			// The total prices of all PayPalInvoiceItem should add up
-			// to less than or equal the subtotal of the payment.
-			item1.setTotalPrice(new BigDecimal(mpjs_totalPrice));
-			// Sets the unit price.
-			item1.setUnitPrice(new BigDecimal(mpjs_unitPrice));
-			// Sets the quantity.
-			item1.setQuantity(Integer.parseInt(mpjs_quantity));
-			// Add the PayPalInvoiceItem to the PayPalInvoiceData.
-			// Alternatively, you can create an ArrayList<PayPalInvoiceItem>
-			// and pass it to the PayPalInvoiceData function
-			// setInvoiceItems().
-			invoice.getInvoiceItems().add(item1);
+			if (!mpjs_description.equals("")){
+				// PayPalInvoiceItem has several parameters available to it.
+				// None of these parameters is required.
+				PayPalInvoiceItem item1 = new PayPalInvoiceItem();
+				// Sets the name of the item.
+				item1.setName(mpjs_description);
+				// Sets the ID. This is any ID that you would like to have
+				// associated with the item.
+				//item1.setID(mpjs_id);
+				// Sets the total price which should be (quantity * unit price).
+				// The total prices of all PayPalInvoiceItem should add up
+				// to less than or equal the subtotal of the payment.
+				item1.setTotalPrice(new BigDecimal(mpjs_subtotal));
+				// Sets the unit price.
+				//item1.setUnitPrice(new BigDecimal(mpjs_unitPrice));
+				// Sets the quantity.
+				//item1.setQuantity(Integer.parseInt(mpjs_quantity));
+				// Add the PayPalInvoiceItem to the PayPalInvoiceData.
+				// Alternatively, you can create an ArrayList<PayPalInvoiceItem>
+				// and pass it to the PayPalInvoiceData function
+				// setInvoiceItems().
+				invoice.getInvoiceItems().add(item1);
+			}
 
 			// Sets the PayPalPayment invoice data.
 			payment.setInvoiceData(invoice);
@@ -230,7 +234,7 @@ public class mpl {
 			// Company.
 			payment.setMerchantName(mpjs_merchantName);
 			// Sets the description of the payment.
-			payment.setDescription(mpjs_description);
+			//payment.setDescription(mpjs_description);
 			// Sets the Custom ID. This is any ID that you would like to have
 			// associated with the payment.
 			payment.setCustomID(mpjs_customID);
@@ -256,6 +260,7 @@ public class mpl {
 		// requires communication with the server
 		// which may take some time depending on the connection strength/speed.
 		Thread libraryInitializationThread = new Thread() {
+			@Override
 			public void run() {
 				initLibrary();
 
@@ -362,41 +367,6 @@ public class mpl {
 		}
 	}
 
-
-	// Set an invoice item
-	protected void setInvoiceItem(String str) {
-		JSONObject obj;
-		try {
-			obj = (JSONObject) new JSONTokener(str).nextValue();
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			mpjs_mpl.mpjs_name = obj.getString("name");
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			mpjs_mpl.mpjs_id = obj.getString("id");
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			mpjs_mpl.mpjs_totalPrice = obj.getString("total_price");
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			mpjs_mpl.mpjs_unitPrice = obj.getString("unit_price");
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			mpjs_mpl.mpjs_quantity = obj.getString("quantity");
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
-	}
 
 	// Submit payment (i.e. "checkout")
 	public void pay(Integer btype) {

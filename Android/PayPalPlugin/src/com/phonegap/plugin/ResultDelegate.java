@@ -51,7 +51,7 @@ public class ResultDelegate implements PayPalResultDelegate, Serializable {
 	public void onPaymentFailed(String paymentStatus, String correlationID,
 			String payKey, String errorID, String errorMessage) {
 		
-		fireJavaScriptEvent("PaypalPaymentEvent.Success", 
+		fireJavaScriptEvent("PaypalPaymentEvent.Failed", 
 				mpl.getPaymentResults("FAILURE",
 						errorMessage,
 						"Error ID: " + errorID + "\nCorrelation ID: "
@@ -64,7 +64,7 @@ public class ResultDelegate implements PayPalResultDelegate, Serializable {
 	 * @param paymentStatus		the status of the transaction
 	 */
 	public void onPaymentCanceled(String paymentStatus) {
-		fireJavaScriptEvent("PaypalPaymentEvent.Success", 
+		fireJavaScriptEvent("PaypalPaymentEvent.Canceled", 
 				mpl.getPaymentResults("CANCELED",
 						"The transaction has been cancelled.",
 						""));

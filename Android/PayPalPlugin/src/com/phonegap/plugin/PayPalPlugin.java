@@ -11,55 +11,52 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.util.Log;
 
-import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.CallbackContext;
+import org.apache.cordova.api.CordovaPlugin;
 import org.apache.cordova.api.PluginResult;
 import org.apache.cordova.api.PluginResult.Status;
 
-public class PayPalPlugin extends Plugin {
+public class PayPalPlugin extends CordovaPlugin {
 	private static mpl PluginMpl;
-	protected static Plugin thisPlugin;
+	protected static CordovaPlugin thisPlugin;
 
-	@Override
-	public PluginResult execute(String action, JSONArray data, String callbackId) {
+	public boolean execute(String action, JSONArray data, CallbackContext callbackContext) {
+		Context context = cordova.getActivity();
 		Log.d("PayPalPlugin", "Plugin Called");
-		
-		PluginResult result = null;
 
 		try {
+			Log.d("PayPalPlugin", action);
 			if (action.equals("construct")) {
+				
 				thisPlugin = this;
-				PluginMpl = new mpl(this.ctx.getContext(), data.getString(0));
-//				PluginMpl = new mpl(this.ctx, PayPal.ENV_NONE, "");
-				result = new PluginResult(Status.OK);
-				
+				PluginMpl = new mpl(context, data.getString(0));
+				Log.d("PayPalPlugin", "2");
+				callbackContext.success();
 			} else if (action.equals("prepare")) {
+				Log.d("PayPalPlugin", "prepare");
 				PluginMpl.prepare(data.getInt(0));
-				result = new PluginResult(Status.OK);
-				
+				callbackContext.success();
 			} else if (action.equals("getStatus")) {
 				String status  = PluginMpl.getStatus();
-				JSONObject jobj = new JSONObject();
-				jobj.put("str", status);
-				result = new PluginResult(Status.OK, jobj);
-				
+				callbackContext.success(status);
 			} else if (action.equals("setPaymentInfo")) {
 				PluginMpl.setPaymentInfo(data.getString(0));
-				result = new PluginResult(Status.OK);
-				
+				callbackContext.success();
 			} else if (action.equals("pay")) {
 				PluginMpl.pay(data.getInt(0));
-				result = new PluginResult(Status.OK);
-				
 			} else {
-				result = new PluginResult(Status.ERROR);
+				callbackContext.error("Action not found.");
+				return false;
 			}
 
 		} catch (JSONException e) {
 			Log.d("DirectoryListPlugin", "Got JSON Exception "+ e.getMessage());
-			result = new PluginResult(Status.JSON_EXCEPTION);
+			callbackContext.error(e.getMessage());
+			return false;
 		}
-		return result;
+		return true;
 	}
 }

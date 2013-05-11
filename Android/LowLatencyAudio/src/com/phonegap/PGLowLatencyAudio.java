@@ -22,15 +22,14 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.util.Log;
 
-import org.apache.cordova.api.Plugin;
-import org.apache.cordova.api.PluginResult;
-import org.apache.cordova.api.PluginResult.Status;
+import org.apache.cordova.api.CordovaPlugin;
+import org.apache.cordova.api.CallbackContext;
 
 /**
  * @author triceam
  *
  */
-public class PGLowLatencyAudio extends Plugin {
+public class PGLowLatencyAudio extends CordovaPlugin {
 
 	public static final String ERROR_NO_AUDIOID="A reference does not exist for the specified audio id.";
 	public static final String ERROR_AUDIOID_EXISTS="A reference already exists for the specified audio id.";
@@ -54,11 +53,10 @@ public class PGLowLatencyAudio extends Plugin {
 	 * @see com.phonegap.api.Plugin#execute(java.lang.String, org.json.JSONArray, java.lang.String)
 	 */
 	@Override
-	public PluginResult execute(String action, JSONArray data, String callbackId) 
+	public boolean execute(String action, JSONArray data, CallbackContext callbackContext) 
 	{
-		PluginResult result = null;
+		boolean result = true;
 		initSoundPool();
-
 		
 		try 
 		{
@@ -72,14 +70,14 @@ public class PGLowLatencyAudio extends Plugin {
 					String assetPath =data.getString(1);
 					String fullPath = "www/".concat( assetPath );
 					
-					AssetManager am =   ctx.getResources().getAssets(); 
+					AssetManager am = cordova.getActivity().getResources().getAssets();
 					AssetFileDescriptor afd = am.openFd(fullPath);
 					int assetIntID = soundPool.load(afd, 1);
 					soundMap.put( audioID , assetIntID );
 				}
 				else 
 				{
-					result = new PluginResult(Status.ERROR, ERROR_AUDIOID_EXISTS);
+					result = false;
 				}
 			}
 			else if ( PRELOAD_AUDIO.equals( action ) ) 
@@ -99,7 +97,7 @@ public class PGLowLatencyAudio extends Plugin {
 					
 					String fullPath = "www/".concat( assetPath );
 					
-					AssetManager am = ctx.getResources().getAssets(); 
+					AssetManager am = cordova.getActivity().getResources().getAssets();
 					AssetFileDescriptor afd = am.openFd(fullPath);
 					
 					PGLowLatencyAudioAsset asset = new PGLowLatencyAudioAsset( afd, voices );
@@ -107,7 +105,7 @@ public class PGLowLatencyAudio extends Plugin {
 				}
 				else 
 				{
-					result = new PluginResult(Status.ERROR, ERROR_AUDIOID_EXISTS);
+					result = false;
 				}
 			}
 			else if ( PLAY.equals( action ) || LOOP.equals( action ) ) 
@@ -138,7 +136,7 @@ public class PGLowLatencyAudio extends Plugin {
 				}
 				else 
 				{
-					result = new PluginResult(Status.ERROR, ERROR_NO_AUDIOID);
+					result = false;
 				}
 			}
 			else if ( STOP.equals( action ) || UNLOAD.equals( action ) ) 
@@ -160,7 +158,7 @@ public class PGLowLatencyAudio extends Plugin {
 				}
 				else 
 				{
-					result = new PluginResult(Status.ERROR, ERROR_NO_AUDIOID);
+					result = false;
 				}
 			}
 			
@@ -180,20 +178,14 @@ public class PGLowLatencyAudio extends Plugin {
 				}
 				else 
 				{
-					result = new PluginResult(Status.ERROR, ERROR_NO_AUDIOID);
+					result = false;
 				}
-			}
-			
-			if ( result == null )
-			{
-				result = new PluginResult(Status.OK);
 			}
 		} 
 		catch (Exception ex) 
 		{
-			result = new PluginResult(Status.ERROR, ex.toString());
+			result = false;
 		}
-		
 		
 		return result;
 	}

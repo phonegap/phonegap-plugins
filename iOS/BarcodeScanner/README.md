@@ -4,6 +4,8 @@ Originally by Matt Kane
 
 Modifications by IBM
 
+Update by @daynatem for Cordova 2.6 2.7+
+
 ## Using the plugin ##
 
 The plugin requires the AVFoundation Framework, which is only available under
@@ -96,11 +98,7 @@ at the bare minumum a transparent view that is connected to the PGbcsViewControl
 
 * Copy the .h, .cpp and .mm files to the Plugins directory in your project.
 * Copy the .js file to your www directory and reference it from your html file(s).
-* In the `Supporting Files` directory of your project, add a new plugin
-by editing the file `Cordova.plist` and in the `Plugins` dictionary adding
-the following key/value pair:
- * key: `org.apache.cordova.barcodeScanner`
- * value: `CDVBarcodeScanner`
+* Add in config.xml <plugin name="BarcodeScanner" value="CDVBarcodeScanner" />
 * Add the following libraries to your Xcode project, if not already there:
  * AVFoundation.framework
  * AssetsLibrary.framework
@@ -110,8 +108,36 @@ the following key/value pair:
    Under Link Binary With Libraries, click the add button and then
    select the frameworks above.  To support being able to link against
    iOS 3.x, these libraries should be marked as Optional, not Required.
+* Add reference barcodescanner.js in www/index.html and example code
+
+document.addEventListener("deviceready", onDeviceReady, false);
+            
+            function onDeviceReady()
+            {
+                window.plugins.barcodeScanner.scan(scannerSuccess, scannerFailure);
+            }
+            
+            
+            //------------------------------------------------------------------------------
+            function scannerSuccess(result) {
+                console.log("scannerSuccess: result: " + result)
+                console.log(result.text);
+                
+            }
+            
+            //------------------------------------------------------------------------------
+            function scannerFailure(message) {
+                console.log("scannerFailure: message: " + message)
+            }
+
 
 * You may need to set the compile options for zxing-all-in-one.cc to turn off optimization.
+
+## Compule Errors for cordova 2.6 in CDVPlugin update file
+extern NSString* const CDVPageDidLoadNotification;
+extern NSString* const CDVPluginHandleOpenURLNotification;
+extern NSString* const CDVPluginResetNotification;
+extern NSString* const CDVLocalNotification;
 
 ## Compile Errors for Automagic Reference Counting (ARC) ##
 

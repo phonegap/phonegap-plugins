@@ -122,6 +122,7 @@ document.addEventListener("deviceready", onDeviceReady, false);
             function scannerSuccess(result) {
                 console.log("scannerSuccess: result: " + result)
                 console.log(result.text);
+                alert(result.text);
                 
             }
             

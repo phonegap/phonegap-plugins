@@ -1,6 +1,6 @@
 PowerManagement
 ===============
-Plugin for Cordova (1.6+)
+Plugin for Cordova (2.0+)
 
 The PowerManagement plugin offers access to the devices power-management functionality.
 It should be used for applications which keep running for a long time without any user interaction.
@@ -9,10 +9,12 @@ For details on power functionality see:
 
 * Android: [PowerManager](http://developer.android.com/reference/android/os/PowerManager.html)
 * iOS: [idleTimerDisabled](http://developer.apple.com/library/ios/documentation/UIKit/Reference/UIApplication_Class/Reference/Reference.html#//apple_ref/occ/instp/UIApplication/idleTimerDisabled)
+* WindowsPhone: [UserIdleDetectionMode](http://msdn.microsoft.com/en-US/library/windowsphone/develop/microsoft.phone.shell.phoneapplicationservice.useridledetectionmode%28v=vs.105%29.aspx)
 
 Platforms
 ---------
-Currently available on:
+For all platforms copy the *PowerManagement.js* file to your applications "www" folder and load it using the according HTML code.
+`<script type="text/javascript" charset="utf-8" src="lib/cordova/powermanagement.js"></script>`
 
 ### Android
 Copy the *PowerManagement.java* file to your *src/* directory.
@@ -28,10 +30,12 @@ Copy the *PowerManagement.h* and *PowerManagement.m* files to your projects "Plu
 
 Add the PowerManagement plugin to the *Cordova.plist* file (to the Plugins list). Both Key and Value are "PowerManagement".
 
+### WindowsPhone
+Copy the *PowerManagement.cs* file to your projects "Plugins" folder.
 
 License
 =======
-Copyright (C) 2011-2012 Wolfgang Koller
+Copyright (C) 2011-2013 Wolfgang Koller
 
 This file is part of GOFG Sports Computer - http://www.gofg.at/.
 

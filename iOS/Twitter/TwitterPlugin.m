@@ -6,7 +6,7 @@
 //
 
     #import "TwitterPlugin.h"
-    #import <Cordova/JSONKit.h>
+    #import <CORDOVA/CDVJSON.h>
 	#import <Cordova/CDVAvailability.h>
 
 #define TWITTER_URL @"http://api.twitter.com/1/"

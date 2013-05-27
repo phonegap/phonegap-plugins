@@ -6,7 +6,9 @@
  */
 
 var InAppPurchaseManager = function() { 
-	PhoneGap.exec('InAppPurchaseManager.setup');
+	cordova.exec(null, function () {
+		// It occurs when user can't purchase anything
+	}, "InAppPurchaseManager", "setup", []);
 }
 
 /**
@@ -21,7 +23,9 @@ InAppPurchaseManager.prototype.makePurchase = function(productId, quantity) {
 	if(!q) {
 		q = 1;
 	}
-    return PhoneGap.exec('InAppPurchaseManager.makePurchase', productId, q);		
+    
+    // return
+    cordova.exec(null, null, "InAppPurchaseManager", "makePurchase", [productId, q]);
 }
 
 /**
@@ -31,7 +35,8 @@ InAppPurchaseManager.prototype.makePurchase = function(productId, quantity) {
  */
 
 InAppPurchaseManager.prototype.restoreCompletedTransactions = function() {
-    return PhoneGap.exec('InAppPurchaseManager.restoreCompletedTransactions');		
+	// return
+    cordova.exec(null, null, "InAppPurchaseManager", "restoreCompletedTransactions", []);
 }
 
 
@@ -45,19 +50,7 @@ InAppPurchaseManager.prototype.restoreCompletedTransactions = function() {
  */
 
 InAppPurchaseManager.prototype.requestProductData = function(productId, successCallback, failCallback) {
-	var key = 'f' + this.callbackIdx++;
-	window.plugins.inAppPurchaseManager.callbackMap[key] = {
-    success: function(productId, title, description, price ) {
-        if (productId == '__DONE') {
-            delete window.plugins.inAppPurchaseManager.callbackMap[key]
-            return;
-        }
-        successCallback(productId, title, description, price);
-    },
-    fail: failCallback
-	}
-	var callback = 'window.plugins.inAppPurchaseManager.callbackMap.' + key;
-    PhoneGap.exec('InAppPurchaseManager.requestProductData', productId, callback + '.success', callback + '.fail');	
+    cordova.exec(successCallback, failCallback, "InAppPurchaseManager", "requestProductData", [productId]);	
 }
 
 /**
@@ -85,13 +78,7 @@ InAppPurchaseManager.prototype.requestProductData = function(productId, successC
  *  strings which were rejected by the app store.
  */
 InAppPurchaseManager.prototype.requestProductsData = function(productIds, callback) {
-	var key = 'b' + this.callbackIdx++;
-	window.plugins.inAppPurchaseManager.callbackMap[key] = function(validProducts, invalidProductIds) {
-		delete window.plugins.inAppPurchaseManager.callbackMap[key];
-		callback(validProducts, invalidProductIds);
-	};
-	var callbackName = 'window.plugins.inAppPurchaseManager.callbackMap.' + key;
-	PhoneGap.exec('InAppPurchaseManager.requestProductsData', callbackName, {productIds: productIds});
+	cordova.exec(callback, null, "InAppPurchaseManager", "requestProductsData", [productIds]);
 };
 
 /* function(transactionIdentifier, productId, transactionReceipt) */
@@ -104,7 +91,9 @@ InAppPurchaseManager.prototype.onRestored = null;
 InAppPurchaseManager.prototype.onFailed = null;
 
 /* function() */
-InAppPurchaseManager.prototype.onRestoreCompletedTransactionsFinished = null;
+InAppPurchaseManager.prototype.onRestoreCompletedTransactionsFinished = function () {
+	console.log("restored transaction");
+};
 
 /* function(errorCode) */
 InAppPurchaseManager.prototype.onRestoreCompletedTransactionsFailed = null;
@@ -112,7 +101,6 @@ InAppPurchaseManager.prototype.onRestoreCompletedTransactionsFailed = null;
 /* This is called from native.*/
 
 InAppPurchaseManager.prototype.updatedTransactionCallback = function(state, errorCode, errorText, transactionIdentifier, productId, transactionReceipt) {
-    alert(state);
 	switch(state) {
 		case "PaymentTransactionStatePurchased":
 			if(window.plugins.inAppPurchaseManager.onPurchased)
@@ -156,6 +144,7 @@ InAppPurchaseManager.prototype.runQueue = function() {
 	if(!this.eventQueue.length || (!this.onPurchased && !this.onFailed && !this.onRestored)) {
 		return;
 	}
+
 	var args;
 	/* We can't work directly on the queue, because we're pushing new elements onto it */
 	var queue = this.eventQueue.slice();
@@ -182,15 +171,39 @@ InAppPurchaseManager.prototype.unWatchQueue = function() {
 	}
 }
 
-
 InAppPurchaseManager.prototype.callbackMap = {};
 InAppPurchaseManager.prototype.callbackIdx = 0;
 InAppPurchaseManager.prototype.eventQueue = [];
 InAppPurchaseManager.prototype.timer = null;
 
-PhoneGap.addConstructor(function()  {
-                        if(!window.plugins) {
-                        window.plugins = {};
-                        }
-                        window.plugins.inAppPurchaseManager = InAppPurchaseManager.manager = new InAppPurchaseManager();
-                        });
+document.addEventListener("deviceready", function()  {
+	window.plugins = window.plugins || {};
+	window.plugins.inAppPurchaseManager = InAppPurchaseManager.manager = new InAppPurchaseManager();
+
+	window.plugins.inAppPurchaseManager.onPurchased = function(transactionIdentifier, productId, transactionReceipt) {
+        console.log('purchased: ' + productId);
+
+        // If failed a receipt validation on server, you can restore transaction this payment.
+        // window.plugins.inAppPurchaseManager.restoreCompletedTransactions();
+    }
+
+    // Perhaps It did rollback a transaction
+    window.plugins.inAppPurchaseManager.onRestored = function(transactionIdentifier, productId, transactionReceipt) {
+        console.log('restored: ' + productId);
+        /* See the developer guide for details of what to do with this */
+    }
+
+    // Failed to purchase an item
+    window.plugins.inAppPurchaseManager.onFailed = function(errno, errtext) {
+    	alert(errtext);
+    }
+
+    // requestProductData -> { id, title, description, price }
+    // requestProductsData -> [[{ id, title, description, price }, ... ], [invaildID]]
+    // plugins.inAppPurchaseManager.requestProductData("1", function(result) {
+    //         window.plugins.inAppPurchaseManager.makePurchase(result.id, 1 /* quantity */);
+    //     }, function(id) {
+    //         console.log("[In JS] Invalid product id: " + id);
+    //     }
+    // );
+});

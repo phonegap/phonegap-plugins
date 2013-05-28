@@ -2,9 +2,9 @@
  * 
  * Phonegap share plugin for Android
  * Kevin Schaul 2011
+ * Modified by Robin, robin@cubettech.com on 28th may 2013
  *
  */
-
 package com.schaul.plugins.share;
 
 import org.json.JSONArray;
@@ -13,19 +13,23 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 
-import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.CallbackContext;
+import org.apache.cordova.api.CordovaPlugin;
 import org.apache.cordova.api.PluginResult;
 
-public class Share extends Plugin {
+public class Share extends CordovaPlugin {
 
-	@Override
-	public PluginResult execute(String action, JSONArray args, String callbackId) {
+	public boolean execute(String arg0, JSONArray args, CallbackContext callbackContext) {
 		try {
 			JSONObject jo = args.getJSONObject(0);
 			doSendIntent(jo.getString("subject"), jo.getString("text")); 
-			return new PluginResult(PluginResult.Status.OK);
+			PluginResult res = new PluginResult(PluginResult.Status.OK);
+			callbackContext.sendPluginResult(res);
+			return true;
 		} catch (JSONException e) {
-			return new PluginResult(PluginResult.Status.JSON_EXCEPTION);
+			PluginResult res = new PluginResult(PluginResult.Status.JSON_EXCEPTION);
+			callbackContext.sendPluginResult(res);
+			return false;
 		}
 	}
 	

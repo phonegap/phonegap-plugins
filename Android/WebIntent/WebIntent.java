@@ -159,6 +159,34 @@ public class WebIntent extends CordovaPlugin {
                 callbackContext.success();
                 return true;
 
+            } else if (action.equals("launchActivity"))
+            {
+                if (args.length() != 1) {
+                    PluginResult res = new PluginResult(PluginResult.Status.INVALID_ACTION);
+                    callbackContext.sendPluginResult(res);
+                    return false;
+                }
+
+                 // Parse the arguments
+                JSONObject obj = args.getJSONObject(0);
+
+                JSONObject extras = obj.has("extras") ? obj.getJSONObject("extras") : null;
+                Map<String, String> extrasMap = new HashMap<String, String>();
+
+                // Populate the extras if any exist
+                if (extras != null) {
+                    JSONArray extraNames = extras.names();
+                    for (int i = 0; i < extraNames.length(); i++) {
+                        String key = extraNames.getString(i);
+                        String value = extras.getString(key);
+                        extrasMap.put(key, value);
+                    }
+                }
+
+                launchActivity(obj.getString("packageName"), extrasMap);
+                callbackContext.success();
+                return true;
+
             }
 
             PluginResult res = new PluginResult(PluginResult.Status.INVALID_ACTION);
@@ -217,5 +245,20 @@ public class WebIntent extends CordovaPlugin {
         }
 
         ((DroidGap)this.cordova.getActivity()).sendBroadcast(intent);
+    }
+
+    void launchActivity(String packageName, Map<String, String> extras) {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        String packageActivity = packageName + ".MainActivity";
+        ComponentName componentName = new ComponentName(packageName, packageActivity);
+
+        intent.setComponent(componentName);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        for (String key : extras.keySet()) {
+            String value = extras.get(key);
+            intent.putExtra(key, value);
+        }
+
+        ((DroidGap)this.cordova.getActivity()).startActivity(intent);
     }
 }

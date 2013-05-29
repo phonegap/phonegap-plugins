@@ -79,7 +79,7 @@ Sends a custom intent passing optional extras
 Sends an intent to launch an activity in parallel passing optional extras
 
     window.plugins.webintent.launchActivity({
-                action: 'com.package.name',
+                packageName: 'com.package.name',
                 extras: {
                     'option': true
                 }

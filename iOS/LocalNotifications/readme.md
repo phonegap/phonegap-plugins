@@ -8,6 +8,8 @@ It also explains how to create a callback to your app when it is launched from t
 the full write up is here:<br>
 http://www.drewdahlman.com/meusLabs/?p=117
 
+UPDATE: 5.30.2013 - The plugin has been updated for Cordova 2.x
+
 
 <b>NOTES</b>:<br>
 A breakdown of options - <br>
@@ -17,7 +19,7 @@ A breakdown of options - <br>
 - badge ( displays number badge to notification )<br>
 - foreground ( a javascript function to be called if the app is running )<br>
 - background ( a javascript function to be called if the app is in the background )<br>
-- sound ( a sound to be played, the sound must be located in your project's resources and must be a caf file )<br>
+- sound ( a sound to be played, the sound must be located in your project's resources and must be a caf file. If this value is empty the default system sound will be used or if a value of 'none' is set, the notification will be silent. )<br>
 
 <b>ADJUSTING AppDelegate</b><br>
 After you've added LocalNotifications to your plugins you need to make a minor addition to AppDelegate.m
@@ -130,4 +132,10 @@ function background(id){
 - Added Notification ID's to callback.
 - Fixed spelling error for 'foreground'
 - Notice that you no longer have to call your background or foreground functions with the (). This is now added by the plugin on the objective-c side of things.
+<br>
+<i>5.30.2013 (Dave Alden - www.workingedge.co.uk)</i>
+- Updated from phonegap-1.2.0 to cordova-2.5.0
+- Updated to use new plugin signature (Cordova 2.1.0+)
+- Added support for silent alerts with sound='none'
+- Added more examples
 

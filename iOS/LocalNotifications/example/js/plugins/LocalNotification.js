@@ -1,56 +1,58 @@
 /**
-	Phonegap LocalNotification Plugin
-	Copyright (c) Greg Allen 2011
-	Updates Drew Dahlman 2012
-	
-	MIT Licensed
-
 	Usage:
 	plugins.localNotification.add({ date: new Date(), message: 'This is a notification', badge: 1, id: 123, sound:'sub.caf',background:'app.background()',foreground:'app.running()' });
 	plugins.localNotification.cancel(123);
 	plugins.localNotification.cancelAll();
 **/
-if (typeof PhoneGap !== "undefined") {
-	var LocalNotification = function() {
-	};
 
-	LocalNotification.prototype.add = function(options) {
-        var defaults = {
-            date: false,
-            message: '',
-            hasAction: true,
-            action: 'View',
-            repeat: '',
-            badge: 0,
-            id: 0,
-			sound:'',
+cordova.define("cordova/plugin/localnotification", function(require, exports, module) {
+	var exec = require('cordova/exec');
+	
+	var LocalNotification = function() {};
+	
+
+	LocalNotification.prototype.add = function(successFn, errorFn, options) {
+		var defaults = {
+			date: false,
+			message: '',
+			hasAction: true,
+			action: 'View',
+			repeat: '',
+			badge: 0,
+			id: 0,
 			background:'',
-			foreground:''
-        };
-        for (var key in defaults) {
-            if (typeof options[key] !== "undefined")
-                defaults[key] = options[key];
-        }
+			foreground:'',
+			sound: '' 
+		};
+		for (var key in defaults) {
+			if (typeof options[key] !== "undefined")
+				defaults[key] = options[key];
+		}
 		if (typeof defaults.date == 'object') {
 			defaults.date = Math.round(defaults.date.getTime()/1000);
 		}
-		PhoneGap.exec("LocalNotification.addNotification", defaults);
-	};
+	  exec(successFn, errorFn, 'LocalNotification', 'addNotification', [
+	  	defaults.date, 
+	  	defaults.message, 
+	  	defaults.hasAction, 
+	  	defaults.action, 
+	  	defaults.repeat,
+	  	defaults.badge,
+	  	defaults.id,
+	  	defaults.background,
+	  	defaults.foreground,
+			defaults.sound // '' = default sound, 'none' = silent, 'mysound.caf' == custom sound
+	  ]);
+	}
 
-	LocalNotification.prototype.cancel = function(id) {
-		PhoneGap.exec("LocalNotification.cancelNotification", id);
-	};
+	LocalNotification.prototype.cancel = function(successFn, errorFn, id) {
+	    exec(successFn, errorFn, 'LocalNotification', 'cancelNotification', [id]);
+	}
 	
-	LocalNotification.prototype.cancelAll = function(id) {
-        PhoneGap.exec("LocalNotification.cancelAllNotifications");
-    };
-
-	PhoneGap.addConstructor(function() 
-	{
-		if(!window.plugins)
-		{
-			window.plugins = {};
-		}
-		window.plugins.localNotification = new LocalNotification();
-	});
-}
+    LocalNotification.prototype.cancelAll = function(successFn, errorFn) {
+        exec(successFn, errorFn, 'LocalNotification', 'cancelAllNotifications', []);
+    }
+	
+	var localnotification = new LocalNotification();
+	module.exports = localnotification;
+});

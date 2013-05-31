@@ -1,7 +1,0 @@
-//
-// Prefix header for all source files of the 'Cordova LocalNotifications' target in the 'Cordova LocalNotifications' project
-//
-
-#ifdef __OBJC__
-    #import <UIKit/UIKit.h>
-#endif

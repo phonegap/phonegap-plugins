@@ -9,13 +9,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.content.ComponentName;
 import android.net.Uri;
 import android.util.Log;
 import android.text.Html;
 
+//import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.CallbackContext;
 import org.apache.cordova.api.CordovaPlugin;
 import org.apache.cordova.api.PluginResult;
-import org.apache.cordova.api.CallbackContext;
 
 /**
  * WebIntent is a PhoneGap plugin that bridges Android intents and web
@@ -30,7 +32,7 @@ import org.apache.cordova.api.CallbackContext;
  */
 public class WebIntent extends CordovaPlugin {
 
-    private String onNewIntentCallback = null;
+    private CallbackContext onNewIntentCallback = null;
 
     /**
      * Executes the request and returns PluginResult.
@@ -70,6 +72,7 @@ public class WebIntent extends CordovaPlugin {
                 }
 
                 startActivity(obj.getString("action"), uri, type, extrasMap);
+
                 callbackContext.success();
                 return true;
 
@@ -81,6 +84,7 @@ public class WebIntent extends CordovaPlugin {
                 }
                 Intent i = ((DroidGap)this.cordova.getActivity()).getIntent();
                 String extraName = args.getString(0);
+
                 PluginResult res = new PluginResult(PluginResult.Status.OK, i.hasExtra(extraName));
                 callbackContext.sendPluginResult(res);
                 return true;
@@ -117,7 +121,6 @@ public class WebIntent extends CordovaPlugin {
 
                 callbackContext.success(uri);
                 return true;
-
             } else if (action.equals("onNewIntent")) {
                 if (args.length() != 0) {
                     PluginResult res = new PluginResult(PluginResult.Status.INVALID_ACTION);
@@ -126,11 +129,11 @@ public class WebIntent extends CordovaPlugin {
                 }
 
                 this.onNewIntentCallback = callbackContext;
+
                 PluginResult res = new PluginResult(PluginResult.Status.NO_RESULT);
                 res.setKeepCallback(true);
                 callbackContext.sendPluginResult(res);
                 return true;
-
             } else if (action.equals("sendBroadcast"))
             {
                 if (args.length() != 1) {
@@ -158,7 +161,6 @@ public class WebIntent extends CordovaPlugin {
                 sendBroadcast(obj.getString("action"), extrasMap);
                 callbackContext.success();
                 return true;
-
             } else if (action.equals("launchActivity"))
             {
                 if (args.length() != 1) {
@@ -186,14 +188,12 @@ public class WebIntent extends CordovaPlugin {
                 launchActivity(obj.getString("packageName"), extrasMap);
                 callbackContext.success();
                 return true;
-
             }
-
             PluginResult res = new PluginResult(PluginResult.Status.INVALID_ACTION);
             callbackContext.sendPluginResult(res);
             return false;
-
         } catch (JSONException e) {
+            //e.printStackTrace();
             callbackContext.error(e.getMessage());
             return false;
         }

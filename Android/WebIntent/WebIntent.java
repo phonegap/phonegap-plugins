@@ -99,8 +99,7 @@ public class WebIntent extends CordovaPlugin {
                 String extraName = args.getString(0);
 
                 if (i.hasExtra(extraName)) {
-                    PluginResult res = new PluginResult(PluginResult.Status.OK, i.hasExtra(extraName));
-                    callbackContext.sendPluginResult(res);
+                    callbackContext.success(i.getStringExtra(extraName));
                     return true;
 
                 } else {

@@ -98,7 +98,7 @@
   NSMutableDictionary *response = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    info.cardNumber, @"card_number",
                                    info.redactedCardNumber, @"redacted_card_number",
-                                   [CardIOCreditCardInfo displayStringForCardType:info.cardType], @"card_type",
+                                  [CardIOCreditCardInfo displayStringForCardType:info.cardType usingLanguageOrLocale:[[NSLocale currentLocale] localeIdentifier]], @"card_type",
                                    nil];
   if(info.expiryMonth > 0 && info.expiryYear > 0) {
     [response setObject:[NSNumber numberWithUnsignedInteger:info.expiryMonth] forKey:@"expiry_month"];

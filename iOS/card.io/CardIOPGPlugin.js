@@ -10,9 +10,12 @@
  *
  * @constructor
  */
-function CardIO() {
-}
 
+cordova.define("cordova/plugin/cardio", function(require, exports, module) {
+               var exec = require('cordova/exec');
+               
+               var CardIO = function() {};
+               
 /**
  * Scan a credit card with card.io.
  *
@@ -31,48 +34,40 @@ function CardIO() {
  * @parameter onFailure: a zero argument callback function that will be called if the user
  * cancels card scanning.
  */
-CardIO.prototype.scan = function(appToken, options, onSuccess, onFailure) {
-  Cordova.exec(onSuccess, onFailure, "CardIOPGPlugin", "scan", [appToken, options]);
-};
-
+               CardIO.prototype.scan = function(appToken, options, onSuccess, onFailure) {
+               exec(onSuccess, onFailure, "CardIOPGPlugin", "scan", [appToken, options]);
+               };
+               
 /**
  * Check whether card scanning is currently available. (May vary by
  * device, OS version, network connectivity, etc.)
  *
  * @parameter callback: a callback function accepting a boolean.
  */
-CardIO.prototype.canScan = function(callback) {
-  var failureCallback = function() {
-    console.log("Could not detect whether card.io card scanning is available.");
-  };
-  var wrappedSuccess = function(response) {
-    callback(response != 0);
-  }
-  Cordova.exec(wrappedSuccess, failureCallback, "CardIOPGPlugin", "canScan", []);
-};
-
+               CardIO.prototype.canScan = function(callback) {
+               var failureCallback = function() {
+               console.log("Could not detect whether card.io card scanning is available.");
+               };
+               var wrappedSuccess = function(response) {
+               callback(response != 0);
+               }
+               
+               exec(wrappedSuccess, failureCallback, "CardIOPGPlugin", "canScan", []);
+               };
+               
 /**
  * Retrieve the version of the card.io library. Useful when contacting support.
  *
  * @parameter callback: a callback function accepting a string.
  */
-CardIO.prototype.version = function(callback) {
-  var failureCallback = function() {
-    console.log("Could not retrieve card.io library version");
-  };
-
-  Cordova.exec(callback, failureCallback, "CardIOPGPlugin", "version", []);
-};
-
-
-/**
- * Plugin setup boilerplate.
- */
-Cordova.addConstructor(function() {
-  if(!window.plugins) {
-    window.plugins = {};
-  }
-  if(!window.plugins.card_io) {
-    window.plugins.card_io = new CardIO();
-  }
-});
+               CardIO.prototype.version = function(callback) {
+               var failureCallback = function() {
+               console.log("Could not retrieve card.io library version");
+               };
+               
+               exec(callback, failureCallback, "CardIOPGPlugin", "version", []);
+               };
+               
+               var myplugin = new CardIO();
+               module.exports = myplugin;
+               });

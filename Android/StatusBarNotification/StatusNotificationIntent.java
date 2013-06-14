@@ -11,8 +11,10 @@ import android.content.pm.PackageManager;
 //import com.my.app.R;
 
 public class StatusNotificationIntent {
-    public static Notification buildNotification( Context context, CharSequence tag, CharSequence contentTitle, CharSequence contentText, int flag ) {
-        int icon = R.drawable.notification;
+    public static Notification buildNotification( Context context, CharSequence tag, CharSequence contentTitle, CharSequence contentText, Stringnid, int flag ) {
+        
+		int icon = StatusNotificationIntent.getNotificationIcon(nid);
+
         long when = System.currentTimeMillis();
         Notification noti = new Notification(icon, contentTitle, when);
         noti.flags |= flag;
@@ -26,4 +28,17 @@ public class StatusNotificationIntent {
         noti.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
         return noti;
     }
+
+	public static int getNotificationIcon(String nid) {
+	
+		/**
+		  define a set of icons you want to use in your app
+		  **/
+		if(nid.equals("notification2")) {
+    		return R.drawable.notification2;
+    	}   
+
+		// default notification resource
+		return R.drawable.notification
+	}
 }

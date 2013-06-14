@@ -1,34 +1,41 @@
 <html>
 	<head>
-		<script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
+		<script type="text/javascript" charset="utf-8" src="cordova-2.8.0.js"></script>
 		<script type="text/javascript" charset="utf-8" src="powermanagement.js"></script>
-		
+
 		<script type="text/javascript">
 		function deviceready() {
 			alert( 'cordova ready!' );
 		}
-		
+
 		function acquire() {
 			cordova.require('cordova/plugin/powermanagement').acquire(
-					function() { alert( 'hooray' ); },
-					function() { alert( 'oh no!' ); }
+					function() { alert( 'successfully acquired full wake lock' ); },
+					function() { alert( 'error acquiring full wake lock' ); }
 					);
 		};
-		
+
 		function release() {
 			cordova.require('cordova/plugin/powermanagement').release(
-					function() { alert( 'hooray' ); },
-					function() { alert( 'oh no!' ); }
+					function() { alert( 'successfully released wake lock' ); },
+					function() { alert( 'error releasing wake lock' ); }
 					);
 		}
-		
+
 		function dim() {
 			cordova.require('cordova/plugin/powermanagement').dim(
-					function() { alert( 'hooray' ); },
-					function() { alert( 'oh no!' ); }
+					function() { alert( 'successfully acquired dim wake lock!' ); },
+					function() { alert( 'error acquiring dim wake lock' ); }
 					);
 		}
-		
+
+		function partial() {
+			cordova.require('cordova/plugin/powermanagement').partial(
+					function() { alert( 'successfully acquired partial wake lock!' ); },
+					function() { alert( 'error acquiring partial wake lock' ); }
+					);
+		}
+
 		document.addEventListener("deviceready", deviceready, true);
 		</script>
 	</head>
@@ -38,5 +45,7 @@
 	<button type="button" onclick="release();">release</button>
 	<br />
 	<button type="button" onclick="dim();">dim</button>
+	<br />
+	<button type="button" onclick="partial();">partial</button>
 	</body>
 </html>

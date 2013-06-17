@@ -8,12 +8,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
-//import com.my.app.R;
+import com.urucas.tmusica.R;
 
 public class StatusNotificationIntent {
-    public static Notification buildNotification( Context context, CharSequence tag, CharSequence contentTitle, CharSequence contentText, int flag ) {
-        int icon = R.drawable.notification;
+    public static Notification buildNotification( Context context, CharSequence tag, CharSequence contentTitle, CharSequence contentText, String iconID, int flag ) {
+        
+    	int icon = StatusNotificationIntent.getNotificationIcon(iconID);
         long when = System.currentTimeMillis();
+        
         Notification noti = new Notification(icon, contentTitle, when);
         noti.flags |= flag;
 
@@ -25,5 +27,13 @@ public class StatusNotificationIntent {
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
         noti.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
         return noti;
+    }
+    
+    private static int getNotificationIcon(String iconID) {
+    	
+    	if(iconID.equals("icon2")) {
+    		return R.drawable.icon2;
+    	}
+    	return R.drawable.icon1;
     }
 }

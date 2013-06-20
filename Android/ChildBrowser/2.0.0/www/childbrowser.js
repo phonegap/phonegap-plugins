@@ -25,7 +25,8 @@ ChildBrowser.LOCATION_CHANGED_EVENT = 1;
 ChildBrowser.prototype.showWebPage = function(url, options) {
     options = options || {
         showLocationBar: true,
-        locationBarAlign: "top"
+        locationBarAlign: "top",
+        showLoadingIndicator: false
     };
     cordova.exec(this._onEvent, this._onError, "ChildBrowser", "showWebPage", [url, options]);
 };

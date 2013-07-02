@@ -1,5 +1,7 @@
-var AccountList = function(gap) {
+(function(gap) {
 
+	function AccountList() {}
+	
 	AccountList.prototype.get = function(params, success, fail) {
 		return gap.exec( function(args) {
 			success(args);
@@ -15,9 +17,9 @@ var AccountList = function(gap) {
 	            if (!window.plugins) {
 	                window.plugins = {};
 	            }
-	
+
 	            window.plugins.AccountList = new AccountList();
 	        }
 	});
-
+	
 })(window.cordova || window.Cordova || window.PhoneGap);

@@ -25,11 +25,12 @@ Using the plugin
                                  // google account example: 'com.google'
         }, 
         function (result) {
-            console.log(result.length);
-    		for (i in res)
-    		    console.log(result[i]);
+            console.log("AccountList:" + result.length);
+            for (var i = 0, l = result.length; i < l; i++) {
+                console.log("AccountList:" + result[i]);
+            }
         },
         function (error) {
-            console.log(error);
+            console.log("AccountList:" + error);
         }
     );

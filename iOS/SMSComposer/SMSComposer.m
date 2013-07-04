@@ -35,15 +35,15 @@
 		return;
 	}
 
-	NSString	*body = [arguments objectAtIndex:1];
-	NSString	*toRecipientsString = [arguments objectAtIndex:0];
+	NSString	*body = [command.arguments objectAtIndex:1];
+	NSString	*toRecipientsString = [command.arguments objectAtIndex:0];
 
 	MFMessageComposeViewController *picker = [[MFMessageComposeViewController alloc] init];
 
 	picker.messageComposeDelegate = self;
 
 	if (body != nil) {
-		picker.body = [arguments objectAtIndex:1];
+		picker.body = [command.arguments objectAtIndex:1];
 	}
 
 	if (toRecipientsString != nil) {

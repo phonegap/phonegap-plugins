@@ -9,7 +9,7 @@
 
 @property (nonatomic, strong) ChildBrowserViewController* childBrowser;
 
-- (void)showWebPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)showWebPage:(CDVInvokedUrlCommand*)command;
 - (void)onChildLocationChange:(NSString*)newLoc;
 
 @end

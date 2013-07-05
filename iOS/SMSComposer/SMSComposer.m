@@ -15,7 +15,7 @@
 	return self;
 }
 
-- (void)showSMSComposer:(CDVInvokedUrlCommand*)command;
+- (void)showSMSComposer:(CDVInvokedUrlCommand*)command
 {
 	Class messageClass = (NSClassFromString(@"MFMessageComposeViewController"));
 

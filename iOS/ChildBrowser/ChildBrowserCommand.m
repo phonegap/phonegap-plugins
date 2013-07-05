@@ -10,7 +10,7 @@
 
 @synthesize childBrowser;
 
-- (void)showWebPage:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options  // args: url
+- (void)showWebPage:(CDVInvokedUrlCommand*)command  // args: url
 {
     /* setting audio session category to "Playback" (since iOS 6) */
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
@@ -37,7 +37,7 @@
 
     [self.viewController presentModalViewController:childBrowser animated:YES];
 
-    NSString* url = (NSString*)[arguments objectAtIndex:0];
+    NSString* url = (NSString*)[command.arguments objectAtIndex:0];
 
     [self.childBrowser loadURL:url];
 }
@@ -49,7 +49,7 @@
     [self.childBrowser loadURL:url];
 }
 
-- (void)close:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options // args: url
+- (void)close:(CDVInvokedUrlCommand*)command // args: url
 {
     [self.childBrowser closeBrowser];
 }

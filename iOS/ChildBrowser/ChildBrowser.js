@@ -46,13 +46,13 @@ ChildBrowser._onJSCallback = function(js,loc)
 // Show a webpage, will result in a callback to onLocationChange
 ChildBrowser.prototype.showWebPage = function(loc)
 {
-    cordovaRef.exec("ChildBrowserCommand.showWebPage", loc);
+    cordovaRef.exec(null,null,"ChildBrowserCommand","showWebPage", [ loc ]);
 };
 
 // close the browser, will NOT result in close callback
 ChildBrowser.prototype.close = function()
 {
-    cordovaRef.exec("ChildBrowserCommand.close");
+    cordovaRef.exec(null,null,"ChildBrowserCommand","close", [ ]);
 };
 
 // Not Implemented

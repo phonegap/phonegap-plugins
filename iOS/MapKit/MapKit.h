@@ -7,11 +7,7 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 
-#ifdef CORDOVA_FRAMEWORK
-    #import <Cordova/CDVPlugin.h>
-#else
-    #import "CDVPlugin.h"
-#endif
+#import <Cordova/CDVPlugin.h>
 
 
 @interface MapKitView : CDVPlugin <MKMapViewDelegate> 
@@ -25,17 +21,17 @@
 
 - (void)createView;
 
-- (void)showMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)showMap:(CDVInvokedUrlCommand*)command;
 
-- (void)hideMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)hideMap:(CDVInvokedUrlCommand*)command;
 
 - (void)destroyMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
-- (void)clearMapPins:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)clearMapPins:(CDVInvokedUrlCommand*)command;
 
-- (void)addMapPins:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)addMapPins:(CDVInvokedUrlCommand*)command;
 
-- (void)setMapData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)setMapData:(CDVInvokedUrlCommand*)command;
 
 - (void) closeButton:(id)button;
 

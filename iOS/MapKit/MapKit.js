@@ -1,5 +1,5 @@
 
-(function() {
+(function(window) {
 
 var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to new fallbacks
 
@@ -9,8 +9,6 @@ var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to 
 	*
 	* Copyright (c) 2005-2010, Nitobi Software Inc., Brett Rudd, Jesse MacFadyen
 	*/
-
-	var cordovaRef = window.PhoneGap || window.Cordova || window.cordova;
 
 	var MapKit = function() {
 		this.options = {
@@ -29,8 +27,8 @@ var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to 
 			alert('You selected pin : ' + pindex);
 		},
 
-		showMap: function() {
-			cordovaRef.exec('MapKitView.showMap');
+		showMap: function(success, error) {
+			cordovaRef.exec(success, error, 'MapKitView', 'showMap', []);
 		},
 
 		setMapData: function(options) {
@@ -47,30 +45,33 @@ var cordovaRef = window.PhoneGap || window.Cordova || window.cordova; // old to 
 					this.options[v] = options[v];
 				}
 			}
-			cordovaRef.exec('MapKitView.setMapData', this.options);
+			cordovaRef.exec(success, error, 'MapKitView', 'setMapData', [this.options]);
 		},
 
-		addMapPins: function(pins) {
-			var pinStr = '[]';
-			if (pins) {
-				pinStr = JSON.stringify(pins);
-			}
-			cordovaRef.exec('MapKitView.addMapPins', pinStr);
+		addMapPins: function(pins, success, error) {
+			cordovaRef.exec(success, error, 'MapKitView', 'addMapPins', [pins]);
 		},
 
-		clearMapPins: function() {
-			cordovaRef.exec('MapKitView.clearMapPins');
+		clearMapPins: function(success, error) {
+			cordovaRef.exec(success, error, 'MapKitView', 'clearMapPins', []);
 		},
 
 		hideMap: function() {
-			cordovaRef.exec('MapKitView.hideMap', {});
+			cordovaRef.exec(null, null, 'MapKitView', 'hideMap', []);
 		}
+
 
 	};
 
 	cordovaRef.addConstructor(function() {
 		window.plugins = window.plugins || {};
 		window.plugins.mapKit = new MapKit();
+		
+		// dummy stuff to silence calls from mapView regionDidChangeAnimated in .m
+		  window.geo = window.geo || {};
+		  window.geo.onMapMove = function(currentLat,currentLon,latitudeDelta,longitudeDelta) {
+		  // console.log([currentLat,currentLon,latitudeDelta,longitudeDelta]);
+		  };
 	});
 
-})();
+})(window);

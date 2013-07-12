@@ -12,8 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.cubet.pixsellit.R;
-
 import io.card.payment.CardIOActivity;
 import io.card.payment.CreditCard;
 import android.app.Activity;

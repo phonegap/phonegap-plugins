@@ -86,15 +86,18 @@ NOTE: The deprecated for 2.0.0 CDVPlugin methods verifyArguments and appViewCont
 
 ##Upgrading older Cordova plugins to 1.9.0
 1. Install Cordova 1.9.0
-2. Follow the "Upgrading older Cordova plugins to 1.8.0" section, if necessary 3. No changes in plugin structure from 1.8.x
+2. Follow the "Upgrading older Cordova plugins to 1.8.0" section, if necessary 
+3. 3. No changes in plugin structure from 1.8.x
 
 ##Upgrading older Cordova plugins to 1.8.0
 1. Install Cordova 1.8.0
-2. Follow the "Upgrading older Cordova plugins to 1.7.0" section, if necessary 3. No changes in plugin structure from 1.7.x
+2. Follow the "Upgrading older Cordova plugins to 1.7.0" section, if necessary 
+3. 3. No changes in plugin structure from 1.7.x
 
 ##Upgrading older Cordova plugins to 1.7.0
 1. Install Cordova 1.7.0
-2. Follow the "Upgrading older Cordova plugins to 1.6.0" section, if necessary 3. No changes in plugin structure from 1.6.x
+2. Follow the "Upgrading older Cordova plugins to 1.6.0" section, if necessary 
+3. 3. No changes in plugin structure from 1.6.x
 
 ##Upgrading older Cordova plugins to 1.6.x
 1. Install Cordova 1.6.x

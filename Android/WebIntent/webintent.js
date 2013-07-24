@@ -3,7 +3,7 @@
  * Copyright (c) Boris Smus 2010
  *
  */
- (function(cordova){
+(function(cordova){
     var WebIntent = function() {
 
     };
@@ -63,9 +63,17 @@
         }, 'WebIntent', 'sendBroadcast', [params]);
     };
 
+    WebIntent.prototype.launchActivity = function(params, success, fail){
+        return cordova.exec(function(args) {
+            success(args);
+        }, function(args) {
+            fail(args);
+        }, 'WebIntent', 'launchActivity', [params]);
+    };
+
     cordova.addConstructor(function() {
         window.webintent = new WebIntent();
-        
+
         // backwards compatibility
         window.plugins = window.plugins || {};
         window.plugins.webintent = window.webintent;

@@ -2,7 +2,7 @@
 By Boris Smus
 
 ## Adding the Plugin to your project ##
-1. To install the plugin, move webintent.js to your project's www folder and include a reference to it in your html files. 
+1. To install the plugin, move webintent.js to your project's www folder and include a reference to it in your html files.
 2. Create the path "com/borismus/webintent" within your project's src/ folder and move the java file into it.
 3. Add the plugin to your `res/xml/config.xml` file:
 
@@ -17,8 +17,8 @@ Launches an Android intent. For example:
 
     window.plugins.webintent.startActivity({
         action: window.plugins.webintent.ACTION_VIEW,
-        url: 'geo:0,0?q=' + address}, 
-        function() {}, 
+        url: 'geo:0,0?q=' + address},
+        function() {},
         function() {alert('Failed to open URL via Android Intent')};
     );
 
@@ -26,18 +26,18 @@ Launches an Android intent. For example:
 ### hasExtra ###
 checks if this app was invoked with the specified extra. For example:
 
-    window.plugins.webintent.hasExtra(WebIntent.EXTRA_TEXT, 
+    window.plugins.webintent.hasExtra(WebIntent.EXTRA_TEXT,
         function(has) {
             // has is true iff it has the extra
         }, function() {
             // Something really bad happened.
         }
     );
- 
+
 ### getExtra ###
 Gets the extra that this app was invoked with. For example:
 
-    window.plugins.webintent.getExtra(WebIntent.EXTRA_TEXT, 
+    window.plugins.webintent.getExtra(WebIntent.EXTRA_TEXT,
         function(url) {
             // url is the value of EXTRA_TEXT
         }, function() {
@@ -62,12 +62,24 @@ Gets called when onNewIntent is called for the parent activity. Used in only cer
             // url is the url that was passed to onNewIntent
         }
     });
-    
+
 ### sendBroadcast ###
 Sends a custom intent passing optional extras
 
     window.plugins.webintent.sendBroadcast({
                 action: 'com.dummybroadcast.action.triggerthing',
+                extras: {
+                    'option': true
+                }
+            }, function() {
+            }, function() {
+    });
+
+### launchActivity ###
+Sends an intent to launch an activity in parallel passing optional extras
+
+    window.plugins.webintent.launchActivity({
+                packageName: 'com.package.name',
                 extras: {
                     'option': true
                 }

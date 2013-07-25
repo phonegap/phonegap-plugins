@@ -12,15 +12,13 @@
 
 @implementation applicationPreferences
 
-
-
-- (void)getSetting:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+- (void) getSetting:(CDVInvokedUrlCommand*)command
 {
-	NSString* callbackID = [arguments pop];
+	NSString* callbackID = command.callbackId;
 	NSString* jsString;
 
         
-		NSString *settingsName = [options objectForKey:@"key"];
+		NSString *settingsName = [command.arguments objectAtIndex:0];
         CDVPluginResult* result = nil;
 	
 		@try 
@@ -49,14 +47,13 @@
 		}
 }
 
-- (void)setSetting:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+- (void)setSetting:(CDVInvokedUrlCommand*)command
 {
-    NSString* callbackID = [arguments pop];
+    NSString* callbackID = command.callbackId;
 	NSString* jsString;    
     CDVPluginResult* result;
-
-    NSString *settingsName = [options objectForKey:@"key"];
-    NSString *settingsValue = [options objectForKey:@"value"];
+    NSString *settingsName = [command.arguments objectAtIndex:0];
+    NSString *settingsValue = [command.arguments objectAtIndex:1];
 
 		
     @try 

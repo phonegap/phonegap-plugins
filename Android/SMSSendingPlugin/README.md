@@ -11,11 +11,20 @@ This plugin was successfully tested with Phonegap 2.5 and Android 4.2.2 (on a Sa
 1. Move SmsSendingPlugin.js to your project's www folder and include a reference to it in your html files. 
 2. Add the java file from src to your project's src hierarchy
 3. Reference the plugin in your res/config.xml file
-<plugin name="SendSmsPlugin" value="org.apache.cordova.plugin.SendSmsPlugin"/>
+
+```xml
+<feature name="SendSmsPlugin" >
+  <param name="android-package"
+          value="org.apache.cordova.plugin.SendSmsPlugin" />
+</feature>
+```
+
 4. Ensure that your manifest contains the necessary permissions to send SMS messages:
 
+```xml
 <uses-permission android:name="android.permission.SEND_SMS"/>
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+```
 
 ## Using the plugin ##
 To instantiate the plugin object:

@@ -5,8 +5,9 @@
 - Place the EmailComposer.js file somewhere in your www folder, and include it from your html.
 
 - Add the plugin to your config.xml file in this way:
-
-	<plugin name="EmailComposer" value="org.apache.cordova.EmailComposer"/>
+```xml
+<plugin name="EmailComposer" value="org.apache.cordova.EmailComposer"/>
+```
 
 Callable interface:
 

@@ -1,6 +1,6 @@
 package com.ocrapiservice;
 
-import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.CordovaPlugin;
 import org.apache.cordova.api.PluginResult;
 import org.json.JSONArray;
 
@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
-public class OcrApiServicePlugin extends Plugin {
+public class OcrApiServicePlugin extends CordovaPlugin {
 
 	public static final String NATIVE_ACTION_STRING="convert"; 
 
@@ -63,9 +63,7 @@ public class OcrApiServicePlugin extends Plugin {
 	 // Convert a resource path to a file path
 	 private String getFilePathFromResourcePath(String resourcePath){
 		 String filePath = "";
-		 // Discussion about the warning
-		 // http://simonmacdonald.blogspot.fr/2012/07/phonegap-android-plugins-sometimes-we.html
-		 ContentResolver cr = this.cordova.getContext().getContentResolver();
+		 ContentResolver cr = this.cordova.getActivity().getApplicationContext().getContentResolver();
 		 String [] projection = {MediaStore.Images.Media.DATA};
 		 Cursor cur = cr.query(Uri.parse(resourcePath), projection, null, null, null);
 		 if(cur != null)

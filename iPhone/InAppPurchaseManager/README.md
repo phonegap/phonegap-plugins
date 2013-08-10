@@ -50,11 +50,11 @@ A basic usage example is below:
     		console.log('failed: ' + errtext);
     	}
 
-    	window.plugins.inAppPurchaseManager.requestProductData("com.example.test", function(productId, title, description, price) {
-        		console.log("productId: " + productId + " title: " + title + " description: " + description + " price: " + price);
-        		window.plugins.inAppPurchaseManager.makePurchase(productId, 1);
+    	window.plugins.inAppPurchaseManager.requestProductData("com.example.test", function(result) {
+        		console.log("productId: " + result.id + " title: " + result.title + " description: " + result.description + " price: " + result.price);
+        		window.plugins.inAppPurchaseManager.makePurchase(result.id, 1);
         	}, function(id) {
-        		console.log("Invalid product id: " + id);
+        		console.log("Invalid product id: " + result);
     	    }
     	);
 

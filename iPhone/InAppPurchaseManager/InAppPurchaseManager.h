@@ -9,52 +9,42 @@
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 
-#ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PGPlugin.h>
-#else
-#import "PGPlugin.h"
-#endif
-
-#ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/NSData+Base64.h>
-#else
-#import "NSData+Base64.h"
-#endif
+#import <Cordova/CDVPlugin.h>
+#import <Cordova/NSData+Base64.h>
 
 #import "SKProduct+LocalizedPrice.h"
 
-@interface InAppPurchaseManager : PGPlugin <SKPaymentTransactionObserver> {
-
+@interface InAppPurchaseManager : CDVPlugin <SKPaymentTransactionObserver> {
+    NSMutableDictionary* list;
 }
-- (void) setup:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-- (void) makePurchase:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-- (void) requestProductData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-- (void) requestProductsData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+@property (nonatomic, retain) NSMutableDictionary* list;
+- (void) setup:(CDVInvokedUrlCommand*)command;
+- (void) makePurchase:(CDVInvokedUrlCommand*)command;
+- (void) requestProductData:(CDVInvokedUrlCommand*)command;
+- (void) requestProductsData:(CDVInvokedUrlCommand*)command;
+- (void) restoreCompletedTransactions:(CDVInvokedUrlCommand*)command;
+//- (void) setup:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+//- (void) makePurchase:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+//- (void) requestProductData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+//- (void) requestProductsData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 - (void) paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions;
 - (void) paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error;
 - (void) paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue;
-
 @end
 
-@interface ProductsRequestDelegate : NSObject <SKProductsRequestDelegate>{
-	NSString* successCallback;
-	NSString* failCallback;
-
-	InAppPurchaseManager* command;
+@interface ProductsRequestDelegate : NSObject <SKProductsRequestDelegate>
+{
+    InAppPurchaseManager* plugin;
+	CDVInvokedUrlCommand* command;
 }
-
-@property (nonatomic, copy) NSString* successCallback;
-@property (nonatomic, copy) NSString* failCallback;
-@property (nonatomic, retain) InAppPurchaseManager* command;
-
+@property (nonatomic, retain) InAppPurchaseManager* plugin;
+@property (nonatomic, retain) CDVInvokedUrlCommand* command;
 @end;
 
 @interface BatchProductsRequestDelegate : NSObject <SKProductsRequestDelegate> {
-	NSString* callback;
-	InAppPurchaseManager* command;
+	InAppPurchaseManager* plugin;
+	CDVInvokedUrlCommand* command;
 }
-
-@property (nonatomic, copy) NSString* callback;
-@property (nonatomic, retain) InAppPurchaseManager* command;
-
+@property (nonatomic, retain) InAppPurchaseManager* plugin;
+@property (nonatomic, retain) CDVInvokedUrlCommand* command;
 @end;

@@ -1,4 +1,7 @@
-**NOTE**: We don’t want to “clutter” this repo with code anymore. Authors should maintain the code in their own repos and just put a pointer in a README.md in this repo.
+**PLEASE NOTE**: Unless **explicitly** stated, most of these plugins will *not* work with Cordova/PhoneGap 3.x.x out of the box. They will need updating before they can be used via the `plugin add` interface.
+
+
+**ALSO NOTE**: We don’t want to “clutter” this repo with code anymore. Authors should maintain the code in their own repos and just put a pointer in a README.md in this repo.
 
 It would be best for everyone if the individual authors of the plugins were able to manage issues and pull requests while still allowing this to be an easier way for users to discover the plugins they need.
 

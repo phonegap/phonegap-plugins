@@ -54,7 +54,7 @@ NotificationMessenger.prototype.notify = function(title, body, flag) {
 }
 
 /**
- * Clears the Notificaiton Bar
+ * Clears the Notification Bar
  * @deprecated Use the W3C standard window.Notification API instead.
  */
 NotificationMessenger.prototype.clear = function() {

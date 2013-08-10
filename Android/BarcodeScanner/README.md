@@ -23,7 +23,7 @@ If you are using PhoneGap 2.2.0 or greater please use the 2.2.0 directory.
 
     cp ./src/com/phonegap/plugins/barcodescanner/BarcodeScanner.java <your_project>/src/com/phonegap/plugins/barcodescanner
 
-7. In your res/xml/plugins.xml file add the following line:
+7. In your res/xml/config.xml file add the following line:
 
 ```
     <plugin name="BarcodeScanner" value="com.phonegap.plugins.barcodescanner.BarcodeScanner"/>

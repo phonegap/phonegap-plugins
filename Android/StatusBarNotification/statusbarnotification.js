@@ -44,11 +44,12 @@ var NotificationMessenger = function() { }
  * @param body Body of the notification
  * @deprecated Use the W3C standard window.Notification API instead.
  */
-NotificationMessenger.prototype.notify = function(title, body, flag) {
+NotificationMessenger.prototype.notify = function(title, body, icon, flag) {
     if (window.Notification) {
         this.activeNotification = new window.Notification(title, {
             body: body,
-            flag: flag
+            flag: flag,
+            icon: icon
         });
     }
 }
@@ -96,6 +97,8 @@ if (typeof window.Notification == 'undefined') {
         
         var flag = options.flag || '';
 
+        var icon = options.icon || 'icon1';
+
         cordova.exec(function() {
             if (this.onshow) {
                 this.onshow();
@@ -104,7 +107,7 @@ if (typeof window.Notification == 'undefined') {
             if (this.onerror) {
                 this.onerror(error);
             }
-        }, 'StatusBarNotification', 'notify', [this.tag, title, content, flag]);
+        }, 'StatusBarNotification', 'notify', [this.tag, title, content, icon, flag]);
     };
 
     // Permission is always granted on Android.

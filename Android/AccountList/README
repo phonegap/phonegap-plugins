@@ -33,3 +33,5 @@ Using the plugin
             console.log(error);
         }
     );
+
+For 2.5 https://github.com/ddblack6/AccountList_2.5

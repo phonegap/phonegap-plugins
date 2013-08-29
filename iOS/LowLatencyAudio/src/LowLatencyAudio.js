@@ -22,7 +22,10 @@ loop: function (id, success, fail) {
     
 unload: function (id, success, fail) {
     return cordova.exec(success, fail, "LowLatencyAudio", "unload", [id]);
+},
+
+volume: function ( id, value, success, fail) {
+    return cordova.exec(success, fail, "LowLatencyAudio", "setVolume", [id, value]);
 }
-    
     
 };

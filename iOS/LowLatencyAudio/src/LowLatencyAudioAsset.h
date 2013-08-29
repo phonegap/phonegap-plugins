@@ -2,6 +2,7 @@
 //  PGAudioAsset.h
 //  PGAudio
 //
+//  Updated by Julien Barbay on 8/28/13.
 //  Created by Andrew Trice on 1/23/12.
 //
 // THIS SOFTWARE IS PROVIDED BY ANDREW TRICE "AS IS" AND ANY EXPRESS OR
@@ -31,4 +32,5 @@
 - (void) stop;
 - (void) loop;
 - (void) unload;
+- (void) setVolume:(float) value;
 @end

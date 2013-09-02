@@ -6,14 +6,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PGPlugin.h>
-#import <PhoneGap/PluginResult.h>
-#else
-#import "PGPlugin.h"
-#import "PluginResult.h"
-#endif
+#import <Cordova/CDVPlugin.h>
+#import <Cordova/CDVPluginResult.h>
 #import "ClipboardPlugin.h"
+#import <Cordova/JSONKit.h>
 
 @implementation ClipboardPlugin
 
@@ -30,8 +26,9 @@
 
 	NSString *text = [pasteboard valueForPasteboardType:@"public.text"];
     
-    PluginResult* pluginResult = [PluginResult resultWithStatus:PGCommandStatus_OK messageAsString:text];
-  
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVPluginCommandStatus_OK messageAsString:text];
+    //PluginResult* pluginResult = [PluginResult resultWithStatus:PluginCommandStatus_OK messageAsString:text];
+
     [self writeJavascript: [pluginResult toSuccessCallbackString:callbackID]];
 }
 

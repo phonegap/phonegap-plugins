@@ -11,7 +11,7 @@ function ClipboardPlugin(){ }
  * @param {String} text The new clipboard content
  */
 ClipboardPlugin.prototype.setText = function(text) {
-	PhoneGap.exec("ClipboardPlugin.setText", text);
+	Cordova.exec("ClipboardPlugin.setText", text);
 }
 
 /**
@@ -20,13 +20,10 @@ ClipboardPlugin.prototype.setText = function(text) {
  * @param {String} text The new clipboard content
  */
 ClipboardPlugin.prototype.getText = function(callback) {
-	PhoneGap.exec(callback, null, "ClipboardPlugin", "getText", []);
+	Cordova.exec(callback, null, "ClipboardPlugin", "getText", []);
 }
 
 /**
  * Register the plugin with PhoneGap
  */
-PhoneGap.addConstructor(function() {
-	if(!window.plugins) window.plugins = {};
-	window.plugins.clipboardPlugin = new ClipboardPlugin();
-});
+window.clipboardPlugin = new ClipboardPlugin();

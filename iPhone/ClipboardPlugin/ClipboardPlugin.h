@@ -6,13 +6,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#ifdef PHONEGAP_FRAMEWORK
-#import <PhoneGap/PGPlugin.h>
-#else
-#import "PGPlugin.h"
-#endif
+#import <Cordova/CDVPlugin.h>
 
-@interface ClipboardPlugin : PGPlugin{ }
+@interface ClipboardPlugin : CDVPlugin{ }
 
 -(void)setText:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 

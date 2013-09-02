@@ -56,8 +56,9 @@ public class LocalNotification extends Plugin {
 	    unpersistAlarm(alarmId);
 	    return this.cancelNotification(alarmId);
 	} else if (action.equalsIgnoreCase("cancelall")) {
+	    PluginResult result = this.cancelAllNotifications();
 	    unpersistAlarmAll();
-	    return this.cancelAllNotifications();
+	    return result;
 	}
 
 	return result;

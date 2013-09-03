@@ -7,14 +7,6 @@
 #import "CDVAnnotation.h"
 #import "AsyncImageView.h"
 
-#ifdef CORDOVA_FRAMEWORK
-    // PhoneGap >= 1.2.0
-    #import <Cordova/JSONKit.h>
-#else
-    // https://github.com/johnezang/JSONKit
-    #import "JSONKit.h"
-#endif
-
 @implementation MapKitView
 
 @synthesize buttonCallback;
@@ -60,10 +52,7 @@
     float latitudeDelta = theMapView.region.span.latitudeDelta; 
     float longitudeDelta = theMapView.region.span.longitudeDelta; 
     
-    NSString* jsString = nil;
-	jsString = [[NSString alloc] initWithFormat:@"geo.onMapMove(\'%f','%f','%f','%f\');", currentLat,currentLon,latitudeDelta,longitudeDelta];
-	[self.webView stringByEvaluatingJavaScriptFromString:jsString];
-	[jsString autorelease];
+    [self.webView stringByEvaluatingJavaScriptFromString:[[NSString alloc] initWithFormat:@"geo.onMapMove(\'%f','%f','%f','%f\');", currentLat,currentLon,latitudeDelta,longitudeDelta]];
 }
 
 - (void)destroyMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
@@ -90,17 +79,18 @@
     self.buttonCallback = nil;
 }
 
-- (void)clearMapPins:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)clearMapPins:(CDVInvokedUrlCommand*)command;
 {
-  [self.mapView removeAnnotations:self.mapView.annotations];
+	[self.mapView removeAnnotations:self.mapView.annotations];
+	[self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 }
 
-- (void)addMapPins:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void)addMapPins:(CDVInvokedUrlCommand*)command;
 {
-
-  NSArray *pins = [[arguments objectAtIndex:0] objectFromJSONString];
 	
-  for (int y = 0; y < pins.count; y++) 
+	NSArray *pins = command.arguments[0];
+	
+	for (int y = 0; y < pins.count; y++)
 	{
 		NSDictionary *pinData = [pins objectAtIndex:y];
 		CLLocationCoordinate2D pinCoord = { [[pinData objectForKey:@"lat"] floatValue] , [[pinData objectForKey:@"lon"] floatValue] };
@@ -110,20 +100,21 @@
 		NSString *pinColor=[[pinData valueForKey:@"pinColor"] description];
 		NSInteger index=[[pinData valueForKey:@"index"] integerValue];
 		BOOL selected = [[pinData valueForKey:@"selected"] boolValue];
-
+		
 		CDVAnnotation *annotation = [[CDVAnnotation alloc] initWithCoordinate:pinCoord index:index title:title subTitle:subTitle imageURL:imageURL];
-		annotation.pinColor=pinColor;
+		annotation.pinColor = pinColor;
 		annotation.selected = selected;
-
+		
 		[self.mapView addAnnotation:annotation];
 		[annotation release];
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 	}
 }
 
 /**
  * Set annotations and mapview settings
  */
-- (void)setMapData:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;\
+- (void)setMapData:(CDVInvokedUrlCommand*)command;
 {	
     if (!self.mapView) 
 	{
@@ -133,7 +124,9 @@
 	// defaults
     CGFloat height = 480.0f;
     CGFloat offsetTop = 0.0f;
-		
+	
+	NSDictionary *options = command.arguments[0];
+	
 	if ([options objectForKey:@"height"]) 
 	{
 		height=[[options objectForKey:@"height"] floatValue];
@@ -168,40 +161,45 @@
 																						   diameter*(height / webViewBounds.size.width))];
 	[self.mapView setRegion:region animated:YES];
 	
-	CGRect frame = CGRectMake(285.0,12.0,  29.0, 29.0);
+	// close button. float to top right.
+	CGRect frame = CGRectMake((webViewBounds.size.width - 35), 12.0, 29.0, 29.0);
 	
 	[ self.imageButton setImage:[UIImage imageNamed:@"www/map-close-button.png"] forState:UIControlStateNormal];
 	[ self.imageButton setFrame:frame];
 	[ self.imageButton addTarget:self action:@selector(closeButton:) forControlEvents:UIControlEventTouchUpInside];
+	
+	[self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 }
 
 - (void) closeButton:(id)button
 {
-	[ self hideMap:NULL withDict:NULL];
+	[ self hideMap:NULL ];
 	NSString* jsString = [NSString stringWithFormat:@"%@(\"%i\");", self.buttonCallback,-1];
 	[self.webView stringByEvaluatingJavaScriptFromString:jsString];
 }
 
-- (void)showMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+- (void)showMap:(CDVInvokedUrlCommand*)command;
 {
-	if (!self.mapView) 
+	if (!self.mapView)
 	{
 		[self createView];
 	}
 	self.childView.hidden = NO;
 	self.mapView.showsUserLocation = YES;
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 }
 
 
-- (void)hideMap:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+- (void)hideMap:(CDVInvokedUrlCommand*)command;
 {
-    if (!self.mapView || self.childView.hidden==YES) 
+    if (!self.mapView || self.childView.hidden==YES)
 	{
 		return;
 	}
 	// disable location services, if we no longer need it.
 	self.mapView.showsUserLocation = NO;
 	self.childView.hidden = YES;
+	[self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 }
 
 - (MKAnnotationView *) mapView:(MKMapView *)theMapView viewForAnnotation:(id <MKAnnotation>) annotation {
@@ -211,7 +209,7 @@
   }
 
 	CDVAnnotation *phAnnotation=(CDVAnnotation *) annotation;
-	NSString *identifier=[NSString stringWithFormat:@"INDEX[%i]", phAnnotation.index];
+	NSString *identifier=[NSString stringWithFormat:@"INDEX[%i]-%@-",phAnnotation.index, phAnnotation.pinColor];
 
 	MKPinAnnotationView *annView = (MKPinAnnotationView *)[theMapView dequeueReusableAnnotationViewWithIdentifier:identifier];
 
@@ -262,7 +260,7 @@
 		[self performSelector:@selector(openAnnotation:) withObject:phAnnotation afterDelay:1.0];
 	}
 
-	return [annView autorelease];
+	return annView;
 }
 
 -(void)openAnnotation:(id <MKAnnotation>) annotation

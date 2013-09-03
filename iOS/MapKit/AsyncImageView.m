@@ -55,7 +55,7 @@
 	UIImageView* imageView = [[[UIImageView alloc] initWithImage:[UIImage imageWithData:data]] autorelease];
 	//make sizing choices based on your needs, experiment with these. maybe not all the calls below are needed.
 	imageView.contentMode = UIViewContentModeScaleAspectFit;
-	imageView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth || UIViewAutoresizingFlexibleHeight );
+	imageView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
 	[self addSubview:imageView];
 	imageView.frame = self.bounds;
 	[imageView setNeedsLayout];
@@ -77,7 +77,7 @@
 	UIImageView* imageView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon.png"]] autorelease];
 	//make sizing choices based on your needs, experiment with these. maybe not all the calls below are needed.
 	imageView.contentMode = UIViewContentModeScaleAspectFit;
-	imageView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth || UIViewAutoresizingFlexibleHeight );
+	imageView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
 	[self addSubview:imageView];
 	imageView.frame = self.bounds;
 	[imageView setNeedsLayout];

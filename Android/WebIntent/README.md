@@ -27,7 +27,7 @@ Launches an Android intent. For example:
 ### hasExtra ###
 checks if this app was invoked with the specified extra. For example:
 
-    CDV.WEBINTENT.hasExtra(CDV.WEBINTENT.WebIntent.EXTRA_TEXT, 
+    CDV.WEBINTENT.hasExtra(CDV.WEBINTENT.EXTRA_TEXT, 
         function(has) {
             // has is true iff it has the extra
         }, function() {
@@ -38,7 +38,7 @@ checks if this app was invoked with the specified extra. For example:
 ### getExtra ###
 Gets the extra that this app was invoked with. For example:
 
-    CDV.WEBINTENT.getExtra(CDV.WEBINTENT.WebIntent.EXTRA_TEXT, 
+    CDV.WEBINTENT.getExtra(CDV.WEBINTENT.EXTRA_TEXT, 
         function(url) {
             // url is the value of EXTRA_TEXT
         }, function() {

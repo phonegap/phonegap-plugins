@@ -1,6 +1,7 @@
 package com.phonegap.plugin.macaddress;
 
-import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.CallbackContext;
+import org.apache.cordova.api.CordovaPlugin;
 import org.apache.cordova.api.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,23 +13,22 @@ import android.net.wifi.WifiManager;
 /**
  * The Class MacAddressPlugin.
  */
-public class MacAddressPlugin extends Plugin {
+public class MacAddressPlugin extends CordovaPlugin {
 
-    @Override
-    public boolean isSynch(String action) {
-        if (action.equals("getMacAddress")) {
-            return true;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean isSynch(String action) {
+//        if (action.equals("getMacAddress")) {
+//            return true;
+//        }
+//        return false;
+//    }
     
     /* (non-Javadoc)
      * @see org.apache.cordova.api.Plugin#execute(java.lang.String, org.json.JSONArray, java.lang.String)
      */
     @Override
-    public PluginResult execute(String action, JSONArray args, String callbackId) {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
         PluginResult result = null;
-
 
         if (action.equals("getMacAddress")) {
 
@@ -44,10 +44,13 @@ public class MacAddressPlugin extends Plugin {
                     result = new PluginResult(PluginResult.Status.JSON_EXCEPTION);
                 }
 
+                callbackContext.sendPluginResult(result);
+                callbackContext.success();
+                return true;
             }
         }
         
-        return result;
+        return false;
     }
 
     /**
@@ -57,7 +60,7 @@ public class MacAddressPlugin extends Plugin {
      */
     private String getMacAddress() {
         String macAddress = null;
-        WifiManager wm = (WifiManager) this.ctx.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wm = (WifiManager) this.webView.getContext().getSystemService(Context.WIFI_SERVICE);
         macAddress = wm.getConnectionInfo().getMacAddress();
 
         if (macAddress == null || macAddress.length() == 0) {

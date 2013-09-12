@@ -35,11 +35,11 @@
 /**
  * Sets the idleTimerDisable property to true so that the idle timeout is disabled
  */
-- (void) acquire:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) acquire:(CDVInvokedUrlCommand*)command;
 
 /**
  * Sets the idleTimerDisable property to false so that the idle timeout is enabled
  */
-- (void) release:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) release:(CDVInvokedUrlCommand*)command;
 
 @end

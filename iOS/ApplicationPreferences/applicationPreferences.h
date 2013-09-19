@@ -8,16 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-#import <Cordova/CDVPlugin.h>
+#import <Cordova/CDV.h>
 
-@interface applicationPreferences : CDVPlugin 
-{
+@interface applicationPreferences : CDVPlugin {
 
 }
 
--	(void) getSetting:(CDVInvokedUrlCommand*)command;
--	(void) setSetting:(CDVInvokedUrlCommand*)command;
--	(NSString*) getSettingFromBundle:(NSString*)settingName;
+- (void) getSetting:(CDVInvokedUrlCommand*)command;
+- (void) setSetting:(CDVInvokedUrlCommand*)command;
+- (NSString*) getSettingFromBundle:(NSString*)settingName;
 
 
 @end

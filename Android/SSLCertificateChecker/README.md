@@ -5,13 +5,13 @@ by [Eddy Verbruggen](http://www.x-services.nl)
 ### [This plugin is hosted by the author](https://github.com/EddyVerbruggen/SSLCertificateChecker-PhoneGap-Plugin)
 ---
 
-## DESCRIPTION
+## Description
 
 This plugin can be used to add an extra layer of security by preventing 'Man in the Middle' attacks.
 When correctly used, it will be very hard for hackers to intercept communication between your app and your server,
 because you can actively verify the SSL certificate of the server by comparing actual and expected fingerprints.
 
-## 5. License
+## License
 
 [The MIT License (MIT)](http://www.opensource.org/licenses/mit-license.html)
 

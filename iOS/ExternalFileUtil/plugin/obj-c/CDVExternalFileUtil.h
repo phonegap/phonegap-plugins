@@ -2,6 +2,7 @@
 //  CDVOpenWith.h
 //  OpenWith
 //
+//  Cordova 3.0 Compatibility added on 9/26/13 by njtman
 //  Created by Andrew Trice on 8/15/12.
 //  
 //  THIS SOFTWARE IS PROVIDED BY ANDREW TRICE "AS IS" AND ANY EXPRESS OR

@@ -22,7 +22,9 @@
     NSString *localFile;
 }
 
-- (void) openWith:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-- (void) cleanupTempFile: (UIDocumentInteractionController *) controller;
+@property(nonatomic, strong) UIDocumentInteractionController *controller;
+
+- (void) openWith: (CDVInvokedUrlCommand*)command;
+- (void) cleanupTempFile: (UIDocumentInteractionController *)controller;
 
 @end

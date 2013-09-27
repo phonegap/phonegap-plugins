@@ -1,22 +1,23 @@
 # WebIntents plugin for Phonegap #
-By Boris Smus
+By Boris Smus (Updated to Phonegap 3.0 by Avi Vaisenberger)
 
 ## Adding the Plugin to your project ##
 1. To install the plugin, move webintent.js to your project's www folder and include a reference to it in your html files. 
 2. Create the path "com/borismus/webintent" within your project's src/ folder and move the java file into it.
 3. Add the plugin to your `res/xml/config.xml` file:
 
-`<plugin name="WebIntent" value="com.borismus.webintent.WebIntent" />`
+`<feature name="WebIntent">
+    <param name="android-package" value="com.borismus.webintent.WebIntent" />
+</feature>`
 
 ## Using the plugin ##
-The plugin creates the object `window.plugins.webintent` with five methods:
+The plugin creates the object `CDV.WEBINTENT` with five methods:
 
 ### startActivity ###
 Launches an Android intent. For example:
 
-
-    window.plugins.webintent.startActivity({
-        action: window.plugins.webintent.ACTION_VIEW,
+    CDV.WEBINTENT.startActivity({
+        action: CDV.WEBINTENT.ACTION_VIEW,
         url: 'geo:0,0?q=' + address}, 
         function() {}, 
         function() {alert('Failed to open URL via Android Intent')};
@@ -26,7 +27,7 @@ Launches an Android intent. For example:
 ### hasExtra ###
 checks if this app was invoked with the specified extra. For example:
 
-    window.plugins.webintent.hasExtra(WebIntent.EXTRA_TEXT, 
+    CDV.WEBINTENT.hasExtra(CDV.WEBINTENT.EXTRA_TEXT, 
         function(has) {
             // has is true iff it has the extra
         }, function() {
@@ -37,7 +38,7 @@ checks if this app was invoked with the specified extra. For example:
 ### getExtra ###
 Gets the extra that this app was invoked with. For example:
 
-    window.plugins.webintent.getExtra(WebIntent.EXTRA_TEXT, 
+    CDV.WEBINTENT.getExtra(CDV.WEBINTENT.EXTRA_TEXT, 
         function(url) {
             // url is the value of EXTRA_TEXT
         }, function() {
@@ -48,7 +49,7 @@ Gets the extra that this app was invoked with. For example:
 ### getUri ###
 Gets the Uri the app was invoked with. For example:
 
-    window.plugins.webintent.getUri(function(url) {
+    CDV.WEBINTENT.getUri(function(url) {
         if(url !== "") {
             // url is the url the intent was launched with
         }
@@ -57,7 +58,7 @@ Gets the Uri the app was invoked with. For example:
 ### onNewIntent ###
 Gets called when onNewIntent is called for the parent activity. Used in only certain launchModes. For example:
 
-    window.plugins.webintent.onNewIntent(function(url) {
+    CDV.WEBINTENT.onNewIntent(function(url) {
         if(url !== "") {
             // url is the url that was passed to onNewIntent
         }
@@ -66,7 +67,7 @@ Gets called when onNewIntent is called for the parent activity. Used in only cer
 ### sendBroadcast ###
 Sends a custom intent passing optional extras
 
-    window.plugins.webintent.sendBroadcast({
+    CDV.WEBINTENT.sendBroadcast({
                 action: 'com.dummybroadcast.action.triggerthing',
                 extras: {
                     'option': true
@@ -79,7 +80,9 @@ Sends a custom intent passing optional extras
 
 The MIT License
 
-Copyright (c) 2010 Boris Smus
+Copyright 
+(c) 2010 Boris Smus
+(C) 2013 Avi Vaisenberger
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

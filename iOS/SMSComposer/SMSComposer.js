@@ -20,15 +20,10 @@ NotSent:3
 SMSComposer.prototype.showSMSComposer = function(toRecipients, body)
 {
 	
-	var args = {};
+	var toRecArg = toRecipients ? toRecipients : '';
+	var bodyArg = body ? body : '';
 	
-	if(toRecipients)
-		args.toRecipients = toRecipients;
-	
-	if(body)
-		args.body = body;
-	
-	cordova.exec("SMSComposer.showSMSComposer",args);
+	cordova.exec(null,null,"SMSComposer","showSMSComposer", [ toRecArg,bodyArg ]);
 }
 
 SMSComposer.prototype.showSMSComposerWithCB = function(cbFunction,toRecipients,body)

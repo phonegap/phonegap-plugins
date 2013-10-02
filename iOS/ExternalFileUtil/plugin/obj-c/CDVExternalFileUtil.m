@@ -61,9 +61,9 @@
     
     CDVViewController* cont = (CDVViewController*)[ super viewController ];
     CGRect rect = CGRectMake(0, 0, cont.view.bounds.size.width, cont.view.bounds.size.height);
-    [controller presentOpenInMenuFromRect:rect inView:cont.view animated:YES];
+    BOOL result = [controller presentOpenInMenuFromRect:rect inView:cont.view animated:YES];
     
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: @""];
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: (result ? @"YES" : @"NO")];
     [self writeJavascript: [pluginResult toSuccessCallbackString:callbackID]];
     
     [callbackID release];

@@ -52,6 +52,7 @@ public class WebIntent extends Plugin {
                 // Parse the arguments
                 JSONObject obj = args.getJSONObject(0);
                 String type = obj.has("type") ? obj.getString("type") : null;
+                String pack = obj.has("package") ? obj.getString("package") : null;
                 Uri uri = obj.has("url") ? Uri.parse(obj.getString("url")) : null;
                 JSONObject extras = obj.has("extras") ? obj.getJSONObject("extras") : null;
                 Map<String, String> extrasMap = new HashMap<String, String>();
@@ -66,7 +67,7 @@ public class WebIntent extends Plugin {
                     }
                 }
 
-                startActivity(obj.getString("action"), uri, type, extrasMap);
+                startActivity(obj.getString("action"), uri, type, pack, extrasMap);
                 return new PluginResult(PluginResult.Status.OK);
 
             } else if (action.equals("hasExtra")) {
@@ -155,6 +156,10 @@ public class WebIntent extends Plugin {
             if (type != null) {
                 i.setType(type);
             }
+        }
+        
+        if (pack != null) {
+            i.setPackage(pack);
         }
         
         for (String key : extras.keySet()) {

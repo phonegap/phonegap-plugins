@@ -18,25 +18,39 @@
 //
 
 #import "CDVExternalFileUtil.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation CDVExternalFileUtil
 
+@synthesize controller = docController;
+
 - (void) openWith:(CDVInvokedUrlCommand*)command;
 {
-        CDVPluginResult* pluginResult;
+    NSString *path = [command.arguments objectAtIndex:0];
+    NSString *uti = [command.arguments objectAtIndex:1];
 
-        NSString *path = [command.arguments objectAtIndex:0];
-        NSString *uti = [command.arguments objectAtIndex:1];
-        
+    
+    CDVViewController* cont = (CDVViewController*)[ super viewController ];
+
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((cont.view.frame.size.width/2) - 40, (cont.view.frame.size.height/2) - 40, 80, 80)];
+    spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    spinner.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.85];
+    [spinner layer].cornerRadius = 8.0;
+    [spinner layer].masksToBounds = YES;
+    spinner.center = CGPointMake(cont.view.bounds.size.width / 2.0f, cont.view.bounds.size.height / 2.0f);
+    spinner.autoresizingMask = (UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin);
+    [spinner startAnimating];
+    [cont.view addSubview:spinner];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         //NSLog(@"path %@, uti:%@", path, uti);
-        
-        NSArray *parts = [path componentsSeparatedByString:@"/"];
+
+        NSArray *parts = [path componentsSeparatedByString:@"="];
         NSString *previewDocumentFileName = [parts lastObject];
         //NSLog(@"The file name is %@", previewDocumentFileName);
-        
-        // TODO: Create native activity indicator
+
         NSData *fileRemote = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:path]];
-        
+
         // Write file to the Documents directory
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0];
@@ -44,20 +58,35 @@
         localFile = [documentsDirectory stringByAppendingPathComponent:previewDocumentFileName];
         [fileRemote writeToFile:localFile atomically:YES];
         //NSLog(@"Resource file '%@' has been written to the Documents directory from online", previewDocumentFileName);
-    
-        // Get file again from Documents directory
-        NSURL *fileURL = [NSURL fileURLWithPath:localFile];
-
-        _controller = [UIDocumentInteractionController  interactionControllerWithURL:fileURL];
-        _controller.delegate = self;
-        _controller.UTI = uti;
-    
-        CDVViewController* cont = (CDVViewController*)[ super viewController ];
-        //CGRect rect = CGRectMake(0, 0, 1500.0f, 50.0f);
-        [_controller presentOpenInMenuFromRect:CGRectZero inView:cont.view animated:YES];
         
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: @""];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //remove the spinner on the background when done
+            [spinner removeFromSuperview];
+            
+            // Get file again from Documents directory
+            NSURL *fileURL = [NSURL fileURLWithPath:localFile];
+
+            docController = [UIDocumentInteractionController  interactionControllerWithURL:fileURL];
+            docController.delegate = self;
+            docController.UTI = uti;
+
+            //CGRect rect = CGRectMake(0, 0, 1500.0f, 50.0f);
+            //CGRect rect = CGRectMake(0, 0, 1000.0f, 150.0f);
+            CDVPluginResult* pluginResult = nil;
+            BOOL wasOpened = [docController presentOpenInMenuFromRect:CGRectZero inView:cont.view animated:YES];
+            //BOOL wasOpened = [docController presentOpenInMenuFromRect:cont.view.frame inView:cont.view animated:YES];
+    
+            if(wasOpened) {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: @""];
+                //NSLog(@"Success");
+            }
+            else {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"No valid ebook reader apps found."];
+                //NSLog(@"Could not handle UTI");
+            }
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        });
+    });
 }
 
 - (void) documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller {
@@ -72,20 +101,22 @@
 
 - (void) cleanupTempFile: (UIDocumentInteractionController *) controller
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSError *error;
+    [self.commandDelegate runInBackground:^{
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSError *error;
 
-    BOOL fileExists = [fileManager fileExistsAtPath:localFile];
-    
-    //NSLog(@"Path to file: %@", localFile);   
-    //NSLog(@"File exists: %d", fileExists);
-    //NSLog(@"Is deletable file at path: %d", [fileManager isDeletableFileAtPath:localFile]);
-    
-    if (fileExists)
-    {
-        BOOL success = [fileManager removeItemAtPath:localFile error:&error];
-        if (!success) NSLog(@"Error: %@", [error localizedDescription]);
-    }
+        BOOL fileExists = [fileManager fileExistsAtPath:localFile];
+
+        //NSLog(@"Path to file: %@", localFile);
+        //NSLog(@"File exists: %d", fileExists);
+        //NSLog(@"Is deletable file at path: %d", [fileManager isDeletableFileAtPath:localFile]);
+
+        if (fileExists)
+        {
+            BOOL success = [fileManager removeItemAtPath:localFile error:&error];
+            if (!success) NSLog(@"Error: %@", [error localizedDescription]);
+        }
+    }];
 }
 
 @end

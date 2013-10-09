@@ -50,6 +50,7 @@
 		[picker setRecipients:[toRecipientsString componentsSeparatedByString:@","]];
 	}
 
+	[self.viewController becomeFirstResponder];
 	[self.viewController presentModalViewController:picker animated:YES];
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];	// /This hides the statusbar when the picker is presented -@RandyMcMillan
 	[picker release];

@@ -3,6 +3,9 @@ by Shaun Rowe (@shakie), Pobl Creative Cyf. (@poblcreative)
 
 This plugin allows you to extract a zip file
 
+Phonegap 3.x.x version of the plugin is available at: https://github.com/fiscal-cliff/phonegap-plugin-ExtractZip.git 
+----------
+
 ## Adding the Plugin to your project ##
 
 To install the plugin, copy ZipPlugin.js to your project's www folder and include a reference to it in your html files.

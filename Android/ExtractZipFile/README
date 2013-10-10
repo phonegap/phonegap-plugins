@@ -2,6 +2,9 @@ ExtractZipFile Phonegap Plugin for Android
 =======================================
 This plugin allows you to eatract a zip file located in your sdcard.
 
+Phonegap 3.x.x version of the plugin is available at: https://github.com/fiscal-cliff/phonegap-plugin-ExtractZip.git 
+----------
+
 Adding the Plugin to your project
 =================================
 

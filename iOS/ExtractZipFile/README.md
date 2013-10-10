@@ -9,7 +9,7 @@ To install the plugin, copy ZipPlugin.js to your project's www folder and includ
 
 <script type="text/javascript" src="ZipPlugin.js"></script>
 
-Add SSZipArchive directory, ExtractZipFilePlugin.h and ExtractZipFilePlugin.m to the Plugins directory of your phonegap project.
+Add SSZipArchive directory (but delete the Tests directory), ExtractZipFilePlugin.h and ExtractZipFilePlugin.m to the Plugins directory of your phonegap project.
 
 In the Cordova.plist section, you need to add the plugin with the key/pair value of:
 

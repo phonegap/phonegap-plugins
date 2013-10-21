@@ -1,16 +1,15 @@
 //
 //  calendarPlugin.h
-//  Author: Felix Montanez
-//  Date: 01-17-2011
-//  Notes:
+//  basePackage
+//
+//  Created by Liu Ley on 13-2-28.
+//  Copyright (c) 2013年 SINA SAE. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#ifdef CORDOVA_FRAMEWORK
+
 #import <Cordova/CDVPlugin.h>
-#else
-#import "CDVPlugin.h"
-#endif
+
 #import <EventKitUI/EventKitUI.h>
 #import <EventKit/EventKit.h>
 
@@ -19,26 +18,9 @@
     
 	EKEventStore *eventStore;
     EKCalendar *defaultCalendar;
-    //NSArray *events;
-    
-    //future plan to have global type variables
-    
-    
 }
-
-@property (nonatomic,retain) EKEventStore *eventStore;
-@property (nonatomic,retain) EKCalendar *defaultCalendar;
-
-//-(NSArray *)fetchEvents;
-
-// Calendar Instance methods
-- (void)createEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-- (void)getCalendarList:(NSMutableArray *) arguments withDict:(NSMutableDictionary*)options;
-
-//- (void)modifyEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-
-//- (void)findEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-
-//- (void)deleteEvent:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-
+@property(nonatomic,retain) NSString *callbackId;
+-(void)createEventDefault:(CDVInvokedUrlCommand *)command;
+-(void)createEventQuiet:(CDVInvokedUrlCommand *)command;
+-(void)getCalendars:(CDVInvokedUrlCommand *)command;
 @end

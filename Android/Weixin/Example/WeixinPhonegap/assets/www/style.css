@@ -1,0 +1,22 @@
+*{
+    margin:0px;
+}
+body {
+    height:100%;
+    width:100%;
+    font-family:'helvetica';
+    font-size:20px;
+    text-align:center;
+}
+
+.btn {
+    width:auto;
+    padding:20px;
+    background-color:#95abb7;
+    color:#fff;
+    font-size:20px;
+	border-radius:5px;
+	margin-bottom:10px;
+	font-weight:bold;
+	text-align:center;
+}

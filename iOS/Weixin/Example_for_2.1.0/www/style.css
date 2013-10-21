@@ -1,0 +1,41 @@
+*{
+    margin:0px;
+}
+body {
+    height:100%;
+    width:100%;
+    font-family:'helvetica';
+    font-size:20px;
+    text-align:center;
+}
+
+.btn {
+    width:auto;
+    padding:10px;
+    background-color:#95abb7;
+    color:#fff;
+    font-size:20px;
+	border-radius:5px;
+	margin-bottom:10px;
+	font-weight:bold;
+	text-align:center;
+}
+
+.btnT {
+    width:auto;
+    padding:5px;
+    background-color:gray;
+    color:#fff;
+    font-size:17px;
+	border-radius:5px;
+	margin:10px;
+	font-weight:bold;
+	text-align:center;
+}
+
+#actionType{
+border-style: solid;
+border-width: 1px;
+border-color:gray;
+margin:5px;
+}

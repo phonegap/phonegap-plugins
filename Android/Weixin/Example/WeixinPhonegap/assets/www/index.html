@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" href="style.css"/>
+            
+        <script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
+        <script src="weixin.js"></script>
+        
+        <script src="script.js"></script>
+        <script type="text/javascript">          
+            function onBodyLoad()
+            {		
+                document.addEventListener("deviceready", onDeviceReady, false);
+            }
+
+            function onDeviceReady()
+            {
+                registerApp();
+                setResponse();
+                var detail = document.getElementById("detail");
+                detail.innerHTML="ready";
+            }
+
+        </script>
+    </head>
+    <body onload="onBodyLoad()">
+        <div id="info">微信测试demo</div>
+        <div id="detail">Loading...</div>
+        <button class="btn" id="btn1" onclick="sendTextContent()" >发送文本</button>
+        <button class="btn" id="btn2" onclick="sendImageContent()" >发送图片</button>
+        <button class="btn" id="btn3" onclick="sendMusicContent()" >发送音乐</button>
+        <button class="btn" id="btn4" onclick="sendVideoContent()" >发送视频</button>
+        <button class="btn" id="btn5" onclick="sendWebpageContent()" >发送网页</button>
+        <button class="btn" id="btn6" onclick="sendAPPContent()" >发APP信息</button>
+        <button class="btn" id="btn7" onclick="getWXAppInstallUrl()" >微信下载地址</button>
+        <button class="btn" id="btn7" onclick="openWXApp()" >打开微信</button>
+        <button class="btn" id="btn7" onclick="isWeixinInstalled()" >微信是否安装</button>
+        <button class="btn" id="btn7" onclick="isSupportApi()" >是否支持API</button>
+        <div id="viewport" class="viewport" style="display: none;">
+            <img style="width:100px;height:100px" id="picture" src="" />
+        </div>
+    </body>
+</html>

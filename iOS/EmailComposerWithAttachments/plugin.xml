@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+    id="com.phonegap.plugins.emailcomposer"
+    version="1.0.1">
+
+    <name>Email Composer</name>
+	
+    <engines>
+        <engine name="cordova" version=">=2.5.0" />
+    </engines>
+	
+    <asset src="www/EmailComposer.js" target="js/EmailComposer.js" />
+
+    <!-- ios -->
+    <platform name="ios">
+        <!-- Cordova 2.5+ -->
+        <config-file target="config.xml" parent="/widget/plugins">
+            <plugin name="EmailComposer" value="EmailComposer"/>
+        </config-file>
+
+        <header-file src="src/ios/EmailComposer.h" />
+        <source-file src="src/ios/EmailComposer.m" />
+        <framework src="MessageUI.framework" />
+
+    </platform>
+</plugin>

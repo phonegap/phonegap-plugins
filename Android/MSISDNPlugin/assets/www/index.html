@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	
+	    <title></title>
+	
+	    <meta charset="utf-8">
+	  
+	    <script type="text/javascript" charset="utf-8" src="phonegap-android-1.4.1.js"></script>
+	    <script type="text/javascript" charset="utf-8" src="msisdn.js"></script>
+	    <script type="text/javascript">
+	        function onBodyLoad() {
+	        	console.log("loaded");
+	            document.addEventListener("deviceready", function() {
+	            	console.log("device ready");
+	                window.plugins.msisdn.getSimNumber(function(msisdn) {
+	                    console.log("number");
+	                    document.getElementById('output').innerHTML = msisdn;
+	                }, function() {
+	                    console.log("error");
+	                });
+	            }, false);
+	        }
+	    </script>
+	</head>
+	<body onload="onBodyLoad();">
+	
+    Cell Phone Number:<span id="output"></span>
+
+	</body>
+</html>

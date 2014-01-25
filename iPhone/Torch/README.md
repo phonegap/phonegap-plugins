@@ -1,1 +1,0 @@
-This plugin has been moved to [http://github.com/shazron/TorchPlugin](http://github.com/shazron/TorchPlugin)

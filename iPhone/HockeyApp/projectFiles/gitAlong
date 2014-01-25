@@ -1,7 +1,0 @@
-#/bin/bash
-git clone https://OwenBrotherwood@github.com/OwenBrotherwood/phonegap-plugins.git
-cd phonegap-plugins/
-git remote add upstream https://github.com/phonegap/phonegap-plugins.git
-git fetch upstream
-git merge upstream/master
-git status

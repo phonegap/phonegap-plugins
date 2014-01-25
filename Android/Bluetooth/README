@@ -1,3 +1,0 @@
-You need add the next line to your res/xml/plugins.xml file:
-
- <plugin name="BluetoothPlugin" value="com.phonegap.plugin.bluetooth.BluetoothPlugin"/>

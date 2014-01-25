@@ -1,1 +1,0 @@
-Submit UAPushNotifications plugin here.

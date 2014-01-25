@@ -1,7 +1,0 @@
-//
-//  PhoneGap.xcconfig
-//  paypal-plugin-host
-//
-
-// Override this to use your project specific PHONEGAPLIB
-PHONEGAPLIB = $(PHONEGAPLIB)

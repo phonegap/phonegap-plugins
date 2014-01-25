@@ -1,7 +1,0 @@
-//
-// Prefix header for all source files of the 'localNotifications' target in the 'localNotifications' project
-//
-
-#ifdef __OBJC__
-    #import <UIKit/UIKit.h>
-#endif

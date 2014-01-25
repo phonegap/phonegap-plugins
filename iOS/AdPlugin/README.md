@@ -1,1 +1,0 @@
-This plugin has been moved to [http://github.com/shazron/iAdPlugin](http://github.com/shazron/iAdPlugin)
